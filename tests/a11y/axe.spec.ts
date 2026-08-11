@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import { servablePaths } from '../../src/app/route-paths';
 
 /**
  * X15 — zero violations at wcag2a, wcag2aa, wcag21aa, wcag22aa across every
@@ -8,16 +9,17 @@ import AxeBuilder from '@axe-core/playwright';
  */
 const TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'];
 
-const ROUTES = [
-  '/study',
-  '/exam',
-  '/signs',
-  '/progress',
-  '/settings',
-  '/gallery',
-  '/gallery/focus',
-  '/definitely-not-a-route',
-];
+/**
+ * Derived from the router, never hand-maintained. A blind critic found the
+ * reflow spec passing only because its literal route list omitted the one
+ * route that failed; a list you have to remember to update is a list that
+ * silently stops covering things. Plus the 404, which no route table yields.
+ */
+const ROUTES = [...servablePaths(), '/definitely-not-a-route'];
+
+test('covers every route the router serves', () => {
+  for (const path of servablePaths()) expect(ROUTES).toContain(path);
+});
 
 for (const route of ROUTES) {
   test(`axe: ${route}`, async ({ page }) => {
