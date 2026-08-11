@@ -6,7 +6,17 @@ import reactRefresh from 'eslint-plugin-react-refresh';
 
 export default tseslint.config(
   {
-    ignores: ['dist', 'coverage', 'playwright-report', 'test-results', 'public/fonts'],
+    // `.claude` holds agent scratch space, including checked-out git worktrees
+    // of this same repo — linting it reports the same file twice, from a path
+    // no override glob matches.
+    ignores: [
+      'dist',
+      'coverage',
+      'playwright-report',
+      'test-results',
+      'public/fonts',
+      '.claude',
+    ],
   },
   {
     files: ['**/*.{ts,tsx}'],

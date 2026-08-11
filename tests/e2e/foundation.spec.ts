@@ -1,6 +1,15 @@
 import { test, expect } from '@playwright/test';
+import { servablePaths } from '~/app/route-paths';
 
-const ROUTES = ['/study', '/exam', '/signs', '/progress', '/settings', '/gallery'];
+/**
+ * Derived from the route table, never hand-written. A literal list here once
+ * excluded `/gallery/focus` — the single route that overflowed at 320px — so
+ * the reflow test passed by omitting the only case that failed.
+ */
+const ROUTES = servablePaths();
+
+/** `/` is an alias of `/study`, so it shares that destination's title. */
+const INDEX_ALIAS = '/';
 
 test.describe('foundation', () => {
   test('every destination boots and carries a unique title', async ({ page }) => {
@@ -9,10 +18,21 @@ test.describe('foundation', () => {
       await page.goto(route);
       await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
       const title = await page.title();
-      expect(title).toContain('TN Drive');
-      titles.add(title);
+      expect(title, `${route} has no product title`).toContain('TN Drive');
+      if (route !== INDEX_ALIAS) titles.add(title);
     }
-    expect(titles.size).toBe(ROUTES.length);
+    expect(titles.size).toBe(ROUTES.filter((r) => r !== INDEX_ALIAS).length);
+
+    await page.goto(INDEX_ALIAS);
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    expect(await page.title()).toBe('Study · TN Drive');
+  });
+
+  test('covers every route the router serves', () => {
+    // The guard on the guard: if this list ever shrinks below the table, the
+    // sweeps above silently stop covering something.
+    expect(ROUTES).toContain('/gallery/focus');
+    expect(ROUTES.length).toBeGreaterThanOrEqual(8);
   });
 
   test('makes zero requests to any third-party origin (practices B2/B3/F5)', async ({ page }) => {
@@ -47,6 +67,19 @@ test.describe('foundation', () => {
       );
       expect(overflow, `${route} scrolls horizontally at 320px`).toBeLessThanOrEqual(0);
     }
+  });
+
+  test('keeps the focus-mode instruments whole at 320px, not clipped', async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 800 });
+    await page.goto('/gallery/focus');
+    // The timer is the last instrument in the bar and the first thing lost when
+    // the row refuses to reflow.
+    const timer = page.locator('.timer');
+    await expect(timer).toBeVisible();
+    const box = await timer.boundingBox();
+    expect(box).not.toBeNull();
+    expect(box!.x, 'the timer starts off the left edge').toBeGreaterThanOrEqual(0);
+    expect(box!.x + box!.width, 'the timer runs off the right edge').toBeLessThanOrEqual(320);
   });
 
   test('holds at 200% zoom without losing function', async ({ page }) => {

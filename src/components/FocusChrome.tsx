@@ -39,7 +39,7 @@ export function FocusChrome({
               <IconX size={16} />
               {exitLabel}
             </button>
-            <div className="row gap-2">
+            <div className="focusbar__instruments">
               {marker && <MileMarker index={marker.index} total={marker.total} />}
               {instruments}
             </div>

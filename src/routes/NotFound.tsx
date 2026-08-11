@@ -13,7 +13,7 @@ export function NotFound() {
           headingLevel={1}
           title="Wrong turn"
           body="There is nothing at that address. Everything you need is still here on the device."
-          signId="guide-destination"
+          signId="d1-1-destination"
           action={
             <Button variant="guide" to="/study">
               Back to studying

@@ -27,7 +27,7 @@ export function AppNav() {
   return (
     <>
       <Link className="railbrand" to="/study">
-        <SignSvg id="stop" size="sm" decorative />
+        <SignSvg id="r1-1-stop" size="sm" decorative />
         <strong>TN&nbsp;Drive</strong>
       </Link>
 

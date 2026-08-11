@@ -169,7 +169,7 @@ export function Gallery() {
         <Section
           id="signs"
           title="SignSvg"
-          note="P1 seed registry — hand-authored, spec-accurate geometry. P3 grows this to the ≥80 signs the floor requires. Every sign names its shape, colour and meaning; drill mode withholds the meaning."
+          note="Ids and descriptions come from src/content/signs.json, the 87-sign registry. P1 authors spec-accurate geometry for 13 of them; the other 74 render the plate below until P3 draws them. Every sign names its shape, colour and meaning; drill mode withholds the meaning."
         >
           <div className="flex flex-wrap gap-6">
             {allSigns.map((sign) => (
@@ -183,13 +183,17 @@ export function Gallery() {
             ))}
           </div>
           <Row label="Sizes">
-            <SignSvg id="stop" size="sm" decorative />
-            <SignSvg id="stop" decorative />
-            <SignSvg id="stop" size="lg" decorative />
-            <SignSvg id="stop" size="xl" decorative />
+            <SignSvg id="r1-1-stop" size="sm" decorative />
+            <SignSvg id="r1-1-stop" decorative />
+            <SignSvg id="r1-1-stop" size="lg" decorative />
+            <SignSvg id="r1-1-stop" size="xl" decorative />
           </Row>
           <Row label="Drill mode — the accessible name must not give away the answer">
-            <SignSvg id="school-crossing" size="hero" mode="drill" />
+            <SignSvg id="s1-1-school" size="hero" mode="drill" />
+          </Row>
+          <Row label="Registry sign, geometry pending — legible gap, never a blank">
+            <SignSvg id="r5-1-do-not-enter" size="lg" />
+            <SignSvg id="w13-1p-advisory-speed" size="lg" />
           </Row>
         </Section>
 
@@ -276,7 +280,7 @@ export function Gallery() {
             headingLevel={2}
             eyebrow="Adaptive session"
             topic="Sharing the road · School buses"
-            signId="school-crossing"
+            signId="s1-1-school"
             stem="You are driving on a four-lane road with a center turn lane. A school bus coming toward you stops and swings out its stop arm. What must you do?"
             announcement="Incorrect. The answer is A."
           >

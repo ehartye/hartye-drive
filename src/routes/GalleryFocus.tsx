@@ -45,7 +45,7 @@ export function GalleryFocus() {
       <QuestionCard
         eyebrow="Adaptive session"
         topic="Sharing the road · School buses"
-        signId="school-crossing"
+        signId="s1-1-school"
         stem="A school bus ahead of you stops, flashes its red lights and swings out its stop arm. What must you do?"
       >
         <ChoiceRow letter="A">Stop, and stay stopped until the stop arm folds in.</ChoiceRow>

@@ -1,10 +1,16 @@
 /**
- * Hand-authored MUTCD geometry. No clipart and no photography anywhere in this
- * product (grounding §2 signature). See `registry.ts` for the rules these obey
- * and for the note that P3 owns growing this seed to ≥80 entries.
+ * Hand-authored MUTCD geometry, **keyed by registry id**. No clipart and no
+ * photography anywhere in this product (grounding §2 signature).
+ *
+ * This file holds geometry only. Everything that *describes* a sign — MUTCD
+ * designation, name, category, shape, colours, meaning, citation — comes from
+ * `src/content/signs.json`, the single source of truth. See `registry.ts`.
+ *
+ * P1 draws 13 of the registry's 87. P3 draws the rest; every id below must
+ * already exist in the registry, which `geometry.test.ts` enforces.
  */
-import type { SignEntry } from './registry';
-import { MUTCD_COLORS as C } from './registry';
+import type { SignEntry, SignFace, SignGeometry } from './registry';
+import { MUTCD_COLORS as C, SIGN_REGISTRY } from './registry';
 
 const OCT = '29.3,0 70.7,0 100,29.3 100,70.7 70.7,100 29.3,100 0,70.7 0,29.3';
 const DIA = '50,1 99,50 50,99 1,50';
@@ -27,15 +33,12 @@ const warningDiamond = (fill: string) => (
 
 const LEGEND = { fontFamily: "'Overpass', sans-serif", fontWeight: 800, textAnchor: 'middle' } as const;
 
-const entries: SignEntry[] = [
-  {
-    id: 'stop',
-    mutcd: 'R1-1',
-    name: 'Stop',
-    category: 'regulatory',
-    shape: 'Octagon',
-    color: 'red',
-    meaning: 'stop completely before the stop line',
+/**
+ * Geometry, keyed by `src/content/signs.json` id. Nothing here restates what
+ * the registry already says.
+ */
+const geometry: Readonly<Record<string, SignGeometry>> = {
+  'r1-1-stop': {
     palette: [C.red, C.white],
     viewBox: '0 0 100 100',
     draw: () => (
@@ -54,14 +57,7 @@ const entries: SignEntry[] = [
       </>
     ),
   },
-  {
-    id: 'yield',
-    mutcd: 'R1-2',
-    name: 'Yield',
-    category: 'regulatory',
-    shape: 'Downward triangle',
-    color: 'white with a red border',
-    meaning: 'slow down and give way to traffic and pedestrians ahead',
+  'r1-2-yield': {
     palette: [C.red, C.white],
     viewBox: '0 0 100 100',
     // A red field with a white legend is the INVERSE of the real sign.
@@ -75,14 +71,7 @@ const entries: SignEntry[] = [
       </>
     ),
   },
-  {
-    id: 'speed-limit',
-    mutcd: 'R2-1',
-    name: 'Speed limit',
-    category: 'regulatory',
-    shape: 'Vertical rectangle',
-    color: 'white with black legend',
-    meaning: 'the maximum legal speed in ideal conditions',
+  'r2-1-speed-limit': {
     palette: [C.white, C.black],
     viewBox: '0 0 76 96',
     aspect: 'tall',
@@ -120,14 +109,7 @@ const entries: SignEntry[] = [
       </>
     ),
   },
-  {
-    id: 'no-passing-zone',
-    mutcd: 'W14-3',
-    name: 'No passing zone',
-    category: 'warning',
-    shape: 'Pennant',
-    color: 'yellow',
-    meaning: 'you are entering a no-passing zone; it is mounted on the left shoulder',
+  'w14-3-no-passing-zone': {
     palette: [C.yellow, C.black],
     viewBox: '0 0 100 100',
     draw: () => (
@@ -153,14 +135,7 @@ const entries: SignEntry[] = [
       </>
     ),
   },
-  {
-    id: 'curve-right',
-    mutcd: 'W1-2',
-    name: 'Curve',
-    category: 'warning',
-    shape: 'Diamond',
-    color: 'yellow',
-    meaning: 'the road ahead curves; slow to a safe speed before you reach it',
+  'w1-2-curve': {
     palette: [C.yellow, C.black],
     viewBox: '0 0 100 100',
     draw: () => (
@@ -178,14 +153,7 @@ const entries: SignEntry[] = [
       </>
     ),
   },
-  {
-    id: 'signal-ahead',
-    mutcd: 'W3-3',
-    name: 'Signal ahead',
-    category: 'warning',
-    shape: 'Diamond',
-    color: 'yellow',
-    meaning: 'a traffic signal is ahead, often out of sight; be ready to stop',
+  'w3-3-signal-ahead': {
     palette: [C.yellow, C.black, C.red, '#1FA05F'],
     viewBox: '0 0 100 100',
     draw: () => (
@@ -198,14 +166,7 @@ const entries: SignEntry[] = [
       </>
     ),
   },
-  {
-    id: 'pedestrian-crossing',
-    mutcd: 'W11-2',
-    name: 'Pedestrian crossing',
-    category: 'warning',
-    shape: 'Diamond',
-    color: 'fluorescent yellow-green',
-    meaning: 'people on foot may be crossing ahead; yield to them',
+  'w11-2-pedestrian': {
     palette: [C.fluorescentYellowGreen, C.black],
     viewBox: '0 0 100 100',
     draw: () => (
@@ -219,14 +180,7 @@ const entries: SignEntry[] = [
       </>
     ),
   },
-  {
-    id: 'school-crossing',
-    mutcd: 'S1-1',
-    name: 'School zone / school crossing',
-    category: 'school',
-    shape: 'Pentagon',
-    color: 'fluorescent yellow-green',
-    meaning: 'a school zone or school crossing is ahead; watch for children',
+  's1-1-school': {
     palette: [C.fluorescentYellowGreen, C.black],
     viewBox: '0 0 100 100',
     // Fluorescent yellow-green, never pink. Pink is incident management.
@@ -253,14 +207,7 @@ const entries: SignEntry[] = [
       </>
     ),
   },
-  {
-    id: 'rr-advance',
-    mutcd: 'W10-1',
-    name: 'Railroad advance warning',
-    category: 'railroad',
-    shape: 'Circle',
-    color: 'yellow',
-    meaning: 'a railroad crosses the road ahead; slow, look and listen',
+  'w10-1-railroad-advance': {
     palette: [C.yellow, C.black],
     viewBox: '0 0 100 100',
     // An X, never a +.
@@ -278,14 +225,7 @@ const entries: SignEntry[] = [
       </>
     ),
   },
-  {
-    id: 'crossbuck',
-    mutcd: 'R15-1',
-    name: 'Crossbuck',
-    category: 'railroad',
-    shape: 'Two crossed blades (an X)',
-    color: 'white with black legend',
-    meaning: 'you are at the crossing itself; yield to any train',
+  'r15-1-crossbuck': {
     palette: [C.white, C.black],
     viewBox: '0 0 100 100',
     draw: () => (
@@ -350,14 +290,7 @@ const entries: SignEntry[] = [
       </>
     ),
   },
-  {
-    id: 'road-work-ahead',
-    mutcd: 'W20-1',
-    name: 'Road work ahead',
-    category: 'construction',
-    shape: 'Diamond',
-    color: 'orange',
-    meaning: 'a work zone begins ahead; expect workers, equipment and lower speeds',
+  'w20-1-road-work-ahead': {
     palette: [C.orange, C.black],
     viewBox: '0 0 100 100',
     draw: () => (
@@ -375,14 +308,7 @@ const entries: SignEntry[] = [
       </>
     ),
   },
-  {
-    id: 'guide-destination',
-    mutcd: 'D1-1',
-    name: 'Destination guide sign',
-    category: 'guide',
-    shape: 'Horizontal rectangle',
-    color: 'green',
-    meaning: 'where this road goes and how far it is',
+  'd1-1-destination': {
     palette: [C.green, C.white],
     viewBox: '0 0 140 100',
     aspect: 'wide',
@@ -411,14 +337,7 @@ const entries: SignEntry[] = [
       </>
     ),
   },
-  {
-    id: 'motorist-services',
-    mutcd: 'D9-2',
-    name: 'Hospital / motorist services',
-    category: 'services',
-    shape: 'Square',
-    color: 'blue',
-    meaning: 'a motorist service — here, a hospital — is available at this exit',
+  'd9-2-hospital': {
     palette: [C.blue, C.white],
     viewBox: '0 0 100 100',
     draw: () => (
@@ -438,12 +357,26 @@ const entries: SignEntry[] = [
       </>
     ),
   },
-];
+};
 
-export const SIGNS: ReadonlyMap<string, SignEntry> = new Map(entries.map((e) => [e.id, e]));
+/** Registry ids P1 has drawn. P3 grows this to cover the whole registry. */
+export const SIGN_GEOMETRY: ReadonlyMap<string, SignGeometry> = new Map(Object.entries(geometry));
 
-export const allSigns: readonly SignEntry[] = entries;
-
-export function getSign(id: string): SignEntry | undefined {
-  return SIGNS.get(id);
+/**
+ * Resolve a sign by registry id.
+ *
+ * Returns `undefined` only when the id is not in the registry at all — that is
+ * a content bug. A registry id with no geometry yet resolves to a face whose
+ * `geometry` is `undefined`, which `SignSvg` renders as a visible placeholder.
+ */
+export function getSign(id: string): SignFace | undefined {
+  const entry = SIGN_REGISTRY.get(id);
+  if (!entry) return undefined;
+  return { entry, geometry: SIGN_GEOMETRY.get(id) };
 }
+
+/** The registry entries P1 can actually draw — what the gallery contact-sheets. */
+export const allSigns: readonly SignEntry[] = [...SIGN_GEOMETRY.keys()].flatMap((id) => {
+  const entry = SIGN_REGISTRY.get(id);
+  return entry ? [entry] : [];
+});

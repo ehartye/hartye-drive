@@ -18,7 +18,7 @@ export interface EmptyStateProps {
 export function EmptyState({
   title,
   body,
-  signId = 'guide-destination',
+  signId = 'd1-1-destination',
   action,
   headingLevel = 2,
 }: EmptyStateProps) {
@@ -64,7 +64,7 @@ export function ErrorState({
   const Heading = headingLevel === 1 ? 'h1' : 'h2';
   return (
     <div className="state" role="alert">
-      <SignSvg id="curve-right" size="lg" decorative />
+      <SignSvg id="w1-2-curve" size="lg" decorative />
       <Heading className="mt-4">{title}</Heading>
       <p className="dim">{body}</p>
       {detail && <p className="faint text-[0.75rem] font-mono mb-5">{detail}</p>}

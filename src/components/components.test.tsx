@@ -44,42 +44,59 @@ const inRouter = (ui: ReactElement) => render(<MemoryRouter>{ui}</MemoryRouter>)
 /* ------------------------------------------------------------------ SignSvg */
 
 describe('SignSvg (grounding §5 A8)', () => {
-  it('names the sign by shape AND colour AND meaning', () => {
-    render(<SignSvg id="stop" />);
-    expect(screen.getByRole('img')).toHaveAccessibleName(
-      'Octagon, red — stop completely before the stop line',
-    );
+  it('names the sign by shape AND colour AND meaning, all from the registry', () => {
+    render(<SignSvg id="r1-1-stop" />);
+    const name = screen.getByRole('img').getAttribute('aria-label') ?? '';
+    expect(name).toMatch(/^Octagon, red — /);
+    expect(name).toMatch(/complete stop/);
   });
 
   it('withholds the meaning in drill mode, but is never nameless', () => {
-    render(<SignSvg id="stop" mode="drill" />);
+    render(<SignSvg id="r1-1-stop" mode="drill" />);
     const name = screen.getByRole('img').getAttribute('aria-label') ?? '';
     expect(name).toBe('Octagon, red');
-    expect(name).not.toMatch(/stop completely/);
+    expect(name).not.toMatch(/complete stop/);
+  });
+
+  it('shows a named, legible plate for a registry sign P3 has not drawn yet', () => {
+    // R5-1 is in signs.json with no geometry yet: it must not render as a blank.
+    const { container } = render(<SignSvg id="r5-1-do-not-enter" />);
+    const svg = container.querySelector('svg');
+    expect(svg).toHaveAttribute('data-pending-sign', 'R5-1');
+    expect(svg?.textContent).toContain('art pending');
+    expect(svg?.textContent).toContain('R5-1');
+    // Still fully named — the registry knows shape, colour and meaning.
+    expect(screen.getByRole('img').getAttribute('aria-label')).toMatch(/^\w.*, \w.* — .+/);
+  });
+
+  it('flags an id the registry does not carry instead of hiding it', () => {
+    const { container } = render(<SignSvg id="not-a-registry-id" />);
+    expect(container.querySelector('svg')).toHaveAttribute('data-missing-sign', 'not-a-registry-id');
+    expect(screen.queryByRole('img')).toBeNull();
   });
 
   it('is hidden from assistive tech when purely decorative', () => {
-    const { container } = render(<SignSvg id="stop" decorative />);
+    const { container } = render(<SignSvg id="r1-1-stop" decorative />);
     expect(screen.queryByRole('img')).toBeNull();
     expect(container.querySelector('svg')).toHaveAttribute('aria-hidden', 'true');
   });
 
   it('renders the school warning sign in fluorescent yellow-green, never pink', () => {
-    const { container } = render(<SignSvg id="school-crossing" decorative />);
+    const { container } = render(<SignSvg id="s1-1-school" decorative />);
     const markup = container.innerHTML.toLowerCase();
     expect(markup).toContain('#c7ea00');
     expect(markup).not.toContain('#ee5fa7');
   });
 
   it('renders YIELD as a white face with a red border, not the inverse', () => {
-    const { container } = render(<SignSvg id="yield" decorative />);
+    const { container } = render(<SignSvg id="r1-2-yield" decorative />);
     const polys = [...container.querySelectorAll('polygon')].map((p) => p.getAttribute('fill'));
     expect(polys).toContain('#F2F4F1');
     expect(polys).toContain('#B4151C');
   });
 
   it('takes a size class so the sign can dominate a drill screen', () => {
-    const { container } = render(<SignSvg id="stop" size="hero" decorative />);
+    const { container } = render(<SignSvg id="r1-1-stop" size="hero" decorative />);
     expect(container.querySelector('svg')).toHaveClass('sign', 'sign--hero');
   });
 });

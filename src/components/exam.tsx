@@ -94,7 +94,7 @@ export function VerdictSign({ variant, score, outOf }: VerdictSignProps) {
 
   return (
     <div className="grid justify-items-center gap-4">
-      {variant === 'halted' && <SignSvg id="stop" size="xl" decorative />}
+      {variant === 'halted' && <SignSvg id="r1-1-stop" size="xl" decorative />}
       <div className={`plaque plaque--${variant}`} role="img" aria-label={name}>
         <div className="plaque__face">
           <p className="plaque__legend" aria-hidden="true">
