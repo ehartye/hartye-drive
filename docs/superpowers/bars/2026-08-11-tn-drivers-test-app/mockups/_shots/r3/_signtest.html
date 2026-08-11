@@ -1,0 +1,26 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>sign audit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Overpass:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+ body{background:#14161A;color:#F2F4F1;font-family:'Overpass',sans-serif;margin:0;padding:16px}
+ .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+ figure{margin:0;background:#1C1F25;padding:10px;border-radius:6px;text-align:center}
+ figcaption{font-size:12px;margin-top:6px;color:#9BA3AE;word-break:break-all}
+ .big{width:230px;height:230px}
+ .bigw{width:280px;height:200px}
+ .white{background:#F2F4F1}
+</style></head>
+<body>
+<div class="grid" id="g"></div>
+<script src="../../_signs.js"></script>
+<script>
+ const ids=['sg-stop','sg-yield','sg-warn','sg-curve','sg-merge','sg-signal','sg-slippery','sg-deer','sg-ped','sg-rr-advance','sg-crossbuck','sg-school','sg-workzone','sg-donotenter','sg-wrongway','sg-oneway','sg-noturn','sg-guide','sg-guide-blank','sg-services','sg-nopassing'];
+ const g=document.getElementById('g');
+ ids.forEach(id=>{
+   const wide = id.indexOf('guide')>-1;
+   g.insertAdjacentHTML('beforeend',
+    '<figure><svg class="'+(wide?'bigw':'big')+'"><use href="#'+id+'"/></svg><figcaption>#'+id+'</figcaption></figure>');
+ });
+</script>
+</body></html>

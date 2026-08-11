@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup 02c — Dashboard (loading)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,300..900&family=Overpass+Mono:wght@300..700&family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="_base.css">
+<style>
+  /* The skeleton is the populated dashboard with its words removed.
+     Every box below is the exact size of the thing that replaces it,
+     so nothing moves when the data lands. */
+
+  /* `.sr-only` and `.skel--onsign` live in _base.css and are not redefined here. */
+
+  /* ---- AppNav owns the brand block (grounding §3) ----
+     At ≥1024px the nav becomes a side rail and _base.css reserves 5.5rem at
+     its head for the brand. Fill that space, and never render the brand in
+     the page header — the header is the page's, the brand is the nav's.
+     Matches 02f-dashboard-desktop.html exactly. */
+  @media (min-width: 1024px) {
+    .railbrand {
+      position: fixed; top: 0; left: 0; z-index: 31;
+      width: 232px; height: 5.5rem;
+      display: flex; align-items: center; gap: .6rem;
+      padding: 0 1.25rem;
+      background: var(--asphalt-sunk);
+      border-right: 1px solid var(--shoulder);
+      border-bottom: 1px solid var(--shoulder);
+    }
+  }
+  @media (max-width: 1023px) { .railbrand { display: none; } }
+
+  /* The app-bar pattern (.appbar__lead / __title / __sub) lives in _base.css
+     and is not redefined here. */
+
+  /* ---- signature guide sign: frame is chrome, values are pending ---- */
+  .guidesign {
+    position: relative;
+    background: var(--guide);
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.45);
+    overflow: hidden;
+  }
+  .guidesign::after {
+    content:''; position:absolute; inset:0; opacity:.13; pointer-events:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='80' height='80' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .guidesign::before {
+    content:''; position:absolute; inset:0; pointer-events:none;
+    background: radial-gradient(130% 100% at 8% -20%, rgba(255,255,255,.14), rgba(255,255,255,0) 58%);
+  }
+  .guidesign__face {
+    position: relative; z-index: 1;
+    border: 2.5px solid var(--sign-white);
+    border-radius: 6px;
+    padding: 1.15rem 1.15rem 1.25rem;
+  }
+  .guidesign__dest {
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    padding: .6rem 0; min-height: 41px;
+    border-bottom: 1px solid rgba(242,244,241,.22);
+  }
+  .guidesign__dest:last-of-type { border-bottom: 0; padding-bottom: 0; }
+
+  .readout { display: flex; align-items: center; gap: 1.15rem; }
+
+  .weakrow {
+    display: flex; align-items: center; gap: .875rem;
+    padding: .8rem .9rem; min-height: 66px;
+    background: var(--asphalt-raised);
+    border: 1px solid var(--shoulder);
+    border-left: 3px solid var(--shoulder-lit);
+    border-radius: var(--r);
+  }
+  .weak { display: grid; gap: .625rem; }
+
+  /* skeleton sizing helpers — one class per real element it stands in for */
+  .s-line { height: 12px; border-radius: 999px; }
+  .s-line--lg { height: 30px; }
+  .s-line--md { height: 16px; }
+  .s-sign { width: 36px; height: 36px; border-radius: 4px; flex: none; }
+  .s-speed { width: 76px; height: 96px; border-radius: 4px; flex: none; }
+  .s-btn { height: 48px; border-radius: var(--r); }
+  .s-shield { width: 62px; height: 58px; border-radius: 6px; flex: none; }
+  .s-day { width: 26px; height: 26px; border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<div class="mock-label">Mockup 02c · Dashboard · loading skeleton · matrix cell 2-loading · 390×844 mobile</div>
+
+<div class="railbrand">
+  <svg class="sign sign--sm" role="img" aria-label="Red octagonal stop sign"><use href="#sg-stop"/></svg>
+  <strong style="letter-spacing:-.02em;font-size:1.0625rem">TN&nbsp;Drive</strong>
+</div>
+
+<header class="appbar">
+  <div class="row appbar__lead">
+    <strong class="appbar__title">Study</strong>
+    <span class="dim appbar__sub">Class D knowledge test · loading your progress</span>
+  </div>
+  <span class="badge badge--offline" title="Everything works without a connection">Offline ready</span>
+</header>
+
+<main class="wrap stack" style="padding-top:1.5rem" aria-busy="true">
+
+  <p class="sr-only" role="status">Loading your progress.</p>
+
+  <!-- HERO -->
+  <section class="readout" aria-hidden="true">
+    <div class="skel s-speed"></div>
+    <div style="flex:1;min-width:0">
+      <div class="skel s-line" style="width:52%;height:11px"></div>
+      <div class="skel s-line s-line--lg" style="width:88%;margin-top:.6rem"></div>
+      <div class="skel s-line" style="width:70%;height:14px;margin-top:.55rem"></div>
+    </div>
+  </section>
+
+  <!-- SIGNATURE guide sign: the plate is real, the three readings are pending -->
+  <section class="guidesign" aria-hidden="true">
+    <div class="guidesign__face">
+      <div class="skel skel--onsign s-line" style="width:44%;height:10px;margin-bottom:.5rem"></div>
+      <div class="guidesign__dest">
+        <div class="skel skel--onsign s-line s-line--md" style="width:48%"></div>
+        <div class="skel skel--onsign s-line s-line--md" style="width:64px"></div>
+      </div>
+      <div class="guidesign__dest">
+        <div class="skel skel--onsign s-line s-line--md" style="width:54%"></div>
+        <div class="skel skel--onsign s-line s-line--md" style="width:64px"></div>
+      </div>
+      <div class="guidesign__dest">
+        <div class="skel skel--onsign s-line s-line--md" style="width:44%"></div>
+        <div class="skel skel--onsign s-line s-line--md" style="width:56px"></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="skel s-btn" aria-hidden="true"></div>
+  <div class="skel s-line" aria-hidden="true" style="width:58%;height:11px;margin:.5rem auto 0"></div>
+
+  <hr class="centreline">
+
+  <!-- WEAK TOPICS -->
+  <section aria-hidden="true">
+    <div class="spread" style="margin-bottom:.875rem">
+      <div class="skel s-line s-line--lg" style="width:44%;height:22px"></div>
+      <div class="skel s-sign"></div>
+    </div>
+    <div class="weak">
+      <div class="weakrow">
+        <div class="skel s-sign"></div>
+        <div style="flex:1;min-width:0">
+          <div class="skel s-line" style="width:58%;height:13px"></div>
+          <div class="skel s-line" style="width:76%;height:10px;margin-top:.4rem"></div>
+        </div>
+        <div class="skel s-line" style="width:34px;height:13px"></div>
+      </div>
+      <div class="weakrow">
+        <div class="skel s-sign"></div>
+        <div style="flex:1;min-width:0">
+          <div class="skel s-line" style="width:68%;height:13px"></div>
+          <div class="skel s-line" style="width:64%;height:10px;margin-top:.4rem"></div>
+        </div>
+        <div class="skel s-line" style="width:34px;height:13px"></div>
+      </div>
+      <div class="weakrow">
+        <div class="skel s-sign"></div>
+        <div style="flex:1;min-width:0">
+          <div class="skel s-line" style="width:46%;height:13px"></div>
+          <div class="skel s-line" style="width:72%;height:10px;margin-top:.4rem"></div>
+        </div>
+        <div class="skel s-line" style="width:34px;height:13px"></div>
+      </div>
+      <div class="weakrow">
+        <div class="skel s-sign"></div>
+        <div style="flex:1;min-width:0">
+          <div class="skel s-line" style="width:40%;height:13px"></div>
+          <div class="skel s-line" style="width:70%;height:10px;margin-top:.4rem"></div>
+        </div>
+        <div class="skel s-line" style="width:34px;height:13px"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXAM CTA -->
+  <section class="panel panel--flat" aria-hidden="true">
+    <div class="spread" style="align-items:flex-start">
+      <div style="flex:1">
+        <div class="skel s-line" style="width:46%;height:10px"></div>
+        <div class="skel s-line" style="width:62%;height:16px;margin-top:.5rem"></div>
+        <div class="skel s-line" style="width:96%;height:12px;margin-top:.6rem"></div>
+        <div class="skel s-line" style="width:88%;height:12px;margin-top:.4rem"></div>
+        <div class="skel s-line" style="width:74%;height:12px;margin-top:.4rem"></div>
+      </div>
+      <div class="skel s-shield"></div>
+    </div>
+    <div class="skel s-btn" style="margin-top:1rem"></div>
+  </section>
+
+  <!-- STREAK -->
+  <section class="panel panel--flat" aria-hidden="true">
+    <div class="spread" style="margin-bottom:.875rem">
+      <div style="flex:1">
+        <div class="skel s-line" style="width:36%;height:10px"></div>
+        <div class="skel s-line" style="width:52%;height:12px;margin-top:.5rem"></div>
+      </div>
+      <div class="skel s-line" style="width:24px;height:26px"></div>
+    </div>
+    <div class="row" style="gap:.75rem;flex-wrap:wrap">
+      <div class="skel s-day"></div><div class="skel s-day"></div>
+      <div class="skel s-day"></div><div class="skel s-day"></div>
+      <div class="skel s-day"></div><div class="skel s-day"></div>
+      <div class="skel s-day"></div>
+    </div>
+  </section>
+
+  <div aria-hidden="true" style="margin-top:1.5rem">
+    <div class="skel s-line" style="width:82%;height:10px;margin:0 auto"></div>
+    <div class="skel s-line" style="width:60%;height:10px;margin:.45rem auto 0"></div>
+  </div>
+
+</main>
+
+<nav class="nav" aria-label="Main">
+  <a href="#" aria-current="page">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10 12 3l8 7v10a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg>
+    Study
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v6h6M9 14l2 2 4-4"/></svg>
+    Exam
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2 22 12 12 22 2 12z"/><path d="M12 8v4M12 16h.01"/></svg>
+    Signs
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+    Progress
+  </a>
+</nav>
+
+<script src="_signs.js"></script>
+</body>
+</html>

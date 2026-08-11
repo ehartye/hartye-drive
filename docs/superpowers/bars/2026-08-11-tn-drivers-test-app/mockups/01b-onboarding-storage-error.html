@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup 01b — Onboarding (storage unavailable)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,300..900&family=Overpass+Mono:wght@300..700&family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="_base.css">
+<style>
+  /* No bottom nav on first run — nothing to navigate to yet. */
+  body { padding-bottom: 2.5rem; }
+
+  /* A caution diamond, not an octagon: this is recoverable, so it warns. */
+  .caution { display: flex; align-items: flex-start; gap: 1rem; }
+  .caution h1 { font-size: 1.6rem; margin-bottom: .4rem; }
+
+  /* Two honest columns: what stops working, what does not. */
+  .ledger { display: grid; gap: .75rem; }
+  @media (min-width: 560px) { .ledger { grid-template-columns: 1fr 1fr; } }
+  .ledger h3 { font-size: .9375rem; margin-bottom: .6rem; }
+  .ledger ul { list-style: none; margin: 0; padding: 0; display: grid; gap: .5rem; }
+  .ledger li { display: flex; gap: .55rem; align-items: flex-start; font-size: .875rem; line-height: 1.45; }
+  .ledger li svg { flex: none; width: 16px; height: 16px; margin-top: .18rem; }
+  .lose svg { color: var(--stop-lit); }
+  .keep svg { color: var(--guide-lit); }
+  .lose li { color: var(--sign-dim); }
+
+  /* Carried-forward answers — the choices from the previous screen survive. */
+  .carried {
+    display: flex; flex-wrap: wrap; gap: .5rem .875rem;
+    font-family: var(--mono); font-size: .75rem; letter-spacing: .04em;
+    color: var(--sign-dim);
+  }
+  .carried b { color: var(--sign-white); font-weight: 700; }
+
+  details.how { border-top: 1px solid var(--shoulder); padding-top: .875rem; margin-top: 1.125rem; }
+  details.how summary {
+    display: flex; align-items: center; gap: .5rem;
+    min-height: 44px; cursor: pointer;
+    font-size: .9375rem; font-weight: 700; color: var(--route-text);
+    list-style: none;
+  }
+  details.how summary::-webkit-details-marker { display: none; }
+  details.how summary::after {
+    content: ''; width: 8px; height: 8px; margin-left: auto;
+    border-right: 2px solid currentColor; border-bottom: 2px solid currentColor;
+    transform: rotate(45deg); transition: transform .15s ease;
+  }
+  details.how[open] summary::after { transform: rotate(-135deg); }
+  details.how ol { margin: .25rem 0 0; padding-left: 1.15rem; }
+  details.how li { margin-bottom: .5rem; }
+
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+</style>
+</head>
+<body>
+
+<div class="mock-label">Mockup 01b · Onboarding · error (storage unavailable) · matrix cell 1-error · 390×844 mobile</div>
+
+<main class="wrap stack" style="padding-top:1.75rem">
+
+  <div class="row" style="gap:.6rem">
+    <svg class="sign sign--sm" role="img" aria-label="Red octagonal stop sign"><use href="#sg-stop"/></svg>
+    <strong style="letter-spacing:-.02em;font-size:1.0625rem">TN&nbsp;Drive</strong>
+  </div>
+
+  <section class="caution" role="alert">
+    <svg class="sign sign--lg" role="img" aria-label="Yellow diamond warning sign"><use href="#sg-warn"/></svg>
+    <div>
+      <p class="eyebrow eyebrow--warning">Storage unavailable</p>
+      <h1>This browser won't let the app save</h1>
+    </div>
+  </section>
+
+  <p class="read" style="margin:0">
+    Private browsing, a full storage quota, or a blocked site-data setting is
+    stopping TN&nbsp;Drive from writing to this device. Nothing is broken and
+    nothing was lost — you have not answered anything yet. You can study right
+    now in session-only mode, or fix storage and keep your progress.
+  </p>
+
+  <section class="panel panel--flat">
+    <p class="eyebrow" style="margin-bottom:.6rem">Your answers so far</p>
+    <p class="carried">
+      <span>Studying for <b>Class D knowledge test</b></span>
+      <span>Test date <b>Sep 12, 2026</b></span>
+    </p>
+    <p class="dim" style="margin:.75rem 0 0;font-size:.8125rem">Kept for this session either way.</p>
+  </section>
+
+  <div class="ledger">
+    <div class="panel panel--flat lose">
+      <h3>Session-only mode drops</h3>
+      <ul>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>Your study streak</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>Which topics you're weak on</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>Resuming after you close the tab</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>Past exam scores</li>
+      </ul>
+    </div>
+    <div class="panel panel--flat keep">
+      <h3>Everything else still works</h3>
+      <ul>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 13l4 4 10-10"/></svg>All 420 practice questions</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 13l4 4 10-10"/></svg>All 84 road signs</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 13l4 4 10-10"/></svg>Full 30-question mock exams</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 13l4 4 10-10"/></svg>Every manual citation</li>
+      </ul>
+    </div>
+  </div>
+
+  <div>
+    <a class="btn btn--guide btn--block" href="02-dashboard-populated.html" style="font-size:1.0625rem">
+      Continue in session-only mode
+    </a>
+    <button class="btn btn--quiet btn--block" type="button" style="margin-top:.75rem">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg>
+      Check storage again
+    </button>
+  </div>
+  <p class="dim" style="text-align:center;margin:.5rem 0 0;font-size:.8125rem">
+    Progress is kept until you close this tab.
+  </p>
+
+  <section class="panel panel--flat" style="padding-top:.25rem">
+    <details class="how">
+      <summary>How to let the app save<span class="sr-only"> — step-by-step</span></summary>
+      <ol class="read" style="font-size:.9375rem">
+        <li><b>Safari, private tab:</b> open the same page in a normal tab. Private tabs block site storage on purpose.</li>
+        <li><b>Chrome or Edge:</b> Settings → Privacy → Site settings → Cookies and site data, and allow it for this site.</li>
+        <li><b>Storage full:</b> clear space in Settings → Storage, then tap Check storage again.</li>
+      </ol>
+      <p class="dim" style="font-size:.8125rem;margin:.5rem 0 0">
+        The app needs about 3&nbsp;MB and asks for nothing else.
+      </p>
+    </details>
+  </section>
+
+  <p class="faint" style="font-size:.75rem;text-align:center;margin:1.25rem 0 0;line-height:1.5">
+    Questions cite the Tennessee Comprehensive Driver License Manual.<br>
+    Not affiliated with the State of Tennessee.
+  </p>
+
+</main>
+
+<script src="_signs.js"></script>
+</body>
+</html>

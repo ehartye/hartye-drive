@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup 02d — Dashboard (saved progress unreadable)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,300..900&family=Overpass+Mono:wght@300..700&family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="_base.css">
+<style>
+  /* ---- AppNav owns the brand block (grounding §3) ----
+     At ≥1024px the nav becomes a side rail and _base.css reserves 5.5rem at
+     its head for the brand. Fill that space, and never render the brand in
+     the page header — the header is the page's, the brand is the nav's.
+     Matches 02f-dashboard-desktop.html exactly. */
+  @media (min-width: 1024px) {
+    .railbrand {
+      position: fixed; top: 0; left: 0; z-index: 31;
+      width: 232px; height: 5.5rem;
+      display: flex; align-items: center; gap: .6rem;
+      padding: 0 1.25rem;
+      background: var(--asphalt-sunk);
+      border-right: 1px solid var(--shoulder);
+      border-bottom: 1px solid var(--shoulder);
+    }
+  }
+  @media (max-width: 1023px) { .railbrand { display: none; } }
+
+  /* The app-bar pattern (.appbar__lead / __title / __sub) lives in _base.css
+     and is not redefined here. */
+
+  /* The octagon appears exactly once, on the one thing that has stopped. */
+  .halt { display: flex; align-items: flex-start; gap: 1rem; }
+  .halt h1 { font-size: 1.6rem; margin-bottom: .4rem; }
+
+  /* Diagnostics read like a mile-post plate: numbers, no adjectives. */
+  .diag { margin: 0; display: grid; gap: 0; }
+  .diag > div {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 1rem;
+    padding: .55rem 0; border-bottom: 1px solid var(--shoulder);
+  }
+  .diag > div:last-child { border-bottom: 0; padding-bottom: 0; }
+  .diag dt { font-size: .8125rem; color: var(--sign-dim); }
+  .diag dd {
+    margin: 0; font-family: var(--mono); font-size: .8125rem; font-weight: 700;
+    font-variant-numeric: tabular-nums; text-align: right;
+  }
+  .diag dd.flag { color: var(--warning); }
+
+  .fix { display: grid; gap: .75rem; }
+  .fix__note { margin: .5rem 0 0; font-size: .8125rem; color: var(--sign-dim); line-height: 1.5; }
+
+  .danger-zone {
+    border-top: 1px solid var(--shoulder);
+    margin-top: 1.25rem; padding-top: 1.125rem;
+  }
+  .keeps { display: flex; flex-wrap: wrap; gap: .5rem; margin: .875rem 0 0; padding: 0; list-style: none; }
+  .keeps li {
+    display: inline-flex; align-items: center; gap: .35rem;
+    padding: .3rem .6rem; border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--guide-lit) 50%, transparent);
+    color: var(--guide-lit);
+    font-size: .6875rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+
+<div class="mock-label">Mockup 02d · Dashboard · error (corrupt / future-version save) · matrix cell 2-error · 390×844 mobile</div>
+
+<div class="railbrand">
+  <svg class="sign sign--sm" role="img" aria-label="Red octagonal stop sign"><use href="#sg-stop"/></svg>
+  <strong style="letter-spacing:-.02em;font-size:1.0625rem">TN&nbsp;Drive</strong>
+</div>
+
+<header class="appbar">
+  <div class="row appbar__lead">
+    <strong class="appbar__title">Study</strong>
+    <span class="dim appbar__sub">Class D knowledge test · saved progress unreadable</span>
+  </div>
+  <span class="badge badge--offline" title="Everything works without a connection">Offline ready</span>
+</header>
+
+<main class="wrap stack" style="padding-top:1.5rem">
+
+  <section class="halt" role="alert">
+    <svg class="sign sign--lg" role="img" aria-label="Red octagonal stop sign — a full stop"><use href="#sg-stop"/></svg>
+    <div>
+      <p class="eyebrow eyebrow--stop">Saved progress halted</p>
+      <h1>Your saved progress can't be read</h1>
+    </div>
+  </section>
+
+  <p class="read" style="margin:0">
+    The saved file was written by a newer version of TN&nbsp;Drive than the one
+    running here, so this build won't touch it — reading it wrong would be worse
+    than not reading it. Your 248 answers are still on the device, exactly as
+    they were. Nothing has been deleted.
+  </p>
+
+  <section class="panel panel--stop">
+    <p class="eyebrow eyebrow--stop" style="margin-bottom:.6rem">What's on the device</p>
+    <dl class="diag">
+      <div><dt>Saved file version</dt><dd class="flag">schema 7</dd></div>
+      <div><dt>This app reads up to</dt><dd>schema 6</dd></div>
+      <div><dt>Answers held</dt><dd>248</dd></div>
+      <div><dt>Last written</dt><dd>Aug 9, 2026 · 21:14</dd></div>
+      <div><dt>Size</dt><dd>212 KB of 5 MB</dd></div>
+    </dl>
+  </section>
+
+  <section>
+    <h2 style="margin-bottom:.875rem">Pick one</h2>
+    <div class="fix">
+      <button class="btn btn--guide btn--block" type="button">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg>
+        Update the app and reopen
+      </button>
+      <p class="fix__note" style="margin-top:-.25rem">
+        Most likely fix. A newer version of the app is already installed on this
+        device; loading it will read the file and put your progress back.
+      </p>
+      <button class="btn btn--quiet btn--block" type="button" style="margin-top:.25rem">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M12 3v12M8 11l4 4 4-4"/><path d="M4 21h16"/></svg>
+        Export a diagnostic file
+      </button>
+      <p class="fix__note" style="margin-top:-.25rem">
+        Saves <span class="num">tn-drive-diagnostic.json</span> to this device —
+        the raw file plus the version numbers above. It never leaves the phone
+        unless you send it somewhere.
+      </p>
+    </div>
+
+    <div class="danger-zone">
+      <p class="eyebrow eyebrow--stop" style="margin-bottom:.35rem">Last resort</p>
+      <h3 style="margin-bottom:.4rem">Reset saved progress</h3>
+      <p class="dim" style="margin:0;font-size:.875rem">
+        Deletes the unreadable file and starts a clean one. You lose 248 answers,
+        your 6-day streak and 3 exam results. Export the diagnostic first if you
+        want a copy. You'll be asked to confirm.
+      </p>
+      <button class="btn btn--danger btn--block" type="button" style="margin-top:.875rem">
+        Reset saved progress
+      </button>
+    </div>
+  </section>
+
+  <hr class="centreline">
+
+  <section class="panel panel--guide">
+    <p class="eyebrow eyebrow--guide" style="margin-bottom:.35rem">Unaffected</p>
+    <h3 style="margin-bottom:.4rem">You can keep studying now</h3>
+    <p class="dim" style="margin:0;font-size:.875rem">
+      The question bank ships inside the app, so none of it depends on the saved
+      file. Answers from this session won't be recorded until the above is sorted.
+    </p>
+    <ul class="keeps">
+      <li>420 questions</li>
+      <li>84 signs</li>
+      <li>Mock exams</li>
+      <li>Citations</li>
+    </ul>
+    <a class="btn btn--quiet btn--block" href="#" style="margin-top:1rem">Study without saving</a>
+  </section>
+
+  <p class="faint" style="font-size:.75rem;text-align:center;margin:1.5rem 0 0;line-height:1.5">
+    Questions cite the Tennessee Comprehensive Driver License Manual.<br>
+    Not affiliated with the State of Tennessee.
+  </p>
+
+</main>
+
+<nav class="nav" aria-label="Main">
+  <a href="#" aria-current="page">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10 12 3l8 7v10a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg>
+    Study
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v6h6M9 14l2 2 4-4"/></svg>
+    Exam
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2 22 12 12 22 2 12z"/><path d="M12 8v4M12 16h.01"/></svg>
+    Signs
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+    Progress
+  </a>
+</nav>
+
+<script src="_signs.js"></script>
+</body>
+</html>

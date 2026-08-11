@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup 05 — Exam in progress</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,300..900&family=Overpass+Mono:wght@300..700&family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="_base.css">
+<style>
+  /* Focus mode itself (nav hidden, nav offsets reclaimed) lives in _base.css
+     as `body.focus`; the exit affordance is the shared `.exit`. Nothing that
+     the shared layer owns is redefined here. */
+
+  /* ---- Exam chrome. Same tokens as study mode; tighter, and it counts. ---- */
+  .focusbar {
+    position: sticky; top: 0; z-index: 20;
+    padding: .6rem var(--gut) .7rem;
+    background: color-mix(in srgb, var(--asphalt) 94%, transparent);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--shoulder);
+  }
+  .focusbar__in { max-width: var(--rail); margin: 0 auto; }
+  .focusbar__row {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: .75rem; flex-wrap: wrap;
+  }
+  .focusbar__row + .focusbar__row { margin-top: .55rem; }
+
+  /* Timer — mono, tabular, no decoration. It is the pressure. */
+  .timer { display: inline-flex; align-items: baseline; gap: .45rem; }
+  .timer__val {
+    font-family: var(--mono); font-variant-numeric: tabular-nums;
+    font-size: 1.25rem; font-weight: 700; letter-spacing: .02em; line-height: 1;
+  }
+  .timer__lab {
+    font-size: .625rem; font-weight: 800; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--sign-dim);
+  }
+
+  /* Seven wrong ends it. Seven marks, counted down in the open. */
+  .strikes { display: flex; flex-direction: column; align-items: flex-end; gap: .3rem; }
+  .strikes__lab {
+    font-family: var(--mono); font-size: .625rem; font-weight: 700;
+    letter-spacing: .1em; text-transform: uppercase; color: var(--sign-dim);
+  }
+  /* The count stays sign-white: --stop-lit on asphalt is only 3.6:1 and this is
+     10px text. The red lives in the pips, which are graphics (≥3:1). */
+  .strikes__lab b { color: var(--sign-white); }
+  .strikes__pips { display: flex; gap: 3px; }
+  .strikes__pips span {
+    width: 9px; height: 12px; border-radius: 2px;
+    background: var(--asphalt-sunk); border: 1px solid var(--shoulder-lit);
+  }
+  .strikes__pips .on { background: var(--stop-lit); border-color: var(--stop-lit); }
+
+  .choices { display: grid; gap: .5rem; margin-top: 1.125rem; }
+
+  /* Exam selection is achromatic on purpose: choosing tells you nothing. */
+  .choice[aria-pressed='true'] {
+    border-color: var(--sign-white);
+    background: color-mix(in srgb, var(--sign-white) 8%, var(--asphalt-raised));
+  }
+  .choice[aria-pressed='true']:hover { border-color: var(--sign-white); }
+  .choice[aria-pressed='true'] .choice__key {
+    background: var(--sign-white); border-color: var(--sign-white); color: var(--asphalt);
+  }
+
+  .actionbar {
+    position: sticky; bottom: 0; z-index: 15;
+    margin-top: 1.5rem;
+    padding: .8rem var(--gut) calc(.8rem + env(safe-area-inset-bottom, 0px));
+    background: color-mix(in srgb, var(--asphalt) 94%, transparent);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid var(--shoulder);
+  }
+  .actionbar__in { max-width: var(--rail); margin: 0 auto; }
+
+  /* ---- Mockup scaffolding: the confirmation shown over the screen above ---- */
+  .scrim { background: rgba(8,9,11,.74); padding: 2.25rem var(--gut); display: grid; place-items: center; }
+  .sheet {
+    position: static; display: block;
+    width: 100%; max-width: 420px; margin: 0;
+    background: var(--asphalt-raised);
+    border: 1px solid var(--shoulder); border-radius: var(--r-lg);
+    padding: 1.5rem 1.25rem; color: var(--sign-white); text-align: center;
+    box-shadow: 0 24px 60px rgba(0,0,0,.6);
+  }
+  .sheet h2 { margin: .875rem 0 .5rem; }
+  .sheet .btn + .btn { margin-top: .625rem; }
+</style>
+</head>
+<body class="focus">
+
+<div class="mock-label">Mockup 05 · Exam — in progress · cell 5 · populated · 390×844 mobile</div>
+
+<header class="focusbar">
+  <div class="focusbar__in">
+
+    <div class="focusbar__row">
+      <!-- Same glyph, same class, same shape as every other focus-mode exit;
+           only the noun changes. The exam's is the one that confirms first. -->
+      <button class="exit" type="button" style="margin-left:-.6rem"
+              aria-haspopup="dialog" aria-controls="exit-confirm">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        End exam
+      </button>
+      <div class="timer" role="timer" aria-label="Time remaining: 41 minutes 52 seconds of 60">
+        <span class="timer__val">41:52</span>
+        <span class="timer__lab">left</span>
+      </div>
+    </div>
+
+    <div class="focusbar__row">
+      <div class="row" style="gap:.5rem">
+        <span class="milemarker" aria-hidden="true"><span>MILE</span><span>12</span></span>
+        <span class="num dim" style="font-size:.8125rem">of 30</span>
+      </div>
+      <div class="strikes">
+        <span class="strikes__lab"><b>2</b> of 7 wrong</span>
+        <span class="strikes__pips" aria-hidden="true">
+          <span class="on"></span><span class="on"></span><span></span><span></span>
+          <span></span><span></span><span></span>
+        </span>
+      </div>
+    </div>
+
+    <div class="rail" role="progressbar" aria-valuemin="0" aria-valuemax="30" aria-valuenow="11"
+         aria-label="Exam progress: 11 of 30 questions answered" style="margin-top:.6rem">
+      <i style="width:36.7%"></i>
+    </div>
+
+  </div>
+</header>
+
+<main class="wrap" style="padding-top:1.25rem">
+
+  <p class="eyebrow" style="margin-bottom:.6rem">Class D knowledge test · simulator</p>
+
+  <h1 class="stem" id="q-stem">
+    You are lawfully arrested for driving under the influence and the officer asks you to take a
+    blood or breath test. You refuse. Under Tennessee's implied consent law, what happens?
+  </h1>
+
+  <div class="choices" role="group" aria-labelledby="q-stem">
+
+    <button class="choice" type="button" aria-pressed="false">
+      <span class="choice__key">A</span>
+      <span class="choice__body">Nothing, unless you are later convicted of the DUI charge.</span>
+    </button>
+
+    <button class="choice" type="button" aria-pressed="true">
+      <span class="choice__key">B</span>
+      <span class="choice__body">You lose your driving privileges for one year for a first refusal.</span>
+    </button>
+
+    <button class="choice" type="button" aria-pressed="false">
+      <span class="choice__key">C</span>
+      <span class="choice__body">You pay a $50 fine at the scene and are free to go.</span>
+    </button>
+
+  </div>
+
+  <p class="dim" role="status" style="font-size:.8125rem;margin:1rem 0 0;text-align:center">
+    B selected. Nothing is marked until the exam ends.
+  </p>
+
+</main>
+
+<div class="actionbar">
+  <div class="actionbar__in">
+    <button class="btn btn--guide btn--block" type="button" style="font-size:1.0625rem">
+      Next question
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+    </button>
+    <p class="faint" style="font-size:.75rem;text-align:center;margin:.55rem 0 0">
+      Answers are final. Seven wrong ends the exam, same as the real one.
+    </p>
+  </div>
+</div>
+
+<div class="mock-label">Mockup 05 · exit confirmation · shown over the screen above when “End exam” is pressed</div>
+
+<div class="scrim">
+  <dialog class="sheet" id="exit-confirm" open aria-labelledby="dlg-h" aria-describedby="dlg-b">
+    <svg class="sign sign--lg" role="img" aria-label="Red octagonal stop sign"><use href="#sg-stop"/></svg>
+    <h2 id="dlg-h">End the exam now?</h2>
+    <p id="dlg-b" class="dim" style="font-size:.9375rem;margin:0 0 1.25rem">
+      You are 12 questions in. Ending now scores what you've answered — 9 correct out of 30 — and
+      the attempt is closed.
+    </p>
+    <button class="btn btn--guide btn--block" type="button">Keep going</button>
+    <button class="btn btn--danger btn--block" type="button">End exam and score it</button>
+  </dialog>
+</div>
+
+<script src="_signs.js"></script>
+</body>
+</html>

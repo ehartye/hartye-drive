@@ -1,0 +1,16 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>zoom</title>
+<link href="https://fonts.googleapis.com/css2?family=Overpass:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+ body{background:#14161A;color:#fff;font-family:sans-serif;margin:0;padding:12px;display:flex;flex-wrap:wrap;gap:12px}
+ figure{margin:0;text-align:center}
+ svg{width:520px;height:520px}
+ figcaption{font-size:14px}
+</style></head><body>
+<script src="../../_signs.js"></script>
+<script>
+ ['sg-yield','sg-nopassing','sg-workzone','sg-deer'].forEach(id=>{
+   document.body.insertAdjacentHTML('beforeend','<figure><svg><use href="#'+id+'"/></svg><figcaption>#'+id+'</figcaption></figure>');
+ });
+</script>
+</body></html>

@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup 06c — Exam ended early (7 wrong)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,300..900&family=Overpass+Mono:wght@300..700&family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="_base.css">
+<style>
+  /* ---- The octagon is the whole verdict. Hard stop, nothing else needed. ---- */
+  .halt { text-align: center; padding-top: .5rem; }
+  .halt .sign { filter: drop-shadow(0 10px 26px rgba(180,21,28,.35)); }
+  .halt h1 { margin-top: 1rem; }
+
+  /* Same seven marks the exam carried in its chrome, now all spent. */
+  .strikes {
+    display: flex; align-items: center; justify-content: center;
+    gap: .625rem; flex-wrap: wrap;
+  }
+  .strikes__lab {
+    font-family: var(--mono); font-size: .6875rem; font-weight: 700;
+    letter-spacing: .1em; text-transform: uppercase; color: var(--sign-dim);
+  }
+  /* The count stays sign-white: --stop-lit on asphalt is only 3.6:1 and this is
+     10–11px text. The red lives in the pips, which are graphics (≥3:1). */
+  .strikes__lab b { color: var(--sign-white); }
+  .strikes__pips { display: flex; gap: 4px; }
+  .strikes__pips span {
+    width: 10px; height: 14px; border-radius: 2px;
+    background: var(--stop-lit); border: 1px solid var(--stop-lit);
+  }
+
+  .grid-tiles .panel { padding: .75rem .55rem; text-align: center; }
+  .grid-tiles .tile__val { font-size: 1.25rem; }
+  .grid-tiles .tile__lab { letter-spacing: .08em; }
+
+  .meter__rail { margin-top: .1rem; }
+  .meter__name { display: inline-flex; align-items: center; gap: .45rem; }
+  .meter__name .sign { width: 20px; height: 20px; flex: none; filter: none; }
+
+  .unasked {
+    display: flex; align-items: center; gap: .75rem;
+    margin-top: .875rem; padding-top: .875rem;
+    border-top: 1px dashed var(--shoulder);
+  }
+</style>
+</head>
+<body>
+
+<div class="mock-label">Mockup 06c · Exam — ended early at 7 wrong · cell 6c · 390×844 mobile</div>
+
+<header class="appbar">
+  <div class="row" style="gap:.6rem">
+    <svg class="sign sign--sm" aria-hidden="true"><use href="#sg-stop"/></svg>
+    <strong style="letter-spacing:-.02em;font-size:1.0625rem">TN&nbsp;Drive</strong>
+  </div>
+  <span class="badge badge--offline" title="Everything works without a connection">Offline ready</span>
+</header>
+
+<main class="wrap stack" style="padding-top:1.25rem">
+
+  <section class="halt">
+    <p class="eyebrow eyebrow--stop">Ended early · 25 June, 7:44 pm</p>
+    <svg class="sign sign--xl" role="img" aria-label="Red octagonal stop sign: the exam stopped here"><use href="#sg-stop"/></svg>
+    <h1>Stopped at question 19</h1>
+  </section>
+
+  <div class="strikes">
+    <span class="strikes__pips" aria-hidden="true">
+      <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+    </span>
+    <span class="strikes__lab"><b>7</b> of 7 wrong · limit reached</span>
+  </div>
+
+  <p class="read" style="margin:0">
+    Tennessee asks 30 questions and requires 24 correct. Once seven answers are wrong, 24 is no
+    longer reachable — 30 minus 7 leaves 23 — so the test ends on the seventh miss. The real one at
+    a Driver Services Center stops at the same point, for the same reason. Eleven of your 30
+    questions were never asked.
+  </p>
+
+  <div class="grid-tiles">
+    <div class="panel panel--flat tile">
+      <span class="tile__val">19</span>
+      <span class="tile__lab">Answered</span>
+    </div>
+    <div class="panel panel--flat tile">
+      <span class="tile__val">12</span>
+      <span class="tile__lab">Correct</span>
+    </div>
+    <div class="panel panel--flat tile">
+      <span class="tile__val">43:18</span>
+      <span class="tile__lab">Time</span>
+    </div>
+  </div>
+
+  <hr class="centreline">
+
+  <section>
+    <h2 style="margin-bottom:.875rem">What you were asked</h2>
+
+    <div class="panel panel--flat">
+      <div class="meter">
+        <div class="meter__head">
+          <span class="meter__name">
+            <svg class="sign" role="img" aria-label="Yellow warning diamond: weak topic"><use href="#sg-warn"/></svg>
+            Safe driving principles
+          </span>
+          <span class="meter__val">2 / 5</span>
+        </div>
+        <div class="rail rail--stop meter__rail" aria-hidden="true"><i style="width:40%"></i></div>
+      </div>
+
+      <div class="meter">
+        <div class="meter__head">
+          <span class="meter__name">
+            <svg class="sign" role="img" aria-label="Yellow warning diamond: weak topic"><use href="#sg-warn"/></svg>
+            Rules of the road
+          </span>
+          <span class="meter__val">3 / 5</span>
+        </div>
+        <div class="rail rail--warn meter__rail" aria-hidden="true"><i style="width:60%"></i></div>
+      </div>
+
+      <div class="meter">
+        <div class="meter__head">
+          <span class="meter__name">Drugs &amp; alcohol</span>
+          <span class="meter__val">3 / 4</span>
+        </div>
+        <div class="rail rail--warn meter__rail" aria-hidden="true"><i style="width:75%"></i></div>
+      </div>
+
+      <div class="meter">
+        <div class="meter__head">
+          <span class="meter__name">Traffic signs &amp; signals</span>
+          <span class="meter__val">4 / 5</span>
+        </div>
+        <div class="rail meter__rail" aria-hidden="true"><i style="width:80%"></i></div>
+      </div>
+
+      <div class="unasked">
+        <p class="dim" style="margin:0;font-size:.8125rem">
+          Sampled across the four areas the manual publishes. The other 11 questions were
+          never asked — they stay in the bank for your next attempt.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel panel--guide">
+    <p class="eyebrow eyebrow--guide" style="margin-bottom:.35rem">Do this next</p>
+    <h3 style="margin-bottom:.4rem">18 questions on safe driving and rules of the road</h3>
+    <p class="dim" style="margin:0 0 1rem;font-size:.875rem">
+      Five of your seven misses came from these two areas. Each question shows the rule and the
+      manual page behind it. About nine minutes.
+    </p>
+    <a class="btn btn--guide btn--block" href="#" style="font-size:1.0625rem">
+      Start the fix-it session
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+    </a>
+  </section>
+
+  <div>
+    <a class="btn btn--quiet btn--block" href="#">Review the 19 you answered</a>
+    <a class="btn btn--quiet btn--block" href="#" style="margin-top:.75rem">Take the exam again</a>
+  </div>
+
+  <p class="faint" style="font-size:.75rem;text-align:center;margin:1.25rem 0 0;line-height:1.5">
+    A practice result. It is not a state score and carries no official weight.<br>
+    Not affiliated with the State of Tennessee.
+  </p>
+
+</main>
+
+<nav class="nav" aria-label="Main">
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10 12 3l8 7v10a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg>
+    Study
+  </a>
+  <a href="#" aria-current="page">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v6h6M9 14l2 2 4-4"/></svg>
+    Exam
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2 22 12 12 22 2 12z"/><path d="M12 8v4M12 16h.01"/></svg>
+    Signs
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+    Progress
+  </a>
+</nav>
+
+<script src="_signs.js"></script>
+</body>
+</html>

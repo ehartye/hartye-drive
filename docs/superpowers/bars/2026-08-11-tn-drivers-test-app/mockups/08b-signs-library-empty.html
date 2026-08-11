@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup 08b — Sign library, no matches (empty)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,300..900&family=Overpass+Mono:wght@300..700&family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="_base.css">
+<style>
+  /* `.sr-only` lives in _base.css and is not redefined here. */
+
+  /* ---- AppNav owns the brand block (grounding §3) ----
+     At ≥1024px the nav becomes a side rail and _base.css reserves 5.5rem at
+     its head for the brand. Fill that space, and never render the brand in
+     the page header — the header is the page's, the brand is the nav's.
+     Matches 02f-dashboard-desktop.html exactly. */
+  @media (min-width: 1024px) {
+    .railbrand {
+      position: fixed; top: 0; left: 0; z-index: 31;
+      width: 232px; height: 5.5rem;
+      display: flex; align-items: center; gap: .6rem;
+      padding: 0 1.25rem;
+      background: var(--asphalt-sunk);
+      border-right: 1px solid var(--shoulder);
+      border-bottom: 1px solid var(--shoulder);
+    }
+  }
+  @media (max-width: 1023px) { .railbrand { display: none; } }
+
+  /* ---- the header pattern the whole set follows (02f is the reference) ----
+     Leading group: an optional back-link, then the destination title, then a
+     line of context. Trailing: the offline badge. The context line drops
+     below 900px, where the title and the badge need the whole bar. */
+  .appbar__lead { min-width: 0; gap: .75rem; }
+  .appbar > .badge { flex: none; }
+  .appbar__title { letter-spacing: -.02em; font-size: 1.0625rem;
+                   min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .appbar__sub { display: none; font-size: .875rem; }
+  @media (min-width: 900px) { .appbar__sub { display: block; } }
+
+  /* ---- search + category filter (shared with 08) ---- */
+  .filters { display: grid; gap: .75rem; }
+  .field { position: relative; }
+  .field input[type='search'] {
+    width: 100%; min-height: 48px;
+    padding: 0 2.75rem 0 2.6rem;
+    background: var(--asphalt-sunk);
+    border: 1px solid var(--shoulder); border-radius: var(--r);
+    color: var(--sign-white); font-family: var(--ui); font-size: 1rem;
+    appearance: none;
+  }
+  .field input[type='search']::placeholder { color: var(--sign-faint); }
+  .field--miss input[type='search'] { border-color: color-mix(in srgb, var(--warning) 45%, var(--shoulder)); }
+  .field__icon {
+    position: absolute; left: .8rem; top: 50%; transform: translateY(-50%);
+    color: var(--sign-faint); pointer-events: none;
+  }
+  .field__clear {
+    position: absolute; right: 5px; top: 50%; transform: translateY(-50%);
+    width: 38px; height: 38px; display: grid; place-items: center;
+    background: transparent; border: 0; border-radius: 999px;
+    color: var(--sign-dim); cursor: pointer;
+  }
+  .field__clear:hover { color: var(--sign-white); background: rgba(255,255,255,.06); }
+
+  .chips { display: flex; flex-wrap: wrap; gap: .5rem; }
+  .chip {
+    display: inline-flex; align-items: center; gap: .45rem;
+    min-height: 40px; padding: 0 .75rem;
+    background: var(--asphalt-raised);
+    border: 1px solid var(--shoulder); border-radius: 999px;
+    color: var(--sign-dim); cursor: pointer; text-decoration: none;
+    font-family: var(--ui); font-size: .8125rem; font-weight: 700; letter-spacing: .03em;
+  }
+  .chip:hover { border-color: var(--shoulder-lit); color: var(--sign-white); }
+  .chip[aria-pressed='true'] {
+    background: var(--guide-deep); border-color: var(--guide-lit); color: var(--sign-white);
+  }
+  .chip__dot { width: 10px; height: 10px; border-radius: 2px; flex: none; }
+  .chip__x { margin-left: .1rem; opacity: .8; }
+
+  /* ---- the empty state itself ---- */
+  .state { padding-top: 2rem; }
+  .state__art {
+    display: inline-grid; place-items: center;
+    margin-bottom: 1.25rem;
+  }
+  .state__art .sign { opacity: .85; }
+  .state__q { color: var(--warning); }
+  .state__acts { display: grid; gap: .625rem; max-width: 21rem; margin: 0 auto; }
+
+  .recover { margin-top: 2rem; }
+  .recover h3 { margin-bottom: .75rem; }
+  .catlink {
+    display: flex; align-items: center; gap: .875rem;
+    width: 100%; min-height: 60px; padding: .75rem .9rem;
+    background: var(--asphalt-raised);
+    border: 1px solid var(--shoulder); border-left: 3px solid var(--shoulder);
+    border-radius: var(--r);
+    color: inherit; text-decoration: none; text-align: left;
+  }
+  .catlink + .catlink { margin-top: .5rem; }
+  .catlink:hover { border-color: var(--shoulder-lit); background: #20242B; }
+  .catlink--reg    { border-left-color: var(--stop-lit); }
+  .catlink--warn   { border-left-color: var(--warning); }
+  .catlink--guide  { border-left-color: var(--guide-lit); }
+  .catlink--work   { border-left-color: var(--work); }
+  .catlink--school { border-left-color: var(--school); }
+  .catlink--rr     { border-left-color: var(--sign-white); }
+  .catlink__t { flex: 1; min-width: 0; }
+  .catlink__n { display: block; font-size: .9375rem; font-weight: 700; }
+  .catlink__s { display: block; margin-top: .1rem; font-size: .8125rem; color: var(--sign-dim); }
+  .catlink__c { font-family: var(--mono); font-size: .8125rem; color: var(--sign-faint); }
+</style>
+</head>
+<body>
+
+<div class="mock-label">Mockup 08b · Sign library — browse · empty (search + filter match nothing) · 390×844 mobile</div>
+
+<div class="railbrand">
+  <svg class="sign sign--sm" role="img" aria-label="Red octagonal stop sign"><use href="#sg-stop"/></svg>
+  <strong style="letter-spacing:-.02em;font-size:1.0625rem">TN&nbsp;Drive</strong>
+</div>
+
+<header class="appbar">
+  <div class="row appbar__lead">
+    <strong class="appbar__title">Signs</strong>
+    <span class="dim appbar__sub">84 signs · 61 solid</span>
+  </div>
+  <span class="badge badge--offline" title="Everything works without a connection">Offline ready</span>
+</header>
+
+<main class="wrap stack" style="padding-top:1.5rem">
+
+  <section>
+    <p class="eyebrow">Every sign on a Tennessee road</p>
+    <h1>Sign library</h1>
+  </section>
+
+  <!-- FILTERS — the state that produced no matches, still visible and editable -->
+  <section class="filters" aria-label="Find a sign">
+    <div class="field field--miss">
+      <svg class="field__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+      <label class="sr-only" for="q">Search signs by name, shape, or color</label>
+      <input id="q" type="search" value="roundabout" placeholder="Search — name, shape, or color">
+      <button class="field__clear" type="button" aria-label="Clear the search box">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <div class="chips" role="group" aria-label="Filter by sign category">
+      <button class="chip" type="button" aria-pressed="false">All 84</button>
+      <button class="chip" type="button" aria-pressed="false"><span class="chip__dot" style="background:var(--stop-lit)" aria-hidden="true"></span>Regulatory</button>
+      <button class="chip" type="button" aria-pressed="true">
+        <span class="chip__dot" style="background:var(--warning)" aria-hidden="true"></span>Warning
+        <svg class="chip__x" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+      <button class="chip" type="button" aria-pressed="false"><span class="chip__dot" style="background:var(--guide-lit)" aria-hidden="true"></span>Guide</button>
+      <button class="chip" type="button" aria-pressed="false"><span class="chip__dot" style="background:var(--work)" aria-hidden="true"></span>Construction</button>
+      <button class="chip" type="button" aria-pressed="false"><span class="chip__dot" style="background:var(--school)" aria-hidden="true"></span>School</button>
+      <button class="chip" type="button" aria-pressed="false"><span class="chip__dot" style="background:var(--sign-white)" aria-hidden="true"></span>Railroad</button>
+    </div>
+  </section>
+
+  <!-- EMPTY: a blank guide sign — the sign whose whole job is to point somewhere,
+       with nothing to point at. -->
+  <section class="state" role="status" aria-live="polite">
+    <span class="state__art" aria-hidden="true">
+      <svg class="sign sign--wide sign--xl"><use href="#sg-guide-blank"/></svg>
+    </span>
+    <h2>Nothing matches <span class="state__q">&ldquo;roundabout&rdquo;</span> in Warning</h2>
+    <p class="read" style="max-width:34ch;margin:0 auto 1.5rem">
+      Tennessee doesn't post a sign called <em>roundabout</em>. Entering one is governed
+      by <strong>Yield</strong> — you give way to traffic already in the circle.
+    </p>
+    <div class="state__acts">
+      <a class="btn btn--guide btn--block" href="10-rule-reference.html">Open the Yield sign</a>
+      <button class="btn btn--quiet btn--block" type="button">Clear search and show all 84 signs</button>
+      <button class="btn btn--quiet btn--block" type="button">Keep the search, drop the Warning filter</button>
+    </div>
+    <p class="faint" style="font-size:.8125rem;margin:1.25rem auto 0;max-width:34ch;line-height:1.5">
+      Search also reads shapes and colors. Try <b>octagon</b>, <b>pentagon</b>, <b>orange</b>, or <b>blue</b>.
+    </p>
+  </section>
+
+  <hr class="centreline">
+
+  <!-- Real recovery: go straight to a category -->
+  <section class="recover">
+    <h3>Or start from a category</h3>
+    <a class="catlink catlink--reg" href="08-signs-library.html">
+      <svg class="sign sign--sm" aria-hidden="true"><use href="#sg-stop"/></svg>
+      <span class="catlink__t">
+        <span class="catlink__n">Regulatory</span>
+        <span class="catlink__s">Red, or white with black letters — the law</span>
+      </span>
+      <span class="catlink__c">7</span>
+    </a>
+    <a class="catlink catlink--warn" href="08-signs-library.html">
+      <svg class="sign sign--sm" aria-hidden="true"><use href="#sg-warn"/></svg>
+      <span class="catlink__t">
+        <span class="catlink__n">Warning</span>
+        <span class="catlink__s">Yellow diamond — something ahead needs you</span>
+      </span>
+      <span class="catlink__c">8</span>
+    </a>
+    <a class="catlink catlink--guide" href="08-signs-library.html">
+      <svg class="sign sign--sm" aria-hidden="true"><use href="#sg-guide"/></svg>
+      <span class="catlink__t">
+        <span class="catlink__n">Guide</span>
+        <span class="catlink__s">Green for direction, blue for services</span>
+      </span>
+      <span class="catlink__c">3</span>
+    </a>
+    <a class="catlink catlink--work" href="08-signs-library.html">
+      <svg class="sign sign--sm" aria-hidden="true"><use href="#sg-workzone"/></svg>
+      <span class="catlink__t">
+        <span class="catlink__n">Construction</span>
+        <span class="catlink__s">Orange — temporary conditions, people working</span>
+      </span>
+      <span class="catlink__c">1</span>
+    </a>
+    <a class="catlink catlink--school" href="08-signs-library.html">
+      <svg class="sign sign--sm" aria-hidden="true"><use href="#sg-school"/></svg>
+      <span class="catlink__t">
+        <span class="catlink__n">School</span>
+        <span class="catlink__s">Five sides — the only five-sided sign on the road</span>
+      </span>
+      <span class="catlink__c">1</span>
+    </a>
+    <a class="catlink catlink--rr" href="08-signs-library.html">
+      <svg class="sign sign--sm" aria-hidden="true"><use href="#sg-crossbuck"/></svg>
+      <span class="catlink__t">
+        <span class="catlink__n">Railroad</span>
+        <span class="catlink__s">Advance warning, then the crossbuck at the rails</span>
+      </span>
+      <span class="catlink__c">2</span>
+    </a>
+  </section>
+
+  <p class="faint" style="font-size:.75rem;text-align:center;margin:1.75rem 0 0;line-height:1.5">
+    Shapes and colors follow the federal MUTCD as adopted by Tennessee.<br>
+    Not affiliated with the State of Tennessee.
+  </p>
+
+</main>
+
+<nav class="nav" aria-label="Main">
+  <a href="02-dashboard-populated.html">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10 12 3l8 7v10a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg>
+    Study
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v6h6M9 14l2 2 4-4"/></svg>
+    Exam
+  </a>
+  <a href="08-signs-library.html" aria-current="page">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2 22 12 12 22 2 12z"/><path d="M12 8v4M12 16h.01"/></svg>
+    Signs
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+    Progress
+  </a>
+</nav>
+
+<script src="_signs.js"></script>
+</body>
+</html>

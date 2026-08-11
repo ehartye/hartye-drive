@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup 01 — Onboarding (first run)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,300..900&family=Overpass+Mono:wght@300..700&family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="_base.css">
+<style>
+  /* No bottom nav on first run — nothing to navigate to yet. */
+  body { padding-bottom: 2.5rem; }
+
+  /* ---- The overhead guide sign: the app introducing itself as road furniture ---- */
+  .marquee {
+    position: relative;
+    background: var(--guide);
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 14px 36px rgba(0,0,0,.5);
+    overflow: hidden;
+  }
+  .marquee::before { /* off-axis sheen */
+    content:''; position:absolute; inset:0; pointer-events:none;
+    background: radial-gradient(130% 100% at 8% -20%, rgba(255,255,255,.16), rgba(255,255,255,0) 58%);
+  }
+  .marquee::after { /* retroreflective bead grain */
+    content:''; position:absolute; inset:0; opacity:.13; pointer-events:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='80' height='80' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .marquee__face {
+    position: relative; z-index: 1;
+    border: 2.5px solid var(--sign-white);
+    border-radius: 6px;
+    padding: 1.1rem 1.15rem 1.15rem;
+  }
+  .marquee__legend {
+    margin: 0 0 .45rem;
+    font-size: .625rem; font-weight: 800; letter-spacing: .18em;
+    text-transform: uppercase; color: rgba(255,255,255,.74);
+  }
+  .marquee__title {
+    margin: 0;
+    font-size: 1.9rem; font-weight: 800; letter-spacing: -.02em; line-height: 1.05;
+    color: #fff;
+  }
+  .marquee__rule { height: 1px; background: rgba(242,244,241,.24); margin: .9rem 0 .75rem; }
+  .marquee__facts { display: flex; flex-wrap: wrap; gap: .85rem 1.4rem; }
+  .marquee__fact b {
+    display: block;
+    font-family: var(--mono); font-size: 1.125rem; font-weight: 700; color: #fff;
+    font-variant-numeric: tabular-nums; line-height: 1;
+  }
+  .marquee__fact span {
+    display: block; margin-top: .3rem;
+    font-size: .625rem; font-weight: 700; letter-spacing: .12em;
+    text-transform: uppercase; color: rgba(255,255,255,.74);
+  }
+
+  /* ---- form ---- */
+  .field { border: 0; padding: 0; margin: 0; }
+  .field__q { font-size: 1.0625rem; font-weight: 700; letter-spacing: -.01em; padding: 0; margin-bottom: .75rem; }
+  .field__q small { display: block; font-size: .8125rem; font-weight: 400; color: var(--sign-dim); margin-top: .2rem; letter-spacing: 0; }
+
+  .picks { display: grid; gap: .75rem; }
+  .pick {
+    position: relative;
+    display: flex; align-items: center; gap: .875rem;
+    min-height: 76px; padding: .9rem 1rem;
+    background: var(--asphalt-raised);
+    border: 1px solid var(--shoulder);
+    border-radius: var(--r);
+    cursor: pointer;
+  }
+  .pick input { position: absolute; width: 1px; height: 1px; opacity: 0; margin: 0; }
+  .pick:hover { border-color: var(--shoulder-lit); }
+  .pick:has(input:checked) {
+    border-color: var(--guide-lit);
+    background: color-mix(in srgb, var(--guide) 16%, var(--asphalt-raised));
+  }
+  .pick:has(input:focus-visible) { outline: 3px solid var(--warning); outline-offset: 2px; }
+  .pick__dot {
+    flex: none; width: 22px; height: 22px; border-radius: 999px;
+    border: 2px solid var(--shoulder-lit); display: grid; place-items: center;
+  }
+  .pick:has(input:checked) .pick__dot { border-color: var(--guide-lit); background: var(--guide-lit); }
+  .pick__dot::after { content: ''; width: 8px; height: 8px; border-radius: 999px; background: #fff; opacity: 0; }
+  .pick:has(input:checked) .pick__dot::after { opacity: 1; }
+  .pick__body { flex: 1; min-width: 0; }
+  .pick__t { display: block; font-size: 1rem; font-weight: 700; }
+  .pick__s { display: block; margin-top: .2rem; font-size: .8125rem; color: var(--sign-dim); line-height: 1.45; }
+
+  /* ---- DateField: segmented month / day / year ----
+     A native <input type="date"> is OS chrome — two calendar glyphs on some
+     browsers, a locale mask on others, and never this product's language.
+     Three labelled numeric segments are keyboard-operable, identical on every
+     platform, and built from the same tokens as everything else. Filed in
+     deviations.md as a proposed §3 component. */
+  .datefield {
+    display: flex; align-items: flex-end; gap: .5rem;
+    width: 100%; padding: .55rem .9rem .7rem;
+    background: var(--asphalt-sunk);
+    border: 1px solid var(--shoulder);
+    border-radius: var(--r);
+  }
+  .datefield__ico { flex: none; color: var(--sign-faint); margin-bottom: .7rem; }
+  .dseg { display: flex; flex-direction: column; gap: .3rem; }
+  .dseg__lab {
+    font-size: .5625rem; font-weight: 800; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--sign-dim);
+  }
+  .dseg__in {
+    min-height: 44px; padding: 0 .5rem;
+    background: var(--asphalt-raised);
+    border: 1px solid var(--shoulder-lit);
+    border-radius: var(--r-sm);
+    color: var(--sign-white);
+    font-family: var(--mono); font-size: 1.0625rem; font-weight: 700;
+    font-variant-numeric: tabular-nums; text-align: center;
+    appearance: none;
+  }
+  .dseg__in:hover { border-color: var(--sign-dim); }
+  .dseg__in--2 { width: 3.1rem; }
+  .dseg__in--4 { width: 4.6rem; }
+  .dsep {
+    flex: none; margin-bottom: .7rem;
+    font-family: var(--mono); font-size: 1.0625rem; color: var(--sign-faint);
+  }
+
+  /* One sentence, wrapping as one sentence. The icon rides inline so the
+     clause is never split into independently-wrapping flex items. */
+  .pace { margin: .6rem 0 0; font-size: .8125rem; line-height: 1.55; color: var(--sign-dim); }
+  .pace svg { vertical-align: -3px; margin-right: .35rem; }
+  .pace b { font-family: var(--mono); color: var(--warning); font-weight: 700; }
+
+  /* ---- the promise, told as a motorist-services sign ---- */
+  .panel--route { border-color: color-mix(in srgb, var(--route-lit) 55%, var(--shoulder)); }
+  .promise { display: grid; gap: .9rem; margin: 0; }
+  .promise > div { display: flex; gap: .75rem; align-items: flex-start; }
+  .promise dt { font-size: .9375rem; font-weight: 700; }
+  .promise dd { margin: .15rem 0 0; font-size: .8125rem; color: var(--sign-dim); line-height: 1.5; }
+  .tick {
+    flex: none; width: 24px; height: 24px; margin-top: 1px;
+    display: grid; place-items: center;
+    border-radius: 3px; background: var(--route);
+    border: 1.5px solid var(--route-lit);
+  }
+  .tick svg { width: 14px; height: 14px; color: #fff; }
+</style>
+</head>
+<body>
+
+<div class="mock-label">Mockup 01 · Onboarding · first run · 390×844 mobile</div>
+
+<main class="wrap stack" style="padding-top:1.75rem">
+
+  <div class="row" style="gap:.6rem">
+    <svg class="sign sign--sm" role="img" aria-label="Red octagonal stop sign"><use href="#sg-stop"/></svg>
+    <strong style="letter-spacing:-.02em;font-size:1.0625rem">TN&nbsp;Drive</strong>
+  </div>
+
+  <!-- SIGNATURE: the app announces itself on an overhead guide sign -->
+  <section class="marquee" aria-label="Tennessee Class D knowledge test">
+    <div class="marquee__face">
+      <p class="marquee__legend">Tennessee · Class D</p>
+      <h1 class="marquee__title">Pass the<br>knowledge test</h1>
+      <div class="marquee__rule"></div>
+      <div class="marquee__facts">
+        <div class="marquee__fact"><b>420</b><span>Questions</span></div>
+        <div class="marquee__fact"><b>84</b><span>Signs</span></div>
+        <div class="marquee__fact"><b>135</b><span>Manual pages</span></div>
+      </div>
+    </div>
+  </section>
+
+  <p class="read" style="margin:0">
+    Every question quotes the Tennessee driver manual, and every sign is drawn to
+    spec — right shape, right color, right proportion. Colors mean on this screen
+    what they mean on the road, so you learn the road by living in it.
+  </p>
+
+  <hr class="centreline">
+
+  <!-- Only what genuinely changes the plan gets asked. -->
+  <fieldset class="field">
+    <legend class="field__q">What are you studying for?
+      <small>Sets which questions you get.</small>
+    </legend>
+    <div class="picks">
+      <label class="pick">
+        <input type="radio" name="goal" value="class-d" checked>
+        <span class="pick__dot" aria-hidden="true"></span>
+        <span class="pick__body">
+          <span class="pick__t">Class D knowledge test</span>
+          <span class="pick__s">All 420 questions, all 84 signs, and 30-question mock exams timed like the real one.</span>
+        </span>
+        <svg class="sign sign--sm" aria-hidden="true"><use href="#sg-signal"/></svg>
+      </label>
+      <label class="pick">
+        <input type="radio" name="goal" value="signs">
+        <span class="pick__dot" aria-hidden="true"></span>
+        <span class="pick__body">
+          <span class="pick__t">Signs refresher</span>
+          <span class="pick__s">The 84 signs only — shape, color and meaning. Shorter sessions, no exam simulator.</span>
+        </span>
+        <svg class="sign sign--sm" aria-hidden="true"><use href="#sg-warn"/></svg>
+      </label>
+    </div>
+  </fieldset>
+
+  <fieldset class="field">
+    <legend class="field__q">When is your test? <span class="dim" style="font-weight:400">Optional</span>
+      <small>Sets your daily pace. Nothing is scheduled or reminded.</small>
+    </legend>
+    <div class="datefield">
+      <svg class="datefield__ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+      <span class="dseg">
+        <label class="dseg__lab" for="test-month">Month</label>
+        <input class="dseg__in dseg__in--2" id="test-month" type="text" inputmode="numeric"
+               maxlength="2" autocomplete="off" value="09">
+      </span>
+      <span class="dsep" aria-hidden="true">/</span>
+      <span class="dseg">
+        <label class="dseg__lab" for="test-day">Day</label>
+        <input class="dseg__in dseg__in--2" id="test-day" type="text" inputmode="numeric"
+               maxlength="2" autocomplete="off" value="12">
+      </span>
+      <span class="dsep" aria-hidden="true">/</span>
+      <span class="dseg">
+        <label class="dseg__lab" for="test-year">Year</label>
+        <input class="dseg__in dseg__in--4" id="test-year" type="text" inputmode="numeric"
+               maxlength="4" autocomplete="off" value="2026">
+      </span>
+    </div>
+    <p class="pace">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 7v5l3 2"/><circle cx="12" cy="12" r="9"/></svg>32 days out — about <b>13&nbsp;questions a day</b> to cover the bank.
+    </p>
+  </fieldset>
+
+  <hr class="centreline">
+
+  <!-- The promise is a feature, so it gets a sign of its own. -->
+  <section class="panel panel--route">
+    <div class="row" style="margin-bottom:1rem;gap:.75rem">
+      <svg class="sign sign--sm" role="img" aria-label="Blue motorist services sign"><use href="#sg-services"/></svg>
+      <h2 style="font-size:1.125rem">How this app behaves</h2>
+    </div>
+    <dl class="promise">
+      <div>
+        <span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4 10-10"/></svg></span>
+        <div>
+          <dt>No account, ever</dt>
+          <dd>No email, no password, no sign-in. This screen is the whole setup.</dd>
+        </div>
+      </div>
+      <div>
+        <span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4 10-10"/></svg></span>
+        <div>
+          <dt>Works with no signal</dt>
+          <dd>Add it to your home screen and every question, sign and explanation opens at zero bytes — in a Driver Service Center parking lot included.</dd>
+        </div>
+      </div>
+      <div>
+        <span class="tick" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4 10-10"/></svg></span>
+        <div>
+          <dt>Nothing leaves this phone</dt>
+          <dd>Your answers stay in this browser's storage. There is no server to send them to and no analytics in the app.</dd>
+        </div>
+      </div>
+    </dl>
+  </section>
+
+  <a class="btn btn--guide btn--block" href="02-dashboard-populated.html" style="font-size:1.0625rem">
+    Start studying
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+  </a>
+  <p class="dim" style="text-align:center;margin:.5rem 0 0;font-size:.8125rem">
+    Both answers can be changed later in Settings.
+  </p>
+
+  <p class="faint" style="font-size:.75rem;text-align:center;margin:1.5rem 0 0;line-height:1.5">
+    Questions cite the Tennessee Comprehensive Driver License Manual.<br>
+    Not affiliated with the State of Tennessee.
+  </p>
+
+</main>
+
+<script src="_signs.js"></script>
+</body>
+</html>

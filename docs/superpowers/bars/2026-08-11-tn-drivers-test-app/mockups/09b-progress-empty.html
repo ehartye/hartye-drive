@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup 09b — Progress (empty, no attempts yet)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,300..900&family=Overpass+Mono:wght@300..700&family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="_base.css">
+<style>
+  /* ============================================================
+     ZERO STATE, HONESTLY.
+
+     The rule from the matrix (cell 15) is that charts must not
+     render as broken axes with no data. So they don't:
+
+       · The readiness chart is not drawn at all. An empty time
+         series has nothing true to say, and drawing its axes would
+         be theatre. In its place stands a WORK ZONE — construction
+         orange is the project's token for "in progress" (§2) — that
+         says plainly what will be built here and when.
+       · The blueprint chart IS drawn, because it carries a fact
+         that exists before any attempt does: the manual publishes
+         the exam as four equal quarters. Empty lanes with the
+         target line are a route map of what's ahead, not an empty
+         plot of nothing.
+       · The history road is drawn with exactly one node on it —
+         "you are here" — which is the truth. ---------- */
+
+  /* --guide-text / --stop-text / --work-text / --route-text and the corrected
+     --sign-faint all live in _base.css now. Nothing is redefined here; this
+     file only consumes the shared tokens. */
+
+  .chart { margin: 0; }
+  .chart svg { display: block; width: 100%; height: auto; }
+  .chart figcaption { font-size: .75rem; color: var(--sign-dim); margin-top: .75rem; line-height: 1.5; }
+
+  .charthead { display: flex; align-items: baseline; justify-content: space-between; gap: .75rem; flex-wrap: wrap; margin-bottom: .875rem; }
+  .charthead h2 { font-size: 1.0625rem; letter-spacing: 0; }
+
+  /* ---- the "not open yet" plate: orange, dashed, unmistakably a placeholder ---- */
+  .workzone {
+    display: flex; align-items: flex-start; gap: .95rem;
+    padding: 1.05rem 1rem;
+    background: color-mix(in srgb, var(--work) 8%, var(--asphalt-raised));
+    border: 2px dashed color-mix(in srgb, var(--work) 62%, transparent);
+    border-radius: var(--r);
+  }
+  .workzone p { margin: 0; }
+  .workzone__t { font-size: .9375rem; font-weight: 700; }
+  .workzone__s { font-size: .8125rem; color: var(--sign-dim); margin-top: .25rem; line-height: 1.5; }
+
+  /* ---- history road with a single node ---- */
+  .trace { list-style: none; margin: 0; padding: 0 0 0 28px; position: relative; }
+  .trace::before {
+    content: ''; position: absolute; left: 6px; top: 14px; bottom: 4px; width: 2px;
+    background: repeating-linear-gradient(180deg, var(--warning) 0 9px, transparent 9px 19px);
+    opacity: .28;
+  }
+  .trace li { position: relative; padding: .3rem 0 .9rem; }
+  .trace__node {
+    position: absolute; left: -28px; top: .55rem;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--asphalt-raised); border: 2px solid var(--warning);
+  }
+  .trace__kind { margin: 0; font-size: .9375rem; font-weight: 600; }
+  .trace__meta { margin: .15rem 0 0; font-size: .75rem; color: var(--sign-dim); }
+
+  .whatlist { list-style: none; margin: 0; padding: 0; }
+  .whatlist li { display: flex; gap: .75rem; padding: .7rem 0; border-bottom: 1px solid var(--shoulder); }
+  .whatlist li:last-child { border-bottom: 0; padding-bottom: 0; }
+  .whatlist b { display: block; font-size: .9375rem; font-weight: 700; }
+  .whatlist span { display: block; font-size: .8125rem; color: var(--sign-dim); margin-top: .15rem; line-height: 1.5; }
+  .whatlist .sign { width: 26px; height: 26px; flex: none; margin-top: 2px; }
+  .whatlist .ico { width: 26px; height: 26px; flex: none; margin-top: 2px; color: var(--route-text); }
+
+  /* ---- AppNav owns the brand block (grounding §3) ----
+     At ≥1024px the nav becomes a side rail and _base.css reserves 5.5rem at
+     its head for the brand. Fill that space, and never render the brand in
+     the page header — the header is the page's, the brand is the nav's.
+     Matches 02f-dashboard-desktop.html exactly. */
+  @media (min-width: 1024px) {
+    .railbrand {
+      position: fixed; top: 0; left: 0; z-index: 31;
+      width: 232px; height: 5.5rem;
+      display: flex; align-items: center; gap: .6rem;
+      padding: 0 1.25rem;
+      background: var(--asphalt-sunk);
+      border-right: 1px solid var(--shoulder);
+      border-bottom: 1px solid var(--shoulder);
+    }
+  }
+  @media (max-width: 1023px) { .railbrand { display: none; } }
+
+  /* The app-bar pattern (.appbar__lead / __title / __sub) lives in _base.css
+     and is not redefined here. */
+</style>
+</head>
+<body>
+
+<div class="mock-label">Mockup 09b · Progress · empty (no attempts) · cell 9-empty · 390×844 mobile</div>
+
+<div class="railbrand">
+  <svg class="sign sign--sm" role="img" aria-label="Red octagonal stop sign"><use href="#sg-stop"/></svg>
+  <strong style="letter-spacing:-.02em;font-size:1.0625rem">TN&nbsp;Drive</strong>
+</div>
+
+<header class="appbar">
+  <div class="row appbar__lead">
+    <strong class="appbar__title">Progress</strong>
+    <span class="dim appbar__sub">Nothing answered yet · 0 attempts</span>
+  </div>
+  <span class="badge badge--offline" title="Everything works without a connection">Offline ready</span>
+</header>
+
+<main class="wrap stack" style="padding-top:1.5rem">
+
+  <section>
+    <p class="eyebrow">Progress</p>
+    <h1>You haven't set off&nbsp;yet</h1>
+    <p class="read" style="margin:.65rem 0 0">
+      There is nothing to chart until you answer something. Twelve questions is enough to put
+      a first point on the board and tell you which quarter of the test you're weakest in.
+    </p>
+  </section>
+
+  <a class="btn btn--guide btn--block" href="#" style="font-size:1.0625rem">
+    Answer your first 12 questions
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+  </a>
+  <p class="dim" style="text-align:center;margin:.5rem 0 0;font-size:.8125rem">
+    About six minutes · works with no signal
+  </p>
+
+  <hr class="centreline">
+
+  <!-- WHAT WILL APPEAR HERE -------------------------------------------- -->
+  <section class="panel panel--route">
+    <p class="eyebrow" style="color:var(--route-text);margin-bottom:.75rem">What lands on this page</p>
+    <ul class="whatlist">
+      <li>
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 17l5-6 4 3 4-6 5 4"/><path d="M3 21h18"/></svg>
+        <div>
+          <b>A readiness line</b>
+          <span>One reading a week, climbing (or not) toward the 80% you need. Drawn from the
+            first session onward.</span>
+        </div>
+      </li>
+      <li>
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 5h13M3 11h9M3 17h16"/></svg>
+        <div>
+          <b>Accuracy in each quarter of the test</b>
+          <span>Four lanes, one per exam area, so you can see which quarter is dragging the
+            other three down.</span>
+        </div>
+      </li>
+      <li>
+        <svg class="sign" role="img" aria-label="Yellow warning diamond: the mark used for a topic you are weak on"><use href="#sg-warn"/></svg>
+        <div>
+          <b>Your weak topics, named</b>
+          <span>Every topic you've touched, with the score, and a caution diamond on the ones
+            worth going back to.</span>
+        </div>
+      </li>
+      <li>
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3v18"/><circle cx="12" cy="7" r="2.5"/><circle cx="12" cy="17" r="2.5"/></svg>
+        <div>
+          <b>Every session and mock exam you've taken</b>
+          <span>Kept on this device, exportable as a file, never sent anywhere.</span>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <!-- READINESS: NOT DRAWN, DELIBERATELY ------------------------------- -->
+  <section class="panel">
+    <div class="charthead">
+      <h2>Readiness over time</h2>
+      <span class="badge" style="border-color:color-mix(in srgb, var(--work-text) 55%, transparent);color:var(--work-text)">Not open yet</span>
+    </div>
+    <div class="workzone">
+      <svg class="sign sign--sm" role="img" aria-label="Orange diamond work-zone sign: this section is not built yet" style="flex:none"><use href="#sg-workzone"/></svg>
+      <div>
+        <p class="workzone__t">This chart needs one session to exist</p>
+        <p class="workzone__s">
+          We'd rather show you an empty road than a graph of nothing. Answer twelve questions
+          and the first reading appears here — then a new one every week you study.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- BLUEPRINT: DRAWN, BECAUSE IT IS TRUE BEFORE YOU START ------------- -->
+  <section class="panel">
+    <div class="charthead">
+      <h2>The four quarters of the test</h2>
+      <span class="badge">Published blueprint</span>
+    </div>
+    <p class="dim" style="margin:-.35rem 0 1rem;font-size:.8125rem">
+      The manual tells you the split before you sit down. Each lane fills as you answer;
+      right now all four are open road.
+    </p>
+
+    <figure class="chart">
+      <!-- The viewBox carries 5 units of bleed left and right and 2 top and
+           bottom: the lane labels and the counts are drawn to x=0 and x=320,
+           and without it the SVG's own clip shaves them at narrow widths. -->
+      <svg viewBox="-5 -2 330 244" role="img" aria-labelledby="c2-t c2-d">
+        <title id="c2-t">The four exam areas drawn as four empty lanes of road, each a quarter of the test</title>
+        <desc id="c2-d">Traffic signs and signals, safe driving principles, rules of the road, and drugs and alcohol. Each is 25 percent of the test. No lane has any accuracy recorded yet. A dashed line across all four marks the 80 percent target you are aiming at.</desc>
+
+        <rect x="207" y="0" width="98" height="16" rx="2" fill="var(--guide, #04684E)" stroke="var(--sign-white, #F2F4F1)" stroke-width="1"/>
+        <text x="256" y="11.5" text-anchor="middle" font-family="Overpass, sans-serif" font-size="8.5" font-weight="800" letter-spacing="1" fill="#FFFFFF">TARGET 80%</text>
+        <line x1="256" y1="18" x2="256" y2="232" stroke="var(--sign-white, #F2F4F1)" stroke-width="1.5" stroke-dasharray="5 5" opacity=".5"/>
+
+        <g font-family="Overpass, sans-serif">
+          <!-- LANE 1 -->
+          <text x="0" y="33" font-size="12" font-weight="700" fill="var(--sign-white, #F2F4F1)">Traffic signs &amp; signals</text>
+          <text x="320" y="33" text-anchor="end" font-size="10" font-family="Overpass Mono, monospace" fill="var(--sign-dim, #9BA3AE)">25% of test</text>
+          <rect x="0" y="40" width="320" height="24" rx="3" fill="var(--asphalt-sunk, #101216)" stroke="var(--shoulder, #2A2F38)"/>
+          <text x="8" y="56" font-size="10.5" font-weight="700" letter-spacing="1.2" fill="var(--sign-faint, #808894)">NOT DRIVEN YET</text>
+          <line x1="0" y1="76" x2="320" y2="76" stroke="var(--sign-white, #F2F4F1)" stroke-width="1.5" stroke-dasharray="11 13" opacity=".2"/>
+
+          <!-- LANE 2 -->
+          <text x="0" y="87" font-size="12" font-weight="700" fill="var(--sign-white, #F2F4F1)">Safe driving principles</text>
+          <text x="320" y="87" text-anchor="end" font-size="10" font-family="Overpass Mono, monospace" fill="var(--sign-dim, #9BA3AE)">25% of test</text>
+          <rect x="0" y="94" width="320" height="24" rx="3" fill="var(--asphalt-sunk, #101216)" stroke="var(--shoulder, #2A2F38)"/>
+          <text x="8" y="110" font-size="10.5" font-weight="700" letter-spacing="1.2" fill="var(--sign-faint, #808894)">NOT DRIVEN YET</text>
+          <line x1="0" y1="130" x2="320" y2="130" stroke="var(--sign-white, #F2F4F1)" stroke-width="1.5" stroke-dasharray="11 13" opacity=".2"/>
+
+          <!-- LANE 3 -->
+          <text x="0" y="141" font-size="12" font-weight="700" fill="var(--sign-white, #F2F4F1)">Rules of the road</text>
+          <text x="320" y="141" text-anchor="end" font-size="10" font-family="Overpass Mono, monospace" fill="var(--sign-dim, #9BA3AE)">25% of test</text>
+          <rect x="0" y="148" width="320" height="24" rx="3" fill="var(--asphalt-sunk, #101216)" stroke="var(--shoulder, #2A2F38)"/>
+          <text x="8" y="164" font-size="10.5" font-weight="700" letter-spacing="1.2" fill="var(--sign-faint, #808894)">NOT DRIVEN YET</text>
+          <line x1="0" y1="184" x2="320" y2="184" stroke="var(--sign-white, #F2F4F1)" stroke-width="1.5" stroke-dasharray="11 13" opacity=".2"/>
+
+          <!-- LANE 4 -->
+          <text x="0" y="195" font-size="12" font-weight="700" fill="var(--sign-white, #F2F4F1)">Drugs &amp; alcohol</text>
+          <text x="320" y="195" text-anchor="end" font-size="10" font-family="Overpass Mono, monospace" fill="var(--sign-dim, #9BA3AE)">25% of test</text>
+          <rect x="0" y="202" width="320" height="24" rx="3" fill="var(--asphalt-sunk, #101216)" stroke="var(--shoulder, #2A2F38)"/>
+          <text x="8" y="218" font-size="10.5" font-weight="700" letter-spacing="1.2" fill="var(--sign-faint, #808894)">NOT DRIVEN YET</text>
+        </g>
+      </svg>
+
+      <figcaption>
+        Source: the manual's own description of the test — 25% traffic signs and signals,
+        25% safe driving principles, 25% rules of the road, 25% drugs and alcohol.
+      </figcaption>
+    </figure>
+  </section>
+
+  <hr class="centreline">
+
+  <!-- HISTORY: ONE NODE, WHICH IS THE TRUTH ---------------------------- -->
+  <section>
+    <div class="spread" style="margin-bottom:.875rem">
+      <h2>Where you've been</h2>
+      <span class="badge">0 attempts</span>
+    </div>
+
+    <div class="panel panel--flat">
+      <ol class="trace">
+        <li>
+          <span class="trace__node" aria-hidden="true"></span>
+          <p class="trace__kind">You are here</p>
+          <p class="trace__meta">Nothing behind you yet. The first session lands at the top of this list.</p>
+        </li>
+      </ol>
+    </div>
+
+    <p class="dim" style="font-size:.8125rem;margin:1rem 0 0;text-align:center">
+      Studied on another device or browser before?
+      <a href="#" style="color:var(--route-text)">Restore from a file you exported</a>.
+    </p>
+  </section>
+
+  <p class="faint" style="font-size:.75rem;text-align:center;margin:1.5rem 0 0;line-height:1.5">
+    Progress is computed on this device and stays on it. There is no account and nothing to sync.<br>
+    Not affiliated with the State of Tennessee.
+  </p>
+
+</main>
+
+<nav class="nav" aria-label="Main">
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10 12 3l8 7v10a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg>
+    Study
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v6h6M9 14l2 2 4-4"/></svg>
+    Exam
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2 22 12 12 22 2 12z"/><path d="M12 8v4M12 16h.01"/></svg>
+    Signs
+  </a>
+  <a href="#" aria-current="page">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+    Progress
+  </a>
+</nav>
+
+<script src="_signs.js"></script>
+</body>
+</html>

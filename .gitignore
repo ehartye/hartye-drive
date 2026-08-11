@@ -1,0 +1,29 @@
+node_modules/
+dist/
+dist-ssr/
+coverage/
+.vite/
+*.local
+
+# test + audit artifacts
+playwright-report/
+test-results/
+blob-report/
+.playwright-mcp/
+lighthouse-report.*
+
+# editor / OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# logs
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# the source manual is fetched, not vendored (12 MB binary)
+docs/research/*.pdf

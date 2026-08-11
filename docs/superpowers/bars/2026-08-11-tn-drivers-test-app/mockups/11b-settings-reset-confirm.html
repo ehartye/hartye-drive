@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup 11b — Settings, reset progress confirmation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,300..900&family=Overpass+Mono:wght@300..700&family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="_base.css">
+<style>
+  /* ============================================================
+     THE ONE HARD STOP.
+
+     §2 licenses the octagon for exactly two things: exam failure
+     and destructive confirmation. This is the second one, and it
+     is the only place in settings where the octagon appears.
+
+     Mechanics: the real app calls dialog.showModal(), which gives
+     the ::backdrop and the focus trap for free. A static mockup
+     can only render <dialog open>, which is non-modal, so the
+     scrim is drawn by hand here and the page behind carries
+     `inert` to stand in for the modal's inertness. Everything
+     else — element, roles, focus order — is what ships.
+
+     The safest button is the one with the most ink. Erasing is a
+     two-step: acknowledge, then erase. ---------- */
+
+  body { padding-bottom: 0; }
+
+  /* ---- AppNav owns the brand block (grounding §3) ----
+     At ≥1024px the nav becomes a side rail and _base.css reserves 5.5rem at
+     its head for the brand. It belongs to the page underneath, so it sits
+     inside `.behind` and the scrim covers it like the rest of the chrome.
+     Matches 02f-dashboard-desktop.html exactly. */
+  @media (min-width: 1024px) {
+    .railbrand {
+      position: fixed; top: 0; left: 0; z-index: 31;
+      width: 232px; height: 5.5rem;
+      display: flex; align-items: center; gap: .6rem;
+      padding: 0 1.25rem;
+      background: var(--asphalt-sunk);
+      border-right: 1px solid var(--shoulder);
+      border-bottom: 1px solid var(--shoulder);
+    }
+  }
+  @media (max-width: 1023px) { .railbrand { display: none; } }
+
+  /* The page underneath is taken out of flow so the dialog, not the
+     page, sets the scroll height — a confirmation this long must be
+     reachable by scrolling the page, not trapped in a scroll-in-scroll. */
+  .behind { position: absolute; top: 0; left: 0; right: 0; }
+
+  /* The scrim IS the modal layer: it is in flow, so it always covers
+     the full document however tall the dialog gets. */
+  .scrim {
+    position: relative; z-index: 40;
+    min-height: 100vh;
+    padding: 14px;
+    background: rgba(8, 9, 11, .80);
+    backdrop-filter: blur(2px);
+  }
+
+  dialog.sheet {
+    position: relative; inset: auto; z-index: 41;
+    display: block;
+    width: 100%; max-width: 480px; max-height: none; height: auto;
+    margin: 0 auto;
+    padding: 0;
+    background: var(--asphalt-raised);
+    color: var(--sign-white);
+    border: 1px solid var(--shoulder-lit);
+    border-top: 3px solid var(--stop);
+    border-radius: var(--r-lg);
+    box-shadow: 0 24px 70px rgba(0,0,0,.7);
+  }
+  .sheet__in { padding: 1.15rem 1.15rem calc(1.15rem + env(safe-area-inset-bottom, 0px)); }
+
+  .sheet__head { display: flex; align-items: flex-start; gap: .95rem; margin-bottom: .85rem; }
+  .sheet__head .sign { flex: none; width: 62px; height: 62px; }
+  .sheet__head h2 { font-size: 1.375rem; }
+  .sheet__lead { margin: 0 0 1.15rem; font-size: 1rem; }
+
+  .ledger { border: 1px solid var(--shoulder); border-radius: var(--r); overflow: hidden; }
+  .ledger + .ledger { margin-top: .75rem; }
+  .ledger__head {
+    display: flex; align-items: center; gap: .45rem;
+    padding: .55rem .8rem;
+    font-size: .6875rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase;
+  }
+  .ledger--lose .ledger__head { background: color-mix(in srgb, var(--stop) 26%, var(--asphalt-sunk)); color: #FFD9DA; }
+  .ledger--keep .ledger__head { background: color-mix(in srgb, var(--guide) 26%, var(--asphalt-sunk)); color: #C9EDE0; }
+  .ledger ul { list-style: none; margin: 0; padding: .35rem .8rem .6rem; }
+  .ledger li {
+    display: flex; align-items: flex-start; gap: .55rem;
+    padding: .42rem 0; font-size: .875rem; line-height: 1.45;
+  }
+  .ledger li svg { flex: none; margin-top: 3px; }
+  .ledger--lose li svg { color: var(--stop-lit); }
+  .ledger--keep li svg { color: var(--guide-lit); }
+  .ledger b { font-family: var(--mono); font-weight: 700; color: var(--sign-white); }
+
+  /* ---- ConfirmGate: two-step — acknowledge, then erase ----
+     The gate on the most destructive action in the product cannot be rendered
+     in system chrome: a native white checkbox is the one control on this screen
+     that does not belong to this design language. It stays a real
+     <input type="checkbox"> — real semantics, real keyboard operation, real
+     label association — with `appearance: none` and a box drawn from the
+     project's own tokens. Filed in deviations.md as a proposed §3 component. */
+  .ack {
+    display: flex; align-items: flex-start; gap: .7rem;
+    margin: 1.15rem 0 1rem; padding: .7rem .8rem;
+    background: var(--asphalt-sunk);
+    border: 1px solid var(--shoulder); border-radius: var(--r);
+    cursor: pointer; min-height: 44px;
+  }
+  .ack input {
+    flex: none; width: 24px; height: 24px; margin: 0;
+    display: grid; place-content: center;
+    appearance: none; -webkit-appearance: none;
+    background: var(--asphalt-raised);
+    border: 2px solid var(--shoulder-lit);
+    border-radius: var(--r-sm);
+    cursor: pointer;
+  }
+  /* The tick is a shape, not a colour change — the state must survive for a
+     learner who cannot see the red fill (§5). */
+  .ack input::after {
+    content: '';
+    width: 6px; height: 11px; margin-top: -3px;
+    border: solid #fff; border-width: 0 3px 3px 0;
+    transform: rotate(45deg);
+    opacity: 0;
+  }
+  .ack:hover input { border-color: var(--sign-dim); }
+  .ack input:checked { background: var(--stop); border-color: var(--stop-lit); }
+  .ack input:checked::after { opacity: 1; }
+  .ack:has(input:checked) { border-color: color-mix(in srgb, var(--stop-lit) 55%, var(--shoulder)); }
+  .ack span { font-size: .875rem; line-height: 1.45; }
+
+  .btn[aria-disabled='true'] { opacity: .48; cursor: not-allowed; }
+  .btn[aria-disabled='true']:hover { background: transparent; }
+
+  .sheet__note {
+    margin: .9rem 0 0; font-size: .75rem; line-height: 1.55; text-align: center;
+    color: var(--sign-faint);
+  }
+
+  @media (min-width: 560px) {
+    .scrim { padding: 4vh 14px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="mock-label">Mockup 11b · Settings — reset progress confirmation · cell 11-error · 390×844 mobile</div>
+
+<!-- ---------- the page underneath, held inert while the dialog is open ---------- -->
+<div class="behind" inert>
+  <div class="railbrand">
+    <svg class="sign sign--sm" role="img" aria-label="Red octagonal stop sign"><use href="#sg-stop"/></svg>
+    <strong style="letter-spacing:-.02em;font-size:1.0625rem">TN&nbsp;Drive</strong>
+  </div>
+
+  <header class="appbar">
+    <div class="row appbar__lead">
+      <a class="back" href="#">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M19 12H6M11 6l-6 6 6 6"/></svg>
+        Back<span class="sr-only"> to Study</span>
+      </a>
+      <strong class="appbar__title">Settings</strong>
+      <span class="dim appbar__sub">Sources, corrections and your data</span>
+    </div>
+    <span class="badge badge--offline" title="Everything works without a connection">Offline ready</span>
+  </header>
+
+  <main class="wrap" style="padding-top:1.5rem">
+    <p class="eyebrow">TN Drive</p>
+    <h1>Settings &amp; about</h1>
+
+    <section style="margin-top:1.75rem">
+      <h2>Your data</h2>
+      <p style="margin:.35rem 0 .875rem;font-size:.875rem;color:var(--sign-dim);line-height:1.55">
+        All of it lives in this browser on this device.
+      </p>
+      <div class="panel panel--stop">
+        <h3 style="margin-bottom:.35rem">Reset all progress</h3>
+        <p class="dim" style="margin:0;font-size:.875rem;line-height:1.55">
+          Erases every answer, every mock exam and your whole history.
+        </p>
+        <span class="btn btn--danger btn--block" style="margin-top:1rem">Reset all progress…</span>
+      </div>
+    </section>
+  </main>
+
+  <nav class="nav" aria-label="Main">
+    <a href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10 12 3l8 7v10a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg>
+      Study
+    </a>
+    <a href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v6h6M9 14l2 2 4-4"/></svg>
+      Exam
+    </a>
+    <a href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2 22 12 12 22 2 12z"/><path d="M12 8v4M12 16h.01"/></svg>
+      Signs
+    </a>
+    <a href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+      Progress
+    </a>
+  </nav>
+</div>
+
+<!-- ---------- the confirmation ---------- -->
+<div class="scrim">
+<dialog class="sheet" open aria-labelledby="rst-h" aria-describedby="rst-lead">
+  <div class="sheet__in">
+
+    <div class="sheet__head">
+      <svg class="sign" role="img" aria-label="Red octagonal stop sign: this action cannot be undone"><use href="#sg-stop"/></svg>
+      <div>
+        <p class="eyebrow eyebrow--stop" style="margin-bottom:.3rem">Cannot be undone</p>
+        <h2 id="rst-h">Erase 14 weeks of work?</h2>
+      </div>
+    </div>
+
+    <p class="read sheet__lead" id="rst-lead">
+      There is no server copy and no undo. Once this runs, the only way back is a file you
+      exported yourself.
+    </p>
+
+    <section class="ledger ledger--lose" aria-labelledby="lose-h">
+      <p class="ledger__head" id="lose-h">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        Gone for good
+      </p>
+      <ul>
+        <li>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          <span><b>612</b> answered questions, and which ones you got wrong</span>
+        </li>
+        <li>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          <span><b>57</b> attempts — 47 study sessions and drills, <b>10</b> mock exams with their score reports</span>
+        </li>
+        <li>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          <span>Your readiness of <b>84%</b> and all <b>14</b> topic scores — the progress page goes back to empty</span>
+        </li>
+        <li>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          <span>The review queue: <b>22</b> questions that were due to come back to you</span>
+        </li>
+        <li>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          <span>Your <b>6</b>-day streak</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="ledger ledger--keep" aria-labelledby="keep-h">
+      <p class="ledger__head" id="keep-h">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M4 13l6 6L20 5"/></svg>
+        Stays exactly as it is
+      </p>
+      <ul>
+        <li>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M4 13l6 6L20 5"/></svg>
+          <span>The app on your home screen, all <b>420</b> questions and <b>84</b> signs — nothing re-downloads, and it still works offline</span>
+        </li>
+        <li>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M4 13l6 6L20 5"/></svg>
+          <span>Your text size and reduced-motion settings</span>
+        </li>
+        <li>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M4 13l6 6L20 5"/></svg>
+          <span>Any file you have already exported</span>
+        </li>
+      </ul>
+    </section>
+
+    <label class="ack" for="ack-erase">
+      <input type="checkbox" id="ack-erase">
+      <span>I understand this erases 612 answers and 57 attempts, and that nobody can get them back.</span>
+    </label>
+
+    <button class="btn btn--guide btn--block" type="button" autofocus style="font-size:1.0625rem">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg>
+      Export a copy first
+    </button>
+    <p class="dim" style="margin:.5rem 0 0;font-size:.8125rem;text-align:center">
+      One file, four seconds. You can erase straight afterwards.
+    </p>
+
+    <button class="btn btn--quiet btn--block" type="button" style="margin-top:.875rem">
+      Keep my progress
+    </button>
+
+    <button class="btn btn--danger btn--block" type="button" aria-disabled="true"
+            aria-describedby="erase-hint" style="margin-top:.875rem">
+      Erase everything
+    </button>
+    <p class="faint sheet__note" id="erase-hint">
+      Tick the box above to enable this. If your browser blocks the erase — private mode, or
+      storage locked — nothing is deleted and we'll tell you exactly what survived.
+    </p>
+
+  </div>
+</dialog>
+</div>
+
+<script src="_signs.js"></script>
+</body>
+</html>

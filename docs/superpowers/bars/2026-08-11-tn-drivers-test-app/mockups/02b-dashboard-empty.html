@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup 02b — Dashboard (empty)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,300..900&family=Overpass+Mono:wght@300..700&family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="_base.css">
+<style>
+  /* ---- AppNav owns the brand block (grounding §3) ----
+     At ≥1024px the nav becomes a side rail and _base.css reserves 5.5rem at
+     its head for the brand. Fill that space, and never render the brand in
+     the page header — the header is the page's, the brand is the nav's.
+     Matches 02f-dashboard-desktop.html exactly. */
+  @media (min-width: 1024px) {
+    .railbrand {
+      position: fixed; top: 0; left: 0; z-index: 31;
+      width: 232px; height: 5.5rem;
+      display: flex; align-items: center; gap: .6rem;
+      padding: 0 1.25rem;
+      background: var(--asphalt-sunk);
+      border-right: 1px solid var(--shoulder);
+      border-bottom: 1px solid var(--shoulder);
+    }
+  }
+  @media (max-width: 1023px) { .railbrand { display: none; } }
+
+  /* The app-bar pattern (.appbar__lead / __title / __sub) lives in _base.css
+     and is not redefined here. */
+
+  /* ---- The signature: progress rendered as a highway guide sign ---- */
+  .guidesign {
+    position: relative;
+    background: var(--guide);
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.45);
+    overflow: hidden;
+  }
+  .guidesign::after { /* retroreflective bead grain */
+    content:''; position:absolute; inset:0; opacity:.13; pointer-events:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='80' height='80' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .guidesign::before { /* off-axis sheen */
+    content:''; position:absolute; inset:0; pointer-events:none;
+    background: radial-gradient(130% 100% at 8% -20%, rgba(255,255,255,.14), rgba(255,255,255,0) 58%);
+  }
+  .guidesign__face {
+    position: relative; z-index: 1;
+    border: 2.5px solid var(--sign-white);
+    border-radius: 6px;
+    padding: 1.15rem 1.15rem 1.25rem;
+  }
+  .guidesign__legend {
+    font-size: .625rem; font-weight: 800; letter-spacing: .18em;
+    text-transform: uppercase; color: rgba(255,255,255,.72);
+  }
+  .guidesign__dest {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 1rem;
+    padding: .6rem 0;
+    border-bottom: 1px solid rgba(242,244,241,.22);
+  }
+  .guidesign__dest:last-of-type { border-bottom: 0; padding-bottom: 0; }
+  .guidesign__dest b {
+    font-size: 1.0625rem; font-weight: 700; letter-spacing: -.01em; color: #fff;
+  }
+  .guidesign__dist {
+    font-family: var(--mono); font-weight: 700; font-size: 1.0625rem; color: #fff;
+    font-variant-numeric: tabular-nums; white-space: nowrap;
+  }
+  .guidesign__dist small { font-size: .6875rem; letter-spacing: .08em; opacity: .78; margin-left: .25rem; }
+  /* Zero is honest, so it is dimmed rather than hidden. */
+  .guidesign__dist em { font-style: normal; opacity: .55; }
+
+  /* readiness as a regulatory sign face */
+  .readout { display: flex; align-items: center; gap: 1.15rem; }
+  .readout__copy h1 { margin-bottom: .35rem; }
+
+  .weak { display: grid; gap: .625rem; }
+  .weakrow {
+    display: flex; align-items: center; gap: .875rem;
+    padding: .8rem .9rem;
+    background: var(--asphalt-raised);
+    border: 1px solid var(--shoulder);
+    border-left: 3px solid var(--shoulder-lit);
+    border-radius: var(--r);
+    text-align: left; width: 100%; cursor: pointer; color: inherit;
+    font-family: var(--ui);
+  }
+  .weakrow:hover { border-color: var(--shoulder-lit); }
+  .weakrow__t { flex: 1; min-width: 0; }
+  .weakrow__n { display: block; font-size: .9375rem; font-weight: 600; }
+  .weakrow__s { display: block; font-size: .75rem; color: var(--sign-dim); margin-top: .15rem; }
+  .weakrow__pct { font-family: var(--mono); font-size: .8125rem; color: var(--sign-faint); }
+
+  .streakstrip { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; }
+  .day { width: 26px; height: 26px; border-radius: 4px; background: var(--asphalt-sunk); border: 1px solid var(--shoulder); }
+  .day--on { background: var(--guide); border-color: var(--guide-lit); }
+  .day--today { border-color: var(--warning); border-width: 2px; }
+
+  /* The empty hero's speed sign is unlit — a sign before the headlights hit it. */
+  .sign-speed--zero { opacity: .78; }
+  .sign-speed--zero strong { color: #6B7280; }
+
+  /* The first-session invitation gets the only lit surface on the screen. */
+  .invite { border-color: color-mix(in srgb, var(--guide-lit) 55%, var(--shoulder)); }
+  .invite__steps { display: flex; gap: .5rem; margin: 1rem 0 0; padding: 0; list-style: none; }
+  .invite__steps li {
+    flex: 1; padding: .6rem .5rem;
+    background: var(--asphalt-sunk); border: 1px solid var(--shoulder);
+    border-radius: var(--r-sm);
+    font-size: .6875rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+    color: var(--sign-dim); text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<div class="mock-label">Mockup 02b · Dashboard · empty (zero answered) · matrix cell 2-empty · 390×844 mobile</div>
+
+<div class="railbrand">
+  <svg class="sign sign--sm" role="img" aria-label="Red octagonal stop sign"><use href="#sg-stop"/></svg>
+  <strong style="letter-spacing:-.02em;font-size:1.0625rem">TN&nbsp;Drive</strong>
+</div>
+
+<header class="appbar">
+  <div class="row appbar__lead">
+    <strong class="appbar__title">Study</strong>
+    <span class="dim appbar__sub">Class D knowledge test · nothing answered yet</span>
+  </div>
+  <span class="badge badge--offline" title="Everything works without a connection">Offline ready</span>
+</header>
+
+<main class="wrap stack" style="padding-top:1.5rem">
+
+  <!-- HERO: readiness exists, it just reads zero. No sad icon, no apology. -->
+  <section class="readout">
+    <div class="sign-speed sign-speed--zero" aria-hidden="true">
+      <b>TEST</b><b>READY</b><strong>0</strong>
+    </div>
+    <div class="readout__copy">
+      <p class="eyebrow">Class D knowledge test</p>
+      <h1>Start your first&nbsp;mile</h1>
+      <p class="dim" style="margin:.35rem 0 0;font-size:.9375rem">
+        Twelve questions is all it takes to read your level.
+      </p>
+    </div>
+  </section>
+
+  <!-- SIGNATURE: the same guide sign, honestly zeroed -->
+  <section class="guidesign" aria-label="Your route to the test">
+    <div class="guidesign__face">
+      <p class="guidesign__legend" style="margin:0 0 .5rem">Route to your test</p>
+      <div class="guidesign__dest">
+        <b>Practice questions</b>
+        <span class="guidesign__dist"><em>0</em><small>OF 420</small></span>
+      </div>
+      <div class="guidesign__dest">
+        <b>Road signs learned</b>
+        <span class="guidesign__dist"><em>0</em><small>OF 84</small></span>
+      </div>
+      <div class="guidesign__dest">
+        <b>Mock exams passed</b>
+        <span class="guidesign__dist"><em>0</em><small>OF 5</small></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- THE INVITATION: the one lit thing on the screen -->
+  <section class="panel invite">
+    <p class="eyebrow eyebrow--guide" style="margin-bottom:.35rem">Start here</p>
+    <h2 style="margin-bottom:.4rem">Your first 12 questions</h2>
+    <p class="read" style="margin:0;font-size:1rem">
+      They sample every topic on the test, so by the end this screen knows what
+      to work on. Every answer comes with the manual passage it came from.
+    </p>
+    <ul class="invite__steps">
+      <li>12 questions</li>
+      <li>6 minutes</li>
+      <li>No score kept</li>
+    </ul>
+    <a class="btn btn--guide btn--block" href="#" style="margin-top:1rem;font-size:1.0625rem">
+      Answer your first question
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+    </a>
+  </section>
+
+  <p class="dim" style="text-align:center;margin:.5rem 0 0;font-size:.8125rem">
+    Or <a href="#" style="color:var(--route-text)">browse the 84 road signs</a> first — no answering required.
+  </p>
+
+  <hr class="centreline">
+
+  <!-- Weak topics, pre-measurement. Structure preserved, data honestly absent. -->
+  <section>
+    <div class="spread" style="margin-bottom:.5rem">
+      <h2>Slow down here</h2>
+      <svg class="sign sign--sm" aria-hidden="true"><use href="#sg-curve"/></svg>
+    </div>
+    <p class="dim" style="margin:0 0 .875rem;font-size:.875rem">
+      Nothing measured yet. After the first session, the four topics holding you
+      back land here — these four trip up most people.
+    </p>
+    <div class="weak">
+      <button class="weakrow">
+        <svg class="sign sign--sm" aria-hidden="true"><use href="#sg-rr-advance"/></svg>
+        <span class="weakrow__t">
+          <span class="weakrow__n">Railroad crossings</span>
+          <span class="weakrow__s">11 questions · not measured</span>
+        </span>
+        <span class="weakrow__pct">—</span>
+      </button>
+      <button class="weakrow">
+        <svg class="sign sign--sm" aria-hidden="true"><use href="#sg-school"/></svg>
+        <span class="weakrow__t">
+          <span class="weakrow__n">School buses &amp; zones</span>
+          <span class="weakrow__s">13 questions · not measured</span>
+        </span>
+        <span class="weakrow__pct">—</span>
+      </button>
+      <button class="weakrow">
+        <svg class="sign sign--sm" aria-hidden="true"><use href="#sg-yield"/></svg>
+        <span class="weakrow__t">
+          <span class="weakrow__n">Right-of-way</span>
+          <span class="weakrow__s">17 questions · not measured</span>
+        </span>
+        <span class="weakrow__pct">—</span>
+      </button>
+      <button class="weakrow">
+        <svg class="sign sign--sm" aria-hidden="true"><use href="#sg-workzone"/></svg>
+        <span class="weakrow__t">
+          <span class="weakrow__n">Work zones</span>
+          <span class="weakrow__s">12 questions · not measured</span>
+        </span>
+        <span class="weakrow__pct">—</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- EXAM CTA -->
+  <section class="panel panel--warn">
+    <div class="spread" style="align-items:flex-start">
+      <div style="flex:1">
+        <p class="eyebrow eyebrow--warning" style="margin-bottom:.35rem">Not yet recommended</p>
+        <h3 style="margin-bottom:.35rem">Take a full mock exam</h3>
+        <p class="dim" style="margin:0;font-size:.875rem">
+          30 questions, 60 minutes. Seven wrong ends it early — same as the real one.
+          Reach 85% readiness first and you'll pass on the first try.
+        </p>
+      </div>
+      <span class="shield shield--locked" aria-hidden="true"><span>85</span></span>
+    </div>
+    <a class="btn btn--quiet btn--block" href="#" style="margin-top:1rem">Take it anyway</a>
+  </section>
+
+  <!-- STREAK -->
+  <section class="panel panel--flat">
+    <div class="spread" style="margin-bottom:.875rem">
+      <div>
+        <p class="eyebrow" style="margin-bottom:.25rem">Study streak</p>
+        <p style="margin:0;font-size:.875rem" class="dim">Today starts it</p>
+      </div>
+      <span class="num" style="font-size:1.75rem;font-weight:700;color:var(--sign-faint)">0</span>
+    </div>
+    <div class="streakstrip" aria-hidden="true">
+      <span class="day"></span><span class="day"></span>
+      <span class="day"></span><span class="day"></span>
+      <span class="day"></span><span class="day day--today"></span>
+      <span class="day"></span>
+    </div>
+  </section>
+
+  <p class="faint" style="font-size:.75rem;text-align:center;margin:1.5rem 0 0;line-height:1.5">
+    Questions cite the Tennessee Comprehensive Driver License Manual.<br>
+    Not affiliated with the State of Tennessee.
+  </p>
+
+</main>
+
+<nav class="nav" aria-label="Main">
+  <a href="#" aria-current="page">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10 12 3l8 7v10a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg>
+    Study
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v6h6M9 14l2 2 4-4"/></svg>
+    Exam
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2 22 12 12 22 2 12z"/><path d="M12 8v4M12 16h.01"/></svg>
+    Signs
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+    Progress
+  </a>
+</nav>
+
+<script src="_signs.js"></script>
+</body>
+</html>

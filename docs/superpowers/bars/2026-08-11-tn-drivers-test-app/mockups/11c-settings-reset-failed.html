@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup 11c — Settings, reset failed (storage locked)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,300..900&family=Overpass+Mono:wght@300..700&family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="_base.css">
+<style>
+  /* ============================================================
+     THE CELL A BUILD OMITS.
+
+     "Delete" is assumed to always succeed. It doesn't: private
+     browsing, a locked profile, a read-only volume, or a quota
+     daemon can all refuse the write. The learner has already
+     confirmed a destructive action — the worst possible moment to
+     go silent or to lie about what happened.
+
+     Design rules applied here:
+     - NO octagon. The octagon means "this stopped." Nothing was
+       destroyed and nothing is broken; the erase simply did not
+       happen. That is a warning, not a hard stop. (Same reading
+       ratified for 01b.)
+     - State plainly that the data is still there — relief first,
+       because the learner's live question is "did I lose it?"
+     - Every recovery is a real action, and the one that always
+       works (clear it from the browser itself) is spelled out.
+     ---------- */
+
+  /* ---- AppNav owns the brand block (grounding §3) ----
+     At ≥1024px the nav becomes a side rail and _base.css reserves 5.5rem at
+     its head for the brand. Fill that space rather than leaving it dead.
+     Matches 02f-dashboard-desktop.html exactly. */
+  @media (min-width: 1024px) {
+    .railbrand {
+      position: fixed; top: 0; left: 0; z-index: 31;
+      width: 232px; height: 5.5rem;
+      display: flex; align-items: center; gap: .6rem;
+      padding: 0 1.25rem;
+      background: var(--asphalt-sunk);
+      border-right: 1px solid var(--shoulder);
+      border-bottom: 1px solid var(--shoulder);
+    }
+  }
+  @media (max-width: 1023px) { .railbrand { display: none; } }
+
+  .head { display: flex; align-items: flex-start; gap: .95rem; }
+  .head .sign { flex: none; }
+
+  .factrow {
+    display: flex; justify-content: space-between; gap: 1rem;
+    padding: .6rem 0; border-bottom: 1px solid var(--shoulder);
+    font-size: .875rem;
+  }
+  .factrow:last-child { border-bottom: 0; }
+  .factrow dt { color: var(--sign-dim); margin: 0; }
+  .factrow dd { margin: 0; font-family: var(--mono); text-align: right; }
+
+  /* The causes list takes the same treatment every other list in the set
+     takes (01b, 02d, 09b, 11b): no browser bullet, a leading glyph that
+     says what kind of item it is. These are explanatory, so the glyph is
+     interstate blue — informational, per §2 — not a warning or a loss. */
+  .why { list-style: none; margin: 0; padding: 0; }
+  .why li { display: flex; gap: .7rem; align-items: flex-start; margin-bottom: .6rem; }
+  .why li:last-child { margin-bottom: 0; }
+  .why li svg { flex: none; width: 18px; height: 18px; margin-top: .3rem; color: var(--route-text); }
+
+  /* ---- disclosure: the same affordance 01b and 03b carry ----
+     A flex summary drops the native triangle, so the chevron is drawn
+     explicitly and turns when the section opens. */
+  .disclose > summary {
+    display: flex; align-items: center; gap: .5rem;
+    min-height: 44px; cursor: pointer; list-style: none;
+    font-size: .9375rem; font-weight: 700;
+  }
+  .disclose > summary::-webkit-details-marker { display: none; }
+  .disclose > summary:hover { color: var(--guide-text); }
+  .disclose > summary .chev { flex: none; margin-left: auto; color: var(--sign-dim); transition: transform .15s ease; }
+  .disclose[open] > summary .chev { transform: rotate(90deg); }
+
+  .steps { margin: .5rem 0 0; padding-left: 1.1rem; }
+  .steps li { margin-bottom: .35rem; font-size: .9375rem; }
+
+  .safe {
+    display: flex; align-items: flex-start; gap: .7rem;
+    font-size: .9375rem;
+  }
+  .safe svg { flex: none; margin-top: 2px; color: var(--guide-text); }
+</style>
+</head>
+<body>
+
+<div class="mock-label">Mockup 11c · Settings — reset failed (storage locked) · cell 11-error · 390×844</div>
+
+<div class="railbrand">
+  <svg class="sign sign--sm" role="img" aria-label="Red octagonal stop sign"><use href="#sg-stop"/></svg>
+  <strong style="letter-spacing:-.02em;font-size:1.0625rem">TN&nbsp;Drive</strong>
+</div>
+
+<header class="appbar">
+  <div class="row appbar__lead">
+    <a class="back" href="#">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M19 12H6M11 6l-6 6 6 6"/></svg>
+      Back<span class="sr-only"> to Study</span>
+    </a>
+    <strong class="appbar__title">Settings</strong>
+    <span class="dim appbar__sub">Reset failed · nothing was erased</span>
+  </div>
+  <span class="badge badge--offline" title="Everything works without a connection">Offline ready</span>
+</header>
+
+<main class="wrap stack" style="padding-top:1.25rem" role="alert">
+
+  <section class="panel panel--warn">
+    <div class="head">
+      <svg class="sign" aria-hidden="true"><use href="#sg-warn"/></svg>
+      <div>
+        <p class="eyebrow eyebrow--warning" style="margin-bottom:.3rem">Nothing was erased</p>
+        <h1 style="font-size:1.5rem">This browser won't let the app write</h1>
+      </div>
+    </div>
+    <p class="read" style="margin-top:1rem">
+      The reset asked your browser to clear this site's storage and the browser refused.
+      Your progress is untouched — all 612 answers, all 57 attempts and your 84% readiness
+      are exactly as they were a moment ago.
+    </p>
+  </section>
+
+  <!-- Relief first: say the data is safe, and prove it. -->
+  <section class="panel panel--flat">
+    <p class="eyebrow eyebrow--guide" style="margin-bottom:.6rem">Still here</p>
+    <dl style="margin:0">
+      <div class="factrow"><dt>Questions answered</dt><dd>612</dd></div>
+      <div class="factrow"><dt>Attempts</dt><dd>57</dd></div>
+      <div class="factrow"><dt>Mock exams</dt><dd>10</dd></div>
+      <div class="factrow"><dt>Readiness</dt><dd>84%</dd></div>
+      <div class="factrow"><dt>Last saved</dt><dd>2 min ago</dd></div>
+    </dl>
+    <p class="safe" style="margin:.9rem 0 0">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M4 13l6 6L20 5"/></svg>
+      <span class="dim">You can keep studying right now. Nothing about this stops the app working.</span>
+    </p>
+  </section>
+
+  <hr class="centreline">
+
+  <section>
+    <h2 style="margin-bottom:.75rem">Why this happens</h2>
+    <ul class="why read" style="font-size:1rem">
+      <li>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.5h.01"/></svg>
+        <span>You're in a private or incognito window, which discards storage instead of managing it.</span>
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.5h.01"/></svg>
+        <span>Your browser is set to block site data for this site.</span>
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.5h.01"/></svg>
+        <span>The profile or disk is read-only — common on a managed school or work device.</span>
+      </li>
+    </ul>
+  </section>
+
+  <section class="panel">
+    <p class="eyebrow" style="margin-bottom:.5rem">What you can do</p>
+
+    <a class="btn btn--guide btn--block" href="#">Try the reset again</a>
+
+    <details class="disclose" style="margin-top:1rem">
+      <summary>
+        Clear it from the browser instead
+        <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+      </summary>
+      <p class="dim" style="font-size:.875rem;margin:.5rem 0 0">
+        This always works, because it doesn't ask the page for permission.
+      </p>
+      <ol class="steps dim">
+        <li>Open your browser's site settings for this page.</li>
+        <li>Choose <strong>Clear site data</strong> (or <strong>Cookies and site data</strong>).</li>
+        <li>Reopen the app. It will start at onboarding.</li>
+      </ol>
+    </details>
+
+    <a class="btn btn--quiet btn--block" href="#" style="margin-top:1rem">
+      Export a copy of my progress first
+    </a>
+    <p class="faint" style="font-size:.75rem;margin:.5rem 0 0;text-align:center">
+      Downloads a JSON file. Exporting works even when writing does not.
+    </p>
+  </section>
+
+  <p class="faint" style="font-size:.75rem;text-align:center;margin:1.25rem 0 0;line-height:1.5">
+    Questions cite the Tennessee Comprehensive Driver License Manual.<br>
+    Not affiliated with the State of Tennessee.
+  </p>
+
+</main>
+
+<nav class="nav" aria-label="Main">
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10 12 3l8 7v10a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg>
+    Study
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v6h6M9 14l2 2 4-4"/></svg>
+    Exam
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2 22 12 12 22 2 12z"/><path d="M12 8v4M12 16h.01"/></svg>
+    Signs
+  </a>
+  <!-- Settings is not an AppNav destination, so no item is current here —
+       matching 11 and 11b. -->
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+    Progress
+  </a>
+</nav>
+
+<script src="_signs.js"></script>
+</body>
+</html>

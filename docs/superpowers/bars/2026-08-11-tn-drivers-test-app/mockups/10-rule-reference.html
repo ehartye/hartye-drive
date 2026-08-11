@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup 10 — Rule reference, topic detail (populated)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,300..900&family=Overpass+Mono:wght@300..700&family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="_base.css">
+<style>
+  /* `.sr-only` lives in _base.css and is not redefined here. */
+
+  /* ---- AppNav owns the brand block (grounding §3) ----
+     At ≥1024px the nav becomes a side rail and _base.css reserves 5.5rem at
+     its head for the brand. Fill that space rather than leaving it dead.
+     Matches 02f-dashboard-desktop.html exactly. */
+  @media (min-width: 1024px) {
+    .railbrand {
+      position: fixed; top: 0; left: 0; z-index: 31;
+      width: 232px; height: 5.5rem;
+      display: flex; align-items: center; gap: .6rem;
+      padding: 0 1.25rem;
+      background: var(--asphalt-sunk);
+      border-right: 1px solid var(--shoulder);
+      border-bottom: 1px solid var(--shoulder);
+    }
+  }
+  @media (max-width: 1023px) { .railbrand { display: none; } }
+
+  /* ---- the header pattern the whole set follows (02f is the reference) ----
+     Leading group: an optional back-link, then the destination title, then a
+     line of context. Trailing: the offline badge. A screen that needs a way
+     back keeps it, but inside that structure rather than instead of it. The
+     context line drops below 900px, where the back-link, the title and the
+     badge need the whole bar. */
+  .appbar__lead { min-width: 0; gap: .75rem; }
+  .appbar > .badge { flex: none; }
+  .appbar__title { letter-spacing: -.02em; font-size: 1.0625rem;
+                   min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .appbar__sub { display: none; font-size: .875rem; }
+  @media (min-width: 900px) { .appbar__sub { display: block; } }
+
+  .back {
+    display: inline-flex; align-items: center; gap: .4rem; flex: none;
+    min-height: 44px; padding-right: .25rem;
+    color: var(--sign-dim); text-decoration: none;
+    font-size: .8125rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  }
+  .back:hover { color: var(--sign-white); }
+
+  .hero { display: flex; align-items: flex-start; gap: 1rem; }
+  .hero .sign { flex: none; }
+  .hero__t { min-width: 0; }
+
+  /* The rule in one sentence — the thing you'd say out loud. */
+  .plain {
+    font-family: var(--ui); font-weight: 600;
+    font-size: clamp(1.125rem, 4vw, 1.375rem); line-height: 1.35;
+    letter-spacing: -.01em; margin: 0; text-wrap: pretty;
+  }
+
+  /* Requirements, marked with lane stripes rather than numerals —
+     order here is not a sequence, so it must not read as one. */
+  .rulelist { list-style: none; margin: 0; padding: 0; }
+  .rulelist li {
+    position: relative; padding-left: 1.9rem;
+    font-family: var(--read); font-size: 1.0625rem; line-height: 1.6; color: #DDE2E6;
+  }
+  .rulelist li + li { margin-top: .9rem; }
+  .rulelist li::before {
+    content: ''; position: absolute; left: 0; top: .72em;
+    width: 15px; height: 3px; border-radius: 2px; background: var(--warning);
+  }
+  .rulelist strong { font-family: var(--ui); font-weight: 800; color: var(--sign-white); }
+
+  /* Related signs */
+  .relsigns { display: grid; grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); gap: .75rem; }
+  .relsign {
+    display: flex; flex-direction: column; align-items: center; gap: .4rem;
+    padding: 1rem .625rem .875rem;
+    background: var(--asphalt-raised);
+    border: 1px solid var(--shoulder); border-radius: var(--r-lg);
+    color: inherit; text-decoration: none; text-align: center;
+  }
+  .relsign:hover { border-color: var(--shoulder-lit); background: #20242B; }
+  .relsign__face { display: grid; place-items: center; min-height: 100px; }
+  .relsign__face .sign { max-width: 100%; }
+  .relsign__n { font-size: .875rem; font-weight: 700; letter-spacing: -.01em; line-height: 1.25; }
+  .relsign__s { margin: 0; font-family: var(--read); font-size: .8125rem; line-height: 1.45; color: var(--sign-dim); }
+
+  /* Related questions */
+  .qrow {
+    display: flex; align-items: center; gap: .875rem;
+    width: 100%; min-height: 60px; padding: .8rem .9rem;
+    background: var(--asphalt-raised);
+    border: 1px solid var(--shoulder); border-left: 3px solid var(--shoulder-lit);
+    border-radius: var(--r);
+    color: inherit; text-decoration: none; text-align: left;
+  }
+  .qrow + .qrow { margin-top: .5rem; }
+  .qrow:hover { border-color: var(--shoulder-lit); background: #20242B; }
+  .qrow--missed { border-left-color: var(--stop-lit); }
+  .qrow--ok     { border-left-color: var(--guide-lit); }
+  .qrow__t { flex: 1; min-width: 0; }
+  .qrow__q { display: block; font-size: .9375rem; font-weight: 600; line-height: 1.35; }
+  .qrow__s {
+    display: inline-flex; align-items: center; gap: .3rem; margin-top: .3rem;
+    font-size: .6875rem; font-weight: 800; letter-spacing: .09em;
+    text-transform: uppercase; color: var(--sign-dim);
+  }
+  .qrow__chev { flex: none; color: var(--sign-faint); }
+
+  .srcnote {
+    display: grid; gap: .4rem;
+    font-family: var(--mono); font-size: .6875rem; line-height: 1.6;
+    letter-spacing: .03em; color: var(--sign-faint);
+  }
+</style>
+</head>
+<body>
+
+<div class="mock-label">Mockup 10 · Rule reference (topic detail) · populated · 390×844 mobile</div>
+
+<div class="railbrand">
+  <svg class="sign sign--sm" role="img" aria-label="Red octagonal stop sign"><use href="#sg-stop"/></svg>
+  <strong style="letter-spacing:-.02em;font-size:1.0625rem">TN&nbsp;Drive</strong>
+</div>
+
+<header class="appbar">
+  <div class="row appbar__lead">
+    <a class="back" href="#">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M19 12H6M11 6l-6 6 6 6"/></svg>
+      Back<span class="sr-only"> to the explanation</span>
+    </a>
+    <strong class="appbar__title">Rule reference</strong>
+    <span class="dim appbar__sub">Railroad crossings</span>
+  </div>
+  <span class="badge badge--offline" title="Everything works without a connection">Offline ready</span>
+</header>
+
+<main class="wrap stack" style="padding-top:1.5rem">
+
+  <section class="hero">
+    <svg class="sign sign--lg" role="img"
+         aria-label="Yellow circle with a black X and two black letter R's — the railroad advance warning sign. A crossing is ahead.">
+      <use href="#sg-rr-advance"/>
+    </svg>
+    <div class="hero__t">
+      <p class="eyebrow eyebrow--warning">Rule reference</p>
+      <h1>Railroad crossings</h1>
+      <p class="dim" style="margin:.5rem 0 0;font-size:.8125rem">
+        You came here from the explanation on question 8.
+      </p>
+    </div>
+  </section>
+
+  <!-- THE RULE, PLAINLY -->
+  <section class="panel">
+    <p class="eyebrow" style="margin-bottom:.5rem">The rule</p>
+    <p class="plain">
+      A train cannot stop for you. At every crossing, the whole job of stopping is yours —
+      and you may not enter the tracks until you can get all the way across.
+    </p>
+  </section>
+
+  <!-- WHAT IT REQUIRES -->
+  <section>
+    <h2 style="margin-bottom:.9rem">What that requires of you</h2>
+    <ul class="rulelist">
+      <li>
+        <strong>Slow at the round yellow sign.</strong> It means a crossing is ahead. Reduce
+        speed, look both ways, listen, and be ready to stop before you reach the rails.
+      </li>
+      <li>
+        <strong>Stop 15 to 50 feet from the nearest rail</strong> whenever the lights are
+        flashing, a gate is lowering or down, a flagger signals, or a train is close enough
+        to be a hazard.
+      </li>
+      <li>
+        <strong>Never drive around a lowered gate.</strong> Not to save a minute, not because
+        you can see the track is clear. Wait for the gate to rise and the lights to stop.
+      </li>
+      <li>
+        <strong>Never start across without room on the far side.</strong> Stopping halfway
+        onto a crossing is how vehicles get struck.
+      </li>
+      <li>
+        <strong>Don't shift gears on the crossing.</strong> A stall on the rails is the one
+        mistake you cannot undo.
+      </li>
+      <li>
+        <strong>More than one track means more than one train.</strong> After a train passes,
+        wait until you can see clearly in both directions before you move.
+      </li>
+      <li>
+        <strong>Some vehicles stop every time.</strong> School buses and vehicles carrying
+        passengers for hire or placarded hazardous materials must stop at crossings whether
+        or not a train is coming.
+      </li>
+    </ul>
+  </section>
+
+  <!-- THE MANUAL, VERBATIM -->
+  <section class="panel panel--flat">
+    <p class="eyebrow" style="margin-bottom:.65rem">What the manual says</p>
+    <blockquote class="cite" style="margin:0">
+      <p class="cite__quote" style="margin:0">
+        &ldquo;When you come to a railroad crossing, look both ways and listen for a train.
+        Never start to cross until you are sure there is room for your vehicle on the other
+        side. Never shift gears while crossing. When the signals are flashing or the gates
+        are down, you must stop not less than fifteen (15) feet and not more than fifty (50)
+        feet from the nearest rail, and you must not proceed until the train has passed and
+        the signals have stopped.&rdquo;
+      </p>
+      <cite class="cite__src">
+        Tennessee Comprehensive Driver License Manual · Section: Railroad Crossings · p. 41
+      </cite>
+    </blockquote>
+    <p class="srcnote" style="margin:1rem 0 0">
+      <span><span class="badge badge--live" style="margin-right:.4rem">Verified</span>Checked against current Tennessee law · no correction on file</span>
+    </p>
+  </section>
+
+  <!-- RELATED SIGNS -->
+  <section>
+    <div class="spread" style="margin-bottom:.9rem">
+      <h2>Signs that carry this rule</h2>
+    </div>
+    <div class="relsigns">
+
+      <a class="relsign" href="08-signs-library.html">
+        <span class="relsign__face">
+          <svg class="sign sign--lg" role="img" aria-label="Yellow circle with a black X and two black letter R's. A railroad crossing is ahead; slow down, look and listen, and be ready to stop."><use href="#sg-rr-advance"/></svg>
+        </span>
+        <span class="relsign__n">Crossing ahead</span>
+        <p class="relsign__s">A warning sign. Posted before the tracks.</p>
+      </a>
+
+      <a class="relsign" href="08-signs-library.html">
+        <span class="relsign__face">
+          <svg class="sign sign--lg" role="img" aria-label="White X-shaped sign reading RAILROAD CROSSING in black letters. It marks the crossing itself; yield to any approaching train."><use href="#sg-crossbuck"/></svg>
+        </span>
+        <span class="relsign__n">Crossbuck</span>
+        <p class="relsign__s">Regulatory. At the rails, it has the force of a yield sign.</p>
+      </a>
+
+      <a class="relsign" href="08-signs-library.html">
+        <span class="relsign__face">
+          <svg class="sign sign--lg" role="img" aria-label="Red octagon with a white border and white letters reading STOP. Come to a complete stop."><use href="#sg-stop"/></svg>
+        </span>
+        <span class="relsign__n">Stop</span>
+        <p class="relsign__s">Some crossings add one. Then a full stop is required every time.</p>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- HOW YOU'RE DOING ON IT -->
+  <section class="panel panel--warn">
+    <div class="meter">
+      <div class="meter__head">
+        <span class="meter__name">Your record on this topic</span>
+        <span class="meter__val">4 / 11 · 36%</span>
+      </div>
+      <div class="rail rail--warn" role="img" aria-label="Railroad crossings: 4 of 11 correct, 36 percent"><i style="width:36%"></i></div>
+    </div>
+    <p class="dim" style="margin:.9rem 0 0;font-size:.875rem">
+      This is your weakest topic. Most of the misses are the stopping distance —
+      15 to 50 feet, measured from the nearest rail.
+    </p>
+  </section>
+
+  <a class="btn btn--guide btn--block" href="#" style="font-size:1.0625rem">
+    Practice this topic — 11 questions
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+  </a>
+
+  <hr class="centreline">
+
+  <!-- RELATED QUESTIONS -->
+  <section>
+    <h2 style="margin-bottom:.9rem">Questions that cite this rule</h2>
+
+    <a class="qrow qrow--missed" href="#">
+      <span class="qrow__t">
+        <span class="qrow__q">The gates are down and the lights are flashing. Where must you stop?</span>
+        <span class="qrow__s">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          Missed twice
+        </span>
+      </span>
+      <svg class="qrow__chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+    </a>
+
+    <a class="qrow qrow--missed" href="#">
+      <span class="qrow__t">
+        <span class="qrow__q">A round yellow sign with a black X and two R's tells you what?</span>
+        <span class="qrow__s">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          Missed once
+        </span>
+      </span>
+      <svg class="qrow__chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+    </a>
+
+    <a class="qrow qrow--ok" href="#">
+      <span class="qrow__t">
+        <span class="qrow__q">A train has just passed on a two-track crossing. What should you do next?</span>
+        <span class="qrow__s">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M5 13l4 4 10-10"/></svg>
+          Correct last time
+        </span>
+      </span>
+      <svg class="qrow__chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+    </a>
+
+    <a class="qrow" href="#">
+      <span class="qrow__t">
+        <span class="qrow__q">Which vehicles must stop at every railroad crossing?</span>
+        <span class="qrow__s">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="12" cy="12" r="8"/></svg>
+          Not seen yet
+        </span>
+      </span>
+      <svg class="qrow__chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+    </a>
+  </section>
+
+  <!-- SOURCE -->
+  <section class="panel panel--flat">
+    <p class="eyebrow" style="margin-bottom:.6rem">Where this came from</p>
+    <p class="srcnote">
+      <span>Tennessee Comprehensive Driver License Manual</span>
+      <span>TN Dept. of Safety &amp; Homeland Security · content current as of July 1, 2022</span>
+      <span>Section: Railroad Crossings · pp. 40&ndash;42</span>
+    </p>
+    <p class="dim" style="margin:.9rem 0 0;font-size:.8125rem;line-height:1.55">
+      Where Tennessee law has changed since the manual was published, TN&nbsp;Drive shows the
+      correction beside the quotation rather than editing it. This rule has none.
+    </p>
+  </section>
+
+  <p class="faint" style="font-size:.75rem;text-align:center;margin:1.25rem 0 0;line-height:1.5">
+    Not affiliated with the State of Tennessee.
+  </p>
+
+</main>
+
+<nav class="nav" aria-label="Main">
+  <a href="02-dashboard-populated.html" aria-current="page">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10 12 3l8 7v10a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg>
+    Study
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v6h6M9 14l2 2 4-4"/></svg>
+    Exam
+  </a>
+  <a href="08-signs-library.html">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2 22 12 12 22 2 12z"/><path d="M12 8v4M12 16h.01"/></svg>
+    Signs
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+    Progress
+  </a>
+</nav>
+
+<script src="_signs.js"></script>
+</body>
+</html>

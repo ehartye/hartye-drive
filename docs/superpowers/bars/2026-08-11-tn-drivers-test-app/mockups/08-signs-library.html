@@ -1,0 +1,567 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup 08 — Sign library, browse (populated)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,300..900&family=Overpass+Mono:wght@300..700&family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="_base.css">
+<style>
+  /* `.sr-only` lives in _base.css and is not redefined here. */
+
+  /* ---- AppNav owns the brand block (grounding §3) ----
+     At ≥1024px the nav becomes a side rail and _base.css reserves 5.5rem at
+     its head for the brand. Fill that space, and never render the brand in
+     the page header — the header is the page's, the brand is the nav's.
+     Matches 02f-dashboard-desktop.html exactly. */
+  @media (min-width: 1024px) {
+    .railbrand {
+      position: fixed; top: 0; left: 0; z-index: 31;
+      width: 232px; height: 5.5rem;
+      display: flex; align-items: center; gap: .6rem;
+      padding: 0 1.25rem;
+      background: var(--asphalt-sunk);
+      border-right: 1px solid var(--shoulder);
+      border-bottom: 1px solid var(--shoulder);
+    }
+  }
+  @media (max-width: 1023px) { .railbrand { display: none; } }
+
+  /* ---- the header pattern the whole set follows (02f is the reference) ----
+     Leading group: an optional back-link, then the destination title, then a
+     line of context. Trailing: the offline badge. The context line drops
+     below 900px, where the title and the badge need the whole bar. */
+  .appbar__lead { min-width: 0; gap: .75rem; }
+  .appbar > .badge { flex: none; }
+  .appbar__title { letter-spacing: -.02em; font-size: 1.0625rem;
+                   min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .appbar__sub { display: none; font-size: .875rem; }
+  @media (min-width: 900px) { .appbar__sub { display: block; } }
+
+  /* ---- search + category filter ---- */
+  .filters { display: grid; gap: .75rem; }
+  .field { position: relative; }
+  .field input[type='search'] {
+    width: 100%; min-height: 48px;
+    padding: 0 2.75rem 0 2.6rem;
+    background: var(--asphalt-sunk);
+    border: 1px solid var(--shoulder); border-radius: var(--r);
+    color: var(--sign-white); font-family: var(--ui); font-size: 1rem;
+    appearance: none;
+  }
+  .field input[type='search']::placeholder { color: var(--sign-faint); }
+  .field input[type='search']:focus { border-color: var(--shoulder-lit); }
+  .field__icon {
+    position: absolute; left: .8rem; top: 50%; transform: translateY(-50%);
+    color: var(--sign-faint); pointer-events: none;
+  }
+  .field__clear {
+    position: absolute; right: 5px; top: 50%; transform: translateY(-50%);
+    width: 38px; height: 38px; display: grid; place-items: center;
+    background: transparent; border: 0; border-radius: 999px;
+    color: var(--sign-dim); cursor: pointer;
+  }
+  .field__clear:hover { color: var(--sign-white); background: rgba(255,255,255,.06); }
+
+  .chips { display: flex; flex-wrap: wrap; gap: .5rem; }
+  .chip {
+    display: inline-flex; align-items: center; gap: .45rem;
+    min-height: 40px; padding: 0 .75rem;
+    background: var(--asphalt-raised);
+    border: 1px solid var(--shoulder); border-radius: 999px;
+    color: var(--sign-dim); cursor: pointer; text-decoration: none;
+    font-family: var(--ui); font-size: .8125rem; font-weight: 700; letter-spacing: .03em;
+  }
+  .chip:hover { border-color: var(--shoulder-lit); color: var(--sign-white); }
+  .chip[aria-pressed='true'] {
+    background: var(--guide-deep); border-color: var(--guide-lit); color: var(--sign-white);
+  }
+  .chip__dot { width: 10px; height: 10px; border-radius: 2px; flex: none; }
+  /* Which filter is on is a state, and the pressed pill signals it with a
+     green fill — colour alone (§5). The tick is the shape that carries it
+     for anyone who cannot see the fill change. */
+  .chip__tick { flex: none; }
+
+  /* ---- the colour key: the teaching move ---- */
+  .keylist { list-style: none; margin: 0; padding: 0; display: grid; gap: .7rem; }
+  .keylist li { display: flex; align-items: center; gap: .8rem; }
+  .keylist .sign, .keylist .sign-speed, .keylist .shield { flex: none; }
+  .keylist p { margin: 0; font-family: var(--read); font-size: .9375rem; line-height: 1.45; color: #DDE2E6; }
+  .keylist b { font-family: var(--ui); font-weight: 800; letter-spacing: .01em; color: var(--sign-white); }
+  .keylist .sign-speed b, .keylist .sign-speed strong { color: #14161A; }
+
+  /* ---- category header: meaning stated before the grid ---- */
+  .cat { margin-top: 2.25rem; }
+  .cat__head { border-left: 4px solid var(--shoulder); padding-left: .875rem; margin-bottom: 1rem; }
+  .cat--reg    .cat__head { border-left-color: var(--stop-lit); }
+  .cat--warn   .cat__head { border-left-color: var(--warning); }
+  .cat--guide  .cat__head { border-left-color: var(--guide-lit); }
+  .cat--work   .cat__head { border-left-color: var(--work); }
+  .cat--school .cat__head { border-left-color: var(--school); }
+  .cat--rr     .cat__head { border-left-color: var(--sign-white); }
+  .cat__row { display: flex; align-items: baseline; justify-content: space-between; gap: .75rem; }
+  .cat__count { font-family: var(--mono); font-size: .75rem; color: var(--sign-faint); white-space: nowrap; }
+  .cat__rule { margin: .45rem 0 0; font-family: var(--read); font-size: .9375rem; line-height: 1.6; color: #DDE2E6; }
+  .cat__rule b { font-family: var(--ui); font-weight: 800; letter-spacing: -.01em; color: var(--sign-white); }
+
+  /* ---- sign cards ---- */
+  .signgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); gap: .75rem; }
+  .signcard {
+    display: flex; flex-direction: column; align-items: center; gap: .45rem;
+    padding: 1rem .625rem .875rem;
+    background: var(--asphalt-raised);
+    border: 1px solid var(--shoulder); border-radius: var(--r-lg);
+    color: inherit; text-decoration: none; text-align: center;
+  }
+  .signcard:hover { border-color: var(--shoulder-lit); background: #20242B; }
+  .signcard__face { display: grid; place-items: center; min-height: 100px; }
+  .signcard__face .sign { max-width: 100%; }
+  .signcard__name { font-size: .875rem; font-weight: 700; letter-spacing: -.01em; line-height: 1.25; }
+  .signcard__mean { margin: 0; font-family: var(--read); font-size: .8125rem; line-height: 1.45; color: var(--sign-dim); }
+
+  /* mastery: pips + a word. Never colour alone. */
+  .mastery { display: inline-flex; align-items: center; gap: .4rem; margin-top: auto; padding-top: .55rem; }
+  .pip { width: 13px; height: 4px; border-radius: 2px; background: var(--shoulder-lit); }
+  .mastery--solid .pip.is-on { background: var(--guide-lit); }
+  .mastery--shaky .pip.is-on { background: var(--warning); }
+  .mastery--new   .pip.is-on { background: var(--sign-faint); }
+  .mastery__lab {
+    font-size: .625rem; font-weight: 800; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--sign-dim);
+  }
+
+  .catmore { margin-top: .75rem; }
+  .catmore .btn { min-height: 44px; font-size: .875rem; }
+</style>
+</head>
+<body>
+
+<div class="mock-label">Mockup 08 · Sign library — browse · populated · 390×844 mobile</div>
+
+<div class="railbrand">
+  <svg class="sign sign--sm" role="img" aria-label="Red octagonal stop sign"><use href="#sg-stop"/></svg>
+  <strong style="letter-spacing:-.02em;font-size:1.0625rem">TN&nbsp;Drive</strong>
+</div>
+
+<header class="appbar">
+  <div class="row appbar__lead">
+    <strong class="appbar__title">Signs</strong>
+    <span class="dim appbar__sub">84 signs · 61 solid</span>
+  </div>
+  <span class="badge badge--offline" title="Everything works without a connection">Offline ready</span>
+</header>
+
+<main class="wrap stack" style="padding-top:1.5rem">
+
+  <section>
+    <p class="eyebrow">Every sign on a Tennessee road</p>
+    <h1>Sign library</h1>
+    <p class="dim" style="margin:.5rem 0 0;font-size:.9375rem">
+      Learn the shape and the color first. They tell you what a sign is before you can read a word of it.
+    </p>
+  </section>
+
+  <!-- MASTERY SUMMARY -->
+  <section class="panel panel--flat">
+    <div class="spread" style="margin-bottom:.7rem">
+      <div>
+        <p class="eyebrow" style="margin-bottom:.2rem">Your signs</p>
+        <p style="margin:0;font-size:.875rem" class="dim">
+          <span class="num" style="color:var(--sign-white);font-weight:700">16</span> solid ·
+          <span class="num" style="color:var(--warning);font-weight:700">4</span> need review ·
+          <span class="num">2</span> not seen yet
+        </p>
+      </div>
+      <span class="shield" aria-hidden="true"><span>16</span></span>
+    </div>
+    <div class="rail" role="img" aria-label="61 of 84 signs solid, 73 percent"><i style="width:73%"></i></div>
+  </section>
+
+  <!-- FILTERS -->
+  <section class="filters" aria-label="Find a sign">
+    <div class="field">
+      <svg class="field__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+      <label class="sr-only" for="q">Search signs by name, shape, or color</label>
+      <input id="q" type="search" placeholder="Search — name, shape, or color">
+    </div>
+    <div class="chips" role="group" aria-label="Filter by sign category">
+      <button class="chip" type="button" aria-pressed="true">
+        <svg class="chip__tick" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M4 13l6 6L20 5"/></svg>
+        All 84
+      </button>
+      <button class="chip" type="button" aria-pressed="false"><span class="chip__dot" style="background:var(--stop-lit)" aria-hidden="true"></span>Regulatory</button>
+      <button class="chip" type="button" aria-pressed="false"><span class="chip__dot" style="background:var(--warning)" aria-hidden="true"></span>Warning</button>
+      <button class="chip" type="button" aria-pressed="false"><span class="chip__dot" style="background:var(--guide-lit)" aria-hidden="true"></span>Guide</button>
+      <button class="chip" type="button" aria-pressed="false"><span class="chip__dot" style="background:var(--work)" aria-hidden="true"></span>Construction</button>
+      <button class="chip" type="button" aria-pressed="false"><span class="chip__dot" style="background:var(--school)" aria-hidden="true"></span>School</button>
+      <button class="chip" type="button" aria-pressed="false"><span class="chip__dot" style="background:var(--sign-white)" aria-hidden="true"></span>Railroad</button>
+    </div>
+  </section>
+
+  <!-- THE COLOUR KEY -->
+  <section class="panel" aria-labelledby="key-h">
+    <h2 id="key-h" style="font-size:1.0625rem;margin-bottom:.9rem">Color is the first thing you read</h2>
+    <ul class="keylist">
+      <li>
+        <svg class="sign sign--sm" aria-hidden="true"><use href="#sg-stop"/></svg>
+        <p><b>Red</b> — you must, or you must not. Stop, yield, do not enter.</p>
+      </li>
+      <li>
+        <span class="sign-speed sign-speed--sm" aria-hidden="true"><b>SPEED</b><b>LIMIT</b><strong>45</strong></span>
+        <p><b>White with black letters</b> — a law you have to obey: limits, turns, lane rules.</p>
+      </li>
+      <li>
+        <svg class="sign sign--sm" aria-hidden="true"><use href="#sg-warn"/></svg>
+        <p><b>Yellow diamond</b> — a warning. Something ahead needs you to slow down and look.</p>
+      </li>
+      <li>
+        <svg class="sign sign--sm" aria-hidden="true"><use href="#sg-workzone"/></svg>
+        <p><b>Orange</b> — a work zone. Conditions are temporary and people are on foot.</p>
+      </li>
+      <li>
+        <svg class="sign sign--sm" aria-hidden="true"><use href="#sg-guide"/></svg>
+        <p><b>Green</b> — guidance. Where you may go, which way, and how far.</p>
+      </li>
+      <li>
+        <svg class="sign sign--sm" aria-hidden="true"><use href="#sg-services"/></svg>
+        <p><b>Blue</b> — services for drivers: hospital, fuel, food, rest.</p>
+      </li>
+      <li>
+        <svg class="sign sign--sm" aria-hidden="true"><use href="#sg-school"/></svg>
+        <p><b>Five sides</b> — school. No other sign on the road has five sides.</p>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ================= REGULATORY ================= -->
+  <section class="cat cat--reg" aria-labelledby="cat-reg">
+    <div class="cat__head">
+      <div class="cat__row">
+        <h2 id="cat-reg">Regulatory</h2>
+        <span class="cat__count">4 of 7</span>
+      </div>
+      <p class="cat__rule">
+        <b>Red, or white with black letters.</b> These are the law. Ignoring one is a
+        violation, not a bad idea — and the octagon and the downward triangle are used
+        for nothing else on the road.
+      </p>
+    </div>
+    <div class="signgrid">
+
+      <a class="signcard" href="10-rule-reference.html">
+        <span class="signcard__face">
+          <svg class="sign sign--lg" role="img" aria-label="Red octagon with a white border and white letters reading STOP. Come to a complete stop at the line, crosswalk, or intersection."><use href="#sg-stop"/></svg>
+        </span>
+        <span class="signcard__name">Stop</span>
+        <p class="signcard__mean">Full stop at the line, every time.</p>
+        <span class="mastery mastery--solid">
+          <span class="pip is-on" aria-hidden="true"></span><span class="pip is-on" aria-hidden="true"></span><span class="pip is-on" aria-hidden="true"></span>
+          <span class="mastery__lab">Solid</span>
+        </span>
+      </a>
+
+      <a class="signcard" href="10-rule-reference.html">
+        <span class="signcard__face">
+          <svg class="sign sign--lg" role="img" aria-label="Downward-pointing triangle in red and white reading YIELD. Slow down and give the right of way to traffic and people already there."><use href="#sg-yield"/></svg>
+        </span>
+        <span class="signcard__name">Yield</span>
+        <p class="signcard__mean">Slow, give way, stop if you must.</p>
+        <span class="mastery mastery--shaky">
+          <span class="pip is-on" aria-hidden="true"></span><span class="pip is-on" aria-hidden="true"></span><span class="pip" aria-hidden="true"></span>
+          <span class="mastery__lab">Review</span>
+        </span>
+      </a>
+
+      <a class="signcard" href="10-rule-reference.html">
+        <span class="signcard__face">
+          <svg class="sign sign--lg" role="img" aria-label="Red square with a wide white bar inside a white circle, reading DO NOT ENTER. Do not drive into this roadway."><use href="#sg-donotenter"/></svg>
+        </span>
+        <span class="signcard__name">Do not enter</span>
+        <p class="signcard__mean">This roadway is closed to you.</p>
+        <span class="mastery mastery--solid">
+          <span class="pip is-on" aria-hidden="true"></span><span class="pip is-on" aria-hidden="true"></span><span class="pip is-on" aria-hidden="true"></span>
+          <span class="mastery__lab">Solid</span>
+        </span>
+      </a>
+
+      <a class="signcard" href="10-rule-reference.html">
+        <span class="signcard__face">
+          <span class="sign-speed" role="img" aria-label="White rectangle with black legend reading SPEED LIMIT 45. The highest speed allowed in ideal conditions."><b>SPEED</b><b>LIMIT</b><strong>45</strong></span>
+        </span>
+        <span class="signcard__name">Speed limit</span>
+        <p class="signcard__mean">The most you may drive in ideal conditions — less when it's wet or dark.</p>
+        <span class="mastery mastery--solid">
+          <span class="pip is-on" aria-hidden="true"></span><span class="pip is-on" aria-hidden="true"></span><span class="pip is-on" aria-hidden="true"></span>
+          <span class="mastery__lab">Solid</span>
+        </span>
+      </a>
+
+    </div>
+    <div class="catmore">
+      <button class="btn btn--quiet btn--block" type="button">Show all 7 regulatory signs</button>
+    </div>
+  </section>
+
+  <!-- ================= WARNING ================= -->
+  <section class="cat cat--warn" aria-labelledby="cat-warn">
+    <div class="cat__head">
+      <div class="cat__row">
+        <h2 id="cat-warn">Warning</h2>
+        <span class="cat__count">4 of 8</span>
+      </div>
+      <p class="cat__rule">
+        <b>Yellow diamond.</b> A warning tells you what is coming so you can change speed
+        or position before you reach it. Pedestrian, bicycle and school warnings may be
+        posted in fluorescent yellow-green — same shape, same meaning.
+      </p>
+    </div>
+    <div class="signgrid">
+
+      <a class="signcard" href="10-rule-reference.html">
+        <span class="signcard__face">
+          <svg class="sign sign--lg" role="img" aria-label="Yellow diamond with a black arrow bending to the right. The road curves right ahead; slow down before the curve."><use href="#sg-curve"/></svg>
+        </span>
+        <span class="signcard__name">Curve ahead</span>
+        <p class="signcard__mean">Slow before the bend, not in it.</p>
+        <span class="mastery mastery--solid">
+          <span class="pip is-on" aria-hidden="true"></span><span class="pip is-on" aria-hidden="true"></span><span class="pip is-on" aria-hidden="true"></span>
+          <span class="mastery__lab">Solid</span>
+        </span>
+      </a>
+
+      <a class="signcard" href="10-rule-reference.html">
+        <span class="signcard__face">
+          <svg class="sign sign--lg" role="img" aria-label="Yellow diamond with two black lines joining into one. Traffic merges into your lane ahead; adjust speed and make room."><use href="#sg-merge"/></svg>
+        </span>
+        <span class="signcard__name">Merging traffic</span>
+        <p class="signcard__mean">Traffic joins your lane. Make room.</p>
+        <span class="mastery mastery--shaky">
+          <span class="pip is-on" aria-hidden="true"></span><span class="pip" aria-hidden="true"></span><span class="pip" aria-hidden="true"></span>
+          <span class="mastery__lab">Review</span>
+        </span>
+      </a>
+
+      <a class="signcard" href="10-rule-reference.html">
+        <span class="signcard__face">
+          <svg class="sign sign--lg" role="img" aria-label="Yellow diamond with a black traffic signal showing red, yellow and green lights. A traffic signal is ahead; be ready to stop."><use href="#sg-signal"/></svg>
+        </span>
+        <span class="signcard__name">Signal ahead</span>
+        <p class="signcard__mean">A light you may not see yet. Cover the brake.</p>
+        <span class="mastery mastery--solid">
+          <span class="pip is-on" aria-hidden="true"></span><span class="pip is-on" aria-hidden="true"></span><span class="pip is-on" aria-hidden="true"></span>
+          <span class="mastery__lab">Solid</span>
+        </span>
+      </a>
+
+      <a class="signcard" href="10-rule-reference.html">
+        <span class="signcard__face">
+          <svg class="sign sign--lg" role="img" aria-label="Yellow diamond with a black car leaving curving skid marks. The road is slippery when wet; slow down and brake gently."><use href="#sg-slippery"/></svg>
+        </span>
+        <span class="signcard__name">Slippery when wet</span>
+        <p class="signcard__mean">Grip drops in rain. Ease off and brake early.</p>
+        <span class="mastery mastery--new">
+          <span class="pip" aria-hidden="true"></span><span class="pip" aria-hidden="true"></span><span class="pip" aria-hidden="true"></span>
+          <span class="mastery__lab">New</span>
+        </span>
+      </a>
+
+    </div>
+    <div class="catmore">
+      <button class="btn btn--quiet btn--block" type="button">Show all 8 warning signs</button>
+    </div>
+  </section>
+
+  <!-- ================= GUIDE ================= -->
+  <section class="cat cat--guide" aria-labelledby="cat-guide">
+    <div class="cat__head">
+      <div class="cat__row">
+        <h2 id="cat-guide">Guide</h2>
+        <span class="cat__count">3 of 3</span>
+      </div>
+      <p class="cat__rule">
+        <b>Green tells you where. Blue tells you what's available.</b> Guide signs never
+        command you — they inform. Losing one costs you a turn, not a ticket.
+      </p>
+    </div>
+    <div class="signgrid">
+
+      <a class="signcard" href="10-rule-reference.html">
+        <span class="signcard__face">
+          <svg class="sign sign--lg" role="img" aria-label="Green rectangle with a white border. Green guide signs give routes, destinations and distances."><use href="#sg-guide"/></svg>
+        </span>
+        <span class="signcard__name">Destination guide</span>
+        <p class="signcard__mean">Routes, exits and how far away they are.</p>
+        <span class="mastery mastery--solid">
+          <span class="pip is-on" aria-hidden="true"></span><span class="pip is-on" aria-hidden="true"></span><span class="pip is-on" aria-hidden="true"></span>
+          <span class="mastery__lab">Solid</span>
+        </span>
+      </a>
+
+      <a class="signcard" href="10-rule-reference.html">
+        <span class="signcard__face">
+          <span class="shield" role="img" aria-label="Blue and white route shield numbered 40. Route markers name the highway you are travelling."><span>40</span></span>
+        </span>
+        <span class="signcard__name">Route marker</span>
+        <p class="signcard__mean">Names the road you're on.</p>
+        <span class="mastery mastery--solid">
+          <span class="pip is-on" aria-hidden="true"></span><span class="pip is-on" aria-hidden="true"></span><span class="pip is-on" aria-hidden="true"></span>
+          <span class="mastery__lab">Solid</span>
+        </span>
+      </a>
+
+      <a class="signcard" href="10-rule-reference.html">
+        <span class="signcard__face">
+          <svg class="sign sign--lg" role="img" aria-label="Blue square with a white border and a white cross. Blue signs mark motorist services; the cross means a hospital or medical care."><use href="#sg-services"/></svg>
+        </span>
+        <span class="signcard__name">Motorist services</span>
+        <p class="signcard__mean">Hospital, fuel, food, rest — this way.</p>
+        <span class="mastery mastery--solid">
+          <span class="pip is-on" aria-hidden="true"></span><span class="pip is-on" aria-hidden="true"></span><span class="pip is-on" aria-hidden="true"></span>
+          <span class="mastery__lab">Solid</span>
+        </span>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- ================= CONSTRUCTION ================= -->
+  <section class="cat cat--work" aria-labelledby="cat-work">
+    <div class="cat__head">
+      <div class="cat__row">
+        <h2 id="cat-work">Construction</h2>
+        <span class="cat__count">1 of 1</span>
+      </div>
+      <p class="cat__rule">
+        <b>Orange, and only orange.</b> Orange means the road ahead is temporary — the lane
+        you expect may be shifted, narrowed, or gone, and there are people working beside it.
+        Drop to the posted work-zone speed and keep it until the zone ends.
+      </p>
+    </div>
+    <div class="signgrid">
+
+      <a class="signcard" href="10-rule-reference.html">
+        <span class="signcard__face">
+          <svg class="sign sign--lg" role="img" aria-label="Orange diamond with a black worker holding a shovel. A work zone is ahead; expect workers, equipment and changed lanes."><use href="#sg-workzone"/></svg>
+        </span>
+        <span class="signcard__name">Work zone ahead</span>
+        <p class="signcard__mean">People are working. Slow down and give them room.</p>
+        <span class="mastery mastery--shaky">
+          <span class="pip is-on" aria-hidden="true"></span><span class="pip is-on" aria-hidden="true"></span><span class="pip" aria-hidden="true"></span>
+          <span class="mastery__lab">Review</span>
+        </span>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- ================= SCHOOL ================= -->
+  <section class="cat cat--school" aria-labelledby="cat-school">
+    <div class="cat__head">
+      <div class="cat__row">
+        <h2 id="cat-school">School</h2>
+        <span class="cat__count">1 of 1</span>
+      </div>
+      <p class="cat__rule">
+        <b>Five sides — and nothing else on the road has five sides.</b> That shape is how
+        you identify it at a distance, in the dark, or half covered by a branch. On the road
+        these are posted in fluorescent yellow-green; TN&nbsp;Drive tints school content in
+        its own school color so you can spot it in the app.
+      </p>
+    </div>
+    <div class="signgrid">
+
+      <a class="signcard" href="10-rule-reference.html">
+        <span class="signcard__face">
+          <svg class="sign sign--lg" role="img" aria-label="Five-sided sign with a black border and two black children walking. It marks a school zone or school crossing; slow to the posted limit and watch for children."><use href="#sg-school"/></svg>
+        </span>
+        <span class="signcard__name">School zone</span>
+        <p class="signcard__mean">Children cross here. Slow to the posted limit when it's in force.</p>
+        <span class="mastery mastery--shaky">
+          <span class="pip is-on" aria-hidden="true"></span><span class="pip" aria-hidden="true"></span><span class="pip" aria-hidden="true"></span>
+          <span class="mastery__lab">Review</span>
+        </span>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- ================= RAILROAD ================= -->
+  <section class="cat cat--rr" aria-labelledby="cat-rr">
+    <div class="cat__head">
+      <div class="cat__row">
+        <h2 id="cat-rr">Railroad</h2>
+        <span class="cat__count">2 of 2</span>
+      </div>
+      <p class="cat__rule">
+        <b>Two signs, two jobs.</b> The round yellow sign warns you a crossing is coming.
+        The white crossbuck marks the crossing itself and carries the force of a yield sign.
+        When lights flash or gates lower, stop between 15 and 50 feet from the nearest rail.
+      </p>
+    </div>
+    <div class="signgrid">
+
+      <a class="signcard" href="10-rule-reference.html">
+        <span class="signcard__face">
+          <svg class="sign sign--lg" role="img" aria-label="Yellow circle with a black X and two black letter R's. A railroad crossing is ahead; slow down, look and listen, and be ready to stop."><use href="#sg-rr-advance"/></svg>
+        </span>
+        <span class="signcard__name">Crossing ahead</span>
+        <p class="signcard__mean">Slow, look both ways, be ready to stop.</p>
+        <span class="mastery mastery--new">
+          <span class="pip" aria-hidden="true"></span><span class="pip" aria-hidden="true"></span><span class="pip" aria-hidden="true"></span>
+          <span class="mastery__lab">New</span>
+        </span>
+      </a>
+
+      <a class="signcard" href="10-rule-reference.html">
+        <span class="signcard__face">
+          <svg class="sign sign--lg" role="img" aria-label="White X-shaped sign reading RAILROAD CROSSING in black letters. It marks the crossing itself; yield to any approaching train."><use href="#sg-crossbuck"/></svg>
+        </span>
+        <span class="signcard__name">Crossbuck</span>
+        <p class="signcard__mean">You're at the crossing. Yield to the train.</p>
+        <span class="mastery mastery--solid">
+          <span class="pip is-on" aria-hidden="true"></span><span class="pip is-on" aria-hidden="true"></span><span class="pip is-on" aria-hidden="true"></span>
+          <span class="mastery__lab">Solid</span>
+        </span>
+      </a>
+
+    </div>
+  </section>
+
+  <hr class="centreline">
+
+  <a class="btn btn--guide btn--block" href="07-signs-drill.html" style="font-size:1.0625rem">
+    Drill the 6 signs you're shaky on
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+  </a>
+
+  <p class="faint" style="font-size:.75rem;text-align:center;margin:1.25rem 0 0;line-height:1.5">
+    Shapes and colors follow the federal MUTCD as adopted by Tennessee.<br>
+    Not affiliated with the State of Tennessee.
+  </p>
+
+</main>
+
+<nav class="nav" aria-label="Main">
+  <a href="02-dashboard-populated.html">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10 12 3l8 7v10a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg>
+    Study
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v6h6M9 14l2 2 4-4"/></svg>
+    Exam
+  </a>
+  <a href="08-signs-library.html" aria-current="page">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2 22 12 12 22 2 12z"/><path d="M12 8v4M12 16h.01"/></svg>
+    Signs
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+    Progress
+  </a>
+</nav>
+
+<script src="_signs.js"></script>
+</body>
+</html>

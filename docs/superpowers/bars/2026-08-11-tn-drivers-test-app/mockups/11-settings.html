@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup 11 — Settings &amp; about</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,300..900&family=Overpass+Mono:wght@300..700&family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="_base.css">
+<style>
+  /* ============================================================
+     Settings is where the restraint rule earns its keep: no signs
+     used as decoration, no colour for its own sake. The only two
+     places colour appears are the ones that mean something —
+     construction orange on the post-2022 corrections (§2: orange
+     is content in progress / changed) and regulatory red on the
+     one destructive action.
+
+     Settings is not one of the four AppNav destinations, so no nav
+     item is aria-current here; the bar is still present because
+     leaving is a one-tap job. ---------- */
+
+  /* --guide-text / --stop-text / --work-text / --route-text and the corrected
+     --sign-faint all live in _base.css now; nothing is redefined here. */
+
+  /* ---- AppNav owns the brand block (grounding §3) ----
+     At ≥1024px the nav becomes a side rail and _base.css reserves 5.5rem at
+     its head for the brand. Fill that space rather than leaving it dead.
+     Matches 02f-dashboard-desktop.html exactly. */
+  @media (min-width: 1024px) {
+    .railbrand {
+      position: fixed; top: 0; left: 0; z-index: 31;
+      width: 232px; height: 5.5rem;
+      display: flex; align-items: center; gap: .6rem;
+      padding: 0 1.25rem;
+      background: var(--asphalt-sunk);
+      border-right: 1px solid var(--shoulder);
+      border-bottom: 1px solid var(--shoulder);
+    }
+  }
+  @media (max-width: 1023px) { .railbrand { display: none; } }
+
+  .sect + .sect { margin-top: 2rem; }
+  .sect > h2 { margin-bottom: .35rem; }
+  .sect__intro { margin: 0 0 .875rem; font-size: .875rem; color: var(--sign-dim); line-height: 1.55; }
+
+  /* ---- a settings row: label, plain-language state, control ---- */
+  .srow { display: flex; align-items: flex-start; gap: 1rem; padding: .9rem 0; }
+  .srow + .srow { border-top: 1px solid var(--shoulder); }
+  .srow__t { flex: 1; min-width: 0; }
+  .srow__n { display: block; font-size: .9375rem; font-weight: 700; }
+  .srow__s { display: block; margin-top: .2rem; font-size: .8125rem; color: var(--sign-dim); line-height: 1.5; }
+
+  /* Switch: 44px tall hit area, 52px track inside it. The state is
+     also written out in words next to the label — never colour alone. */
+  .switch {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 56px; min-height: 44px; flex: none;
+    padding: 0; background: none; border: 0; cursor: pointer;
+  }
+  .switch__track {
+    position: relative; width: 52px; height: 30px; border-radius: 999px;
+    background: var(--asphalt-sunk); border: 1px solid var(--shoulder-lit);
+    transition: background-color .15s ease, border-color .15s ease;
+  }
+  .switch__track::after {
+    content: ''; position: absolute; top: 3px; left: 3px;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--sign-dim);
+    transition: transform .15s ease, background-color .15s ease;
+  }
+  .switch[aria-checked='true'] .switch__track { background: var(--guide); border-color: var(--guide-lit); }
+  .switch[aria-checked='true'] .switch__track::after { transform: translateX(22px); background: #fff; }
+  .switch:focus-visible { outline: 3px solid var(--warning); outline-offset: 2px; border-radius: var(--r); }
+
+  /* Text size: real radios, styled as a segmented control. */
+  .field { border: 0; margin: 0; padding: .9rem 0 0; border-top: 1px solid var(--shoulder); }
+  .field legend { padding: 0; }
+  .segr { display: flex; gap: 2px; margin-top: .75rem; padding: 3px; background: var(--asphalt-sunk); border: 1px solid var(--shoulder); border-radius: var(--r); }
+  .segr label {
+    flex: 1; display: flex; align-items: center; justify-content: center;
+    min-height: 44px; padding: 0 .35rem; border-radius: var(--r-sm);
+    font-size: .8125rem; font-weight: 700; color: var(--sign-dim);
+    cursor: pointer; text-align: center; line-height: 1.2;
+  }
+  .segr label:hover { color: var(--sign-white); }
+  .segr input:checked + label { background: var(--shoulder); color: var(--sign-white); }
+  .segr input:focus-visible + label { outline: 3px solid var(--warning); outline-offset: 2px; }
+
+  .preview {
+    margin: .875rem 0 0; padding: .875rem 1rem;
+    background: var(--asphalt-sunk); border: 1px dashed var(--shoulder-lit); border-radius: var(--r);
+  }
+  .preview p { margin: 0; }
+
+  /* ---- post-2022 corrections ---- */
+  .corr { padding: 1rem 0; }
+  .corr + .corr { border-top: 1px solid var(--shoulder); }
+  .corr__head { display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; margin-bottom: .5rem; }
+  .corr__tag {
+    display: inline-flex; align-items: center; gap: .3rem;
+    padding: .2rem .5rem; border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--work-text) 65%, transparent);
+    color: var(--work-text);
+    font-size: .625rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase;
+  }
+  .corr__when { font-family: var(--mono); font-size: .6875rem; color: var(--sign-faint); letter-spacing: .04em; }
+  .corr h3 { margin-bottom: .55rem; }
+  .corr__d { display: grid; grid-template-columns: auto 1fr; gap: .35rem .75rem; margin: 0 0 .6rem; }
+  .corr__d dt {
+    font-size: .6875rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--sign-faint); padding-top: .15rem; white-space: nowrap;
+  }
+  .corr__d dd { margin: 0; font-family: var(--mono); font-size: .8125rem; line-height: 1.45; }
+  .corr__d dd s { color: var(--sign-faint); text-decoration-color: var(--stop-lit); }
+  .corr__d dd b { color: var(--sign-white); }
+  .corr__why { margin: 0; font-family: var(--read); font-size: .9375rem; line-height: 1.6; color: #DDE2E6; }
+  .corr__src { display: block; margin-top: .5rem; font-family: var(--mono); font-size: .6875rem; color: var(--sign-faint); letter-spacing: .04em; }
+
+  /* ---- storage meter ---- */
+  .store { display: flex; align-items: baseline; justify-content: space-between; gap: .75rem; margin-bottom: .45rem; }
+  .store span { font-family: var(--mono); font-size: .8125rem; color: var(--sign-dim); }
+
+  .about { list-style: none; margin: 0; padding: 0; }
+  .about li { display: flex; justify-content: space-between; gap: 1rem; padding: .55rem 0; border-bottom: 1px solid var(--shoulder); font-size: .875rem; }
+  .about li:last-child { border-bottom: 0; }
+  .about b { font-weight: 700; }
+  .about span { font-family: var(--mono); font-size: .8125rem; color: var(--sign-dim); text-align: right; }
+
+  /* The app-bar pattern (.appbar__lead / __title / __sub / .back) lives in
+     _base.css and is not redefined here. */
+</style>
+</head>
+<body>
+
+<div class="mock-label">Mockup 11 · Settings &amp; about · cell 11 · 390×844 mobile</div>
+
+<div class="railbrand">
+  <svg class="sign sign--sm" role="img" aria-label="Red octagonal stop sign"><use href="#sg-stop"/></svg>
+  <strong style="letter-spacing:-.02em;font-size:1.0625rem">TN&nbsp;Drive</strong>
+</div>
+
+<header class="appbar">
+  <div class="row appbar__lead">
+    <a class="back" href="#">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M19 12H6M11 6l-6 6 6 6"/></svg>
+      Back<span class="sr-only"> to Study</span>
+    </a>
+    <strong class="appbar__title">Settings</strong>
+    <span class="dim appbar__sub">Sources, corrections and your data</span>
+  </div>
+  <span class="badge badge--offline" title="Everything works without a connection">Offline ready</span>
+</header>
+
+<main class="wrap" style="padding-top:1.5rem">
+
+  <p class="eyebrow">TN Drive</p>
+  <h1>Settings &amp; about</h1>
+
+  <!-- ================= READING & MOTION ================= -->
+  <section class="sect" style="margin-top:1.75rem">
+    <h2>Reading &amp; motion</h2>
+    <p class="sect__intro">These apply everywhere in the app, including mid-exam.</p>
+
+    <div class="panel panel--flat">
+      <div class="srow">
+        <span class="srow__t">
+          <span class="srow__n">Reduce motion</span>
+          <span class="srow__s">
+            <strong style="color:var(--sign-white)">On</strong> — following your device setting.
+            Transitions are cut to nothing; nothing slides, fades or counts up. No information in
+            this app is carried by movement, so turning it on loses you nothing.
+          </span>
+        </span>
+        <button class="switch" type="button" role="switch" aria-checked="true" aria-label="Reduce motion">
+          <span class="switch__track"></span>
+        </button>
+      </div>
+
+      <div class="srow">
+        <span class="srow__t">
+          <span class="srow__n">Keep the screen awake while studying</span>
+          <span class="srow__s"><strong style="color:var(--sign-white)">Off</strong> — the screen dims as usual.</span>
+        </span>
+        <button class="switch" type="button" role="switch" aria-checked="false" aria-label="Keep the screen awake while studying">
+          <span class="switch__track"></span>
+        </button>
+      </div>
+
+      <fieldset class="field">
+        <legend class="srow__n">Text size</legend>
+        <span class="srow__s" style="display:block">Applies to question stems, rule text and manual quotations. Your browser's own zoom still works on top of this.</span>
+        <div class="segr">
+          <input type="radio" name="textsize" id="ts-std" class="sr-only">
+          <label for="ts-std">Standard</label>
+          <input type="radio" name="textsize" id="ts-lg" class="sr-only" checked>
+          <label for="ts-lg">Large</label>
+          <input type="radio" name="textsize" id="ts-xl" class="sr-only">
+          <label for="ts-xl">Larger</label>
+        </div>
+        <div class="preview">
+          <p class="eyebrow" style="margin-bottom:.4rem">Preview · Large</p>
+          <p class="read" style="font-size:1.1875rem">
+            You must stop when you meet or overtake a school bus that is stopped with its red
+            lights flashing and its stop arm extended.
+          </p>
+        </div>
+      </fieldset>
+    </div>
+  </section>
+
+  <!-- ================= WHERE THIS COMES FROM ================= -->
+  <section class="sect">
+    <h2>Where these questions come from</h2>
+    <p class="sect__intro">One source, named on every question, with its page.</p>
+
+    <div class="panel panel--route">
+      <p class="eyebrow" style="color:var(--route-text);margin-bottom:.6rem">Primary source</p>
+      <h3 style="margin-bottom:.5rem">Tennessee Comprehensive Driver License Manual</h3>
+      <p class="read" style="font-size:1rem;margin:0 0 .875rem">
+        Published by the Tennessee Department of Safety &amp; Homeland Security. 135 pages.
+        Its own front matter states the content is current as of <strong>1 July 2022</strong>.
+        The same PDF also carries a March 2025 printing authorization; the department does not
+        reconcile the two dates, so we record both and treat July 2022 as the content date.
+      </p>
+      <p class="read" style="font-size:1rem;margin:0 0 .875rem">
+        Questions are drawn from Sections B and C only, in the proportions the manual publishes
+        for the test itself: a quarter each on traffic signs and signals, safe driving principles,
+        rules of the road, and drugs and alcohol. The manual states it is not copyrighted and may
+        be reproduced.
+      </p>
+
+      <div class="cite" style="border-left-color:var(--route-text)">
+        <p style="margin:0;font-size:.9375rem;font-weight:700;line-height:1.5">
+          TN Drive is an independent study aid. It is not affiliated with, endorsed by, or
+          connected to the State of Tennessee or its Department of Safety &amp; Homeland Security.
+        </p>
+        <span class="cite__src">
+          Nothing here is an official score, a permit, or a substitute for the manual.
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CORRECTIONS ================= -->
+  <section class="sect">
+    <h2>What we've corrected since 2022</h2>
+    <p class="sect__intro">
+      The manual disclaims its own currency. Where Tennessee law has moved since July 2022 we
+      teach the current rule — and we say so, here and on every question that touches it.
+      Three corrections are in force today.
+    </p>
+
+    <div class="panel panel--flat">
+
+      <article class="corr" style="padding-top:0">
+        <div class="corr__head">
+          <span class="corr__tag">Corrected</span>
+          <span class="corr__when">In force 1 Jan 2023</span>
+        </div>
+        <h3>Minimum liability insurance</h3>
+        <dl class="corr__d">
+          <dt>Manual</dt>
+          <dd>$25,000 / $50,000 / <s>$15,000</s> &nbsp;· p.&nbsp;18</dd>
+          <dt>We teach</dt>
+          <dd>$25,000 / $50,000 / <b>$25,000</b></dd>
+        </dl>
+        <p class="corr__why">
+          Bodily injury minimums are unchanged — $25,000 for one person, $50,000 for one crash.
+          The property-damage minimum rose from $15,000 to $25,000. Answer a question on this and
+          you'll see the same note under the rule.
+          <span class="corr__src">Verified against Tennessee's financial-responsibility minimums · checked 1 July 2026</span>
+        </p>
+      </article>
+
+      <article class="corr">
+        <div class="corr__head">
+          <span class="corr__tag">Corrected</span>
+          <span class="corr__when">In force 2023</span>
+        </div>
+        <h3>Move Over Law — who you must move over for</h3>
+        <dl class="corr__d">
+          <dt>Manual</dt>
+          <dd><s>Emergency, utility and highway-maintenance vehicles</s> &nbsp;· p.&nbsp;68</dd>
+          <dt>We teach</dt>
+          <dd><b>Any stopped vehicle showing hazard lights,</b> warning devices or flares — including an ordinary car on the shoulder</dd>
+        </dl>
+        <p class="corr__why">
+          Tennessee widened the law in 2023. The duty is the same as it always was — move over a
+          lane if you safely can, otherwise slow down — but it now covers far more vehicles than
+          the 2022 manual lists.
+          <span class="corr__src">Verified against the amended Move Over statute · checked 1 July 2026</span>
+        </p>
+      </article>
+
+      <article class="corr" style="padding-bottom:0">
+        <div class="corr__head">
+          <span class="corr__tag">Corrected</span>
+          <span class="corr__when">In force since 2022 amendment</span>
+        </div>
+        <h3>Aggravated vehicular homicide — the BAC threshold</h3>
+        <dl class="corr__d">
+          <dt>Manual</dt>
+          <dd>BAC <s>0.20</s> &nbsp;· p.&nbsp;96</dd>
+          <dt>We teach</dt>
+          <dd>BAC <b>0.15</b></dd>
+        </dl>
+        <p class="corr__why">
+          The threshold that lifts vehicular homicide to the aggravated offense is 0.15, not the
+          0.20 printed in the manual. The 0.08 limit for driving under the influence, and 0.02 for
+          drivers under 21, are unchanged.
+          <span class="corr__src">Verified against the Tennessee Code · checked 1 July 2026</span>
+        </p>
+      </article>
+
+    </div>
+
+    <p class="dim" style="font-size:.8125rem;margin:.875rem 0 0;line-height:1.55">
+      We never change an answer quietly. If a question's answer differs from the printed manual,
+      the difference is shown on the question, with the manual's wording next to ours.
+    </p>
+  </section>
+
+  <!-- ================= YOUR DATA ================= -->
+  <section class="sect">
+    <h2>Your data</h2>
+    <p class="sect__intro">
+      All of it lives in this browser on this device. There is no account, no server and nothing
+      to sync — which also means nothing is backed up for you.
+    </p>
+
+    <div class="panel panel--flat">
+      <div class="store">
+        <strong style="font-size:.875rem">Storage used</strong>
+        <span>41 KB of about 5 MB</span>
+      </div>
+      <div class="rail" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="1"
+           aria-label="Storage used: about 1 percent of the available 5 megabytes">
+        <i style="width:2%"></i>
+      </div>
+      <p class="dim" style="font-size:.8125rem;margin:.6rem 0 0">
+        57 attempts · 612 answered questions · 14 topics. The most recent 200 attempts are kept in
+        full; older ones are folded into your totals so this never fills up.
+      </p>
+    </div>
+
+    <button class="btn btn--quiet btn--block" type="button" style="margin-top:.875rem">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg>
+      Export your progress
+    </button>
+    <p class="dim" style="font-size:.8125rem;margin:.5rem 0 0;text-align:center">
+      Downloads one JSON file. Keep it somewhere safe — it is the only copy that exists.
+    </p>
+
+    <button class="btn btn--quiet btn--block" type="button" style="margin-top:.875rem">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M12 20V9M7 13l5-5 5 5M5 4h14"/></svg>
+      Restore from a file
+    </button>
+
+    <div class="panel panel--stop" style="margin-top:1.25rem">
+      <div class="row" style="align-items:flex-start;gap:.875rem">
+        <svg class="sign sign--sm" role="img" aria-label="Red octagonal stop sign: a destructive action" style="flex:none"><use href="#sg-stop"/></svg>
+        <div>
+          <h3 style="margin-bottom:.35rem">Reset all progress</h3>
+          <p class="dim" style="margin:0;font-size:.875rem;line-height:1.55">
+            Erases every answer, every mock exam and your whole history. The questions and signs
+            stay. This cannot be undone and there is no copy on a server to restore from.
+          </p>
+        </div>
+      </div>
+      <a class="btn btn--danger btn--block" href="11b-settings-reset-confirm.html" style="margin-top:1rem">
+        Reset all progress…
+      </a>
+    </div>
+  </section>
+
+  <!-- ================= OFFLINE & INSTALL ================= -->
+  <section class="sect">
+    <h2>Offline &amp; install</h2>
+    <p class="sect__intro">Built for a Driver Service Center parking lot with one bar of signal.</p>
+
+    <div class="panel panel--flat">
+      <div class="srow" style="padding-top:0">
+        <span class="srow__t">
+          <span class="srow__n">Content pack</span>
+          <span class="srow__s">
+            <strong style="color:var(--guide-text)">On this device</strong> — 420 questions, 84 signs,
+            all three fonts. Nothing is fetched while you study.
+          </span>
+        </span>
+        <span class="badge badge--live" style="align-self:center">Ready</span>
+      </div>
+
+      <div class="srow">
+        <span class="srow__t">
+          <span class="srow__n">Updates</span>
+          <span class="srow__s">
+            <strong style="color:var(--sign-white)">Ask me first</strong> — when a new content pack
+            is available you'll be offered it. It is never applied in the middle of an exam.
+          </span>
+        </span>
+        <span class="badge" style="align-self:center">v2026.07</span>
+      </div>
+
+      <div class="srow" style="padding-bottom:0">
+        <span class="srow__t">
+          <span class="srow__n">Add to home screen</span>
+          <span class="srow__s">
+            Opens full-screen with no browser chrome, and starts faster. On iPhone, use Share
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true" style="vertical-align:-2px"><path d="M12 3v13M8 7l4-4 4 4M5 14v6h14v-6"/></svg>
+            then <em>Add to Home Screen</em> — Safari gives us no button to press for you.
+          </span>
+        </span>
+      </div>
+
+      <button class="btn btn--guide btn--block" type="button" style="margin-top:1rem">
+        Install TN Drive
+      </button>
+      <p class="faint" style="font-size:.75rem;text-align:center;margin:.5rem 0 0">
+        Shown only where the browser offers an install prompt. On iPhone and iPad,
+        follow the Share-sheet steps above instead.
+      </p>
+    </div>
+  </section>
+
+  <!-- ================= ABOUT ================= -->
+  <section class="sect">
+    <h2>About</h2>
+
+    <div class="panel panel--flat">
+      <ul class="about">
+        <li><b>App version</b><span>1.4.0</span></li>
+        <li><b>Content pack</b><span>2026.07 · 420 questions</span></li>
+        <li><b>Sign registry</b><span>84 signs</span></li>
+        <li><b>Manual content date</b><span>1 July 2022</span></li>
+        <li><b>Corrections applied</b><span>3</span></li>
+        <li><b>Accounts, analytics, trackers</b><span>none</span></li>
+      </ul>
+    </div>
+
+    <p class="read" style="font-size:.9375rem;margin:1rem 0 0">
+      Every question in the app carries the manual page and the sentence it came from. If you
+      find one that doesn't match the manual, the manual wins — except where it is listed above
+      as corrected.
+    </p>
+  </section>
+
+  <p class="faint" style="font-size:.75rem;text-align:center;margin:2rem 0 0;line-height:1.6">
+    Source: Tennessee Comprehensive Driver License Manual, Tennessee Department of Safety &amp;
+    Homeland Security · content current as of 1 July 2022.<br>
+    <strong style="color:var(--sign-dim)">Not affiliated with, or endorsed by, the State of Tennessee.</strong>
+  </p>
+
+</main>
+
+<nav class="nav" aria-label="Main">
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10 12 3l8 7v10a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg>
+    Study
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v6h6M9 14l2 2 4-4"/></svg>
+    Exam
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2 22 12 12 22 2 12z"/><path d="M12 8v4M12 16h.01"/></svg>
+    Signs
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+    Progress
+  </a>
+</nav>
+
+<script src="_signs.js"></script>
+</body>
+</html>

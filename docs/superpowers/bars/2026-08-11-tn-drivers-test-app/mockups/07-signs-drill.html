@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup 07 — Sign trainer, drill (populated)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,300..900&family=Overpass+Mono:wght@300..700&family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="_base.css">
+<style>
+  /* Focus mode is `body.focus` in _base.css (nav hidden, nav offsets
+     reclaimed); the exit affordance is the shared `.exit`. Only the bottom
+     breathing room this screen wants is set here. `.sr-only` is shared too. */
+  body.focus { padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px)); }
+
+  /* ---- session progress: lane striping + mile marker ---- */
+  .progress { padding-top: 1rem; }
+  .progress__meta {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: .5rem .875rem;
+    margin: .625rem 0 0; font-size: .8125rem; color: var(--sign-dim);
+  }
+
+  /* Mode toggle — deliberately quiet. It is a setting, not the subject. */
+  .modes { display: inline-flex; padding: 2px; gap: 2px;
+           background: var(--asphalt-sunk); border: 1px solid var(--shoulder);
+           border-radius: 999px; }
+  .modes button {
+    min-height: 30px; padding: 0 .7rem;
+    background: transparent; border: 0; border-radius: 999px;
+    color: var(--sign-faint); cursor: pointer;
+    font-family: var(--ui); font-size: .6875rem; font-weight: 700;
+    letter-spacing: .08em; text-transform: uppercase;
+  }
+  .modes button[aria-pressed='true'] { background: var(--shoulder); color: var(--sign-white); }
+  .modes button:hover { color: var(--sign-white); }
+
+  /* ---- THE STAGE: one sign, on a post, lit by headlights ---- */
+  .stage {
+    position: relative;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 2.5rem 1rem 0;
+    background: radial-gradient(62% 52% at 50% 34%,
+                rgba(255,255,255,.075) 0%, rgba(255,255,255,0) 72%);
+  }
+  /* The subject deserves the room: scale within the stage only. */
+  .stage .sign--xl {
+    width: clamp(150px, 48vw, 216px); height: auto; aspect-ratio: 1 / 1;
+    filter: drop-shadow(0 14px 26px rgba(0,0,0,.62));
+  }
+  .stage__post {
+    width: 9px; height: 62px; margin-top: -2px;
+    border-radius: 2px 2px 0 0;
+    background: linear-gradient(90deg, #2F3540 0%, #59616F 42%, #2A2F38 100%);
+  }
+  .stage__ground {
+    width: min(320px, 82%); height: 1px; margin-bottom: 1.75rem;
+    background: linear-gradient(90deg, transparent, var(--shoulder-lit) 22%,
+                var(--shoulder-lit) 78%, transparent);
+  }
+
+  .ask { text-align: center; margin: 0 0 .375rem; }
+  .ask__hint { text-align: center; margin: 0 0 1.125rem; font-size: .8125rem; color: var(--sign-faint); }
+
+  .choices { display: grid; gap: .625rem; }
+  .choice { min-height: 56px; align-items: center; }
+
+  .skip { display: flex; justify-content: center; margin-top: 1.25rem; }
+</style>
+</head>
+<body class="focus">
+
+<div class="mock-label">Mockup 07 · Sign trainer — drill · populated · focus mode · 390×844 mobile</div>
+
+<header class="appbar">
+  <!-- Same glyph, same class, same shape as every other focus-mode exit;
+       only the noun changes. -->
+  <a class="exit" href="02-dashboard-populated.html" style="margin-left:-.6rem;text-decoration:none">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    End drill
+  </a>
+  <span class="milemarker" aria-hidden="true"><span>MILE</span><span>12</span></span>
+</header>
+
+<div class="wrap progress">
+  <div class="rail" role="img" aria-label="Drill progress: sign 12 of 30, 40 percent complete">
+    <i style="width:40%"></i>
+  </div>
+  <div class="progress__meta">
+    <span>
+      Sign <span class="num" style="color:var(--sign-white);font-weight:700">12</span> of <span class="num">30</span>
+      · <span class="num" style="color:var(--sign-white);font-weight:700">9</span> right so far
+    </span>
+    <span class="modes" role="group" aria-label="What the drill asks you for">
+      <button type="button" aria-pressed="true">Meaning</button>
+      <button type="button" aria-pressed="false">Shape &amp; color</button>
+    </span>
+  </div>
+</div>
+
+<main class="wrap">
+
+  <!-- The subject of this screen. Its accessible name describes shape and
+       colour ONLY — naming the meaning here would hand over the answer. -->
+  <section class="stage" aria-labelledby="ask">
+    <svg class="sign sign--xl" role="img"
+         aria-label="A yellow circle with a black outline, crossed by a black X, with a black letter R in the left segment and a black letter R in the right segment.">
+      <use href="#sg-rr-advance"/>
+    </svg>
+    <div class="stage__post" aria-hidden="true"></div>
+    <div class="stage__ground" aria-hidden="true"></div>
+
+    <h1 class="stem ask" id="ask">What does this sign mean?</h1>
+    <p class="ask__hint">Pick one. You'll see the rule either way.</p>
+  </section>
+
+  <div class="choices">
+    <button class="choice" type="button">
+      <span class="choice__key" aria-hidden="true">A</span>
+      <span class="choice__body">Two roads cross ahead — watch for traffic entering from the left and right.</span>
+    </button>
+    <button class="choice" type="button">
+      <span class="choice__key" aria-hidden="true">B</span>
+      <span class="choice__body">A railroad crossing is ahead — slow down, look and listen, and be ready to stop.</span>
+    </button>
+    <button class="choice" type="button">
+      <span class="choice__key" aria-hidden="true">C</span>
+      <span class="choice__body">A roundabout is ahead — yield to traffic already in the circle.</span>
+    </button>
+  </div>
+
+  <p class="sr-only" role="status" aria-live="polite"></p>
+
+  <div class="skip">
+    <button class="btn btn--quiet" type="button" style="min-height:44px">Skip — I haven't learned this one</button>
+  </div>
+
+  <p class="faint" style="font-size:.75rem;text-align:center;margin:1.5rem 0 0;line-height:1.5">
+    Signs are drawn to MUTCD shape and color.<br>
+    Sourced from the Tennessee Comprehensive Driver License Manual.
+  </p>
+
+</main>
+
+<script src="_signs.js"></script>
+</body>
+</html>

@@ -1,0 +1,980 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup 06d — Exam score report, all 30 expanded</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,300..900&family=Overpass+Mono:wght@300..700&family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="_base.css">
+<style>
+  /* ============================================================
+     THIRTY OF THE SAME THING.
+
+     The risk in this screen is not length, it is sameness: thirty
+     blocks with identical structure turn into wallpaper. Four
+     devices keep it scannable without shortening it:
+
+       · The nine you missed are the only blocks with a red left
+         rule and a tinted ground. Correct answers keep a green
+         rule but no fill, so the misses are findable at a glance
+         from a thumb-scroll away.
+       · A correct item collapses its two answer rows into one —
+         "you picked B, and it was right" — so it is visibly
+         shorter than a miss without losing any of the four things
+         a review has to show.
+       · The list runs in true exam order, so the four blueprint
+         areas interleave exactly as a 25/25/25/25 sample does.
+         Every block names its own area, and the four area scores
+         sit in one panel above the list.
+       · A jump link and a filter sit at the top for the learner who
+         only wants the misses. ---------- */
+
+  /* Text sets in _base.css text tokens (--guide-text / --stop-text / --work-text)
+     and the corrected --sign-faint. Nothing is redefined here; sign faces keep
+     their real MUTCD colours. */
+
+
+  .plaque {
+    position: relative; overflow: hidden;
+    width: 100%; max-width: 300px; margin: 0 auto;
+    background: var(--sign-white); border-radius: 8px; padding: 9px;
+    box-shadow: 0 12px 34px rgba(0,0,0,.5);
+  }
+  .plaque::after {
+    content:''; position:absolute; inset:0; opacity:.10; pointer-events:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='80' height='80' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .plaque__face {
+    position: relative; z-index: 1; text-align: center;
+    border: 2.5px solid #14161A; border-radius: 5px;
+    padding: .9rem .8rem 1rem;
+  }
+  .plaque__legend {
+    font-size: .625rem; font-weight: 800; letter-spacing: .16em;
+    text-transform: uppercase; color: rgba(20,22,26,.72); margin: 0;
+  }
+  .plaque__score {
+    display: block; margin: .45rem 0 .4rem;
+    font-family: var(--mono); font-variant-numeric: tabular-nums;
+    font-size: 2.6rem; font-weight: 700; line-height: 1; color: #14161A;
+  }
+  .plaque__score small { font-size: 1rem; font-weight: 700; color: rgba(20,22,26,.6); }
+  .plaque__verdict {
+    display: inline-flex; align-items: center; gap: .4rem;
+    font-size: .8125rem; font-weight: 800; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--stop);
+  }
+
+  .meter__rail { margin-top: .1rem; }
+
+  /* ---- review controls ---- */
+  /* Sits below the app bar, not under it — the app bar is also sticky
+     at top:0 and is 4rem tall. */
+  .controls {
+    position: sticky; top: 4rem; z-index: 16;
+    display: flex; align-items: center; gap: .6rem; flex-wrap: wrap;
+    margin: 0 calc(var(--gut) * -1); padding: .7rem var(--gut);
+    background: color-mix(in srgb, var(--asphalt) 93%, transparent);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--shoulder);
+  }
+  .seg { display: inline-flex; gap: 2px; padding: 3px; background: var(--asphalt-sunk); border: 1px solid var(--shoulder); border-radius: var(--r); }
+  .seg button {
+    min-height: 44px; padding: 0 .75rem;
+    background: none; border: 0; border-radius: var(--r-sm);
+    font-family: var(--ui); font-size: .8125rem; font-weight: 700;
+    color: var(--sign-dim); cursor: pointer; white-space: nowrap;
+  }
+  .seg button[aria-pressed='true'] { background: var(--shoulder); color: var(--sign-white); }
+  .seg button:hover { color: var(--sign-white); }
+  .jump {
+    display: inline-flex; align-items: center; gap: .35rem;
+    min-height: 44px; padding: 0 .5rem;
+    color: var(--stop-text); text-decoration: none;
+    font-size: .8125rem; font-weight: 700; white-space: nowrap;
+  }
+  .jump:hover { text-decoration: underline; }
+
+  /* ---- one reviewed question ---- */
+  .rev {
+    padding: .85rem .9rem .9rem;
+    border-left: 3px solid color-mix(in srgb, var(--guide-lit) 60%, transparent);
+    border-radius: 0 var(--r) var(--r) 0;
+  }
+  .rev + .rev { margin-top: .45rem; }
+  .rev--miss {
+    border-left-color: var(--stop-lit);
+    background: color-mix(in srgb, var(--stop) 11%, transparent);
+  }
+  .rev__top { display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; margin-bottom: .45rem; }
+  .rev__n {
+    font-family: var(--mono); font-size: .75rem; font-weight: 700;
+    color: var(--sign-faint); letter-spacing: .06em;
+  }
+  /* Because the run is interleaved, each block has to say which of the four
+     blueprint areas it belongs to — the position in the list no longer does. */
+  .rev__area {
+    font-size: .625rem; font-weight: 800; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--sign-faint);
+  }
+  .rev__stem { margin: 0 0 .6rem; font-size: .9375rem; font-weight: 600; line-height: 1.4; text-wrap: pretty; }
+
+  .ans + .ans { margin-top: .5rem; }
+  .ans__lab {
+    margin: 0 0 .2rem;
+    font-size: .625rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--sign-faint);
+  }
+  .ans__lab .k { margin: 0 .15rem; }
+  /* Answer and rule prose is "the manual", so it takes the shared .read face
+     (Newsreader, 17px, 1.65) exactly as 04a/04b set the same content. Only the
+     stem stays gothic — it is "the sign". Grounding §2. */
+  .ans__val { margin: 0; }
+  .k {
+    display: inline-grid; place-items: center;
+    width: 19px; height: 19px; margin-right: .4rem;
+    border-radius: 999px; vertical-align: -3px;
+    font-family: var(--mono); font-size: .625rem; font-weight: 700; color: #fff;
+  }
+  /* White on --guide-lit is only 4.1:1; the deeper --guide/--stop faces
+     carry white legend text at 6.8:1 and 6.9:1, like the real signs do. */
+  .k--ok  { background: var(--guide); }
+  .k--bad { background: var(--stop); }
+
+  .rev__cite {
+    display: flex; align-items: center; gap: .35rem;
+    margin: .6rem 0 0;
+    font-family: var(--mono); font-size: .6875rem; letter-spacing: .03em;
+    color: var(--sign-faint);
+  }
+  .rev__cite svg { flex: none; }
+
+  .tagx {
+    display: inline-flex; align-items: center;
+    padding: .18rem .45rem; border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--work-text) 65%, transparent);
+    color: var(--work-text); text-decoration: none;
+    font-size: .5625rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase;
+  }
+  .tagx:hover { background: color-mix(in srgb, var(--work-text) 15%, transparent); }
+
+  /* ---- AppNav owns the brand block (grounding §3) ----
+     At ≥1024px the nav becomes a side rail and _base.css reserves 5.5rem at
+     its head for the brand. Fill that space, and never render the brand in
+     the page header — the header is the page's, the brand is the nav's.
+     Matches 02f-dashboard-desktop.html exactly. */
+  @media (min-width: 1024px) {
+    .railbrand {
+      position: fixed; top: 0; left: 0; z-index: 31;
+      width: 232px; height: 5.5rem;
+      display: flex; align-items: center; gap: .6rem;
+      padding: 0 1.25rem;
+      background: var(--asphalt-sunk);
+      border-right: 1px solid var(--shoulder);
+      border-bottom: 1px solid var(--shoulder);
+    }
+  }
+  @media (max-width: 1023px) { .railbrand { display: none; } }
+
+  /* The app-bar pattern (.appbar__lead / __title / __sub / .back) lives in
+     _base.css and is not redefined here. */
+</style>
+</head>
+<body>
+
+<div class="mock-label">Mockup 06d · Exam score report — all 30 expanded · cell 6-long-content · 390×844 mobile</div>
+
+<div class="railbrand">
+  <svg class="sign sign--sm" role="img" aria-label="Red octagonal stop sign"><use href="#sg-stop"/></svg>
+  <strong style="letter-spacing:-.02em;font-size:1.0625rem">TN&nbsp;Drive</strong>
+</div>
+
+<header class="appbar">
+  <div class="row appbar__lead">
+    <a class="back" href="#">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M19 12H6M11 6l-6 6 6 6"/></svg>
+      Back<span class="sr-only"> to the score report</span>
+    </a>
+    <strong class="appbar__title">Full review</strong>
+    <span class="dim appbar__sub">All 30 · 9 missed · today, 4:12 pm</span>
+  </div>
+  <span class="badge badge--offline" title="Everything works without a connection">Offline ready</span>
+</header>
+
+<main class="wrap" style="padding-top:1.5rem">
+
+  <div style="margin-bottom:1.25rem">
+    <p class="eyebrow" style="margin-bottom:.35rem">Mock exam · today, 4:12 pm · full review</p>
+    <h1>All thirty, in order</h1>
+  </div>
+
+  <section class="plaque" aria-label="Result: did not pass, 21 correct out of 30">
+    <div class="plaque__face">
+      <p class="plaque__legend">Class D knowledge test</p>
+      <strong class="plaque__score">21<small>/30</small></strong>
+      <span class="plaque__verdict">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        Did not pass
+      </span>
+    </div>
+  </section>
+
+  <p class="read" style="margin:1.25rem 0 0;text-align:center">
+    Tennessee needs 24 of 30. Every question you were asked is below, in the order you saw it,
+    with the manual page it came from — the 9 you missed are the ones with a red edge.
+  </p>
+
+  <section style="margin-top:1.5rem">
+    <h2 style="margin-bottom:.875rem">Where the nine went</h2>
+
+    <div class="panel panel--flat">
+      <div class="meter">
+        <div class="meter__head">
+          <span class="meter__name">Traffic signs &amp; signals</span>
+          <span class="meter__val">7 / 8</span>
+        </div>
+        <div class="rail meter__rail" aria-hidden="true"><i style="width:88%"></i></div>
+      </div>
+
+      <div class="meter">
+        <div class="meter__head">
+          <span class="meter__name">Safe driving principles</span>
+          <span class="meter__val">4 / 7</span>
+        </div>
+        <div class="rail rail--warn meter__rail" aria-hidden="true"><i style="width:57%"></i></div>
+      </div>
+
+      <div class="meter">
+        <div class="meter__head">
+          <span class="meter__name">Rules of the road</span>
+          <span class="meter__val">5 / 8</span>
+        </div>
+        <div class="rail rail--warn meter__rail" aria-hidden="true"><i style="width:63%"></i></div>
+      </div>
+
+      <div class="meter">
+        <div class="meter__head">
+          <span class="meter__name">Drugs &amp; alcohol</span>
+          <span class="meter__val">5 / 7</span>
+        </div>
+        <div class="rail rail--warn meter__rail" aria-hidden="true"><i style="width:71%"></i></div>
+      </div>
+
+      <p class="faint" style="font-size:.75rem;margin:.875rem 0 0;line-height:1.5">
+        The four areas the manual publishes, each a quarter of the test. The exam interleaves
+        them, so the questions below are not grouped — they are in the order you sat them.
+      </p>
+    </div>
+  </section>
+
+  <div class="controls">
+    <div class="seg" role="group" aria-label="Filter the review">
+      <button type="button" aria-pressed="true">All 30</button>
+      <button type="button" aria-pressed="false">Missed 9</button>
+    </div>
+    <a class="jump" href="#q06">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg>
+      Jump to first miss
+    </a>
+  </div>
+
+  <hr class="centreline" style="margin-top:1.25rem">
+
+  <section aria-label="All 30 questions, in the order they were asked">
+
+    <article class="rev" id="q01">
+      <div class="rev__top">
+        <span class="rev__n">01</span>
+        <span class="verdict verdict--ok" style="margin-top:0">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M4 13l6 6L20 5"/></svg>
+          Correct
+        </span>
+        <span class="rev__area">Traffic signs &amp; signals</span>
+      </div>
+      <p class="rev__stem">A yellow diamond-shaped sign with a black symbol on it is telling you what?</p>
+        <div class="ans">
+          <p class="ans__lab">You picked <span class="k k--ok">B</span> — and it was the correct answer</p>
+          <p class="ans__val read">It is a warning: something ahead needs care — a curve, a crossing, a narrowing, a change in the road.</p>
+        </div>
+      <p class="rev__cite">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 5h16v15H4z"/><path d="M8 9h8M8 13h6"/></svg>
+        Manual · Section: Traffic Signs · p. 21
+      </p>
+    </article>
+
+    <article class="rev" id="q02">
+      <div class="rev__top">
+        <span class="rev__n">02</span>
+        <span class="verdict verdict--ok" style="margin-top:0">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M4 13l6 6L20 5"/></svg>
+          Correct
+        </span>
+        <span class="rev__area">Rules of the road</span>
+      </div>
+      <p class="rev__stem">Two vehicles arrive at an uncontrolled intersection at the same moment. Who goes first?</p>
+        <div class="ans">
+          <p class="ans__lab">You picked <span class="k k--ok">B</span> — and it was the correct answer</p>
+          <p class="ans__val read">The vehicle on the right.</p>
+        </div>
+      <p class="rev__cite">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 5h16v15H4z"/><path d="M8 9h8M8 13h6"/></svg>
+        Manual · Section: Right-of-Way · p. 41
+      </p>
+    </article>
+
+    <article class="rev" id="q03">
+      <div class="rev__top">
+        <span class="rev__n">03</span>
+        <span class="verdict verdict--ok" style="margin-top:0">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M4 13l6 6L20 5"/></svg>
+          Correct
+        </span>
+        <span class="rev__area">Safe driving principles</span>
+      </div>
+      <p class="rev__stem">Your vehicle starts to hydroplane on standing water. What should you do?</p>
+        <div class="ans">
+          <p class="ans__lab">You picked <span class="k k--ok">C</span> — and it was the correct answer</p>
+          <p class="ans__val read">Ease off the accelerator, hold the wheel steady, and do not brake hard until the tires grip again.</p>
+        </div>
+      <p class="rev__cite">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 5h16v15H4z"/><path d="M8 9h8M8 13h6"/></svg>
+        Manual · Section: Driving in Bad Weather · p. 61
+      </p>
+    </article>
+
+    <article class="rev" id="q04">
+      <div class="rev__top">
+        <span class="rev__n">04</span>
+        <span class="verdict verdict--ok" style="margin-top:0">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M4 13l6 6L20 5"/></svg>
+          Correct
+        </span>
+        <span class="rev__area">Drugs &amp; alcohol</span>
+      </div>
+      <p class="rev__stem">At what blood alcohol concentration is an adult driver presumed to be under the influence in Tennessee?</p>
+        <div class="ans">
+          <p class="ans__lab">You picked <span class="k k--ok">A</span> — and it was the correct answer</p>
+          <p class="ans__val read">0.08 percent.</p>
+        </div>
+      <p class="rev__cite">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 5h16v15H4z"/><path d="M8 9h8M8 13h6"/></svg>
+        Manual · Section: Alcohol, Other Drugs and Driving · p. 92
+      </p>
+    </article>
+
+    <article class="rev" id="q05">
+      <div class="rev__top">
+        <span class="rev__n">05</span>
+        <span class="verdict verdict--ok" style="margin-top:0">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M4 13l6 6L20 5"/></svg>
+          Correct
+        </span>
+        <span class="rev__area">Traffic signs &amp; signals</span>
+      </div>
+      <p class="rev__stem">Which shape is used in the United States for one sign and one sign only?</p>
+        <div class="ans">
+          <p class="ans__lab">You picked <span class="k k--ok">C</span> — and it was the correct answer</p>
+          <p class="ans__val read">The octagon — eight sides, red face, white legend. Nothing but a STOP sign uses it.</p>
+        </div>
+      <p class="rev__cite">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 5h16v15H4z"/><path d="M8 9h8M8 13h6"/></svg>
+        Manual · Section: Traffic Signs · p. 20
+      </p>
+    </article>
+
+    <article class="rev rev--miss" id="q06">
+      <div class="rev__top">
+        <span class="rev__n">06</span>
+        <span class="verdict verdict--bad" style="margin-top:0">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          Missed
+        </span>
+        <span class="rev__area">Safe driving principles</span>
+      </div>
+      <p class="rev__stem">In good conditions, how much space does the manual tell you to keep behind the vehicle in front?</p>
+        <div class="ans">
+          <p class="ans__lab">You picked</p>
+          <p class="ans__val read"><span class="k k--bad">A</span>Two car lengths for every 10 mph of speed.</p>
+        </div>
+        <div class="ans">
+          <p class="ans__lab">Correct answer</p>
+          <p class="ans__val read"><span class="k k--ok">B</span>At least three to four seconds — measured by counting, not by guessing car lengths.</p>
+        </div>
+      <p class="rev__cite">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 5h16v15H4z"/><path d="M8 9h8M8 13h6"/></svg>
+        Manual · Section: Safe Driving Tips · p. 55
+      </p>
+    </article>
+
+    <article class="rev" id="q07">
+      <div class="rev__top">
+        <span class="rev__n">07</span>
+        <span class="verdict verdict--ok" style="margin-top:0">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M4 13l6 6L20 5"/></svg>
+          Correct
+        </span>
+        <span class="rev__area">Rules of the road</span>
+      </div>
+      <p class="rev__stem">How far in advance of a turn must you signal?</p>
+        <div class="ans">
+          <p class="ans__lab">You picked <span class="k k--ok">C</span> — and it was the correct answer</p>
+          <p class="ans__val read">At least 50 feet before you begin the turn.</p>
+        </div>
+      <p class="rev__cite">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 5h16v15H4z"/><path d="M8 9h8M8 13h6"/></svg>
+        Manual · Section: Rules of the Road · p. 43
+      </p>
+    </article>
+
+    <article class="rev" id="q08">
+      <div class="rev__top">
+        <span class="rev__n">08</span>
+        <span class="verdict verdict--ok" style="margin-top:0">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M4 13l6 6L20 5"/></svg>
+          Correct
+        </span>
+        <span class="rev__area">Traffic signs &amp; signals</span>
+      </div>
+      <p class="rev__stem">A steady yellow arrow appears in the turn signal you are waiting at. What does it mean?</p>
+        <div class="ans">
+          <p class="ans__lab">You picked <span class="k k--ok">A</span> — and it was the correct answer</p>
+          <p class="ans__val read">The protected turn is ending. Stop if you can do it safely; the signal is about to change.</p>
+        </div>
+      <p class="rev__cite">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 5h16v15H4z"/><path d="M8 9h8M8 13h6"/></svg>
+        Manual · Section: Traffic Signals · p. 33
+      </p>
+    </article>
+
+    <article class="rev" id="q09">
+      <div class="rev__top">
+        <span class="rev__n">09</span>
+        <span class="verdict verdict--ok" style="margin-top:0">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M4 13l6 6L20 5"/></svg>
+          Correct
+        </span>
+        <span class="rev__area">Drugs &amp; alcohol</span>
+      </div>
+      <p class="rev__stem">Under the implied consent law, what have you already agreed to simply by driving on Tennessee roads?</p>
+        <div class="ans">
+          <p class="ans__lab">You picked <span class="k k--ok">B</span> — and it was the correct answer</p>
+          <p class="ans__val read">To submit to a test of your blood, breath or urine when an officer lawfully requests one.</p>
+        </div>
+      <p class="rev__cite">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 5h16v15H4z"/><path d="M8 9h8M8 13h6"/></svg>
+        Manual · Section: Implied Consent · p. 94
+      </p>
+    </article>
+
+    <article class="rev rev--miss" id="q10">
+      <div class="rev__top">
+        <span class="rev__n">10</span>
+        <span class="verdict verdict--bad" style="margin-top:0">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          Missed
+        </span>
+        <span class="rev__area">Rules of the road</span>
+      </div>
+      <p class="rev__stem">You approach a railroad crossing marked only with a crossbuck — no gates, no lights. What must you do?</p>
+        <div class="ans">
+          <p class="ans__lab">You picked</p>
+          <p class="ans__val read"><span class="k k--bad">C</span>Carry on at normal speed unless you can actually see a train.</p>
+        </div>
+        <div class="ans">
+          <p class="ans__lab">Correct answer</p>
+          <p class="ans__val read"><span class="k k--ok">A</span>Slow down, look and listen both ways, and be ready to stop. A crossbuck carries the force of a yield sign.</p>
+        </div>
+      <p class="rev__cite">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 5h16v15H4z"/><path d="M8 9h8M8 13h6"/></svg>
+        Manual · Section: Railroad Crossings · p. 45
+      </p>
+    </article>
+
+    <article class="rev" id="q11">
+      <div class="rev__top">
+        <span class="rev__n">11</span>
+        <span class="verdict verdict--ok" style="margin-top:0">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M4 13l6 6L20 5"/></svg>
+          Correct
+        </span>
+        <span class="rev__area">Safe driving principles</span>
+      </div>
+      <p class="rev__stem">Apart from at night, when does Tennessee require your headlights to be on?</p>
+        <div class="ans">
+          <p class="ans__lab">You picked <span class="k k--ok">B</span> — and it was the correct answer</p>
+          <p class="ans__val read">Whenever your wipers are running continuously because of rain, snow, sleet or mist.</p>
+        </div>
+      <p class="rev__cite">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 5h16v15H4z"/><path d="M8 9h8M8 13h6"/></svg>
+        Manual · Section: Rules of the Road · p. 48
+      </p>
+    </article>
+
+    <article class="rev" id="q12">
+      <div class="rev__top">
+        <span class="rev__n">12</span>
+        <span class="verdict verdict--ok" style="margin-top:0">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M4 13l6 6L20 5"/></svg>
+          Correct
+        </span>
+        <span class="rev__area">Drugs &amp; alcohol</span>
+      </div>
+      <p class="rev__stem">You are lawfully arrested for driving under the influence and the officer asks you to take a blood or breath test. You refuse. Under Tennessee's implied consent law, what happens?</p>
+        <div class="ans">
+          <p class="ans__lab">You picked <span class="k k--ok">B</span> — and it was the correct answer</p>
+          <p class="ans__val read">You lose your driving privileges for one year for a first refusal — and the revocation stands even if you are never convicted of the DUI.</p>
+        </div>
+      <p class="rev__cite">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 5h16v15H4z"/><path d="M8 9h8M8 13h6"/></svg>
+        Manual · Section: Implied Consent · p. 94
+      </p>
+    </article>
+
+    <article class="rev" id="q13">
+      <div class="rev__top">
+        <span class="rev__n">13</span>
+        <span class="verdict verdict--ok" style="margin-top:0">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M4 13l6 6L20 5"/></svg>
+          Correct
+        </span>
+        <span class="rev__area">Traffic signs &amp; signals</span>
+      </div>
+      <p class="rev__stem">A round yellow sign carrying a black X and two Rs means what?</p>
+        <div class="ans">
+          <p class="ans__lab">You picked <span class="k k--ok">A</span> — and it was the correct answer</p>
+          <p class="ans__val read">A railroad crossing is ahead. Slow down, look both ways and be ready to stop.</p>
+        </div>
+      <p class="rev__cite">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 5h16v15H4z"/><path d="M8 9h8M8 13h6"/></svg>
+        Manual · Section: Railroad Crossings · p. 45
+      </p>
+    </article>
+
+    <article class="rev rev--miss" id="q14">
+      <div class="rev__top">
+        <span class="rev__n">14</span>
+        <span class="verdict verdict--bad" style="margin-top:0">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          Missed
+        </span>
+        <span class="rev__area">Safe driving principles</span>
+      </div>
+      <p class="rev__stem">On a four-lane road with a center turn lane, a school bus coming toward you stops with its red lights flashing and its stop arm out. What must you do?</p>
+        <div class="ans">
+          <p class="ans__lab">You picked</p>
+          <p class="ans__val read"><span class="k k--bad">C</span>Keep driving at your normal speed; the turn lane divides the road.</p>
+        </div>
+        <div class="ans">
+          <p class="ans__lab">Correct answer</p>
+          <p class="ans__val read"><span class="k k--ok">A</span>Stop. A painted center turn lane is not a divider — traffic in both directions stops.</p>
+        </div>
+      <p class="rev__cite">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 5h16v15H4z"/><path d="M8 9h8M8 13h6"/></svg>
+        Manual · Section: Sharing the Road · p. 74
+      </p>
+    </article>
+
+    <article class="rev" id="q15">
+      <div class="rev__top">
+        <span class="rev__n">15</span>
+        <span class="verdict verdict--ok" style="margin-top:0">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M4 13l6 6L20 5"/></svg>
+          Correct
+        </span>
+        <span class="rev__area">Rules of the road</span>
+        <a class="tagx" href="11-settings.html">Corrected since 2022</a>
+      </div>
+      <p class="rev__stem">A patrol car is stopped on the shoulder ahead with its lights on. The lane beside you is occupied and you cannot change lanes. What does the Move Over Law require?</p>
+        <div class="ans">
+          <p class="ans__lab">You picked <span class="k k--ok">A</span> — and it was the correct answer</p>
+          <p class="ans__val read">Slow to a speed that is safe and prudent for the conditions, and be ready to stop.</p>
+        </div>
+      <p class="rev__cite">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 5h16v15H4z"/><path d="M8 9h8M8 13h6"/></svg>
+        Manual · Section: Sharing the Road · p. 68
+      </p>
+    </article>
+
+    <article class="rev rev--miss" id="q16">
+      <div class="rev__top">
+        <span class="rev__n">16</span>
+        <span class="verdict verdict--bad" style="margin-top:0">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          Missed
+        </span>
+        <span class="rev__area">Drugs &amp; alcohol</span>
+        <a class="tagx" href="11-settings.html">Corrected since 2022</a>
+      </div>
+      <p class="rev__stem">At what BAC does vehicular homicide become the aggravated offense?</p>
+        <div class="ans">
+          <p class="ans__lab">You picked</p>
+          <p class="ans__val read"><span class="k k--bad">A</span>0.20 percent.</p>
+        </div>
+        <div class="ans">
+          <p class="ans__lab">Correct answer</p>
+          <p class="ans__val read"><span class="k k--ok">B</span>0.15 percent.</p>
+        </div>
+      <p class="rev__cite">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 5h16v15H4z"/><path d="M8 9h8M8 13h6"/></svg>
+        Manual · Section: Alcohol, Other Drugs and Driving · p. 96
+      </p>
+    </article>
+
+    <article class="rev rev--miss" id="q17">
+      <div class="rev__top">
+        <span class="rev__n">17</span>
+        <span class="verdict verdict--bad" style="margin-top:0">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          Missed
+        </span>
+        <span class="rev__area">Traffic signs &amp; signals</span>
+      </div>
+      <p class="rev__stem">What does a five-sided sign — a pentagon — mean in Tennessee?</p>
+        <div class="ans">
+          <p class="ans__lab">You picked</p>
+          <p class="ans__val read"><span class="k k--bad">A</span>A no-passing zone begins here.</p>
+        </div>
+        <div class="ans">
+          <p class="ans__lab">Correct answer</p>
+          <p class="ans__val read"><span class="k k--ok">C</span>A school zone or school crossing is ahead.</p>
+        </div>
+      <p class="rev__cite">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 5h16v15H4z"/><path d="M8 9h8M8 13h6"/></svg>
+        Manual · Section: Traffic Signs · p. 24
+      </p>
+    </article>
+
+    <article class="rev" id="q18">
+      <div class="rev__top">
+        <span class="rev__n">18</span>
+        <span class="verdict verdict--ok" style="margin-top:0">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M4 13l6 6L20 5"/></svg>
+          Correct
+        </span>
+        <span class="rev__area">Safe driving principles</span>
+      </div>
+      <p class="rev__stem">You have stopped behind a school bus whose red lights are flashing and whose stop arm is out. When may you move off?</p>
+        <div class="ans">
+          <p class="ans__lab">You picked <span class="k k--ok">A</span> — and it was the correct answer</p>
+          <p class="ans__val read">Only once the stop arm folds in and the red lights stop flashing.</p>
+        </div>
+      <p class="rev__cite">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 5h16v15H4z"/><path d="M8 9h8M8 13h6"/></svg>
+        Manual · Section: Sharing the Road · p. 74
+      </p>
+    </article>
+
+    <article class="rev rev--miss" id="q19">
+      <div class="rev__top">
+        <span class="rev__n">19</span>
+        <span class="verdict verdict--bad" style="margin-top:0">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          Missed
+        </span>
+        <span class="rev__area">Rules of the road</span>
+        <a class="tagx" href="11-settings.html">Corrected since 2022</a>
+      </div>
+      <p class="rev__stem">What are Tennessee’s minimum liability insurance limits?</p>
+        <div class="ans">
+          <p class="ans__lab">You picked</p>
+          <p class="ans__val read"><span class="k k--bad">A</span>$25,000 per person · $50,000 per crash · $15,000 property damage.</p>
+        </div>
+        <div class="ans">
+          <p class="ans__lab">Correct answer</p>
+          <p class="ans__val read"><span class="k k--ok">B</span>$25,000 per person · $50,000 per crash · $25,000 property damage.</p>
+        </div>
+      <p class="rev__cite">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 5h16v15H4z"/><path d="M8 9h8M8 13h6"/></svg>
+        Manual · Section: Financial Responsibility · p. 18
+      </p>
+    </article>
+
+    <article class="rev" id="q20">
+      <div class="rev__top">
+        <span class="rev__n">20</span>
+        <span class="verdict verdict--ok" style="margin-top:0">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M4 13l6 6L20 5"/></svg>
+          Correct
+        </span>
+        <span class="rev__area">Traffic signs &amp; signals</span>
+      </div>
+      <p class="rev__stem">A white rectangular sign shows a black number above the words SPEED LIMIT. What kind of sign is it?</p>
+        <div class="ans">
+          <p class="ans__lab">You picked <span class="k k--ok">B</span> — and it was the correct answer</p>
+          <p class="ans__val read">A regulatory sign. White rectangles state the law, and you must obey them.</p>
+        </div>
+      <p class="rev__cite">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 5h16v15H4z"/><path d="M8 9h8M8 13h6"/></svg>
+        Manual · Section: Traffic Signs · p. 22
+      </p>
+    </article>
+
+    <article class="rev" id="q21">
+      <div class="rev__top">
+        <span class="rev__n">21</span>
+        <span class="verdict verdict--ok" style="margin-top:0">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M4 13l6 6L20 5"/></svg>
+          Correct
+        </span>
+        <span class="rev__area">Drugs &amp; alcohol</span>
+      </div>
+      <p class="rev__stem">At what blood alcohol concentration is a driver under 21 presumed to be under the influence?</p>
+        <div class="ans">
+          <p class="ans__lab">You picked <span class="k k--ok">C</span> — and it was the correct answer</p>
+          <p class="ans__val read">0.02 percent — Tennessee’s zero-tolerance figure.</p>
+        </div>
+      <p class="rev__cite">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 5h16v15H4z"/><path d="M8 9h8M8 13h6"/></svg>
+        Manual · Section: Alcohol, Other Drugs and Driving · p. 93
+      </p>
+    </article>
+
+    <article class="rev rev--miss" id="q22">
+      <div class="rev__top">
+        <span class="rev__n">22</span>
+        <span class="verdict verdict--bad" style="margin-top:0">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          Missed
+        </span>
+        <span class="rev__area">Safe driving principles</span>
+      </div>
+      <p class="rev__stem">An oncoming driver at night will not dim their high beams. What is the right response?</p>
+        <div class="ans">
+          <p class="ans__lab">You picked</p>
+          <p class="ans__val read"><span class="k k--bad">B</span>Flash your own high beams to remind the other driver to dim theirs.</p>
+        </div>
+        <div class="ans">
+          <p class="ans__lab">Correct answer</p>
+          <p class="ans__val read"><span class="k k--ok">C</span>Look toward the right edge of your lane and use the edge line to steer by until they pass.</p>
+        </div>
+      <p class="rev__cite">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 5h16v15H4z"/><path d="M8 9h8M8 13h6"/></svg>
+        Manual · Section: Night Driving · p. 63
+      </p>
+    </article>
+
+    <article class="rev" id="q23">
+      <div class="rev__top">
+        <span class="rev__n">23</span>
+        <span class="verdict verdict--ok" style="margin-top:0">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M4 13l6 6L20 5"/></svg>
+          Correct
+        </span>
+        <span class="rev__area">Rules of the road</span>
+      </div>
+      <p class="rev__stem">You are entering a roundabout. Who yields to whom?</p>
+        <div class="ans">
+          <p class="ans__lab">You picked <span class="k k--ok">A</span> — and it was the correct answer</p>
+          <p class="ans__val read">You yield. Traffic already circulating in the roundabout has the right of way.</p>
+        </div>
+      <p class="rev__cite">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 5h16v15H4z"/><path d="M8 9h8M8 13h6"/></svg>
+        Manual · Section: Right-of-Way · p. 42
+      </p>
+    </article>
+
+    <article class="rev" id="q24">
+      <div class="rev__top">
+        <span class="rev__n">24</span>
+        <span class="verdict verdict--ok" style="margin-top:0">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M4 13l6 6L20 5"/></svg>
+          Correct
+        </span>
+        <span class="rev__area">Traffic signs &amp; signals</span>
+      </div>
+      <p class="rev__stem">A traffic signal is flashing red. What are you required to do?</p>
+        <div class="ans">
+          <p class="ans__lab">You picked <span class="k k--ok">A</span> — and it was the correct answer</p>
+          <p class="ans__val read">Come to a complete stop, then go when it is safe. Treat it exactly as a stop sign.</p>
+        </div>
+      <p class="rev__cite">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 5h16v15H4z"/><path d="M8 9h8M8 13h6"/></svg>
+        Manual · Section: Traffic Signals · p. 34
+      </p>
+    </article>
+
+    <article class="rev rev--miss" id="q25">
+      <div class="rev__top">
+        <span class="rev__n">25</span>
+        <span class="verdict verdict--bad" style="margin-top:0">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          Missed
+        </span>
+        <span class="rev__area">Drugs &amp; alcohol</span>
+      </div>
+      <p class="rev__stem">Which of these is true about driving on a medicine your doctor prescribed?</p>
+        <div class="ans">
+          <p class="ans__lab">You picked</p>
+          <p class="ans__val read"><span class="k k--bad">B</span>A valid prescription, taken at the stated dose, cannot be a DUI.</p>
+        </div>
+        <div class="ans">
+          <p class="ans__lab">Correct answer</p>
+          <p class="ans__val read"><span class="k k--ok">C</span>A lawfully prescribed medicine can still make you an impaired driver, and you can be charged for it.</p>
+        </div>
+      <p class="rev__cite">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 5h16v15H4z"/><path d="M8 9h8M8 13h6"/></svg>
+        Manual · Section: Alcohol, Other Drugs and Driving · p. 97
+      </p>
+    </article>
+
+    <article class="rev rev--miss" id="q26">
+      <div class="rev__top">
+        <span class="rev__n">26</span>
+        <span class="verdict verdict--bad" style="margin-top:0">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          Missed
+        </span>
+        <span class="rev__area">Rules of the road</span>
+      </div>
+      <p class="rev__stem">When are you allowed to pass on the right?</p>
+        <div class="ans">
+          <p class="ans__lab">You picked</p>
+          <p class="ans__val read"><span class="k k--bad">B</span>Whenever traffic in the left lane is moving more slowly than you are.</p>
+        </div>
+        <div class="ans">
+          <p class="ans__lab">Correct answer</p>
+          <p class="ans__val read"><span class="k k--ok">C</span>When the vehicle ahead is turning left, and only if you can do it without leaving the paved roadway.</p>
+        </div>
+      <p class="rev__cite">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 5h16v15H4z"/><path d="M8 9h8M8 13h6"/></svg>
+        Manual · Section: Passing · p. 50
+      </p>
+    </article>
+
+    <article class="rev" id="q27">
+      <div class="rev__top">
+        <span class="rev__n">27</span>
+        <span class="verdict verdict--ok" style="margin-top:0">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M4 13l6 6L20 5"/></svg>
+          Correct
+        </span>
+        <span class="rev__area">Safe driving principles</span>
+      </div>
+      <p class="rev__stem">Your car begins to skid. What is the first thing to do?</p>
+        <div class="ans">
+          <p class="ans__lab">You picked <span class="k k--ok">A</span> — and it was the correct answer</p>
+          <p class="ans__val read">Get off the accelerator and steer in the direction you want the front of the car to go.</p>
+        </div>
+      <p class="rev__cite">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 5h16v15H4z"/><path d="M8 9h8M8 13h6"/></svg>
+        Manual · Section: Emergencies · p. 66
+      </p>
+    </article>
+
+    <article class="rev" id="q28">
+      <div class="rev__top">
+        <span class="rev__n">28</span>
+        <span class="verdict verdict--ok" style="margin-top:0">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M4 13l6 6L20 5"/></svg>
+          Correct
+        </span>
+        <span class="rev__area">Traffic signs &amp; signals</span>
+      </div>
+      <p class="rev__stem">An orange sign — diamond or rectangle — is telling you what?</p>
+        <div class="ans">
+          <p class="ans__lab">You picked <span class="k k--ok">B</span> — and it was the correct answer</p>
+          <p class="ans__val read">You are approaching or already inside a work zone. Fines are doubled where workers are present.</p>
+        </div>
+      <p class="rev__cite">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 5h16v15H4z"/><path d="M8 9h8M8 13h6"/></svg>
+        Manual · Section: Traffic Signs · p. 25
+      </p>
+    </article>
+
+    <article class="rev" id="q29">
+      <div class="rev__top">
+        <span class="rev__n">29</span>
+        <span class="verdict verdict--ok" style="margin-top:0">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M4 13l6 6L20 5"/></svg>
+          Correct
+        </span>
+        <span class="rev__area">Rules of the road</span>
+      </div>
+      <p class="rev__stem">There is a solid yellow line on your side of the center line. What does it tell you?</p>
+        <div class="ans">
+          <p class="ans__lab">You picked <span class="k k--ok">B</span> — and it was the correct answer</p>
+          <p class="ans__val read">You may not pass. The solid line on your side is the one that governs you.</p>
+        </div>
+      <p class="rev__cite">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 5h16v15H4z"/><path d="M8 9h8M8 13h6"/></svg>
+        Manual · Section: Pavement Markings · p. 37
+      </p>
+    </article>
+
+    <article class="rev" id="q30">
+      <div class="rev__top">
+        <span class="rev__n">30</span>
+        <span class="verdict verdict--ok" style="margin-top:0">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M4 13l6 6L20 5"/></svg>
+          Correct
+        </span>
+        <span class="rev__area">Drugs &amp; alcohol</span>
+      </div>
+      <p class="rev__stem">How long does the body need to clear the alcohol in one standard drink?</p>
+        <div class="ans">
+          <p class="ans__lab">You picked <span class="k k--ok">A</span> — and it was the correct answer</p>
+          <p class="ans__val read">About an hour. Coffee, food, a cold shower and fresh air do not speed it up.</p>
+        </div>
+      <p class="rev__cite">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 5h16v15H4z"/><path d="M8 9h8M8 13h6"/></svg>
+        Manual · Section: Alcohol, Other Drugs and Driving · p. 92
+      </p>
+    </article>
+  </section>
+
+  <hr class="centreline">
+
+  <section class="panel panel--guide">
+    <p class="eyebrow eyebrow--guide" style="margin-bottom:.35rem">Do this next</p>
+    <h3 style="margin-bottom:.4rem">Redo the 9 you missed, one at a time</h3>
+    <p class="dim" style="margin:0 0 1rem;font-size:.875rem">
+      About five minutes. Each comes back with the rule and the manual page beside it, then
+      again tomorrow, then next week.
+    </p>
+    <a class="btn btn--guide btn--block" href="#" style="font-size:1.0625rem">
+      Start the fix-it session
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+    </a>
+  </section>
+
+  <div style="margin-top:1.25rem">
+    <button class="btn btn--quiet btn--block" type="button">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg>
+      Export this report
+    </button>
+    <a class="btn btn--quiet btn--block" href="#" style="margin-top:.75rem">Back to the score summary</a>
+  </div>
+
+  <p class="faint" style="font-size:.75rem;text-align:center;margin:1.5rem 0 0;line-height:1.5">
+    A practice result. It is not a state score and carries no official weight.<br>
+    Questions cite the Tennessee Comprehensive Driver License Manual, content current as of
+    1 July 2022, with three corrections applied and marked.<br>
+    Not affiliated with the State of Tennessee.
+  </p>
+
+</main>
+
+<nav class="nav" aria-label="Main">
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10 12 3l8 7v10a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg>
+    Study
+  </a>
+  <a href="#" aria-current="page">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v6h6M9 14l2 2 4-4"/></svg>
+    Exam
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2 22 12 12 22 2 12z"/><path d="M12 8v4M12 16h.01"/></svg>
+    Signs
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+    Progress
+  </a>
+</nav>
+
+<script src="_signs.js"></script>
+</body>
+</html>

@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup 06b — Exam score report (failed)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,300..900&family=Overpass+Mono:wght@300..700&family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="_base.css">
+<style>
+  /* ---- The verdict is a sign. Falling short is a regulatory sign: white face,
+         black legend, red only on the prohibition. It states a fact; it does
+         not shout, and it does not wash the screen in red. ---- */
+  .plaque {
+    position: relative; overflow: hidden;
+    width: 100%; max-width: 300px; margin: 0 auto;
+    background: var(--sign-white); border-radius: 8px; padding: 9px;
+    box-shadow: 0 12px 34px rgba(0,0,0,.5);
+  }
+  .plaque::after { /* retroreflective bead grain */
+    content:''; position:absolute; inset:0; opacity:.10; pointer-events:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='80' height='80' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .plaque__face {
+    position: relative; z-index: 1; text-align: center;
+    border: 2.5px solid #14161A; border-radius: 5px;
+    padding: 1rem .8rem 1.15rem;
+  }
+  .plaque__legend {
+    font-size: .625rem; font-weight: 800; letter-spacing: .16em;
+    text-transform: uppercase; color: rgba(20,22,26,.72); margin: 0;
+  }
+  .plaque__score {
+    display: block; margin: .5rem 0 .45rem;
+    font-family: var(--mono); font-variant-numeric: tabular-nums;
+    font-size: 3rem; font-weight: 700; line-height: 1; color: #14161A;
+  }
+  .plaque__score small { font-size: 1.125rem; font-weight: 700; color: rgba(20,22,26,.6); }
+  .plaque__verdict {
+    display: inline-flex; align-items: center; gap: .4rem;
+    font-size: .875rem; font-weight: 800; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--stop);
+  }
+
+  .grid-tiles .panel { padding: .75rem .55rem; text-align: center; }
+  .grid-tiles .tile__val { font-size: 1.25rem; }
+  .grid-tiles .tile__lab { letter-spacing: .08em; }
+
+  .meter__rail { margin-top: .1rem; }
+  /* The two topics that actually cost the exam get a caution diamond — the one
+     thing a diamond is allowed to mean here. */
+  .meter__name { display: inline-flex; align-items: center; gap: .45rem; }
+  .meter__name .sign { width: 20px; height: 20px; flex: none; }
+
+  /* ---- AppNav owns the brand block (grounding §3) ----
+     At ≥1024px the nav becomes a side rail and _base.css reserves 5.5rem at
+     its head for the brand. Fill that space, and never render the brand in
+     the page header — the header is the page's, the brand is the nav's.
+     Matches 02f-dashboard-desktop.html exactly. */
+  @media (min-width: 1024px) {
+    .railbrand {
+      position: fixed; top: 0; left: 0; z-index: 31;
+      width: 232px; height: 5.5rem;
+      display: flex; align-items: center; gap: .6rem;
+      padding: 0 1.25rem;
+      background: var(--asphalt-sunk);
+      border-right: 1px solid var(--shoulder);
+      border-bottom: 1px solid var(--shoulder);
+    }
+  }
+  @media (max-width: 1023px) { .railbrand { display: none; } }
+
+  /* The app-bar pattern (.appbar__lead / __title / __sub / .back) lives in
+     _base.css and is not redefined here. */
+</style>
+</head>
+<body>
+
+<div class="mock-label">Mockup 06b · Exam — score report, failed · cell 6b · 390×844 mobile</div>
+
+<div class="railbrand">
+  <svg class="sign sign--sm" role="img" aria-label="Red octagonal stop sign"><use href="#sg-stop"/></svg>
+  <strong style="letter-spacing:-.02em;font-size:1.0625rem">TN&nbsp;Drive</strong>
+</div>
+
+<header class="appbar">
+  <div class="row appbar__lead">
+    <a class="back" href="#">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M19 12H6M11 6l-6 6 6 6"/></svg>
+      Back<span class="sr-only"> to Exam</span>
+    </a>
+    <strong class="appbar__title">Score report</strong>
+    <span class="dim appbar__sub">Mock exam · today, 4:12 pm</span>
+  </div>
+  <span class="badge badge--offline" title="Everything works without a connection">Offline ready</span>
+</header>
+
+<main class="wrap stack" style="padding-top:1.5rem">
+
+  <div>
+    <p class="eyebrow" style="margin-bottom:.35rem">Mock exam · today, 4:12 pm</p>
+    <h1>Three short</h1>
+  </div>
+
+  <section class="plaque" aria-label="Result: did not pass, 21 correct out of 30">
+    <div class="plaque__face">
+      <p class="plaque__legend">Class D knowledge test</p>
+      <strong class="plaque__score">21<small>/30</small></strong>
+      <span class="plaque__verdict">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        Did not pass
+      </span>
+    </div>
+  </section>
+
+  <p class="read" style="margin:0;text-align:center">
+    Tennessee requires 24 of 30. You answered 21. Two topics account for six of the nine misses —
+    fix those and this becomes a pass.
+  </p>
+
+  <div class="grid-tiles">
+    <div class="panel panel--flat tile">
+      <span class="tile__val">9</span>
+      <span class="tile__lab">Wrong</span>
+    </div>
+    <div class="panel panel--flat tile">
+      <span class="tile__val">41:07</span>
+      <span class="tile__lab">Time</span>
+    </div>
+    <div class="panel panel--flat tile">
+      <span class="tile__val">24</span>
+      <span class="tile__lab">Needed</span>
+    </div>
+  </div>
+
+  <hr class="centreline">
+
+  <section>
+    <h2 style="margin-bottom:.875rem">What sank it</h2>
+
+    <div class="panel panel--flat">
+      <div class="meter">
+        <div class="meter__head">
+          <span class="meter__name">
+            <svg class="sign" role="img" aria-label="Yellow warning diamond: weak topic"><use href="#sg-warn"/></svg>
+            Safe driving principles
+          </span>
+          <span class="meter__val">4 / 7</span>
+        </div>
+        <div class="rail rail--warn meter__rail" aria-hidden="true"><i style="width:57%"></i></div>
+      </div>
+
+      <div class="meter">
+        <div class="meter__head">
+          <span class="meter__name">
+            <svg class="sign" role="img" aria-label="Yellow warning diamond: weak topic"><use href="#sg-warn"/></svg>
+            Rules of the road
+          </span>
+          <span class="meter__val">5 / 8</span>
+        </div>
+        <div class="rail rail--warn meter__rail" aria-hidden="true"><i style="width:63%"></i></div>
+      </div>
+
+      <div class="meter">
+        <div class="meter__head">
+          <span class="meter__name">Drugs &amp; alcohol</span>
+          <span class="meter__val">5 / 7</span>
+        </div>
+        <div class="rail rail--warn meter__rail" aria-hidden="true"><i style="width:71%"></i></div>
+      </div>
+
+      <div class="meter">
+        <div class="meter__head">
+          <span class="meter__name">Traffic signs &amp; signals</span>
+          <span class="meter__val">7 / 8</span>
+        </div>
+        <div class="rail meter__rail" aria-hidden="true"><i style="width:88%"></i></div>
+      </div>
+
+      <p class="faint" style="font-size:.75rem;margin:.875rem 0 0;line-height:1.5">
+        The four areas the manual publishes, each a quarter of the test.
+      </p>
+    </div>
+
+    <p class="dim" style="font-size:.8125rem;margin:.875rem 0 0">
+      Signs and signals are holding. The gap is narrow and it has a name.
+    </p>
+  </section>
+
+  <section class="panel panel--guide">
+    <p class="eyebrow eyebrow--guide" style="margin-bottom:.35rem">Do this next</p>
+    <h3 style="margin-bottom:.4rem">18 questions on the two weak topics</h3>
+    <p class="dim" style="margin:0 0 1rem;font-size:.875rem">
+      About nine minutes. Every one comes with the rule and the manual page it came from.
+    </p>
+    <a class="btn btn--guide btn--block" href="#" style="font-size:1.0625rem">
+      Start the fix-it session
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+    </a>
+  </section>
+
+  <div>
+    <a class="btn btn--quiet btn--block" href="#">Review the 9 you missed</a>
+    <a class="btn btn--quiet btn--block" href="#" style="margin-top:.75rem">Back to dashboard</a>
+  </div>
+
+  <p class="faint" style="font-size:.75rem;text-align:center;margin:1.25rem 0 0;line-height:1.5">
+    A practice result. It is not a state score and carries no official weight.<br>
+    Not affiliated with the State of Tennessee.
+  </p>
+
+</main>
+
+<nav class="nav" aria-label="Main">
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10 12 3l8 7v10a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg>
+    Study
+  </a>
+  <a href="#" aria-current="page">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v6h6M9 14l2 2 4-4"/></svg>
+    Exam
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2 22 12 12 22 2 12z"/><path d="M12 8v4M12 16h.01"/></svg>
+    Signs
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+    Progress
+  </a>
+</nav>
+
+<script src="_signs.js"></script>
+</body>
+</html>

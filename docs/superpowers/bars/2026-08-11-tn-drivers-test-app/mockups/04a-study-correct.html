@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup 04a — Study, answer revealed (correct)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,300..900&family=Overpass+Mono:wght@300..700&family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="_base.css">
+<style>
+  /* Focus mode itself (nav hidden, nav offsets reclaimed) lives in _base.css
+     as `body.focus`; the exit affordance is the shared `.exit`. Nothing that
+     the shared layer owns is redefined here. */
+
+  /* ---- The focus bar: exit, position, progress. Nothing else. ---- */
+  .focusbar {
+    position: sticky; top: 0; z-index: 20;
+    padding: .7rem var(--gut) .8rem;
+    background: color-mix(in srgb, var(--asphalt) 92%, transparent);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--shoulder);
+  }
+  .focusbar__in { max-width: var(--rail); margin: 0 auto; }
+  .focusbar__row { display: flex; align-items: center; justify-content: space-between; gap: .75rem; }
+
+  .topic { display: flex; align-items: center; gap: .625rem; }
+  .topic p { margin: 0; }
+
+  .choices { display: grid; gap: .625rem; margin-top: 1.25rem; }
+  /* Once answered the rows are inert but still reachable — aria-disabled, not disabled.
+     The result colour must survive a hover, so pin it back. */
+  .choice[aria-disabled='true'] { cursor: default; }
+  .choice[aria-disabled='true']:hover { border-color: var(--shoulder); }
+  .choice--correct[aria-disabled='true']:hover { border-color: var(--guide-lit); }
+  .choice--wrong[aria-disabled='true']:hover { border-color: var(--stop-lit); }
+  .choice__text { display: block; }
+
+  /* ---- Explanation: the manual speaking, so the verdict sits on top of it ---- */
+  .why__verdict { margin-top: 0; }
+  .why__rule { margin-top: .625rem; }
+
+  /* ---- Sticky action shelf, standing in for the hidden nav ---- */
+  .actionbar {
+    position: sticky; bottom: 0; z-index: 15;
+    margin-top: 1.75rem;
+    padding: .875rem var(--gut) calc(.875rem + env(safe-area-inset-bottom, 0px));
+    background: color-mix(in srgb, var(--asphalt) 94%, transparent);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid var(--shoulder);
+  }
+  .actionbar__in { max-width: var(--rail); margin: 0 auto; }
+</style>
+</head>
+<body class="focus">
+
+<div class="mock-label">Mockup 04a · Study — answer revealed, correct · cell 4a · 390×844 mobile</div>
+
+<header class="focusbar">
+  <div class="focusbar__in">
+    <div class="focusbar__row">
+      <button class="exit" type="button" style="margin-left:-.6rem">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        End session
+      </button>
+      <div class="row" style="gap:.5rem">
+        <span class="milemarker" aria-hidden="true"><span>MILE</span><span>07</span></span>
+        <span class="num dim" style="font-size:.8125rem">of 12</span>
+      </div>
+    </div>
+    <div class="rail" role="progressbar" aria-valuemin="0" aria-valuemax="12" aria-valuenow="7"
+         aria-label="Session progress: 7 of 12 questions answered" style="margin-top:.8rem">
+      <i style="width:58.3%"></i>
+    </div>
+  </div>
+</header>
+
+<main class="wrap" style="padding-top:1.5rem">
+
+  <div class="topic">
+    <svg class="sign sign--sm" aria-hidden="true"><use href="#sg-school"/></svg>
+    <div>
+      <p class="eyebrow" style="margin-bottom:.15rem">Adaptive session</p>
+      <p class="dim" style="font-size:.875rem">Sharing the road · School buses</p>
+    </div>
+  </div>
+
+  <h1 class="stem" id="q-stem" style="margin-top:1.25rem">
+    You are driving on a four-lane road with a center turn lane. A school bus coming toward you
+    stops, flashes its red lights and swings out its stop arm. What must you do?
+  </h1>
+
+  <div class="choices" role="group" aria-labelledby="q-stem">
+
+    <button class="choice choice--correct" type="button" aria-pressed="true" aria-disabled="true">
+      <span class="choice__key">A</span>
+      <span class="choice__body">
+        <span class="choice__text">Stop, and stay stopped until the stop arm folds in and the red lights go off.</span>
+        <span class="verdict verdict--ok">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M4 13l6 6L20 5"/></svg>
+          Correct · your answer
+        </span>
+      </span>
+    </button>
+
+    <button class="choice choice--muted" type="button" aria-pressed="false" aria-disabled="true">
+      <span class="choice__key">B</span>
+      <span class="choice__body">Slow to 15 mph and pass the bus with caution.</span>
+    </button>
+
+    <button class="choice choice--muted" type="button" aria-pressed="false" aria-disabled="true">
+      <span class="choice__key">C</span>
+      <span class="choice__body">Keep driving at your normal speed — the turn lane divides the road.</span>
+    </button>
+
+  </div>
+
+  <section class="panel panel--guide" style="margin-top:1.25rem" aria-labelledby="why-h">
+    <p class="eyebrow eyebrow--guide" id="why-h" style="margin-bottom:.5rem">The rule</p>
+
+    <p class="verdict verdict--ok why__verdict" role="status">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M4 13l6 6L20 5"/></svg>
+      Correct
+    </p>
+
+    <div class="read why__rule">
+      <p>
+        A center turn lane does not divide a highway. Tennessee excuses oncoming traffic from
+        stopping only where the roadway is separated by a physical barrier or an unpaved median —
+        a painted lane is neither. Here, traffic in both directions stops.
+      </p>
+      <p>
+        The bus driver gives you the signal, not the children. Wait for the arm to fold in and the
+        red lights to go dark, even if the sidewalk looks empty.
+      </p>
+    </div>
+
+    <blockquote class="cite">
+      <p class="cite__quote" style="margin:0">
+        “When driving on a highway with separate roadways for traffic in opposite directions,
+        divided by median space or a barrier not suitable for vehicular traffic, the driver need not
+        stop, but should proceed with caution. A turn lane in the middle of a four-lane highway is
+        NOT considered a barrier, but a fifth lane that is suitable for vehicular traffic. Drivers
+        meeting a stopped school bus on this type of road would be required to stop in both
+        directions.”
+      </p>
+      <cite class="cite__src">Tennessee Comprehensive Driver License Manual · Section: Sharing the Road · PDF p. 65</cite>
+    </blockquote>
+  </section>
+
+  <p class="dim" style="font-size:.8125rem;margin:1rem 0 0;text-align:center">
+    Third time right in a row. This one moves to a two-week interval.
+  </p>
+
+</main>
+
+<div class="actionbar">
+  <div class="actionbar__in">
+    <button class="btn btn--guide btn--block" type="button" style="font-size:1.0625rem">
+      Next question
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+    </button>
+    <p class="faint" style="font-size:.75rem;text-align:center;margin:.6rem 0 0">
+      5 questions left in this session
+    </p>
+  </div>
+</div>
+
+<script src="_signs.js"></script>
+</body>
+</html>

@@ -1,0 +1,627 @@
+/* ============================================================
+   TN DRIVE — shared mockup foundation
+   The interface is the roadway. MUTCD colors carry meaning.
+   Every mockup MUST link this file and MUST NOT redefine tokens.
+   ============================================================ */
+
+:root {
+  /* --- surfaces --- */
+  --asphalt:        #14161A;
+  --asphalt-raised: #1C1F25;
+  --asphalt-sunk:   #101216;
+  --shoulder:       #2A2F38;
+  --shoulder-lit:   #3A414D;
+
+  /* --- MUTCD semantic palette --- */
+  --guide:      #04684E;
+  --guide-lit:  #0A8F6C;
+  --guide-deep: #033F30;
+  --sign-white: #F2F4F1;
+  --sign-dim:   #9BA3AE;
+  --sign-faint: #808894;   /* 4.6:1 on --asphalt (was #6B7280 @ 3.7:1 — failed AA) */
+
+  /* --- TEXT tokens ---
+     Sign FACES must use true MUTCD colour (§2). UI TEXT must pass WCAG AA.
+     Those are different jobs, so they get different tokens. Never set body
+     text in --guide-lit / --stop-lit: measured 4.45:1 and 3.64:1 on asphalt,
+     both under the 4.5:1 the project commits to. */
+  --guide-text: #2FBF95;   /* 7.1:1 on --asphalt-raised */
+  --stop-text:  #FF6B70;   /* 6.5:1 on --asphalt */
+  --work-text:  #FF8A4C;   /* construction orange, legible as text */
+  --route-text: #6BA6F5;   /* --route-lit is 3.28:1 as text; this passes */
+  --warning:    #FFCC00;
+  --stop:       #B4151C;
+  --stop-lit:   #D8232A;
+  --work:       #E35205;
+  --route:      #003F87;
+  --route-lit:  #2C6FC4;
+  --school:     #C7EA00;   /* fluorescent yellow-green — school/ped/bike warning */
+  --incident:   #EE5FA7;   /* fluorescent pink — incident management ONLY */
+
+  /* --- type --- */
+  --ui:   'Overpass', system-ui, sans-serif;
+  --mono: 'Overpass Mono', ui-monospace, monospace;
+  --read: 'Newsreader', Georgia, serif;
+
+  /* --- rhythm --- */
+  --gut: 1.25rem;
+  --r-sm: 4px;
+  --r:    8px;
+  --r-lg: 14px;
+
+  --rail: 720px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--asphalt);
+  color: var(--sign-white);
+  font-family: var(--ui);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  padding-bottom: 92px; /* clears the bottom nav */
+}
+
+/* ---------- typography ---------- */
+
+h1, h2, h3, h4 {
+  font-family: var(--ui);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.12;
+  margin: 0;
+}
+h1 { font-size: clamp(1.75rem, 5vw, 2.5rem); }
+h2 { font-size: clamp(1.25rem, 3.5vw, 1.6rem); }
+h3 { font-size: 1.0625rem; letter-spacing: 0; }
+
+/* The eyebrow is a highway-sign legend: all-caps gothic, wide tracking. */
+.eyebrow {
+  font-family: var(--ui);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sign-dim);
+  margin: 0 0 0.5rem;
+}
+.eyebrow--warning { color: var(--warning); }
+.eyebrow--stop    { color: var(--stop-text); }
+.eyebrow--guide   { color: var(--guide-text); }
+.eyebrow--work    { color: var(--work-text); }
+
+/* Reading text is "the manual" — serif, generous, distinct from the road. */
+.read {
+  font-family: var(--read);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  color: #DDE2E6;
+  font-optical-sizing: auto;
+}
+.read p { margin: 0 0 0.85em; }
+.read p:last-child { margin-bottom: 0; }
+
+/* Question stems are "the sign" — gothic, tight, confident. */
+.stem {
+  font-family: var(--ui);
+  font-size: clamp(1.125rem, 4vw, 1.375rem);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  margin: 0;
+  text-wrap: pretty;
+}
+
+.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+.dim   { color: var(--sign-dim); }
+.faint { color: var(--sign-faint); }
+
+/* ---------- layout ---------- */
+
+.wrap { max-width: var(--rail); margin: 0 auto; padding: 0 var(--gut); }
+.stack > * + * { margin-top: var(--gut); }
+.row { display: flex; align-items: center; gap: 0.75rem; }
+.spread { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
+
+/* ---------- app bar ----------
+   ONE pattern across the whole set:
+     [ optional back-link · page title · context line ]  ——  offline badge
+   The brand is never in the page header — AppNav owns it, and renders it at
+   the head of the desktop side rail (§3). */
+
+.appbar {
+  position: sticky; top: 0; z-index: 20;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.875rem var(--gut);
+  background: color-mix(in srgb, var(--asphalt) 88%, transparent);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--shoulder);
+}
+.appbar__lead { display: flex; align-items: center; min-width: 0; gap: .75rem; }
+.appbar > .badge { flex: none; }
+.appbar__title {
+  letter-spacing: -.02em; font-size: 1.0625rem; font-weight: 800;
+  min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+/* Below 900px the title and badge need the whole bar. */
+.appbar__sub { display: none; font-size: .875rem; color: var(--sign-dim); }
+@media (min-width: 900px) { .appbar__sub { display: block; } }
+
+.back {
+  display: inline-flex; align-items: center; gap: .35rem;
+  min-height: 44px; flex: none;
+  background: none; border: 0; padding: 0; cursor: pointer;
+  color: var(--sign-dim); text-decoration: none;
+  font-family: var(--ui); font-size: .6875rem; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase;
+}
+.back:hover { color: var(--sign-white); }
+
+/* ---------- filter chips ---------- */
+
+.chips { display: flex; flex-wrap: wrap; gap: .5rem; }
+.chip {
+  display: inline-flex; align-items: center; gap: .45rem;
+  min-height: 40px; padding: 0 .75rem;
+  background: var(--asphalt-raised);
+  border: 1px solid var(--shoulder); border-radius: 999px;
+  color: var(--sign-dim); cursor: pointer; text-decoration: none;
+  font-family: var(--ui); font-size: .8125rem; font-weight: 700; letter-spacing: .03em;
+}
+.chip:hover { border-color: var(--shoulder-lit); color: var(--sign-white); }
+/* Pressed state must not be carried by the green fill alone (§5) — .chip__tick
+   is the shape that carries it. */
+.chip[aria-pressed='true'] {
+  background: var(--guide-deep); border-color: var(--guide-lit); color: var(--sign-white);
+}
+.chip__dot { width: 10px; height: 10px; border-radius: 2px; flex: none; }
+.chip__tick { flex: none; }
+
+/* ---------- retroreflective panel ----------
+   A sign face under headlights: a soft off-axis sheen plus fine
+   glass-bead grain. Applied to sign artifacts only, never full pages. */
+
+.panel {
+  position: relative;
+  background: var(--asphalt-raised);
+  border: 1px solid var(--shoulder);
+  border-radius: var(--r-lg);
+  padding: 1.125rem;
+  overflow: hidden;
+}
+.panel::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(120% 90% at 12% -10%,
+              rgba(255,255,255,0.055) 0%, rgba(255,255,255,0) 62%);
+  pointer-events: none;
+}
+.panel::after {
+  content: '';
+  position: absolute; inset: 0;
+  opacity: 0.16;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='80' height='80' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+}
+.panel > * { position: relative; z-index: 1; }
+
+.panel--guide { border-color: color-mix(in srgb, var(--guide-lit) 45%, var(--shoulder)); }
+.panel--stop  { border-color: color-mix(in srgb, var(--stop-lit) 45%, var(--shoulder)); }
+.panel--warn  { border-color: color-mix(in srgb, var(--warning) 38%, var(--shoulder)); }
+/* Interstate blue = motorist services / informational (grounding §2). */
+.panel--route { border-color: color-mix(in srgb, var(--route-lit) 50%, var(--shoulder)); }
+.panel--flat::before, .panel--flat::after { display: none; }
+
+/* ---------- lane striping ---------- */
+
+.rail {
+  height: 6px; border-radius: 999px;
+  background: var(--asphalt-sunk);
+  border: 1px solid var(--shoulder);
+  overflow: hidden;
+}
+.rail > i {
+  display: block; height: 100%;
+  background: var(--guide-lit);
+  border-radius: 999px;
+}
+.rail--warn > i { background: var(--warning); }
+.rail--stop > i { background: var(--stop-lit); }
+
+/* The dashed centre line — a divider that means "keep going". */
+.centreline {
+  height: 2px; border: 0; margin: 1.5rem 0;
+  background: repeating-linear-gradient(90deg,
+    var(--warning) 0 22px, transparent 22px 44px);
+  opacity: 0.32;
+}
+
+/* ---------- buttons ---------- */
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 0.5rem;
+  min-height: 48px; padding: 0 1.25rem;
+  font-family: var(--ui); font-size: 1rem; font-weight: 700;
+  letter-spacing: 0.01em;
+  border-radius: var(--r);
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color .15s ease, border-color .15s ease, transform .1s ease;
+}
+.btn--guide { background: var(--guide); color: var(--sign-white); border-color: var(--guide-lit); }
+.btn--guide:hover { background: var(--guide-lit); }
+.btn--quiet { background: transparent; color: var(--sign-white); border-color: var(--shoulder-lit); }
+.btn--quiet:hover { border-color: var(--sign-dim); background: rgba(255,255,255,0.04); }
+/* --stop-lit as a label is 3.3:1 — under AA, and these are the most consequential
+   buttons in the product ("Erase everything", "End exam and score it"). */
+.btn--danger { background: transparent; color: var(--stop-text); border-color: color-mix(in srgb, var(--stop-lit) 60%, transparent); }
+.btn--danger:hover { background: color-mix(in srgb, var(--stop) 18%, transparent); }
+.btn--block { display: flex; width: 100%; }
+.btn:active { transform: translateY(1px); }
+
+/* ---------- answer choices ---------- */
+
+.choice {
+  display: flex; align-items: flex-start; gap: 0.875rem;
+  width: 100%; min-height: 56px;
+  padding: 0.875rem 1rem;
+  text-align: left;
+  background: var(--asphalt-raised);
+  border: 1px solid var(--shoulder);
+  border-radius: var(--r);
+  color: var(--sign-white);
+  font-family: var(--ui); font-size: 1rem; line-height: 1.4;
+  cursor: pointer;
+  transition: border-color .15s ease, background-color .15s ease;
+}
+.choice:hover { border-color: var(--shoulder-lit); }
+.choice__key {
+  flex: none;
+  width: 26px; height: 26px; margin-top: 1px;
+  display: grid; place-items: center;
+  border-radius: 999px;
+  border: 1px solid var(--shoulder-lit);
+  font-family: var(--mono); font-size: 0.75rem; font-weight: 700;
+  color: var(--sign-dim);
+}
+.choice__body { flex: 1; }
+
+/* Correct / incorrect NEVER rely on colour alone — icon + word + colour. */
+.choice--correct {
+  border-color: var(--guide-lit);
+  background: color-mix(in srgb, var(--guide) 20%, var(--asphalt-raised));
+}
+/* Deep face, not --guide-lit: white on #0A8F6C is 4.07:1, marginally under AA.
+   White on #04684E is 6.8:1. */
+.choice--correct .choice__key { background: var(--guide); border-color: var(--guide-lit); color: #fff; }
+.choice--wrong {
+  border-color: var(--stop-lit);
+  background: color-mix(in srgb, var(--stop) 18%, var(--asphalt-raised));
+}
+.choice--wrong .choice__key { background: var(--stop); border-color: var(--stop-lit); color: #fff; } /* white on #B4151C = 6.9:1 */
+.choice--muted { opacity: 0.55; }
+
+.verdict {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  font-size: 0.75rem; font-weight: 800;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  margin-top: 0.4rem;
+}
+.verdict--ok   { color: var(--guide-text); }
+.verdict--bad  { color: var(--stop-text); }
+
+/* ---------- citation block ---------- */
+
+.cite {
+  border-left: 3px solid var(--guide-lit);
+  padding: 0.25rem 0 0.25rem 0.875rem;
+  margin: 0.875rem 0 0;
+}
+.cite__quote { font-family: var(--read); font-style: italic; color: #CBD2D8; line-height: 1.6; }
+.cite__src {
+  display: block; margin-top: 0.5rem;
+  font-family: var(--mono); font-size: 0.6875rem;
+  letter-spacing: 0.04em; color: var(--sign-faint);
+}
+
+/* ---------- mile marker ---------- */
+
+.milemarker {
+  display: inline-flex; flex-direction: column; align-items: center;
+  padding: 0.3rem 0.55rem;
+  background: var(--guide); border: 2px solid var(--sign-white);
+  border-radius: 3px; line-height: 1;
+}
+.milemarker span:first-child {
+  font-family: var(--ui); font-size: 0.5rem; font-weight: 700;
+  letter-spacing: 0.12em; color: rgba(255,255,255,0.82);
+}
+.milemarker span:last-child {
+  font-family: var(--mono); font-size: 0.95rem; font-weight: 700;
+  color: #fff; margin-top: 2px;
+}
+
+/* ---------- stat tile ---------- */
+
+.tile { text-align: left; }
+.tile__val {
+  font-family: var(--mono); font-size: 1.75rem; font-weight: 700;
+  font-variant-numeric: tabular-nums; line-height: 1; display: block;
+}
+.tile__lab {
+  display: block; margin-top: 0.375rem;
+  font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--sign-dim);
+}
+.grid-tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
+
+/* ---------- topic meter ---------- */
+
+.meter + .meter { margin-top: 0.875rem; }
+.meter__head { display: flex; justify-content: space-between; align-items: baseline; gap: 0.75rem; margin-bottom: 0.4rem; }
+.meter__name { font-size: 0.9375rem; font-weight: 600; }
+.meter__val { font-family: var(--mono); font-size: 0.8125rem; color: var(--sign-dim); }
+
+/* ---------- badges ---------- */
+
+.badge {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  padding: 0.25rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid var(--shoulder-lit);
+  font-size: 0.6875rem; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--sign-dim);
+}
+.badge--offline { border-color: color-mix(in srgb, var(--warning) 45%, transparent); color: var(--warning); }
+/* --guide-lit as text is 4.06:1 — under AA. Border keeps the MUTCD hue. */
+.badge--live    { border-color: color-mix(in srgb, var(--guide-lit) 50%, transparent); color: var(--guide-text); }
+.ok             { color: var(--guide-text); }
+
+/* ---------- empty / error ---------- */
+
+.state { text-align: center; padding: 2.5rem 1.25rem; }
+.state h2 { margin-bottom: 0.5rem; }
+.state p { margin: 0 auto 1.25rem; max-width: 38ch; }
+
+/* ---------- skeleton ---------- */
+
+.skel {
+  background: linear-gradient(90deg, var(--shoulder) 0%, var(--shoulder-lit) 50%, var(--shoulder) 100%);
+  background-size: 200% 100%;
+  border-radius: var(--r-sm);
+  animation: shimmer 1.4s linear infinite;
+}
+/* Skeletons sitting on a coloured sign face need a white-translucent shimmer —
+   the default is built from --shoulder and vanishes against guide green. */
+.skel--onsign {
+  background-image: linear-gradient(90deg,
+    rgba(255,255,255,.14) 0%, rgba(255,255,255,.30) 50%, rgba(255,255,255,.14) 100%);
+}
+@keyframes shimmer { to { background-position: -200% 0; } }
+
+/* ---------- visually hidden (state announcements) ---------- */
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap; border: 0;
+}
+
+/* ---------- bottom nav ---------- */
+
+.nav {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 30;
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  background: color-mix(in srgb, var(--asphalt-sunk) 94%, transparent);
+  backdrop-filter: blur(14px);
+  border-top: 1px solid var(--shoulder);
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+.nav a {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  padding: 0.7rem 0.25rem 0.8rem;
+  text-decoration: none; color: var(--sign-faint);
+  font-size: 0.6875rem; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  min-height: 56px;
+}
+.nav a[aria-current='page'] { color: var(--sign-white); }
+.nav a[aria-current='page'] svg { color: var(--guide-lit); }
+.nav svg { width: 22px; height: 22px; }
+
+/* ---------- focus: always visible, never removed ---------- */
+
+:where(a, button, [tabindex], input, select, textarea):focus-visible {
+  outline: 3px solid var(--warning);
+  outline-offset: 2px;
+  border-radius: var(--r-sm);
+}
+
+/* ---------- desktop: side rail ---------- */
+
+@media (min-width: 1024px) {
+  body { padding-bottom: 0; padding-left: 232px; }
+  .nav {
+    top: 0; right: auto; width: 232px;
+    grid-template-columns: 1fr;
+    align-content: start; gap: 2px;
+    border-top: 0; border-right: 1px solid var(--shoulder);
+    padding: 5.5rem 0.75rem 0;
+  }
+  .nav a { flex-direction: row; justify-content: flex-start; gap: 0.75rem; padding: 0.75rem 0.875rem; border-radius: var(--r); }
+  .nav a[aria-current='page'] { background: rgba(255,255,255,0.05); }
+}
+
+/* ---------- motion preference ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+  }
+}
+
+/* ============================================================
+   FOCUS MODE — study session + exam simulator (grounding §4)
+   Nav is hidden; this chrome replaces it. Owned by FocusChrome.
+   ============================================================ */
+
+body.focus { padding-bottom: 0; }
+@media (min-width: 1024px) { body.focus { padding-left: 0; } }
+body.focus .nav { display: none; }
+
+.focusbar {
+  position: sticky; top: 0; z-index: 20;
+  display: flex; align-items: center; gap: .875rem;
+  padding: .75rem var(--gut);
+  background: color-mix(in srgb, var(--asphalt) 90%, transparent);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--shoulder);
+}
+.focusbar .rail { flex: 1; }
+
+.exit {
+  display: inline-flex; align-items: center; gap: .4rem;
+  min-height: 44px; padding: 0 .6rem;
+  background: none; border: 0; cursor: pointer;
+  color: var(--sign-dim);
+  font-family: var(--ui); font-size: .6875rem; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase;
+  text-decoration: none;   /* works on <a> as well as <button> */
+}
+.exit:hover { color: var(--sign-white); }
+
+/* Sticky bottom action shelf — stands in for the hidden nav. */
+.actionbar {
+  position: sticky; bottom: 0; z-index: 20;
+  padding: .875rem var(--gut) calc(.875rem + env(safe-area-inset-bottom, 0px));
+  background: color-mix(in srgb, var(--asphalt) 92%, transparent);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--shoulder);
+}
+
+/* ---------- ChoiceRow: selected, verdict withheld (exam mode) ----------
+   Deliberately achromatic — selection must carry NO colour semantics,
+   or it leaks the answer. Keyed off aria-pressed so it can't be faked. */
+
+/* MUST exclude the judged states. [aria-pressed] has higher specificity than
+   .choice--correct, so without :not() the achromatic exam styling wins on the
+   answer-revealed screens and a CORRECT answer renders white instead of guide
+   green — breaking §2 on the one screen where the learner got it right. */
+.choice[aria-pressed='true']:not(.choice--correct):not(.choice--wrong) {
+  border-color: var(--sign-white);
+  background: rgba(255,255,255,.08);
+}
+.choice[aria-pressed='true']:not(.choice--correct):not(.choice--wrong) .choice__key {
+  background: var(--sign-white); border-color: var(--sign-white); color: var(--asphalt);
+}
+
+/* ---------- TopicMeter: head + rail, with the threshold contract ----------
+   ≥80% guide · 50–79% warn · <50% stop. The head states the numbers in
+   text, so the rail is aria-hidden — it must never be the only carrier. */
+
+.meter__bar { margin-top: .1rem; }
+
+/* ---------- Timer + strike counter (exam pressure instruments) ---------- */
+
+.timer { display: inline-flex; flex-direction: column; align-items: flex-end; line-height: 1; }
+.timer__val {
+  font-family: var(--mono); font-size: 1.25rem; font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.timer__lab {
+  font-size: .625rem; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--sign-dim); margin-top: .25rem;
+}
+.timer--low .timer__val { color: var(--warning); }
+
+/* TN rule: 7 wrong ends the exam. This has to be glanceable at all times. */
+.strikes { display: inline-flex; align-items: center; gap: .5rem; }
+.strikes__pips { display: inline-flex; gap: 3px; }
+/* Accepts either .strikes__pip or a bare <span> child, so the component works
+   with both markup shapes builders reach for. */
+.strikes__pip,
+.strikes__pips > span {
+  width: 9px; height: 12px; border-radius: 2px;
+  background: var(--asphalt-sunk); border: 1px solid var(--shoulder-lit);
+}
+.strikes__pip--used,
+.strikes__pips > span.on { background: var(--stop-lit); border-color: var(--stop-lit); }
+.strikes__txt {
+  font-family: var(--mono); font-size: .75rem; font-weight: 700;
+  color: var(--sign-dim); font-variant-numeric: tabular-nums;
+}
+
+/* ---------- VerdictSign — the signature moment of the exam flow ----------
+   pass = guide green ("you may proceed")
+   short = white regulatory face, red legend ("this is the rule")
+   halted = the stop octagon, used at sign--xl alongside this plaque */
+
+.plaque {
+  position: relative; overflow: hidden;
+  border-radius: 10px; padding: 9px; box-shadow: 0 10px 30px rgba(0,0,0,.45);
+}
+/* Retroreflective treatment, same as .panel — a verdict sign is a sign face. */
+.plaque::before {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(130% 100% at 8% -20%, rgba(255,255,255,.14), rgba(255,255,255,0) 58%);
+}
+.plaque::after {
+  content: ''; position: absolute; inset: 0; opacity: .13; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='80' height='80' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.plaque__face {
+  position: relative; z-index: 1;
+  border-radius: 6px; padding: 1.4rem 1.15rem; text-align: center;
+}
+.plaque__legend {
+  font-size: .625rem; font-weight: 800; letter-spacing: .18em; text-transform: uppercase;
+}
+.plaque__score {
+  font-family: var(--mono); font-size: 3.25rem; font-weight: 700; line-height: 1;
+  margin: .5rem 0 .35rem; font-variant-numeric: tabular-nums; display: block;
+}
+/* inline-flex + gap: the verdict pairs an icon with its word (never colour alone),
+   and they must not collide. */
+/* Aligned to the rendered mockups, which are the frozen spec — the shared
+   layer follows them, not the other way round. */
+.plaque__verdict {
+  display: inline-flex; align-items: center; justify-content: center; gap: .45rem;
+  font-size: .9375rem; font-weight: 800; margin: 0;
+  letter-spacing: .06em; text-transform: uppercase;
+}
+.plaque { max-width: 480px; margin-inline: auto; }
+
+.plaque--pass { background: var(--guide); }
+.plaque--pass .plaque__face { border: 2.5px solid var(--sign-white); color: #fff; }
+.plaque--pass .plaque__legend { color: rgba(255,255,255,.75); }
+
+.plaque--short { background: var(--sign-white); }
+.plaque--short .plaque__face { border: 3px solid var(--asphalt); color: var(--asphalt); }
+.plaque--short .plaque__legend { color: var(--stop); }
+.plaque--short .plaque__score { color: var(--stop); }
+
+.plaque--halted { background: var(--stop); }
+.plaque--halted .plaque__face { border: 2.5px solid var(--sign-white); color: #fff; }
+.plaque--halted .plaque__legend { color: rgba(255,255,255,.8); }
+
+/* ---------- mockup scaffolding only (not shipped) ---------- */
+
+.mock-label {
+  position: sticky; top: 0; z-index: 50;
+  font-family: var(--mono); font-size: 0.6875rem; letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: var(--warning); color: #111;
+  padding: 0.4rem var(--gut); font-weight: 700;
+}

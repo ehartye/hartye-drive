@@ -1,0 +1,924 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup 09c — Progress (long attempt history)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,300..900&family=Overpass+Mono:wght@300..700&family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="_base.css">
+<style>
+  /* ============================================================
+     THE DENSITY TEST — 57 attempts.
+
+     Three things have to survive: the trend chart at one point per
+     attempt, the blueprint lanes, and a history list long enough to
+     scroll for a while.
+
+       · The road ribbon narrows (7px, 4/5 dash) and drops its
+         per-reading dots to hairlines. It stays a road — the shape
+         of the climb is the information, not the individual points.
+       · Only mock exams keep a marker, because only they are events
+         worth finding. Ten of them across 57 readings is legible.
+       · The history list groups by month, keeps each row two lines,
+         and pages 30 at a time. Retention is stated, not hidden:
+         the store keeps 200 attempts and rolls up the rest. ------- */
+
+  /* Text sets in _base.css text tokens (--guide-text / --stop-text / --work-text)
+     and the corrected --sign-faint. Nothing is redefined here; sign faces keep
+     their real MUTCD colours. */
+
+
+  /* The charts are hand-authored at a 320-unit viewBox, so their glyphs scale
+     with the rendered width. Left unbounded, a 660px desktop panel scales
+     "PASS MARK 80%" and the lane figures past the panel's own 17px <h2> and
+     the type hierarchy inverts. 420px caps the largest chart glyph (12 units)
+     at 15.75px — under the heading, and unchanged at mobile widths. */
+  .chart { margin: 0; max-width: 420px; }
+  .chart svg { display: block; width: 100%; height: auto; }
+  .chart figcaption { font-size: .75rem; color: var(--sign-dim); margin-top: .75rem; line-height: 1.5; }
+
+  .key { display: flex; flex-wrap: wrap; gap: .45rem .95rem; margin: .75rem 0 0; padding: 0; list-style: none; }
+  .key li { display: flex; align-items: center; gap: .4rem; font-size: .6875rem; color: var(--sign-dim); }
+  .key svg { width: 22px; height: 12px; flex: none; }
+
+  .charthead { display: flex; align-items: baseline; justify-content: space-between; gap: .75rem; flex-wrap: wrap; margin-bottom: .875rem; }
+  .charthead h2 { font-size: 1.0625rem; letter-spacing: 0; }
+  .delta { font-family: var(--mono); font-size: .8125rem; font-weight: 700; color: var(--guide-text); white-space: nowrap; }
+
+  .readout { display: flex; align-items: center; gap: 1.15rem; }
+  .readout__copy h1 { margin-bottom: .35rem; }
+
+  /* range control — quiet segmented buttons, deliberately recessive */
+  .seg { display: inline-flex; gap: 2px; padding: 2px; background: var(--asphalt-sunk); border: 1px solid var(--shoulder); border-radius: var(--r); }
+  .seg button {
+    min-height: 44px; padding: 0 .7rem;
+    background: none; border: 0; border-radius: var(--r-sm);
+    font-family: var(--ui); font-size: .75rem; font-weight: 700; letter-spacing: .04em;
+    color: var(--sign-dim); cursor: pointer;
+  }
+  .seg button[aria-pressed='true'] { background: var(--shoulder); color: var(--sign-white); }
+  .seg button:hover { color: var(--sign-white); }
+
+  /* ---- disclosure: the same affordance 01b and 03b carry ----
+     A flex summary drops the native triangle, so the chevron is drawn
+     explicitly and turns when the section opens. */
+  .disclose > summary {
+    display: flex; align-items: center; gap: .5rem;
+    min-height: 44px; cursor: pointer; list-style: none;
+    font-size: .8125rem; color: var(--sign-dim);
+  }
+  .disclose > summary::-webkit-details-marker { display: none; }
+  .disclose > summary:hover { color: var(--sign-white); }
+  .disclose > summary .chev { flex: none; margin-left: auto; transition: transform .15s ease; }
+  .disclose[open] > summary .chev { transform: rotate(90deg); }
+
+  .meter__rail { margin-top: .1rem; }
+  .meter__name { display: inline-flex; align-items: center; gap: .45rem; }
+  .meter__name .sign { width: 20px; height: 20px; flex: none; }
+
+  /* The numerals are a fixed column: they never shrink and never wrap onto a
+     line of their own, so every meter head is one row with the figure pinned
+     to the first baseline. The name takes whatever width is left. */
+  .meter__name { flex: 1 1 auto; min-width: 0; }
+  .meter__val  { flex: none; white-space: nowrap; }
+
+  /* ---- stat tiles at narrow widths ----
+     .panel's overflow is hidden and "ANSWERED" / "ATTEMPTS" / "4/10" are
+     unbreakable, so a three-up grid clips them once the viewport gets small.
+     Below 440px the tile padding tightens; below 380px the grid drops to two
+     columns with the third spanning, which clears 320px with room to spare. */
+  @media (max-width: 440px) {
+    .grid-tiles { gap: .625rem; }
+    .grid-tiles .tile { padding: .875rem .75rem; }
+  }
+  @media (max-width: 380px) {
+    .grid-tiles { grid-template-columns: 1fr 1fr; }
+    .grid-tiles .tile:last-child { grid-column: 1 / -1; }
+  }
+
+  /* ---- history ---- */
+  .monthhead {
+    display: flex; align-items: baseline; justify-content: space-between; gap: .75rem;
+    margin: 1.4rem 0 .5rem; padding-bottom: .4rem;
+    border-bottom: 1px solid var(--shoulder);
+    font-family: var(--mono); font-size: .6875rem; font-weight: 700;
+    letter-spacing: .12em; text-transform: uppercase; color: var(--warning);
+  }
+  .monthhead:first-child { margin-top: 0; }
+  .monthhead__n { color: var(--sign-faint); letter-spacing: .06em; }
+
+  .trace { list-style: none; margin: 0; padding: 0 0 0 28px; position: relative; }
+  .trace::before {
+    content: ''; position: absolute; left: 6px; top: 6px; bottom: 6px; width: 2px;
+    background: repeating-linear-gradient(180deg, var(--warning) 0 9px, transparent 9px 19px);
+    opacity: .38;
+  }
+  .trace li { position: relative; padding: .62rem 0; border-bottom: 1px solid var(--shoulder); }
+  .trace li:last-child { border-bottom: 0; }
+  .trace__node {
+    position: absolute; left: -28px; top: .85rem;
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--asphalt-raised); border: 2px solid var(--shoulder-lit);
+  }
+  .trace__node--pass { background: var(--guide-lit); border-color: var(--guide-lit); }
+  .trace__node--fail { background: var(--stop-lit); border-color: var(--stop-lit); }
+  .trace__kind { margin: 0; font-size: .875rem; font-weight: 600; }
+  .trace__meta { margin: .1rem 0 0; font-size: .75rem; color: var(--sign-dim); }
+
+  /* The attempt score is NOT a .chip — _base.css owns that name for the
+     filter pill (40px, pressable). This is a static score plate, so it takes
+     its own name rather than shadowing the shared component. */
+  .score {
+    display: inline-flex; align-items: center; gap: .3rem; flex: none;
+    padding: .25rem .45rem; border-radius: var(--r-sm);
+    border: 1px solid var(--shoulder-lit);
+    font-family: var(--mono); font-size: .75rem; font-weight: 700;
+    color: var(--sign-dim); white-space: nowrap;
+  }
+  .score--ok  { color: var(--guide-text); border-color: color-mix(in srgb, var(--guide-text) 55%, transparent); }
+  .score--bad { color: var(--stop-text);  border-color: color-mix(in srgb, var(--stop-text) 55%, transparent); }
+
+  .linkrow {
+    display: flex; align-items: center; justify-content: space-between; gap: .75rem;
+    width: 100%; min-height: 48px; padding: .75rem .25rem;
+    background: none; border: 0; border-top: 1px solid var(--shoulder);
+    color: var(--sign-white); font-family: var(--ui); font-size: .875rem; font-weight: 700;
+    text-decoration: none; cursor: pointer;
+  }
+  .linkrow:hover { color: var(--guide-text); }
+
+  /* ---- AppNav owns the brand block (grounding §3) ----
+     At ≥1024px the nav becomes a side rail and _base.css reserves 5.5rem at
+     its head for the brand. Fill that space, and never render the brand in
+     the page header — the header is the page's, the brand is the nav's.
+     Matches 02f-dashboard-desktop.html exactly. */
+  @media (min-width: 1024px) {
+    .railbrand {
+      position: fixed; top: 0; left: 0; z-index: 31;
+      width: 232px; height: 5.5rem;
+      display: flex; align-items: center; gap: .6rem;
+      padding: 0 1.25rem;
+      background: var(--asphalt-sunk);
+      border-right: 1px solid var(--shoulder);
+      border-bottom: 1px solid var(--shoulder);
+    }
+  }
+  @media (max-width: 1023px) { .railbrand { display: none; } }
+
+  /* The app-bar pattern (.appbar__lead / __title / __sub) lives in _base.css
+     and is not redefined here. */
+</style>
+</head>
+<body>
+
+<div class="mock-label">Mockup 09c · Progress · long history (57 attempts) · cell 9-long-content · 390×844 mobile</div>
+
+<div class="railbrand">
+  <svg class="sign sign--sm" role="img" aria-label="Red octagonal stop sign"><use href="#sg-stop"/></svg>
+  <strong style="letter-spacing:-.02em;font-size:1.0625rem">TN&nbsp;Drive</strong>
+</div>
+
+<header class="appbar">
+  <div class="row appbar__lead">
+    <strong class="appbar__title">Progress</strong>
+    <span class="dim appbar__sub">84% ready · 612 answered · 57 attempts</span>
+  </div>
+  <span class="badge badge--offline" title="Everything works without a connection">Offline ready</span>
+</header>
+
+<main class="wrap stack" style="padding-top:1.5rem">
+
+  <section class="readout">
+    <div class="sign-speed" aria-hidden="true">
+      <b>TEST</b><b>READY</b><strong>84</strong>
+    </div>
+    <div class="readout__copy">
+      <p class="eyebrow">Progress · 14 weeks in</p>
+      <h1>Past the pass&nbsp;mark</h1>
+      <p class="dim" style="margin:.35rem 0 0;font-size:.9375rem">
+        Four mock exams in a row above 24. One area still sits under the line.
+      </p>
+    </div>
+  </section>
+
+  <div class="grid-tiles">
+    <div class="panel panel--flat tile">
+      <span class="tile__val">57</span>
+      <span class="tile__lab">Attempts</span>
+    </div>
+    <div class="panel panel--flat tile">
+      <span class="tile__val">612</span>
+      <span class="tile__lab">Answered</span>
+    </div>
+    <div class="panel panel--flat tile">
+      <span class="tile__val">4/10</span>
+      <span class="tile__lab">Exams passed</span>
+    </div>
+  </div>
+
+  <!-- CHART 1 — READINESS, ONE READING PER ATTEMPT ---------------------- -->
+  <section class="panel">
+    <div class="charthead">
+      <h2>Readiness over time</h2>
+      <span class="delta">84% now · +66 since May</span>
+    </div>
+
+    <div class="row" style="margin-bottom:.9rem;gap:.6rem;flex-wrap:wrap">
+      <div class="seg" role="group" aria-label="Chart range">
+        <button type="button" aria-pressed="true">All 57</button>
+        <button type="button" aria-pressed="false">Last 20</button>
+        <button type="button" aria-pressed="false">Exams only</button>
+      </div>
+    </div>
+
+    <figure class="chart">
+      <svg viewBox="0 0 320 150" role="img" aria-labelledby="c1-t c1-d">
+        <title id="c1-t">Readiness across 57 attempts from 8 May to 11 August, drawn as a road climbing past the 80 percent pass mark</title>
+        <desc id="c1-d">Readiness rises from 18 percent to 84 percent, crossing the 80 percent pass mark around the 49th attempt. Ten mock exams are marked along the road: the first six were not passed, the last four were. Every reading is listed underneath the chart.</desc>
+
+        <g stroke="var(--shoulder, #2A2F38)" stroke-width="1">
+          <line x1="30" y1="128" x2="316" y2="128"/>
+          <line x1="30" y1="71"  x2="316" y2="71" stroke-dasharray="2 4" opacity=".8"/>
+          <line x1="30" y1="14"  x2="316" y2="14" stroke-dasharray="2 4" opacity=".8"/>
+        </g>
+        <g fill="var(--sign-dim, #9BA3AE)" font-family="Overpass Mono, monospace" font-size="9" text-anchor="end">
+          <text x="22" y="131">0</text>
+          <text x="22" y="74">50</text>
+          <text x="22" y="17">100</text>
+        </g>
+
+        <line x1="30" y1="37" x2="316" y2="37" stroke="var(--sign-white, #F2F4F1)" stroke-width="1.5" stroke-dasharray="6 5" opacity=".55"/>
+        <rect x="30" y="20" width="86" height="15" rx="2" fill="var(--guide, #04684E)" stroke="var(--sign-white, #F2F4F1)" stroke-width="1"/>
+        <text x="73" y="31" text-anchor="middle" font-family="Overpass, sans-serif" font-size="8.5" font-weight="800" letter-spacing="1" fill="#FFFFFF">PASS MARK 80%</text>
+
+        <path d="M30,107.5 L35,104.1 L40.1,105.2 L45.1,98.4 L50.1,100.6 L55.2,94.9 L60.2,90.4 L65.3,92.7 L70.3,87 L75.3,89.2 L80.4,83.5 L85.4,80.1 L90.4,82.4 L95.5,76.7 L100.5,79 L105.5,73.3 L110.6,75.6 L115.6,69.9 L120.6,72.1 L125.7,67.6 L130.7,68.7 L135.8,64.2 L140.8,66.4 L145.8,61.9 L150.9,63 L155.9,59.6 L160.9,60.7 L166,56.2 L171,58.5 L176,55 L181.1,56.2 L186.1,52.8 L191.1,50.5 L196.2,53.9 L201.2,49.3 L206.3,51.6 L211.3,48.2 L216.3,45.9 L221.4,47.1 L226.4,43.6 L231.4,44.8 L236.5,42.5 L241.5,43.6 L246.5,40.2 L251.6,41.4 L256.6,39.1 L261.6,40.2 L266.7,37.9 L271.7,35.7 L276.8,36.8 L281.8,34.5 L286.8,35.7 L291.9,33.4 L296.9,34.5 L301.9,32.2 L307,33.4 L312,32.2"
+              fill="none" stroke="var(--sign-white, #F2F4F1)" stroke-opacity=".17"
+              stroke-width="7" stroke-linejoin="round" stroke-linecap="round"/>
+        <path d="M30,107.5 L35,104.1 L40.1,105.2 L45.1,98.4 L50.1,100.6 L55.2,94.9 L60.2,90.4 L65.3,92.7 L70.3,87 L75.3,89.2 L80.4,83.5 L85.4,80.1 L90.4,82.4 L95.5,76.7 L100.5,79 L105.5,73.3 L110.6,75.6 L115.6,69.9 L120.6,72.1 L125.7,67.6 L130.7,68.7 L135.8,64.2 L140.8,66.4 L145.8,61.9 L150.9,63 L155.9,59.6 L160.9,60.7 L166,56.2 L171,58.5 L176,55 L181.1,56.2 L186.1,52.8 L191.1,50.5 L196.2,53.9 L201.2,49.3 L206.3,51.6 L211.3,48.2 L216.3,45.9 L221.4,47.1 L226.4,43.6 L231.4,44.8 L236.5,42.5 L241.5,43.6 L246.5,40.2 L251.6,41.4 L256.6,39.1 L261.6,40.2 L266.7,37.9 L271.7,35.7 L276.8,36.8 L281.8,34.5 L286.8,35.7 L291.9,33.4 L296.9,34.5 L301.9,32.2 L307,33.4 L312,32.2"
+              fill="none" stroke="var(--warning, #FFCC00)" stroke-width="1.5"
+              stroke-dasharray="4 5" stroke-linejoin="round" opacity=".9"/>
+
+        <g fill="var(--sign-white, #F2F4F1)" opacity=".7"><circle cx="30" cy="107.5" r="1.15"/><circle cx="35" cy="104.1" r="1.15"/><circle cx="40.1" cy="105.2" r="1.15"/><circle cx="45.1" cy="98.4" r="1.15"/><circle cx="50.1" cy="100.6" r="1.15"/><circle cx="55.2" cy="94.9" r="1.15"/><circle cx="60.2" cy="90.4" r="1.15"/><circle cx="70.3" cy="87" r="1.15"/><circle cx="75.3" cy="89.2" r="1.15"/><circle cx="80.4" cy="83.5" r="1.15"/><circle cx="85.4" cy="80.1" r="1.15"/><circle cx="90.4" cy="82.4" r="1.15"/><circle cx="95.5" cy="76.7" r="1.15"/><circle cx="100.5" cy="79" r="1.15"/><circle cx="110.6" cy="75.6" r="1.15"/><circle cx="115.6" cy="69.9" r="1.15"/><circle cx="120.6" cy="72.1" r="1.15"/><circle cx="125.7" cy="67.6" r="1.15"/><circle cx="130.7" cy="68.7" r="1.15"/><circle cx="135.8" cy="64.2" r="1.15"/><circle cx="140.8" cy="66.4" r="1.15"/><circle cx="150.9" cy="63" r="1.15"/><circle cx="155.9" cy="59.6" r="1.15"/><circle cx="160.9" cy="60.7" r="1.15"/><circle cx="166" cy="56.2" r="1.15"/><circle cx="171" cy="58.5" r="1.15"/><circle cx="176" cy="55" r="1.15"/><circle cx="186.1" cy="52.8" r="1.15"/><circle cx="191.1" cy="50.5" r="1.15"/><circle cx="196.2" cy="53.9" r="1.15"/><circle cx="201.2" cy="49.3" r="1.15"/><circle cx="206.3" cy="51.6" r="1.15"/><circle cx="216.3" cy="45.9" r="1.15"/><circle cx="221.4" cy="47.1" r="1.15"/><circle cx="226.4" cy="43.6" r="1.15"/><circle cx="231.4" cy="44.8" r="1.15"/><circle cx="241.5" cy="43.6" r="1.15"/><circle cx="246.5" cy="40.2" r="1.15"/><circle cx="251.6" cy="41.4" r="1.15"/><circle cx="256.6" cy="39.1" r="1.15"/><circle cx="266.7" cy="37.9" r="1.15"/><circle cx="271.7" cy="35.7" r="1.15"/><circle cx="276.8" cy="36.8" r="1.15"/><circle cx="286.8" cy="35.7" r="1.15"/><circle cx="291.9" cy="33.4" r="1.15"/><circle cx="296.9" cy="34.5" r="1.15"/><circle cx="307" cy="33.4" r="1.15"/></g>
+
+        <!-- mock exams: the OUTCOME is the shape, not the colour.
+             Passed = a filled guide-green diamond. Missed = a hollow stop
+             OCTAGON, the project's hard-stop geometry (§2). A learner who
+             cannot separate the two hues still reads two different signs. -->
+        <g stroke-width="1.8">
+          <path d="M69.55,94.46 L67.06,96.95 L63.54,96.95 L61.05,94.46 L61.05,90.94 L63.54,88.45 L67.06,88.45 L69.55,90.94 Z" fill="var(--asphalt-raised, #1C1F25)" stroke="var(--stop-lit, #D8232A)"/>
+          <path d="M109.75,75.06 L107.26,77.55 L103.74,77.55 L101.25,75.06 L101.25,71.54 L103.74,69.05 L107.26,69.05 L109.75,71.54 Z" fill="var(--asphalt-raised, #1C1F25)" stroke="var(--stop-lit, #D8232A)"/>
+          <path d="M150.05,63.66 L147.56,66.15 L144.04,66.15 L141.55,63.66 L141.55,60.14 L144.04,57.65 L147.56,57.65 L150.05,60.14 Z" fill="var(--asphalt-raised, #1C1F25)" stroke="var(--stop-lit, #D8232A)"/>
+          <path d="M185.35,57.96 L182.86,60.45 L179.34,60.45 L176.85,57.96 L176.85,54.44 L179.34,51.95 L182.86,51.95 L185.35,54.44 Z" fill="var(--asphalt-raised, #1C1F25)" stroke="var(--stop-lit, #D8232A)"/>
+          <path d="M215.55,49.96 L213.06,52.45 L209.54,52.45 L207.05,49.96 L207.05,46.44 L209.54,43.95 L213.06,43.95 L215.55,46.44 Z" fill="var(--asphalt-raised, #1C1F25)" stroke="var(--stop-lit, #D8232A)"/>
+          <path d="M240.75,44.26 L238.26,46.75 L234.74,46.75 L232.25,44.26 L232.25,40.74 L234.74,38.25 L238.26,38.25 L240.75,40.74 Z" fill="var(--asphalt-raised, #1C1F25)" stroke="var(--stop-lit, #D8232A)"/>
+          <path d="M261.6,35.6 L266.2,40.2 L261.6,44.8 L257.0,40.2 Z" fill="var(--guide-lit, #0A8F6C)" stroke="var(--sign-white, #F2F4F1)"/>
+          <path d="M281.8,29.9 L286.4,34.5 L281.8,39.1 L277.2,34.5 Z" fill="var(--guide-lit, #0A8F6C)" stroke="var(--sign-white, #F2F4F1)"/>
+          <path d="M301.9,27.6 L306.5,32.2 L301.9,36.8 L297.3,32.2 Z" fill="var(--guide-lit, #0A8F6C)" stroke="var(--sign-white, #F2F4F1)"/>
+          <path d="M312,27.6 L316.6,32.2 L312,36.8 L307.4,32.2 Z" fill="var(--guide-lit, #0A8F6C)" stroke="var(--sign-white, #F2F4F1)"/>
+        </g>
+
+        <g fill="var(--sign-dim, #9BA3AE)" font-family="Overpass, sans-serif" font-size="8.5" font-weight="700" letter-spacing="0.8">
+          <text x="30" y="144">8 MAY</text>
+          <text x="171" y="144" text-anchor="middle">28 JUN</text>
+          <text x="316" y="144" text-anchor="end">11 AUG</text>
+        </g>
+      </svg>
+
+      <ul class="key">
+        <li>
+          <svg viewBox="0 0 22 12" aria-hidden="true"><line x1="1" y1="6" x2="21" y2="6" stroke="#F2F4F1" stroke-opacity=".17" stroke-width="7" stroke-linecap="round"/><line x1="1" y1="6" x2="21" y2="6" stroke="#FFCC00" stroke-width="1.5" stroke-dasharray="4 5"/></svg>
+          Readiness per attempt
+        </li>
+        <li>
+          <svg viewBox="0 0 22 12" aria-hidden="true"><path d="M11,1 L17,6 L11,11 L5,6 Z" fill="#0A8F6C" stroke="#F2F4F1" stroke-width="1.5"/></svg>
+          Diamond = mock exam passed
+        </li>
+        <li>
+          <svg viewBox="0 0 22 12" aria-hidden="true"><path d="M15.62,7.91 L12.91,10.62 L9.09,10.62 L6.38,7.91 L6.38,4.09 L9.09,1.38 L12.91,1.38 L15.62,4.09 Z" fill="none" stroke="#D8232A" stroke-width="1.5"/></svg>
+          Octagon = mock exam missed
+        </li>
+      </ul>
+
+      <figcaption>
+        57 readings on one road. The individual points stop mattering past about thirty — the
+        shape of the climb and the ten exam marks are what you read: six octagons, then four
+        diamonds.
+      </figcaption>
+    </figure>
+
+    <details class="disclose" style="margin-top:1rem">
+      <summary>
+        Read the 57 readings as a table
+        <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+      </summary>
+      <p class="dim" style="font-size:.8125rem;margin:.6rem 0 0;line-height:1.6">
+        8 May 18% · 9 May 21% · 11 May 20% · 12 May 26% · 14 May 24% · 15 May 29% ·
+        17 May 33% · <strong style="color:var(--sign-white)">18 May mock exam 14/30, 31%</strong> ·
+        20 May 36% · 21 May 34% · 23 May 39% · 24 May 42% · 26 May 40% · 27 May 45% ·
+        29 May 43% · <strong style="color:var(--sign-white)">30 May mock exam 16/30, 48%</strong> ·
+        1 Jun 46% · 2 Jun 51% · 4 Jun 49% · 5 Jun 53% · 7 Jun 52% · 8 Jun 56% ·
+        10 Jun 54% · <strong style="color:var(--sign-white)">11 Jun mock exam 18/30, 58%</strong> ·
+        13 Jun 57% · 14 Jun 60% · 16 Jun 59% · 17 Jun 63% · 19 Jun 61% · 21 Jun 64% ·
+        <strong style="color:var(--sign-white)">25 Jun mock exam 12/19, ended early, 63%</strong> ·
+        27 Jun 66% · 29 Jun 68% · 1 Jul 65% · 3 Jul 69% · 5 Jul 67% ·
+        <strong style="color:var(--sign-white)">14 Jul mock exam 21/30, 70%</strong> ·
+        16 Jul 72% · 18 Jul 71% · 20 Jul 74% · 22 Jul 73% ·
+        <strong style="color:var(--sign-white)">23 Jul mock exam 17/24, ended early, 75%</strong> ·
+        25 Jul 74% · 26 Jul 77% · 28 Jul 76% · 29 Jul 78% ·
+        <strong style="color:var(--sign-white)">29 Jul mock exam 24/30, 77%</strong> ·
+        31 Jul 79% · 3 Aug 81% · 4 Aug 80% ·
+        <strong style="color:var(--sign-white)">4 Aug mock exam 25/30, 82%</strong> ·
+        5 Aug 81% · 6 Aug 83% · 7 Aug 82% ·
+        <strong style="color:var(--sign-white)">9 Aug mock exam 26/30, 84%</strong> ·
+        10 Aug 83% · <strong style="color:var(--sign-white)">11 Aug mock exam 28/30, 84%</strong>
+      </p>
+    </details>
+  </section>
+
+  <!-- CHART 2 — BLUEPRINT LANES ---------------------------------------- -->
+  <section class="panel">
+    <div class="charthead">
+      <h2>Accuracy by exam area</h2>
+      <span class="delta" style="color:var(--sign-dim)">612 answered</span>
+    </div>
+    <p class="dim" style="margin:-.35rem 0 1rem;font-size:.8125rem">
+      Three lanes past the target, one still short. That one is a quarter of the real test.
+    </p>
+
+    <figure class="chart">
+      <!-- The viewBox carries 5 units of bleed left and right and 2 top and
+           bottom: the lane labels and the counts are drawn to x=0 and x=320,
+           and without it the SVG's own clip shaves them at narrow widths. -->
+      <svg viewBox="-5 -2 330 244" role="img" aria-labelledby="c2-t c2-d">
+        <title id="c2-t">Accuracy in each of the four exam areas, drawn as four lanes of a road</title>
+        <desc id="c2-d">Traffic signs and signals 90 percent, drugs and alcohol 87 percent, safe driving principles 84 percent, rules of the road 75 percent. A dashed line across all four lanes marks the 80 percent target; only rules of the road falls short of it, and that lane is drawn hatched. Exact figures follow in the table below.</desc>
+
+        <defs>
+          <pattern id="hatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <rect width="7" height="7" fill="none"/>
+            <line x1="0" y1="0" x2="0" y2="7" stroke="#14161A" stroke-width="3.2" opacity=".55"/>
+          </pattern>
+        </defs>
+
+        <rect x="207" y="0" width="98" height="16" rx="2" fill="var(--guide, #04684E)" stroke="var(--sign-white, #F2F4F1)" stroke-width="1"/>
+        <text x="256" y="11.5" text-anchor="middle" font-family="Overpass, sans-serif" font-size="8.5" font-weight="800" letter-spacing="1" fill="#FFFFFF">TARGET 80%</text>
+        <line x1="256" y1="18" x2="256" y2="232" stroke="var(--sign-white, #F2F4F1)" stroke-width="1.5" stroke-dasharray="5 5" opacity=".5"/>
+
+        <g font-family="Overpass, sans-serif">
+          <text x="0" y="33" font-size="12" font-weight="700" fill="var(--sign-white, #F2F4F1)">Traffic signs &amp; signals</text>
+          <text x="320" y="33" text-anchor="end" font-size="10" font-family="Overpass Mono, monospace" fill="var(--sign-dim, #9BA3AE)">168 / 186</text>
+          <rect x="0" y="40" width="320" height="24" rx="3" fill="var(--asphalt-sunk, #101216)" stroke="var(--shoulder, #2A2F38)"/>
+          <rect x="0" y="40" width="289" height="24" rx="3" fill="var(--guide-lit, #0A8F6C)"/>
+          <text x="283" y="56" text-anchor="end" font-size="12" font-weight="800" fill="#FFFFFF">90%</text>
+          <line x1="0" y1="76" x2="320" y2="76" stroke="var(--sign-white, #F2F4F1)" stroke-width="1.5" stroke-dasharray="11 13" opacity=".2"/>
+
+          <text x="0" y="87" font-size="12" font-weight="700" fill="var(--sign-white, #F2F4F1)">Drugs &amp; alcohol</text>
+          <text x="320" y="87" text-anchor="end" font-size="10" font-family="Overpass Mono, monospace" fill="var(--sign-dim, #9BA3AE)">108 / 124</text>
+          <rect x="0" y="94" width="320" height="24" rx="3" fill="var(--asphalt-sunk, #101216)" stroke="var(--shoulder, #2A2F38)"/>
+          <rect x="0" y="94" width="279" height="24" rx="3" fill="var(--guide-lit, #0A8F6C)"/>
+          <text x="273" y="110" text-anchor="end" font-size="12" font-weight="800" fill="#FFFFFF">87%</text>
+          <line x1="0" y1="130" x2="320" y2="130" stroke="var(--sign-white, #F2F4F1)" stroke-width="1.5" stroke-dasharray="11 13" opacity=".2"/>
+
+          <text x="0" y="141" font-size="12" font-weight="700" fill="var(--sign-white, #F2F4F1)">Safe driving principles</text>
+          <text x="320" y="141" text-anchor="end" font-size="10" font-family="Overpass Mono, monospace" fill="var(--sign-dim, #9BA3AE)">133 / 158</text>
+          <rect x="0" y="148" width="320" height="24" rx="3" fill="var(--asphalt-sunk, #101216)" stroke="var(--shoulder, #2A2F38)"/>
+          <rect x="0" y="148" width="269" height="24" rx="3" fill="var(--guide-lit, #0A8F6C)"/>
+          <text x="263" y="164" text-anchor="end" font-size="12" font-weight="800" fill="#FFFFFF">84%</text>
+          <line x1="0" y1="184" x2="320" y2="184" stroke="var(--sign-white, #F2F4F1)" stroke-width="1.5" stroke-dasharray="11 13" opacity=".2"/>
+
+          <text x="0" y="195" font-size="12" font-weight="700" fill="var(--sign-white, #F2F4F1)">Rules of the road</text>
+          <text x="320" y="195" text-anchor="end" font-size="10" font-family="Overpass Mono, monospace" fill="var(--sign-dim, #9BA3AE)">108 / 144</text>
+          <rect x="0" y="202" width="320" height="24" rx="3" fill="var(--asphalt-sunk, #101216)" stroke="var(--shoulder, #2A2F38)"/>
+          <rect x="0" y="202" width="240" height="24" rx="3" fill="var(--warning, #FFCC00)"/>
+          <rect x="0" y="202" width="240" height="24" rx="3" fill="url(#hatch)"/>
+          <text x="248" y="218" font-size="12" font-weight="800" fill="var(--sign-white, #F2F4F1)">75%</text>
+        </g>
+      </svg>
+
+      <ul class="key">
+        <li>
+          <svg viewBox="0 0 22 12" aria-hidden="true"><rect x="0" y="1" width="22" height="10" rx="2" fill="#0A8F6C"/></svg>
+          At or past target
+        </li>
+        <li>
+          <svg viewBox="0 0 22 12" aria-hidden="true"><defs><pattern id="k-hatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="7" stroke="#14161A" stroke-width="3.2" opacity=".55"/></pattern></defs><rect x="0" y="1" width="22" height="10" rx="2" fill="#FFCC00"/><rect x="0" y="1" width="22" height="10" rx="2" fill="url(#k-hatch)"/></svg>
+          Hatched = short of target
+        </li>
+      </ul>
+    </figure>
+
+    <table class="sr-only">
+      <caption>Accuracy by exam area after 612 questions, target 80 percent</caption>
+      <thead><tr><th scope="col">Exam area</th><th scope="col">Correct</th><th scope="col">Answered</th><th scope="col">Accuracy</th></tr></thead>
+      <tbody>
+        <tr><td>Traffic signs and signals</td><td>168</td><td>186</td><td>90%</td></tr>
+        <tr><td>Drugs and alcohol</td><td>108</td><td>124</td><td>87%</td></tr>
+        <tr><td>Safe driving principles</td><td>133</td><td>158</td><td>84%</td></tr>
+        <tr><td>Rules of the road</td><td>108</td><td>144</td><td>75%</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <hr class="centreline">
+
+  <!-- TOPIC MASTERY, COMPRESSED ---------------------------------------- -->
+  <section>
+    <div class="spread" style="margin-bottom:.875rem">
+      <h2>Still worth a look</h2>
+      <span class="badge">14 topics</span>
+    </div>
+
+    <div class="panel panel--flat">
+      <div class="meter">
+        <div class="meter__head">
+          <span class="meter__name">
+            <svg class="sign" role="img" aria-label="Yellow warning diamond: a topic you are weak on"><use href="#sg-warn"/></svg>
+            Turning &amp; lane use
+          </span>
+          <span class="meter__val">19/30 · 63%</span>
+        </div>
+        <div class="rail rail--warn meter__rail" aria-hidden="true"><i style="width:63%"></i></div>
+      </div>
+      <div class="meter">
+        <div class="meter__head">
+          <span class="meter__name">
+            <svg class="sign" role="img" aria-label="Yellow warning diamond: a topic you are weak on"><use href="#sg-warn"/></svg>
+            Railroad crossings
+          </span>
+          <span class="meter__val">21/31 · 68%</span>
+        </div>
+        <div class="rail rail--warn meter__rail" aria-hidden="true"><i style="width:68%"></i></div>
+      </div>
+      <div class="meter">
+        <div class="meter__head">
+          <span class="meter__name">Right-of-way</span>
+          <span class="meter__val">33/43 · 77%</span>
+        </div>
+        <div class="rail rail--warn meter__rail" aria-hidden="true"><i style="width:77%"></i></div>
+      </div>
+      <div class="meter">
+        <div class="meter__head">
+          <span class="meter__name">School buses &amp; zones</span>
+          <span class="meter__val">30/35 · 86%</span>
+        </div>
+        <div class="rail meter__rail" aria-hidden="true"><i style="width:86%"></i></div>
+      </div>
+      <div class="meter">
+        <div class="meter__head">
+          <span class="meter__name">Work zones &amp; move over</span>
+          <span class="meter__val">27/31 · 87%</span>
+        </div>
+        <div class="rail meter__rail" aria-hidden="true"><i style="width:87%"></i></div>
+      </div>
+      <div class="meter">
+        <div class="meter__head">
+          <span class="meter__name">Regulatory signs</span>
+          <span class="meter__val">58/62 · 94%</span>
+        </div>
+        <div class="rail meter__rail" aria-hidden="true"><i style="width:94%"></i></div>
+      </div>
+
+      <a class="linkrow" href="#" style="margin-top:.75rem">
+        See all 14 topics
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <hr class="centreline">
+
+  <!-- ATTEMPT HISTORY — THE LONG ONE ----------------------------------- -->
+  <section>
+    <div class="spread" style="margin-bottom:.875rem">
+      <h2>Where you've been</h2>
+      <span class="badge">57 attempts</span>
+    </div>
+
+    <div class="panel panel--flat">
+
+      <p class="monthhead"><span>August 2026</span><span class="monthhead__n">11 attempts</span></p>
+      <ol class="trace">
+        <li>
+          <span class="trace__node trace__node--pass" aria-hidden="true"></span>
+          <div class="spread" style="align-items:flex-start">
+            <div style="min-width:0">
+              <p class="trace__kind">Mock exam · passed</p>
+              <p class="trace__meta">Today, 6:41 pm · 28:12 · fastest clean run yet</p>
+            </div>
+            <span class="score score--ok">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" aria-hidden="true"><path d="M4 13l6 6L20 5"/></svg>
+              28/30
+            </span>
+          </div>
+        </li>
+        <li>
+          <span class="trace__node" aria-hidden="true"></span>
+          <div class="spread" style="align-items:flex-start">
+            <div style="min-width:0">
+              <p class="trace__kind">Study session · right-of-way</p>
+              <p class="trace__meta">Today, 8:02 am · 12 questions · 5:11</p>
+            </div>
+            <span class="score score--ok">
+              11/12
+            </span>
+          </div>
+        </li>
+        <li>
+          <span class="trace__node" aria-hidden="true"></span>
+          <div class="spread" style="align-items:flex-start">
+            <div style="min-width:0">
+              <p class="trace__kind">Sign drill · regulatory signs</p>
+              <p class="trace__meta">Yesterday, 9:15 pm · 25 signs · 4:37</p>
+            </div>
+            <span class="score score--ok">
+              24/25
+            </span>
+          </div>
+        </li>
+        <li>
+          <span class="trace__node" aria-hidden="true"></span>
+          <div class="spread" style="align-items:flex-start">
+            <div style="min-width:0">
+              <p class="trace__kind">Study session · railroad crossings</p>
+              <p class="trace__meta">Yesterday, 7:48 pm · 12 questions · 6:02</p>
+            </div>
+            <span class="score score--ok">
+              10/12
+            </span>
+          </div>
+        </li>
+        <li>
+          <span class="trace__node trace__node--pass" aria-hidden="true"></span>
+          <div class="spread" style="align-items:flex-start">
+            <div style="min-width:0">
+              <p class="trace__kind">Mock exam · passed</p>
+              <p class="trace__meta">9 Aug, 8:30 pm · 31:44 · missed two on lane use</p>
+            </div>
+            <span class="score score--ok">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" aria-hidden="true"><path d="M4 13l6 6L20 5"/></svg>
+              26/30
+            </span>
+          </div>
+        </li>
+        <li>
+          <span class="trace__node" aria-hidden="true"></span>
+          <div class="spread" style="align-items:flex-start">
+            <div style="min-width:0">
+              <p class="trace__kind">Study session · turning &amp; lane use</p>
+              <p class="trace__meta">8 Aug, 7:12 pm · 15 questions · 7:20</p>
+            </div>
+            <span class="score">
+              11/15
+            </span>
+          </div>
+        </li>
+        <li>
+          <span class="trace__node" aria-hidden="true"></span>
+          <div class="spread" style="align-items:flex-start">
+            <div style="min-width:0">
+              <p class="trace__kind">Sign drill · warning shapes</p>
+              <p class="trace__meta">7 Aug, 9:02 pm · 20 signs · 3:41</p>
+            </div>
+            <span class="score score--ok">
+              19/20
+            </span>
+          </div>
+        </li>
+        <li>
+          <span class="trace__node" aria-hidden="true"></span>
+          <div class="spread" style="align-items:flex-start">
+            <div style="min-width:0">
+              <p class="trace__kind">Study session · work zones &amp; move over</p>
+              <p class="trace__meta">6 Aug, 6:55 pm · 12 questions · 6:48</p>
+            </div>
+            <span class="score score--ok">
+              10/12
+            </span>
+          </div>
+        </li>
+        <li>
+          <span class="trace__node" aria-hidden="true"></span>
+          <div class="spread" style="align-items:flex-start">
+            <div style="min-width:0">
+              <p class="trace__kind">Study session · school buses &amp; zones</p>
+              <p class="trace__meta">5 Aug, 8:20 pm · 12 questions · 6:11</p>
+            </div>
+            <span class="score">
+              9/12
+            </span>
+          </div>
+        </li>
+        <li>
+          <span class="trace__node trace__node--pass" aria-hidden="true"></span>
+          <div class="spread" style="align-items:flex-start">
+            <div style="min-width:0">
+              <p class="trace__kind">Mock exam · passed</p>
+              <p class="trace__meta">4 Aug, 7:33 pm · 33:09 · first pass on rules of the road</p>
+            </div>
+            <span class="score score--ok">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" aria-hidden="true"><path d="M4 13l6 6L20 5"/></svg>
+              25/30
+            </span>
+          </div>
+        </li>
+        <li>
+          <span class="trace__node" aria-hidden="true"></span>
+          <div class="spread" style="align-items:flex-start">
+            <div style="min-width:0">
+              <p class="trace__kind">Study session · night, rain &amp; skids</p>
+              <p class="trace__meta">3 Aug, 9:40 pm · 15 questions · 8:02</p>
+            </div>
+            <span class="score">
+              12/15
+            </span>
+          </div>
+        </li>
+      </ol>
+
+      <p class="monthhead"><span>July 2026</span><span class="monthhead__n">13 attempts</span></p>
+      <ol class="trace">
+        <li>
+          <span class="trace__node" aria-hidden="true"></span>
+          <div class="spread" style="align-items:flex-start">
+            <div style="min-width:0">
+              <p class="trace__kind">Study session · implied consent</p>
+              <p class="trace__meta">31 Jul, 8:14 pm · 12 questions · 5:55</p>
+            </div>
+            <span class="score score--ok">
+              11/12
+            </span>
+          </div>
+        </li>
+        <li>
+          <span class="trace__node" aria-hidden="true"></span>
+          <div class="spread" style="align-items:flex-start">
+            <div style="min-width:0">
+              <p class="trace__kind">Sign drill · guide &amp; services signs</p>
+              <p class="trace__meta">30 Jul, 7:26 pm · 18 signs · 3:12</p>
+            </div>
+            <span class="score score--ok">
+              17/18
+            </span>
+          </div>
+        </li>
+        <li>
+          <span class="trace__node trace__node--pass" aria-hidden="true"></span>
+          <div class="spread" style="align-items:flex-start">
+            <div style="min-width:0">
+              <p class="trace__kind">Mock exam · passed</p>
+              <p class="trace__meta">29 Jul, 9:05 pm · 35:51 · scraped it</p>
+            </div>
+            <span class="score score--ok">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" aria-hidden="true"><path d="M4 13l6 6L20 5"/></svg>
+              24/30
+            </span>
+          </div>
+        </li>
+        <li>
+          <span class="trace__node" aria-hidden="true"></span>
+          <div class="spread" style="align-items:flex-start">
+            <div style="min-width:0">
+              <p class="trace__kind">Study session · following distance</p>
+              <p class="trace__meta">28 Jul, 8:44 pm · 15 questions · 7:38</p>
+            </div>
+            <span class="score">
+              12/15
+            </span>
+          </div>
+        </li>
+        <li>
+          <span class="trace__node" aria-hidden="true"></span>
+          <div class="spread" style="align-items:flex-start">
+            <div style="min-width:0">
+              <p class="trace__kind">Study session · speed limits &amp; passing</p>
+              <p class="trace__meta">26 Jul, 4:19 pm · 12 questions · 6:27</p>
+            </div>
+            <span class="score">
+              9/12
+            </span>
+          </div>
+        </li>
+        <li>
+          <span class="trace__node" aria-hidden="true"></span>
+          <div class="spread" style="align-items:flex-start">
+            <div style="min-width:0">
+              <p class="trace__kind">Sign drill · warning shapes</p>
+              <p class="trace__meta">25 Jul, 8:51 pm · 20 signs · 4:15</p>
+            </div>
+            <span class="score">
+              16/20
+            </span>
+          </div>
+        </li>
+        <li>
+          <span class="trace__node trace__node--fail" aria-hidden="true"></span>
+          <div class="spread" style="align-items:flex-start">
+            <div style="min-width:0">
+              <p class="trace__kind">Mock exam · did not pass</p>
+              <p class="trace__meta">23 Jul, 7:02 pm · 38:30 · seven wrong, ended early at Q24</p>
+            </div>
+            <span class="score score--bad">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+              17/24
+            </span>
+          </div>
+        </li>
+        <li>
+          <span class="trace__node" aria-hidden="true"></span>
+          <div class="spread" style="align-items:flex-start">
+            <div style="min-width:0">
+              <p class="trace__kind">Study session · railroad crossings</p>
+              <p class="trace__meta">22 Jul, 9:22 pm · 12 questions · 7:44</p>
+            </div>
+            <span class="score">
+              7/12
+            </span>
+          </div>
+        </li>
+        <li>
+          <span class="trace__node" aria-hidden="true"></span>
+          <div class="spread" style="align-items:flex-start">
+            <div style="min-width:0">
+              <p class="trace__kind">Study session · right-of-way</p>
+              <p class="trace__meta">20 Jul, 8:03 pm · 15 questions · 8:19</p>
+            </div>
+            <span class="score">
+              9/15
+            </span>
+          </div>
+        </li>
+        <li>
+          <span class="trace__node" aria-hidden="true"></span>
+          <div class="spread" style="align-items:flex-start">
+            <div style="min-width:0">
+              <p class="trace__kind">Sign drill · regulatory signs</p>
+              <p class="trace__meta">18 Jul, 6:47 pm · 25 signs · 5:26</p>
+            </div>
+            <span class="score">
+              20/25
+            </span>
+          </div>
+        </li>
+        <li>
+          <span class="trace__node" aria-hidden="true"></span>
+          <div class="spread" style="align-items:flex-start">
+            <div style="min-width:0">
+              <p class="trace__kind">Study session · alcohol &amp; the law</p>
+              <p class="trace__meta">16 Jul, 9:31 pm · 12 questions · 6:03</p>
+            </div>
+            <span class="score score--ok">
+              10/12
+            </span>
+          </div>
+        </li>
+        <li>
+          <span class="trace__node trace__node--fail" aria-hidden="true"></span>
+          <div class="spread" style="align-items:flex-start">
+            <div style="min-width:0">
+              <p class="trace__kind">Mock exam · did not pass</p>
+              <p class="trace__meta">14 Jul, 7:58 pm · 39:24 · rules of the road cost it</p>
+            </div>
+            <span class="score score--bad">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+              21/30
+            </span>
+          </div>
+        </li>
+        <li>
+          <span class="trace__node" aria-hidden="true"></span>
+          <div class="spread" style="align-items:flex-start">
+            <div style="min-width:0">
+              <p class="trace__kind">Study session · turning &amp; lane use</p>
+              <p class="trace__meta">12 Jul, 8:36 pm · 12 questions · 7:12</p>
+            </div>
+            <span class="score">
+              8/12
+            </span>
+          </div>
+        </li>
+      </ol>
+
+      <p class="monthhead"><span>June 2026</span><span class="monthhead__n">18 attempts</span></p>
+      <ol class="trace">
+        <li>
+          <span class="trace__node" aria-hidden="true"></span>
+          <div class="spread" style="align-items:flex-start">
+            <div style="min-width:0">
+              <p class="trace__kind">Study session · work zones &amp; move over</p>
+              <p class="trace__meta">29 Jun, 9:10 pm · 12 questions · 6:59</p>
+            </div>
+            <span class="score">
+              8/12
+            </span>
+          </div>
+        </li>
+        <li>
+          <span class="trace__node" aria-hidden="true"></span>
+          <div class="spread" style="align-items:flex-start">
+            <div style="min-width:0">
+              <p class="trace__kind">Sign drill · warning shapes</p>
+              <p class="trace__meta">27 Jun, 8:22 pm · 20 signs · 5:02</p>
+            </div>
+            <span class="score">
+              14/20
+            </span>
+          </div>
+        </li>
+        <li>
+          <span class="trace__node trace__node--fail" aria-hidden="true"></span>
+          <div class="spread" style="align-items:flex-start">
+            <div style="min-width:0">
+              <p class="trace__kind">Mock exam · did not pass</p>
+              <p class="trace__meta">25 Jun, 7:44 pm · 43:18 · seven wrong, ended early at Q19</p>
+            </div>
+            <span class="score score--bad">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+              12/19
+            </span>
+          </div>
+        </li>
+        <li>
+          <span class="trace__node" aria-hidden="true"></span>
+          <div class="spread" style="align-items:flex-start">
+            <div style="min-width:0">
+              <p class="trace__kind">Study session · school buses &amp; zones</p>
+              <p class="trace__meta">23 Jun, 9:01 pm · 12 questions · 8:07</p>
+            </div>
+            <span class="score">
+              6/12
+            </span>
+          </div>
+        </li>
+        <li>
+          <span class="trace__node" aria-hidden="true"></span>
+          <div class="spread" style="align-items:flex-start">
+            <div style="min-width:0">
+              <p class="trace__kind">Study session · pavement markings</p>
+              <p class="trace__meta">21 Jun, 8:15 pm · 15 questions · 8:44</p>
+            </div>
+            <span class="score">
+              10/15
+            </span>
+          </div>
+        </li>
+        <li>
+          <span class="trace__node" aria-hidden="true"></span>
+          <div class="spread" style="align-items:flex-start">
+            <div style="min-width:0">
+              <p class="trace__kind">Study session · signals &amp; signs</p>
+              <p class="trace__meta">19 Jun, 7:30 pm · 12 questions · 6:38</p>
+            </div>
+            <span class="score">
+              9/12
+            </span>
+          </div>
+        </li>
+      </ol>
+
+      <button class="btn btn--quiet btn--block" type="button" style="margin-top:1.25rem">
+        Load 20 more · 27 left
+      </button>
+
+      <p class="faint" style="font-size:.75rem;margin:1rem 0 0;line-height:1.55;text-align:center">
+        Your most recent 200 attempts are kept in full on this device. Anything older is folded
+        into the totals above and then dropped, so this never fills your storage.
+      </p>
+
+      <a class="linkrow" href="#" style="margin-top:1rem">
+        Export all 57 attempts
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <p class="faint" style="font-size:.75rem;text-align:center;margin:1.5rem 0 0;line-height:1.5">
+    Every figure here is computed on this device and stays on it.<br>
+    Not affiliated with the State of Tennessee.
+  </p>
+
+</main>
+
+<nav class="nav" aria-label="Main">
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10 12 3l8 7v10a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg>
+    Study
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v6h6M9 14l2 2 4-4"/></svg>
+    Exam
+  </a>
+  <a href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2 22 12 12 22 2 12z"/><path d="M12 8v4M12 16h.01"/></svg>
+    Signs
+  </a>
+  <a href="#" aria-current="page">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+    Progress
+  </a>
+</nav>
+
+<script src="_signs.js"></script>
+</body>
+</html>
