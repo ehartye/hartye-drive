@@ -267,10 +267,10 @@
       "id": "row-016",
       "topic": "right-of-way",
       "stem": "You have a green light but a vehicle is still in the intersection. You must:",
-      "options": ["Yield to it", "Proceed, because your light is green", "Sound your horn and go around it"],
+      "options": ["Yield to it, even if you have the green light", "Proceed, because your light is green", "Sound your horn and go around it"],
       "answer": 0,
       "explanation": "Green means go if it is clear. Vehicles and pedestrians still in the box at the change keep the right-of-way.",
-      "cite": [{ "ruleId": "R259" }]
+      "cite": [{ "pdfPage": 68, "quote": "To any vehicles already in the intersection, even if you have the green traffic light; (The red vehicle in the diagram at right must yield to the green vehicle.)" }]
     },
     {
       "id": "row-017",
@@ -394,10 +394,13 @@
       "id": "trn-006",
       "topic": "turning",
       "stem": "While waiting to turn left across oncoming traffic, your front wheels should be:",
-      "options": ["Turned in the direction of the turn, ready to go", "Kept straight", "Turned toward the curb"],
+      "options": ["Turned in the direction of the turn, ready to go", "Kept straight until you begin the turn", "Turned toward the curb"],
       "answer": 1,
       "explanation": "If someone hits you from behind with the wheels turned, the impact launches you into oncoming traffic.",
-      "cite": [{ "ruleId": "R290" }]
+      "cite": [
+        { "ruleId": "R290" },
+        { "pdfPage": 70, "quote": "Keep your vehicles wheels straight until you begin the turn." }
+      ]
     },
     {
       "id": "trn-007",
@@ -659,7 +662,7 @@
       "options": ["Illegal", "Not illegal, but not considered safe", "Legal only on interstates"],
       "answer": 1,
       "explanation": "You need to complete the whole pass and be back in the right lane before you are within 100 feet of the no-passing markings or an oncoming vehicle.",
-      "cite": [{ "ruleId": "R326" }]
+      "cite": [{ "ruleId": "R326", "quotePick": 1 }, { "ruleId": "R326" }]
     },
     {
       "id": "lan-016",

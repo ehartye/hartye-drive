@@ -7,7 +7,7 @@
       "stem": "Whose responsibility is it to yield when you are merging onto an interstate?",
       "options": [
         "The drivers already on the interstate",
-        "Yours",
+        "Yours — it is your responsibility to yield",
         "Whichever vehicle is travelling faster"
       ],
       "answer": 1,
@@ -478,6 +478,10 @@
       "cite": [
         {
           "ruleId": "R366"
+        },
+        {
+          "pdfPage": 79,
+          "quote": "On an uphill without a curb: Turn the front wheels toward the edge of the roadway (right)."
         }
       ]
     },
@@ -512,40 +516,6 @@
       "cite": [
         {
           "ruleId": "R367"
-        }
-      ]
-    },
-    {
-      "id": "prk-013",
-      "topic": "parking-and-backing",
-      "stem": "A curb painted red means:",
-      "options": [
-        "Do not stop, stand or park under any condition",
-        "Stop only long enough to pick up or drop off passengers",
-        "Loading only"
-      ],
-      "answer": 0,
-      "explanation": "White is for passengers, yellow is for loading while you stay with the car, red means keep moving.",
-      "cite": [
-        {
-          "ruleId": "R368"
-        }
-      ]
-    },
-    {
-      "id": "prk-014",
-      "topic": "parking-and-backing",
-      "stem": "A curb painted white means:",
-      "options": [
-        "Stop only long enough to pick up or drop off passengers",
-        "No stopping at any time",
-        "Reserved for permit holders"
-      ],
-      "answer": 0,
-      "explanation": "Long enough for people to get in or out — not long enough to leave the car.",
-      "cite": [
-        {
-          "ruleId": "R368"
         }
       ]
     },
@@ -1141,7 +1111,8 @@
       "explanation": "Parking lights mark a stopped car. They are not enough to drive by, and the law says so.",
       "cite": [
         {
-          "ruleId": "R185"
+          "ruleId": "R185",
+          "quotePick": 1
         }
       ]
     },
@@ -1226,7 +1197,12 @@
       "explanation": "Headlights left on blind approaching drivers and confuse them about where the road goes.",
       "cite": [
         {
-          "ruleId": "R376"
+          "ruleId": "R376",
+          "pdfPage": 89
+        },
+        {
+          "pdfPage": 88,
+          "quote": "When parking at night, never leave your headlights on, even if"
         }
       ]
     },
@@ -1449,7 +1425,8 @@
       "explanation": "Three for property damage, four for injury, eight for a death.",
       "cite": [
         {
-          "ruleId": "R498"
+          "ruleId": "R498",
+          "quotePick": 2
         }
       ]
     },
@@ -1483,7 +1460,8 @@
       "explanation": "Six for reckless driving; reckless endangerment by vehicle is eight.",
       "cite": [
         {
-          "ruleId": "R493"
+          "pdfPage": 101,
+          "quote": "6 Reckless driving"
         }
       ]
     },
@@ -1602,7 +1580,8 @@
       "explanation": "Liability pays others; collision repairs your vehicle; uninsured motorist covers what an uninsured driver does to you.",
       "cite": [
         {
-          "ruleId": "R480"
+          "pdfPage": 102,
+          "quote": "Liability insurance provides coverage for damages you cause to other persons."
         }
       ]
     },
@@ -1687,7 +1666,15 @@
       "explanation": "Take the witnesses' details too — memories fade and stories change.",
       "cite": [
         {
+          "pdfPage": 103,
+          "quote": "Exchange information with other persons involved in the crash as soon as possible. Be sure to get the following information:"
+        },
+        {
           "ruleId": "R489"
+        },
+        {
+          "pdfPage": 104,
+          "quote": "name, address and insurance policy number of other vehicle owners."
         }
       ]
     },
@@ -1737,6 +1724,10 @@
       "answer": 0,
       "explanation": "It is item 9 on the manual's list of grounds for losing the privilege to drive.",
       "cite": [
+        {
+          "pdfPage": 99,
+          "quote": "In Tennessee, a driver license may be revoked or suspended for the following situations:"
+        },
         {
           "ruleId": "R457",
           "quotePick": 1

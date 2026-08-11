@@ -12,6 +12,8 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { normalizeForMatch, quoteAppearsIn } from '../../scripts/lib/content-normalize.mjs';
+import { buildPageIndex, locateQuote } from '../../scripts/lib/page-locator.mjs';
+import { scoreCitationSupport } from '../../scripts/lib/citation-support.mjs';
 import type {
   Correction,
   NeverGenerateEntry,
@@ -182,6 +184,149 @@ describe('validate-content on a deliberately broken fixture', () => {
   it('catches the volume floors', () => {
     expect(failed('volume', 'questions')).toBe(true);
     expect(failed('volume', 'topics')).toBe(true);
+  });
+
+  const supportProblem = (id: string, code: string) =>
+    run.summary.failures.some((f) => f.check === 'support' && f.id === id && f.message.startsWith(code));
+
+  it('catches a citation whose quote contradicts the keyed answer', () => {
+    // Real, verbatim, on the cited page — but it is the opposite branch of the
+    // rule, so it argues for a distractor.
+    expect(supportProblem('broken-key-quote-contradiction', 'no-keyed-support')).toBe(true);
+    expect(supportProblem('broken-key-quote-contradiction', 'distractor-dominant')).toBe(true);
+  });
+
+  it('catches a numeric keyed answer that the quote contradicts', () => {
+    expect(supportProblem('broken-numeric-key', 'numeric-contradiction')).toBe(true);
+  });
+
+  it('catches a quote that supports a distractor more than the key', () => {
+    expect(supportProblem('broken-distractor-dominant', 'distractor-dominant')).toBe(true);
+  });
+
+  it('catches a citation that is one page early', () => {
+    expect(
+      run.summary.failures.some(
+        (f) => f.check === 'citation' && f.id === 'broken-off-by-one-page' && /does not appear on PDF page 126/.test(f.message),
+      ),
+    ).toBe(true);
+  });
+});
+
+describe('page-exact quote lookup', () => {
+  const synthetic = [
+    '===== PAGE 40 =====',
+    'Alpha beta gamma. A sentence that begins on this page and',
+    '',
+    '===== PAGE 41 =====',
+    '27',
+    'delta epsilon. Wholly on the next page.',
+    '',
+  ].join('\n');
+  const pages = buildPageIndex(synthetic);
+
+  it('accepts a quote that is on the page the citation names', () => {
+    expect(locateQuote(pages, 'Alpha beta gamma.', 40)).toEqual({ ok: true, how: 'exact' });
+  });
+
+  it('rejects a quote that lives entirely on the NEXT page — the off-by-one bug', () => {
+    expect(locateQuote(pages, 'Wholly on the next page.', 40).ok).toBe(false);
+    expect(locateQuote(pages, 'Wholly on the next page.', 41)).toEqual({ ok: true, how: 'exact' });
+  });
+
+  it('admits, as the one exception, a sentence that genuinely straddles the boundary', () => {
+    const straddle = 'A sentence that begins on this page and 27 delta epsilon.';
+    expect(pages.get(40)!.includes(straddle)).toBe(false);
+    expect(pages.get(41)!.includes(straddle)).toBe(false);
+    expect(locateQuote(pages, straddle, 40)).toEqual({ ok: true, how: 'straddle' });
+  });
+
+  it('rejects a quote found nowhere on either page', () => {
+    expect(locateQuote(pages, 'omega omega omega', 40)).toEqual({ ok: false, how: 'none' });
+  });
+
+  it('holds every shipped citation to the page it names', () => {
+    const realPages = buildPageIndex(extract);
+    const offPage = bank.questions.flatMap((q) =>
+      q.citations
+        .filter((c) => !locateQuote(realPages, c.quote, c.pdfPage).ok)
+        .map((c) => `${q.id} p${c.pdfPage}`),
+    );
+    expect(offPage).toEqual([]);
+    const offPageSigns = registry.signs
+      .filter((s) => !locateQuote(realPages, s.citation.quote, s.citation.pdfPage).ok)
+      .map((s) => s.id);
+    expect(offPageSigns).toEqual([]);
+  });
+});
+
+describe('citations must support the keyed answer, not just exist', () => {
+  it('flags a numeric key the quote contradicts', () => {
+    const score = scoreCitationSupport({
+      stem: 'How many points does contributing to a crash that causes bodily injury add to your record?',
+      options: [{ text: '4 points' }, { text: '1 point' }, { text: '8 points' }],
+      correctIndex: 0,
+      citations: [{ quote: '8 Contributing to occurrence of a crash resulting in the death of another person' }],
+    });
+    expect(score.problems.map((p) => p.code)).toContain('numeric-contradiction');
+  });
+
+  it('passes the same question once the citation names the right row', () => {
+    const score = scoreCitationSupport({
+      stem: 'How many points does contributing to a crash that causes bodily injury add to your record?',
+      options: [{ text: '4 points' }, { text: '1 point' }, { text: '8 points' }],
+      correctIndex: 0,
+      citations: [{ quote: '4 Contributing to a crash resulting in bodily injury' }],
+    });
+    expect(score.problems).toEqual([]);
+  });
+
+  it('exempts combination options, which carry no evidence of their own', () => {
+    const score = scoreCitationSupport({
+      stem: 'Interstate driving demands require the driver to:',
+      options: [
+        { text: 'Have a complete awareness of higher speed driving' },
+        { text: 'Constant alertness by the driver' },
+        { text: 'Both of the above.' },
+      ],
+      correctIndex: 2,
+      citations: [
+        {
+          quote:
+            'Safe use of the interstates demands a complete awareness of a higher speed type of driving and constant alertness by the driver.',
+        },
+      ],
+    });
+    expect(score.combination).toBe(true);
+    expect(score.problems).toEqual([]);
+  });
+
+  it('exempts a negated stem from the dominance rule, where the quote is meant to name the distractors', () => {
+    const score = scoreCitationSupport({
+      stem: 'Which type of insurance is NOT required by Tennessee law?',
+      options: [
+        { text: 'Collision insurance' },
+        { text: 'Liability coverage or other evidence of financial responsibility' },
+        { text: 'None — all coverage types are required' },
+      ],
+      correctIndex: 0,
+      citations: [
+        {
+          quote:
+            'Although collision insurance is not required by Tennessee law, the Financial Responsibility Law requires drivers to produce evidence of financial responsibility.',
+        },
+      ],
+    });
+    expect(score.negatedStem).toBe(true);
+    expect(score.problems).toEqual([]);
+  });
+
+  it('holds for every question in the shipped bank', () => {
+    const flagged = bank.questions
+      .map((q) => ({ id: q.id, problems: scoreCitationSupport(q).problems }))
+      .filter((r) => r.problems.length > 0)
+      .map((r) => `${r.id}: ${r.problems[0]!.code}`);
+    expect(flagged).toEqual([]);
   });
 });
 

@@ -114,6 +114,10 @@
       "explanation": "It reads much better in low light and rain, which is exactly where children and pedestrians are hardest to see.",
       "cite": [
         {
+          "pdfPage": 50,
+          "quote": "FLUORESCENT YELLOW-GREEN is now in use for signage in school zones and other pedestrian traffic areas such as crosswalks."
+        },
+        {
           "ruleId": "R125"
         }
       ],
@@ -154,7 +158,7 @@
         {
           "pdfPage": 50,
           "printedPage": 36,
-          "quote": "This sign is the only eight-sided sign on the roadway."
+          "quote": "Octagon Shape - Stop This sign is the only eight-sided sign on the roadway."
         }
       ],
       "signs": [
@@ -424,6 +428,10 @@
       "answer": 0,
       "explanation": "Using one without the plate or placard is a misdemeanor, and the vehicle may be towed.",
       "cite": [
+        {
+          "pdfPage": 54,
+          "quote": "Parking spaces displaying this blue sign are reserved for vehicles bearing disabled veteran or handicapped license plates, or a special handicapped decal."
+        },
         {
           "ruleId": "R147"
         }
@@ -938,7 +946,7 @@
       "explanation": "The zone is not over when the workers disappear from view — it is over at the sign.",
       "cite": [
         {
-          "pdfPage": 126,
+          "pdfPage": 127,
           "quote": "Observe the posted signs until you see the one that says \"End Road Work\"."
         }
       ],
@@ -1610,7 +1618,8 @@
       "explanation": "If there is no line, stop before the crosswalk; if there is no crosswalk, stop before your bumper crosses the edge line of the cross street.",
       "cite": [
         {
-          "ruleId": "R173"
+          "pdfPage": 57,
+          "quote": "(A) If the motorist is required to stop at the intersection, the vehicle must be stopped behind this stop line."
         }
       ]
     },
@@ -1815,7 +1824,7 @@
         {
           "pdfPage": 54,
           "printedPage": 40,
-          "quote": "Word message signs will also be used to direct motorists to areas where service stations, restaurants and motels are available."
+          "quote": "The blue color of these signs directs motorists to service facilities. Word message signs will also be used to direct motorists to areas where service stations, restaurants and motels are available."
         }
       ],
       "signs": [
@@ -1895,7 +1904,7 @@
       "cite": [
         {
           "pdfPage": 54,
-          "quote": "During daylight, the bright fluorescent orange solid triangle in the center of the SMV emblem is highly visible."
+          "quote": "You may see this emblem on slow-moving vehicles, such as farm tractors, machinery, construction equipment"
         }
       ]
     },

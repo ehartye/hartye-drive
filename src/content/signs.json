@@ -238,7 +238,7 @@
       "citation": { "pdfPage": 53, "printedPage": 39, "quote": "orange with black letters or symbols and warn you that people are working on or near the roadway" } },
     { "id": "g20-2-end-road-work", "mutcd": "G20-2", "name": "END ROAD WORK", "category": "work-zone", "shape": "rectangle-horizontal", "faceColor": "orange", "legendColor": "black",
       "meaning": "The work zone restrictions end here; observe the posted work-zone signs until you reach it.",
-      "citation": { "pdfPage": 126, "printedPage": 112, "quote": "Observe the posted signs until you see the one that says \"End Road Work\"." } },
+      "citation": { "pdfPage": 127, "printedPage": 113, "quote": "Observe the posted signs until you see the one that says \"End Road Work\"." } },
     { "id": "m4-9-detour", "mutcd": "M4-9", "name": "DETOUR", "category": "work-zone", "shape": "rectangle-horizontal", "faceColor": "orange", "legendColor": "black",
       "meaning": "Follow the marked alternative route around the closed road.",
       "meaningSource": { "kind": "mutcd", "reference": "MUTCD 2009 Ed. §2D.45 / Table 6F-1 (M4-9)", "note": "Shown in the manual as a captioned picture (\"DETOUR\") in the work-area section." },

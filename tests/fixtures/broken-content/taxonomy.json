@@ -64,6 +64,27 @@
       "label": "Interstate driving",
       "manualChapter": "B-5",
       "blurb": "Entering, exiting, interchanges, shoulders, breakdowns and the Move Over Law."
+    },
+    {
+      "id": "pavement-markings",
+      "area": "signs",
+      "label": "Pavement markings",
+      "manualChapter": "B-3",
+      "blurb": "Yellow and white lines, crosswalks, stop lines, HOV diamonds and turn arrows."
+    },
+    {
+      "id": "work-zone-signs",
+      "area": "signs",
+      "label": "Work zone signs",
+      "manualChapter": "B-3",
+      "blurb": "Orange signs, flaggers and the rules that apply inside a temporary traffic control zone."
+    },
+    {
+      "id": "driving-responsibilities",
+      "area": "rules-of-road",
+      "label": "Driving responsibilities",
+      "manualChapter": "B-8",
+      "blurb": "Points, suspension, insurance, crash reporting and financial responsibility."
     }
   ]
 }

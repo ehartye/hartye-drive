@@ -190,6 +190,82 @@
         { "pdfPage": 67, "printedPage": 53, "quote": "Stop at least 10 feet away until the person is off the roadway." }
       ],
       "official": false
+    },
+    {
+      "id": "broken-key-quote-contradiction",
+      "topic": "pavement-markings",
+      "area": "signs",
+      "section": "B",
+      "stem": "Where a stop line IS painted across your lane, you must:",
+      "options": [
+        { "letter": "A", "text": "Stop behind the painted stop line" },
+        { "letter": "B", "text": "Stop before crossing the first line of the crosswalk" },
+        { "letter": "C", "text": "Stop level with the traffic signal" }
+      ],
+      "correctIndex": 0,
+      "correctOption": "Stop behind the painted stop line",
+      "explanation": "DEFECT: the quote is real, verbatim and on the cited page — but it is the OPPOSITE branch of the rule (what to do when NO stop line is painted), so it argues for option B, not for the keyed answer.",
+      "citations": [
+        { "pdfPage": 57, "printedPage": 43, "quote": "(B) Stop the vehicle before crossing the first line of the crosswalk (if the crosswalk is marked), and (C) Stop the vehicle before the front bumper crosses the white edge line of the cross street" }
+      ],
+      "official": false
+    },
+    {
+      "id": "broken-numeric-key",
+      "topic": "driving-responsibilities",
+      "area": "rules-of-road",
+      "section": "B",
+      "stem": "How many points does contributing to a crash that causes bodily injury add to your record?",
+      "options": [
+        { "letter": "A", "text": "4 points" },
+        { "letter": "B", "text": "1 point" },
+        { "letter": "C", "text": "8 points" }
+      ],
+      "correctIndex": 0,
+      "correctOption": "4 points",
+      "explanation": "DEFECT: the citation picker took the neighbouring row of the points table. The quote says 8, which is a live distractor, and never says 4.",
+      "citations": [
+        { "pdfPage": 101, "printedPage": 87, "quote": "8 Contributing to occurrence of a crash resulting in the death of another person" }
+      ],
+      "official": false
+    },
+    {
+      "id": "broken-distractor-dominant",
+      "topic": "driving-responsibilities",
+      "area": "rules-of-road",
+      "section": "B",
+      "stem": "Which type of coverage pays for damage you cause to other people?",
+      "options": [
+        { "letter": "A", "text": "Liability insurance" },
+        { "letter": "B", "text": "Uninsured motorist insurance" },
+        { "letter": "C", "text": "Comprehensive insurance" }
+      ],
+      "correctIndex": 0,
+      "correctOption": "Liability insurance",
+      "explanation": "DEFECT: the quote is a definition list that describes every option, and it spends more distinctive words on distractor B than on the keyed answer.",
+      "citations": [
+        { "pdfPage": 102, "printedPage": 88, "quote": "Uninsured motorist insurance provides for coverage for the damages uninsured persons cause." }
+      ],
+      "official": false
+    },
+    {
+      "id": "broken-off-by-one-page",
+      "topic": "work-zone-signs",
+      "area": "signs",
+      "section": "C",
+      "stem": "You should keep observing work zone signs until you see:",
+      "options": [
+        { "letter": "A", "text": "The END ROAD WORK sign" },
+        { "letter": "B", "text": "The first orange cone" },
+        { "letter": "C", "text": "A police vehicle" }
+      ],
+      "correctIndex": 0,
+      "correctOption": "The END ROAD WORK sign",
+      "explanation": "DEFECT: the quote is verbatim in the manual, but it is on PDF page 127 and the citation names 126. An off-by-one citation sends the learner to the wrong page.",
+      "citations": [
+        { "pdfPage": 126, "printedPage": 112, "quote": "Observe the posted signs until you see the one that says \"End Road Work\"." }
+      ],
+      "official": false
     }
   ]
 }

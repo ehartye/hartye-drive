@@ -104,6 +104,15 @@
       ]
     },
     {
+      "id": "curb-color-meanings",
+      "reason": "PDF p.80 introduces painted curbs with 'The colors on the curbs mean:' and then prints three unlabelled numbered meanings (pick up/drop off passengers; load or unload, stay with your car; do not stop, stand or park). The colour words WHITE, YELLOW and RED are set as artwork swatches beside the list and land at the very end of the page in the text layer, detached from the items they label, so nothing in the extract binds a colour to a meaning. Any red/white/yellow curb question would key an answer on an assumed positional correspondence rather than on a quote, and the citation would support all three options equally. The manual's one prose statement about curb colour (p.79, 'Signs or yellow painted curbs usually mark a \"NO PARKING ZONE\"') contradicts the p.80 yellow item, which makes the guess worse rather than better. The three curb rules are taught without colours where they stand on their own; the colour mapping is never taught.",
+      "source": "critic audit 2026-08-11 (gauntlet round 2); manual PDF p.80 vs p.79",
+      "bannedRuleIds": ["R368"],
+      "bannedPatterns": [
+        { "allOf": ["(painted curb|curb painted|curbs? (is|are) painted|colors on the curbs)", "\\b(red|white|yellow|blue)\\b"], "flags": "i" }
+      ]
+    },
+    {
       "id": "minimum-liability-insurance-amounts",
       "reason": "The 2022 manual states no minimum liability insurance dollar amounts at all, so there is nothing in the manual to correct and no figure to teach from it. Tennessee's current 25/50/25 minimums are recorded in corrections.json as context, never presented as a manual rule.",
       "source": "live-facts.md conflict C2 (and manual-spine.md caveat C21, topics absent)",

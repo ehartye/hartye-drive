@@ -598,7 +598,8 @@
       "explanation": "Two of the three happen before the brakes are even touched, which is why speed hurts stopping distance so badly.",
       "cite": [
         {
-          "ruleId": "R216"
+          "pdfPage": 63,
+          "quote": "There are three steps in stopping a vehicle: • Perception time: The length of time it takes a driver to see and recognize a dangerous situation. • Reaction time: The time from perception of danger to the start of braking."
         }
       ]
     },
@@ -607,7 +608,7 @@
       "topic": "following-and-stopping-distance",
       "stem": "Average reaction time — from perceiving danger to starting to brake — is about:",
       "options": [
-        "Two thirds of a second",
+        "About 2/3 of a second",
         "Two seconds",
         "A tenth of a second"
       ],
@@ -615,7 +616,8 @@
       "explanation": "At 55 m.p.h. that fraction of a second is already several car lengths of road.",
       "cite": [
         {
-          "ruleId": "R217"
+          "pdfPage": 63,
+          "quote": "• Reaction time: The time from perception of danger to the start of braking. The average is 2/3 of a second, as noted in blue section of charts on the next page."
         }
       ]
     },
@@ -876,7 +878,7 @@
       "cite": [
         {
           "pdfPage": 88,
-          "quote": "Lights that shine up or out excessively do NOT help you see objects in the roadway."
+          "quote": "Lights that shine up or out excessively do NOT help you see objects in the roadway. They do however contribute to glare and blinding the vision of drivers in vehicles you are meeting or following."
         }
       ]
     },
@@ -911,7 +913,12 @@
       "explanation": "Parked headlights blind approaching drivers and confuse them about where the road runs.",
       "cite": [
         {
-          "ruleId": "R376"
+          "pdfPage": 88,
+          "quote": "When parking at night, never leave your headlights on, even if"
+        },
+        {
+          "pdfPage": 89,
+          "quote": "you plan on being parked for a brief period of time. They are just as likely to blind approaching drivers when your car is stationary as they are when it is moving."
         }
       ]
     },
@@ -1218,7 +1225,8 @@
       "explanation": "As the car straightens, be ready to correct back the other way — a skid usually tries to swing twice.",
       "cite": [
         {
-          "ruleId": "R406"
+          "pdfPage": 90,
+          "quote": "If your vehicle begins to skid: a. Stay off the brake. Until the vehicle slows, your brakes will not work and could cause you to skid more. b. Steer. Turn the steering wheel in the direction you want your car to go."
         }
       ]
     },
@@ -1303,6 +1311,10 @@
       "answer": 0,
       "explanation": "If the wheels lock and the car starts to skid, ease off the pedal and press again once the skid stops.",
       "cite": [
+        {
+          "pdfPage": 110,
+          "quote": "Without ABS - If you must stop quickly and you do NOT have an antilock braking system: Apply the brakes as hard as you can without locking them."
+        },
         {
           "ruleId": "R419"
         }
@@ -1392,7 +1404,7 @@
       "cite": [
         {
           "pdfPage": 112,
-          "quote": "People sometimes get hurt, or killed, when they jerk the steering wheel suddenly."
+          "quote": "People sometimes get hurt, or killed, when they jerk the steering wheel suddenly. This can cause them to run into another object or veer off the road risking a rollover."
         }
       ]
     },
@@ -1401,16 +1413,16 @@
       "topic": "emergency-handling",
       "stem": "Rumble stripes along the edge line exist to:",
       "options": [
-        "Alert a driver who is drifting off the road, and improve wet-night visibility of the edge line",
+        "Improve wet-night visibility of the edge line, with vibration and noise as a secondary effect",
         "Slow traffic in work zones",
         "Mark the boundary of a passing zone"
       ],
       "answer": 0,
-      "explanation": "The indentations under the paint do double duty — noise for a drifting driver, and a brighter line in the rain at night.",
+      "explanation": "The indentations under the paint do double duty — they let water drain off the markings so the line stays visible on a wet night, and they make noise and vibration under a tyre.",
       "cite": [
         {
           "pdfPage": 90,
-          "quote": "its primary function is to improve wet-night visibility of the edge line"
+          "quote": "It has a secondary effect of the vibration and noise, however, its primary function is to improve wet-night visibility of the edge line."
         }
       ]
     },
@@ -1624,7 +1636,7 @@
       "cite": [
         {
           "pdfPage": 107,
-          "quote": "look to the left first, since cars coming from the left will be closer to you"
+          "quote": "Check Left to Right Before Entering an Intersection - At any intersection, look to the left first, since cars coming from the left will be closer to you. Then look to the right and take one more quick look to the left before you drive through."
         }
       ]
     },
@@ -1861,6 +1873,10 @@
       "answer": 0,
       "explanation": "Facing traffic means you can see what is coming and step clear of it.",
       "cite": [
+        {
+          "ruleId": "R280",
+          "quotePick": 1
+        },
         {
           "ruleId": "R280"
         }

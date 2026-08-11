@@ -76,7 +76,9 @@
       "signs": ["r1-2-yield"],
       "artworkNote": "The manual prints this question beside a picture of the sign, and the picture is not in the PDF's text layer. The manual's own answer pointer sends the reader to printed page 36 (PDF 50), where the only sign matching answer A is the YIELD sign, and the keyed answer restates the manual's yield rule almost word for word. The app therefore renders its own YIELD sign (registry id r1-2-yield) next to the stem rather than dropping the question or guessing at unseen artwork.",
       "explanation": "A yield sign is not a stop sign. You slow down, and you stop only if traffic on the other roadway requires it — but you must give way either way.",
-      "cite": [{ "ruleId": "R129" }]
+      "cite": [
+        { "pdfPage": 50, "quote": "Triangular Shape - Yield This three-sided sign means that you are approaching an intersection and must stop and wait when other vehicles are approaching from the right or left on the other roadway. If you are sure no other cars are coming you need not come to a complete stop but you must slow down and enter the intersection with caution." }
+      ]
     },
     {
       "id": "official-08",
@@ -87,8 +89,8 @@
       "manualAnswerPointer": { "printedPage": 41 },
       "explanation": "The green arrow gave you a protected turn. When it changes to yellow that protection is ending, and oncoming traffic is about to get its own green — so both statements describe the same moment.",
       "cite": [
-        { "pdfPage": 55, "quote": "When the arrow changes to yellow, prepare to yield to oncoming traffic." },
-        { "ruleId": "R157" }
+        { "pdfPage": 55, "quote": "PROTECTED ARROWS: At many intersections, you may see what is called a \"protected turn arrow.\" When the arrow is green, you have the right-of-way and may drive the vehicle only in the direction of the arrow, after yielding to vehicles and pedestrians already in the intersection." },
+        { "pdfPage": 55, "quote": "When the arrow changes to yellow, prepare to yield to oncoming traffic." }
       ]
     },
     {
@@ -191,7 +193,7 @@
       "explanation": "High beams bounce off the water droplets straight back at you. Low beams put the light on the road and still let other drivers see you coming.",
       "cite": [
         { "ruleId": "R192" },
-        { "pdfPage": 89, "quote": "This gives you better visibility and alerts oncoming cars to your presence, it is also a requirement of Tennessee law." }
+        { "pdfPage": 89, "quote": "WHEN DRIVING THROUGH DENSE FOG, HEAVY RAIN OR SNOW DURING THE DAYTIME, TURN ON YOU LOW BEAM HEADLIGHTS. This gives you better visibility and alerts oncoming cars to your presence, it is also a requirement of Tennessee law." }
       ]
     },
     {
@@ -235,7 +237,11 @@
       "answer": 0,
       "manualAnswerPointer": { "printedPage": 79 },
       "explanation": "BAC is a direct measure of how much alcohol is in your blood, and impairment rises with it. Alcohol is a depressant at every concentration.",
-      "cite": [{ "ruleId": "R423" }, { "ruleId": "R452" }]
+      "cite": [
+        { "pdfPage": 93, "quote": "As the percentage of alcohol in your blood increases, you become more intoxicated." },
+        { "ruleId": "R423" },
+        { "ruleId": "R452" }
+      ]
     },
     {
       "id": "official-23",

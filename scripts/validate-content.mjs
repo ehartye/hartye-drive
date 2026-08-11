@@ -15,6 +15,8 @@ import { readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
 import { normalizeForMatch } from './lib/content-normalize.mjs';
+import { buildPageIndex, locateQuote } from './lib/page-locator.mjs';
+import { scoreCitationSupport } from './lib/citation-support.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, '..');
@@ -156,22 +158,13 @@ function checkBanned(question) {
  * the page the citation names, or straddling that page's break, or a learner
  * who follows the citation lands on the wrong rule.
  * ------------------------------------------------------------------ */
-const pageIndex = new Map();
-{
-  const parts = extract.split(/===== PAGE (\d+) =====/);
-  for (let i = 1; i < parts.length; i += 2) {
-    pageIndex.set(Number(parts[i]), normalizeForMatch(parts[i + 1] ?? ''));
-  }
-}
+const pageIndex = buildPageIndex(extract);
+const straddling = [];
 
-function quoteIsOnPage(quote, pdfPage) {
-  const needle = normalizeForMatch(quote);
-  for (const page of [pdfPage, pdfPage + 1]) {
-    const text = pageIndex.get(page);
-    if (text && text.includes(needle)) return true;
-  }
-  const joined = `${pageIndex.get(pdfPage) ?? ''} ${pageIndex.get(pdfPage + 1) ?? ''}`;
-  return joined.includes(needle);
+function quoteIsOnPage(quote, pdfPage, id) {
+  const { ok, how } = locateQuote(pageIndex, quote, pdfPage);
+  if (ok && how === 'straddle') straddling.push({ id, pdfPage });
+  return ok;
 }
 
 /* ------------------------------------------------------------------ *
@@ -259,8 +252,15 @@ for (const q of questions) {
     if (!haystack.includes(normalizeForMatch(c.quote))) {
       fail('citation', id, `citation ${i} quote does not appear verbatim in the manual extract: "${c.quote.slice(0, 70)}..."`);
     }
-    if (!quoteIsOnPage(c.quote, c.pdfPage)) {
+    if (!quoteIsOnPage(c.quote, c.pdfPage, id)) {
       fail('citation', id, `citation ${i} quote does not appear on PDF page ${c.pdfPage}`);
+    }
+  }
+
+  // -- does the citation actually support the KEYED answer? -----------
+  if ((q.citations ?? []).length > 0 && Array.isArray(q.options)) {
+    for (const problem of scoreCitationSupport(q).problems) {
+      fail('support', id, `${problem.code}: ${problem.message}`);
     }
   }
 
@@ -353,6 +353,8 @@ for (const q of questions) {
     }
     if (!haystack.includes(normalizeForMatch(c.quote))) {
       fail('signs', id, `citation quote does not appear verbatim in the manual extract: "${c.quote.slice(0, 60)}..."`);
+    } else if (!quoteIsOnPage(c.quote, c.pdfPage, id)) {
+      fail('signs', id, `citation quote does not appear on PDF page ${c.pdfPage}`);
     }
     if (s.meaningSource && s.meaningSource.kind === 'mutcd' && !s.meaningSource.reference) {
       fail('signs', id, 'meaningSource of kind "mutcd" must carry a reference');
@@ -449,6 +451,7 @@ function report() {
     byTopic: byTopic ? Object.fromEntries([...byTopic].sort()) : {},
     threeOptionShare: questions?.length ? Number((threeOptionCount / questions.length).toFixed(4)) : 0,
     examRuns,
+    straddling,
     failures,
     warnings,
   };
@@ -472,6 +475,9 @@ function report() {
   console.log('');
   console.log(`  by topic (floor ${MIN_PER_TOPIC} each)`);
   for (const [t, n] of [...(byTopic ?? [])].sort()) console.log(`    ${t.padEnd(40)} ${String(n).padStart(4)}`);
+  console.log('');
+  console.log(`  citations page-exact, except ${straddling.length} admitted page-straddling quote${straddling.length === 1 ? '' : 's'}`);
+  for (const s of straddling) console.log(`    ${s.id} straddles PDF pages ${s.pdfPage}/${s.pdfPage + 1}`);
   console.log('');
   console.log(`  ${EXAM_RUNS} simulated ${EXAM_SIZE}-question exams — per-area mix (target 7-8 each)`);
   for (const [i, counts] of examRuns.entries()) {

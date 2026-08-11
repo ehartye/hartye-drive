@@ -326,7 +326,11 @@
       "options": ["$350 to $1,500", "$50 to $200", "$3,000 to $15,000"],
       "answer": 0,
       "explanation": "And that is only the fine — court costs, bond, attorney fees, treatment and insurance increases come on top.",
-      "cite": [{ "pdfPage": 96, "quote": "$350-$1500 $600-$3500 $1,100 - $10,000 $3,000-$15,000" }]
+      "cite": [
+        { "pdfPage": 96, "quote": "1st Conviction 2nd Conviction 3rd Conviction 4th or subsequent Conviction (is a Class E felony)" },
+        { "pdfPage": 96, "quote": "$350-$1500 $600-$3500 $1,100 - $10,000 $3,000-$15,000" },
+        { "pdfPage": 96, "quote": "Jail Time Fines License Revocation Period Vehicle Seizure" }
+      ]
     },
     {
       "id": "alc-037",
@@ -335,7 +339,11 @@
       "options": ["30 days", "1 year", "5 years"],
       "answer": 1,
       "explanation": "One year for a first conviction, two for a second, three to ten for a third.",
-      "cite": [{ "pdfPage": 96, "quote": "1 year 2 years 3 -10 years 5 years [to indefinite]" }, { "pdfPage": 96, "quote": "Jail Time Fines License Revocation" }]
+      "cite": [
+        { "pdfPage": 96, "quote": "1st Conviction 2nd Conviction 3rd Conviction 4th or subsequent Conviction (is a Class E felony)" },
+        { "pdfPage": 96, "quote": "1 year 2 years 3 -10 years 5 years [to indefinite]" },
+        { "pdfPage": 96, "quote": "Jail Time Fines License Revocation Period Vehicle Seizure" }
+      ]
     },
     {
       "id": "alc-038",
@@ -469,10 +477,13 @@
       "id": "alc-052",
       "topic": "dui-penalties",
       "stem": "A restricted license issued after a DUI conviction may permit driving:",
-      "options": ["Anywhere, at any time", "To and from work, college, religious services and required program appointments", "Only between midnight and 6 a.m."],
+      "options": ["Anywhere, at any time", "To and from work, full-time college and religious services", "Only between midnight and 6 a.m."],
       "answer": 1,
-      "explanation": "The order lists the permitted trips — work, full-time college, worship, employment driving, litter pick-up shifts, treatment, probation and interlock appointments.",
-      "cite": [{ "pdfPage": 100, "quote": "the trial judge may issue an order for a restricted license to go to and from work, attend college full time" }]
+      "explanation": "The trial judge's order names the permitted trips — work, full-time college, worship and driving that is part of the job.",
+      "cite": [
+        { "pdfPage": 100, "quote": "The restricted license permits the driver to operate a motor vehicle for very specific purposes that are spelled out when the license is issued." },
+        { "pdfPage": 100, "quote": "DUI: After conviction for DUI, the trial judge may issue an order for a restricted license to go to and from work, attend college full time, attend religious services at their place of worship, drive as part of employment" }
+      ]
     },
 
     {
@@ -536,7 +547,10 @@
       "options": ["Only if it happened while driving", "Whether or not the offense occurred while driving", "Only for a second offense"],
       "answer": 1,
       "explanation": "For drivers under 18 the offense does not have to touch a car at all.",
-      "cite": [{ "ruleId": "R458" }]
+      "cite": [
+        { "pdfPage": 99, "quote": "In addition, persons under the age of 18 may lose their driving privileges for:" },
+        { "ruleId": "R458" }
+      ]
     },
     {
       "id": "alc-060",
@@ -545,7 +559,10 @@
       "options": ["Never affect driving", "Can affect driving ability and should be checked before driving", "Cancel out the effects of alcohol"],
       "answer": 1,
       "explanation": "The manual treats \"every day\" drugs as a real hazard. Read the label, and never mix them with alcohol.",
-      "cite": [{ "pdfPage": 95, "quote": "Non-prescription drugs, such as cold tablets, cough syrups, allergy remedies, etc., purchased over-the-counter may contain antihistamines, alcohol, codeine and other compounds that can be especially dangerous for drivers." }]
+      "cite": [
+        { "pdfPage": 95, "quote": "Even some over-the-counter medicines can affect driving." },
+        { "pdfPage": 95, "quote": "If you have questions about a particular drug or combination of drugs, check with your doctor or pharmacist." }
+      ]
     },
     {
       "id": "alc-061",
@@ -572,7 +589,10 @@
       "options": ["A ground for revoking or suspending a Tennessee driver license", "A parking violation", "Not connected to driving privileges"],
       "answer": 0,
       "explanation": "It is item 17 on the manual's list of grounds for losing your license.",
-      "cite": [{ "ruleId": "R457" }]
+      "cite": [
+        { "pdfPage": 99, "quote": "In Tennessee, a driver license may be revoked or suspended for the following situations:" },
+        { "ruleId": "R457" }
+      ]
     },
     {
       "id": "alc-064",
@@ -590,7 +610,10 @@
       "options": ["Safe as long as you wear a belt", "A serious danger the manual warns young people about specifically", "Only a problem at night"],
       "answer": 1,
       "explanation": "The manual singles this out: young people are endangered not only by their own impaired driving but by getting into a car with someone else who is impaired.",
-      "cite": [{ "pdfPage": 96, "quote": "This is not only from their own impaired driving, but also from getting in the car with other drivers who are not sober." }]
+      "cite": [
+        { "pdfPage": 96, "quote": "Young people remain especially vulnerable to the threat of alcohol and other drugs." },
+        { "pdfPage": 96, "quote": "This is not only from their own impaired driving, but also from getting in the car with other drivers who are not sober." }
+      ]
     },
     {
       "id": "alc-066",
