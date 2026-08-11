@@ -1,0 +1,213 @@
+{
+  "note": "DELIBERATELY BROKEN FIXTURE — copy of the real never-generate list, unmodified, so the fixture is rejected by the same rules the shipping bank is.",
+  "entries": [
+    {
+      "id": "move-over-lane-threshold",
+      "reason": "The manual states the Move Over Law's road scope two different ways: PDF p.69 says it applies 'only on multi-lane roadways where there are two or more lanes of traffic moving in the same direction', while PDF p.86 says 'any multi-lane highway (with four or more lanes) that has at least two lanes of traffic traveling in the same direction'. A question asking which roads the law covers has two defensible answers in the same document, so the lane threshold is never taught. The law's other elements (which vehicles, either side of the road, what to do when a lane change is unsafe) are safe and are taught.",
+      "source": "manual-spine.md caveat C4",
+      "bannedRuleIds": [
+        "R270",
+        "R271"
+      ],
+      "bannedPatterns": [
+        {
+          "allOf": [
+            "move over",
+            "(four or more lanes|two or more lanes|multi-?lane)"
+          ],
+          "flags": "i"
+        }
+      ]
+    },
+    {
+      "id": "license-renewal-cycle",
+      "reason": "PDF p.25 says licenses for persons over 21 expire every eight years; PDF p.26 says a Class D license issued before January 1, 2016 expires in five years; the teen FAQ on PDF p.33 refers to a five-year renewal cycle with no qualification. The renewal period cannot be keyed to a single correct answer. (Renewal is also Section A material, which is outside the exam pool.)",
+      "source": "manual-spine.md caveat C5",
+      "bannedRuleIds": [
+        "R027",
+        "R031",
+        "R032"
+      ],
+      "bannedPatterns": [
+        {
+          "allOf": [
+            "renew",
+            "(five|5|eight|8)[- ]year"
+          ],
+          "flags": "i"
+        }
+      ]
+    },
+    {
+      "id": "temporary-driver-license-fees",
+      "reason": "The Temporary Driver License fee text on PDF p.25 ($20.50 for XM, $38.00 for XDM) cannot be reconciled with the $28.00 base fee on the same page or with Table 2.4 on PDF p.26 (XM $29.00, XDM $55.00). The arithmetic is broken in the source.",
+      "source": "manual-spine.md caveat C6",
+      "bannedQuoteSubstrings": [
+        "$20.50",
+        "$38.00"
+      ],
+      "bannedPatterns": [
+        {
+          "allOf": [
+            "(temporary driver license|\\bTDL\\b|\\bXDM\\b|\\bXM\\b)",
+            "(fee|\\$)"
+          ],
+          "flags": "i"
+        }
+      ]
+    },
+    {
+      "id": "gdl-fee-figures",
+      "reason": "Table 2.4 (PDF p.26) lists Intermediate Restricted - D at $23.25; Table 3.2 (PDF p.34) lists $24.50 at age 16 and $21.00 at age 17 for the same step. Two official tables, three numbers, one credential.",
+      "source": "manual-spine.md caveat C7",
+      "bannedQuoteSubstrings": [
+        "$23.25",
+        "$24.50",
+        "$21.00"
+      ],
+      "bannedPatterns": [
+        {
+          "allOf": [
+            "(graduated driver license|\\bGDL\\b|intermediate restricted)",
+            "(fee|cost|\\$)"
+          ],
+          "flags": "i"
+        }
+      ]
+    },
+    {
+      "id": "back-seat-belt-age-17",
+      "reason": "PDF p.45 requires back-seat belts 'if the passengers are under 17 years old' and then says the provision 'no longer applies when back seat passengers are 18 years or older'. Age 17 falls in the gap and the manual never resolves it. The under-17 and 18-and-over cases are taught; the 17-year-old case is not.",
+      "source": "manual-spine.md caveat C3",
+      "bannedPatterns": [
+        {
+          "allOf": [
+            "(\\b17[ -]year[ -]old|\\bage(d)? 17\\b|\\bis 17\\b|\\bexactly 17\\b|\\bseventeen[ -]year[ -]old)",
+            "(back ?seat|rear seat|back of the (car|vehicle))"
+          ],
+          "flags": "i"
+        }
+      ]
+    },
+    {
+      "id": "bicyclists-may-disregard-signals",
+      "reason": "PDF p.120 contains the sentence 'Bicyclists may ride in the middle of the street and disregard stop signs and traffic signals.' In context it is a warning about what children on bicycles do in residential areas, not a grant of permission, and it flatly contradicts PDF p.119 ('bicyclists have the same rights and responsibilities as other roadway users'). Teaching it as a rule would teach a learner something false.",
+      "source": "manual-spine.md caveat C12",
+      "bannedQuoteSubstrings": [
+        "disregard stop signs"
+      ],
+      "bannedPatterns": [
+        {
+          "allOf": [
+            "bicyclists? may",
+            "disregard"
+          ],
+          "flags": "i"
+        }
+      ]
+    },
+    {
+      "id": "left-lane-fine-amounts",
+      "reason": "live-facts.md rates the reported increase in Tennessee's left-lane / slowpoke fines as LOW confidence and instructs that no number be taught. The left-lane speed rule itself (unlawful below 55 m.p.h. in the left-most interstate lane) is safe and is taught; the penalty is not.",
+      "source": "live-facts.md conflict C11",
+      "bannedPatterns": [
+        {
+          "allOf": [
+            "left[- ]most lane|left lane|slowpoke",
+            "(fine|penalty|\\$\\d)"
+          ],
+          "flags": "i"
+        }
+      ]
+    },
+    {
+      "id": "crash-count-statistics",
+      "reason": "PDF p.6 says approximately 191,065 crashes are reported annually; PDF p.112 says approximately 160,000. Both cannot be right and neither is a rule.",
+      "source": "manual-spine.md caveat C10",
+      "bannedQuoteSubstrings": [
+        "191,065",
+        "160,000"
+      ],
+      "bannedPatterns": [
+        {
+          "allOf": [
+            "crashes reported",
+            "(annually|each year|per year)"
+          ],
+          "flags": "i"
+        }
+      ]
+    },
+    {
+      "id": "texting-law-penalty-figures",
+      "reason": "PDF p.44 carries both the 2009 hand-held texting prohibition (fine not to exceed $50, court costs not to exceed $10) and the 2019 hands-free law (Public Chapter 412) without reconciling them. The 2009 penalty figures are very likely superseded by the hands-free law's tiered penalties. The prohibition is taught; the dollar figures are not.",
+      "source": "manual-spine.md caveat C14",
+      "bannedQuoteSubstrings": [
+        "fine not to exceed Fifty Dollars"
+      ],
+      "bannedPatterns": [
+        {
+          "allOf": [
+            "(text|cell ?phone|hand-?held)",
+            "(fifty dollars|\\$50|ten dollars|\\$10)"
+          ],
+          "flags": "i"
+        }
+      ]
+    },
+    {
+      "id": "real-id-as-a-future-date",
+      "reason": "The manual frames May 7, 2025 as an upcoming REAL ID deadline. That date has passed and enforcement is live, so any question written from that framing teaches a false tense. REAL ID is Section A material and is outside the exam pool in any case; the correction is disclosed in corrections.json instead.",
+      "source": "manual-spine.md caveat C2 / live-facts.md conflict C3",
+      "bannedPatterns": [
+        {
+          "allOf": [
+            "real id",
+            "(beginning|will be required|effective date|starting)"
+          ],
+          "flags": "i"
+        }
+      ]
+    },
+    {
+      "id": "dead-signal-right-of-way-circular-text",
+      "reason": "PDF p.56 muddles the rule for a signal that is not working: 'the driver on the left would yield to the driver on the right. The driver on the right who arrives first gets to go first' conflates arriving first with being on the right. The clean statement is on PDF p.68 (all-way stop order) and PDF p.55 (treat the intersection as an all-way stop); questions use those instead.",
+      "source": "manual-spine.md caveat C11",
+      "bannedQuoteSubstrings": [
+        "The driver on the right who arrives first gets to go first"
+      ]
+    },
+    {
+      "id": "dated-statistics",
+      "reason": "The manual is full of year-pinned statistics (2016 traffic deaths, 2015 large-truck fatal crashes, 2019 young-driver fatalities, 2020-2021 alcohol-related fatality percentages, NHTSA air-bag lives saved through 2012). None of them is a rule, all of them are stale, and none belongs on a knowledge test.",
+      "source": "manual-spine.md caveat C17",
+      "bannedQuoteSubstrings": [
+        "1,039",
+        "4,311"
+      ],
+      "bannedPatterns": [
+        {
+          "allOf": [
+            "(in|during) (20\\d\\d)",
+            "(fatalit|deaths|killed|percent of all)"
+          ],
+          "flags": "i"
+        }
+      ]
+    },
+    {
+      "id": "minimum-liability-insurance-amounts",
+      "reason": "The 2022 manual states no minimum liability insurance dollar amounts at all, so there is nothing in the manual to correct and no figure to teach from it. Tennessee's current 25/50/25 minimums are recorded in corrections.json as context, never presented as a manual rule.",
+      "source": "live-facts.md conflict C2 (and manual-spine.md caveat C21, topics absent)",
+      "bannedPatterns": [
+        {
+          "allOf": [
+            "(liability insurance|financial responsibility)",
+            "(25/50|\\$25,000|\\$50,000|\\$15,000)"
+          ],
+          "flags": "i"
+        }
+      ]
+    }
+  ]
+}

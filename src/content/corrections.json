@@ -1,0 +1,105 @@
+{
+  "note": "Post-2022 corrections from docs/research/live-facts.md. The manual states its content is current only as of July 1, 2022 and expressly does not override later changes in law. Where a correction touches content the app teaches, the question carries `correctionId` and the UI must show the correction with its effective date and authority — not apply it silently. Where the manual says nothing at all about a subject, that is recorded here too, so nobody later mistakes an absence for a contradiction and 'corrects' text that does not exist.",
+  "manualCurrency": {
+    "statedCurrentAsOf": "2022-07-01",
+    "quote": "Every effort has been made to provide, in this publication, the most current and accurate information as of July 1, 2022.",
+    "pdfPage": 3,
+    "printAuthorization": "Authorization No. MT3Q28, 100,000 copies, March 2025 (PDF p.135)"
+  },
+  "corrections": [
+    {
+      "id": "move-over-any-hazard-lights",
+      "summary": "Tennessee's Move Over Law now covers any stopped vehicle showing hazard lights — including an ordinary disabled car — not just emergency, utility, tow and highway maintenance vehicles.",
+      "manualStates": "The Move Over Law chapter lists police, ambulance and fire, utility and sanitation, tow trucks and TDOT HELP, and TDOT maintenance or contractor vehicles (PDF p.86). The same page already anticipates the expansion, but the enumerated-vehicle framing is what most of the manual teaches.",
+      "currentlyTrue": "The duty to move over or slow down extends to any stationary motor vehicle with its flashing hazard lights activated, with tiered penalties.",
+      "effectiveDate": "2023-07-01",
+      "authority": "Public Chapter 354 (2023) — Jabari Bailey Highway Safety Act (HB0092)",
+      "sourceUrl": "https://www.capitol.tn.gov/",
+      "confidence": "high",
+      "appliesToContent": true,
+      "note": "The lane-count threshold for the law is on the never-generate list: the manual states it two incompatible ways (PDF p.69 vs p.86)."
+    },
+    {
+      "id": "aggravated-vehicular-bac-threshold",
+      "summary": "The blood alcohol concentration that elevates a vehicular assault or vehicular homicide charge in Tennessee is now 0.15, down from 0.20.",
+      "manualStates": null,
+      "currentlyTrue": "The elevating BAC threshold for aggravated vehicular assault and aggravated vehicular homicide is 0.15 percent.",
+      "effectiveDate": "2025-07-01",
+      "authority": "Public Chapter 430 (2025)",
+      "sourceUrl": "https://www.capitol.tn.gov/",
+      "confidence": "high",
+      "appliesToContent": true,
+      "note": "The manual never prints an elevating BAC threshold for these offenses, so nothing in the text is wrong — the app attaches this as an advisory to the vehicular assault / vehicular homicide questions so a learner is not left with a 2022 picture. The only 0.20 figure the manual does print is the 7-day minimum jail term on a first DUI conviction, which is a different provision and is not taught here."
+    },
+    {
+      "id": "real-id-enforcement-live",
+      "summary": "REAL ID enforcement began on May 7, 2025. The manual describes that date as still in the future.",
+      "manualStates": "\"The currently scheduled effective date is May 7, 2025\" (PDF pp.4-5, front matter).",
+      "currentlyTrue": "REAL ID enforcement has been live since May 7, 2025; a non-compliant license is no longer accepted for boarding a commercial flight or entering a secured federal facility.",
+      "effectiveDate": "2025-05-07",
+      "authority": "REAL ID Act of 2005; DHS/TSA enforcement date",
+      "sourceUrl": "https://www.tsa.gov/travel/security-screening/identification",
+      "confidence": "high",
+      "appliesToContent": false,
+      "note": "REAL ID is front-matter and Section A material — credential paperwork, not driving rules — so it is outside the exam pool and no question is written from it. Recorded here so the app can disclose it on the about/settings surface rather than pretend the manual is current."
+    },
+    {
+      "id": "ignition-interlock-gps",
+      "summary": "Ignition interlock devices installed on or after January 1, 2024 must have GPS geotagging capability.",
+      "manualStates": "The manual describes the interlock requirement and its durations (PDF p.96) with no mention of GPS.",
+      "currentlyTrue": "Devices installed on or after January 1, 2024 must be capable of GPS geotagging.",
+      "effectiveDate": "2024-01-01",
+      "authority": "Public Chapter 20 (2023)",
+      "sourceUrl": "https://www.capitol.tn.gov/",
+      "confidence": "high",
+      "appliesToContent": true,
+      "note": "Additive, not contradictory: the interlock durations the manual prints are still taught as written."
+    },
+    {
+      "id": "minimum-liability-insurance",
+      "summary": "Tennessee's minimum liability limits are 25/50/25 — $25,000 property damage since January 1, 2023.",
+      "manualStates": null,
+      "currentlyTrue": "Minimum limits are $25,000 bodily injury per person, $50,000 per crash, $25,000 property damage.",
+      "effectiveDate": "2023-01-01",
+      "authority": "Tenn. Code Ann. § 55-12-102",
+      "sourceUrl": "https://www.tn.gov/",
+      "confidence": "high",
+      "appliesToContent": false,
+      "note": "The manual prints no liability dollar amounts anywhere, so there is no manual statement to correct. These figures are deliberately never taught as manual content and never presented as a correction to text that does not exist; the amounts are on the never-generate list."
+    },
+    {
+      "id": "knowledge-test-early-termination",
+      "summary": "The Tennessee knowledge test ends automatically once 7 questions have been missed.",
+      "manualStates": "The manual describes the knowledge test format but never mentions early termination (PDF p.35).",
+      "currentlyTrue": "The test auto-terminates after 7 missed questions; 30 questions, 24 correct to pass, 60-minute limit.",
+      "effectiveDate": "2026-08-11",
+      "authority": "Tennessee Department of Safety and Homeland Security current testing policy (verified 2026-08-11)",
+      "sourceUrl": "https://www.tn.gov/safety/driver-services/classd.html",
+      "confidence": "medium-high",
+      "appliesToContent": false,
+      "note": "Exam mechanics, not content: this drives the exam simulator, not the question bank. Recorded here so the simulator's rules have a dated source. The effectiveDate is the verification date, not a statutory date — no statute publishes this."
+    }
+  ],
+  "doNotTeach": [
+    {
+      "topic": "Left-lane / slowpoke fine amounts",
+      "reason": "live-facts.md rates the reported increase (minimum $250, $2,500 repeat) as LOW confidence and unconfirmed.",
+      "confidence": "low"
+    },
+    {
+      "topic": "Points cap for driving on a suspended or revoked license",
+      "reason": "Reportedly reduced from 8 to 4 points effective July 1, 2025 (HB0816), but only from secondary sources. The manual's 8-point figure is taught as the manual's own statement, and no claim is made that it is current.",
+      "confidence": "medium"
+    },
+    {
+      "topic": "Digital proof of vehicle registration (LESTER Act)",
+      "reason": "Secondary sources only; not verified against a Public Chapter.",
+      "confidence": "medium"
+    },
+    {
+      "topic": "In-person knowledge test retake waiting period",
+      "reason": "The 24-hour rule and 2-attempt cap are documented only for the online at-home test. No official source publishes a waiting period for retesting at a Driver Services Center.",
+      "confidence": "unknown"
+    }
+  ]
+}

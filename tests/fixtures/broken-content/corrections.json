@@ -1,0 +1,16 @@
+{
+  "note": "DELIBERATELY BROKEN FIXTURE corrections.",
+  "corrections": [
+    {
+      "id": "move-over-any-hazard-lights",
+      "summary": "x",
+      "manualStates": null,
+      "currentlyTrue": "x",
+      "effectiveDate": "2023",
+      "authority": "",
+      "sourceUrl": "",
+      "confidence": "high",
+      "appliesToContent": true
+    }
+  ]
+}

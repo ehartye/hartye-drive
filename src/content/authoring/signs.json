@@ -1,0 +1,1922 @@
+{
+  "note": "Blueprint area: Traffic signs and signals (25%). Section B Chapter 3 (PDF pp.49-58) with railroad and work-zone material from Section C Chapter 3. Questions that depend on a specific sign name the registry entry in `signs` so the app can render it beside the stem.",
+  "questions": [
+    {
+      "id": "col-001",
+      "topic": "sign-colors-and-shapes",
+      "stem": "Red is used as a background color only for:",
+      "options": [
+        "Stop signs, ALL WAY and FOUR-WAY plates, DO NOT ENTER, WRONG WAY, and interstate route markers",
+        "Any sign carrying a prohibition",
+        "Warning signs on curves"
+      ],
+      "answer": 0,
+      "explanation": "Red is reserved. Most prohibition signs are white with a red circle and slash, not a red background.",
+      "cite": [
+        {
+          "ruleId": "R119"
+        }
+      ],
+      "signs": [
+        "r1-1-stop",
+        "r5-1-do-not-enter",
+        "r5-1a-wrong-way"
+      ]
+    },
+    {
+      "id": "col-002",
+      "topic": "sign-colors-and-shapes",
+      "stem": "Orange is used as a background color for:",
+      "options": [
+        "Construction and maintenance signs, and nothing else",
+        "School zones",
+        "Motorist services"
+      ],
+      "answer": 0,
+      "explanation": "Orange always means road work. The manual says it shall not be used for any other purpose.",
+      "cite": [
+        {
+          "ruleId": "R120"
+        }
+      ],
+      "signs": [
+        "w20-1-road-work-ahead"
+      ]
+    },
+    {
+      "id": "col-003",
+      "topic": "sign-colors-and-shapes",
+      "stem": "Yellow is used as a background color for:",
+      "options": [
+        "Warning signs, except where orange is specified, and school signs",
+        "Guide signs",
+        "Regulatory signs"
+      ],
+      "answer": 0,
+      "explanation": "Yellow is the general warning color; orange takes over inside work zones.",
+      "cite": [
+        {
+          "ruleId": "R121"
+        }
+      ],
+      "signs": [
+        "w1-2-curve"
+      ]
+    },
+    {
+      "id": "col-004",
+      "topic": "sign-colors-and-shapes",
+      "stem": "A brown background on a sign means the information relates to:",
+      "options": [
+        "Points of recreational or cultural interest",
+        "Emergency services",
+        "Road construction"
+      ],
+      "answer": 0,
+      "explanation": "Parks, historic sites and campgrounds get brown; ordinary destinations get green.",
+      "cite": [
+        {
+          "ruleId": "R122"
+        }
+      ]
+    },
+    {
+      "id": "col-005",
+      "topic": "sign-colors-and-shapes",
+      "stem": "Blue backgrounds are used for signs about:",
+      "options": [
+        "Motorist services, including police services and rest areas",
+        "Speed limits",
+        "Sharp curves"
+      ],
+      "answer": 0,
+      "explanation": "Blue means services — fuel, food, lodging, hospitals, rest areas — and the Emergency Route Marker.",
+      "cite": [
+        {
+          "ruleId": "R124"
+        }
+      ],
+      "signs": [
+        "d9-2-hospital",
+        "d9-7-gas"
+      ]
+    },
+    {
+      "id": "col-006",
+      "topic": "sign-colors-and-shapes",
+      "stem": "Fluorescent yellow-green is the color used for:",
+      "options": [
+        "School zones and other pedestrian areas such as crosswalks",
+        "Interstate exits",
+        "Work zones"
+      ],
+      "answer": 0,
+      "explanation": "It reads much better in low light and rain, which is exactly where children and pedestrians are hardest to see.",
+      "cite": [
+        {
+          "ruleId": "R125"
+        }
+      ],
+      "signs": [
+        "s1-1-school",
+        "w11-2-pedestrian"
+      ]
+    },
+    {
+      "id": "col-007",
+      "topic": "sign-colors-and-shapes",
+      "stem": "Fluorescent pink signage is used for:",
+      "options": [
+        "Incident management — crashes, wildland fires, floods and hazardous material spills",
+        "School crossings",
+        "Permanent detours"
+      ],
+      "answer": 0,
+      "explanation": "Pink marks a temporary emergency scene, not planned road work.",
+      "cite": [
+        {
+          "ruleId": "R126"
+        }
+      ]
+    },
+    {
+      "id": "col-008",
+      "topic": "sign-colors-and-shapes",
+      "stem": "The only eight-sided sign on the roadway is:",
+      "options": [
+        "The stop sign",
+        "The yield sign",
+        "The railroad advance warning sign"
+      ],
+      "answer": 0,
+      "explanation": "The shape alone identifies it, which matters when the face is dirty, snow-covered or backlit.",
+      "cite": [
+        {
+          "pdfPage": 50,
+          "printedPage": 36,
+          "quote": "This sign is the only eight-sided sign on the roadway."
+        }
+      ],
+      "signs": [
+        "r1-1-stop"
+      ]
+    },
+    {
+      "id": "col-009",
+      "topic": "sign-colors-and-shapes",
+      "stem": "A diamond-shaped sign tells you:",
+      "options": [
+        "There is a hazardous or unexpected condition ahead",
+        "A law or regulation applies",
+        "You are approaching a service area"
+      ],
+      "answer": 0,
+      "explanation": "Diamonds call for caution and usually a slower speed.",
+      "cite": [
+        {
+          "ruleId": "R134"
+        }
+      ],
+      "signs": [
+        "w1-1-turn"
+      ]
+    },
+    {
+      "id": "col-010",
+      "topic": "sign-colors-and-shapes",
+      "stem": "A rectangular sign generally carries:",
+      "options": [
+        "Special laws, regulations or important information",
+        "A warning about the road surface",
+        "A railroad crossing"
+      ],
+      "answer": 0,
+      "explanation": "Speed limits, parking rules and many guide signs are rectangles.",
+      "cite": [
+        {
+          "ruleId": "R135"
+        }
+      ],
+      "signs": [
+        "r2-1-speed-limit"
+      ]
+    },
+    {
+      "id": "col-011",
+      "topic": "sign-colors-and-shapes",
+      "stem": "A round sign on the roadside always means:",
+      "options": [
+        "A railroad grade crossing is ahead",
+        "A roundabout is ahead",
+        "A rest area is ahead"
+      ],
+      "answer": 0,
+      "explanation": "The yellow disc is the railroad advance warning: slow down and be ready to stop.",
+      "cite": [
+        {
+          "ruleId": "R130"
+        }
+      ],
+      "signs": [
+        "w10-1-railroad-advance"
+      ]
+    },
+    {
+      "id": "col-012",
+      "topic": "sign-colors-and-shapes",
+      "stem": "Drivers must obey directions from a law enforcement officer, construction worker or school crossing guard:",
+      "options": [
+        "Even when those directions differ from what the lights and signs indicate",
+        "Only when the signals agree with them",
+        "Only inside a work zone"
+      ],
+      "answer": 0,
+      "explanation": "A person directing traffic outranks the signal. They can see the reason the signal cannot.",
+      "cite": [
+        {
+          "ruleId": "R117"
+        }
+      ]
+    },
+    {
+      "id": "reg-001",
+      "topic": "regulatory-signs",
+      "stem": "A white sign with a red circle and a diagonal line through it means:",
+      "options": [
+        "\"No\" — according to whatever symbol is shown behind it",
+        "A warning about the symbol shown",
+        "A service related to the symbol shown"
+      ],
+      "answer": 0,
+      "explanation": "One convention covers a dozen signs: no left turn, no U-turn, no trucks, no bicycles, no hitchhiking.",
+      "cite": [
+        {
+          "ruleId": "R136"
+        }
+      ],
+      "signs": [
+        "r3-2-no-left-turn",
+        "r3-4-no-u-turn",
+        "r5-2-no-trucks",
+        "r5-6-no-bicycles"
+      ]
+    },
+    {
+      "id": "reg-002",
+      "topic": "regulatory-signs",
+      "stem": "An ALL WAY plate below a stop sign means:",
+      "options": [
+        "All traffic approaching the intersection must stop",
+        "Only your direction must stop",
+        "Traffic may proceed without stopping when clear"
+      ],
+      "answer": 0,
+      "explanation": "It changes how you read the intersection: everyone stops, and order of arrival decides who goes.",
+      "cite": [
+        {
+          "ruleId": "R128"
+        }
+      ],
+      "signs": [
+        "r1-3p-all-way",
+        "r1-1-stop"
+      ]
+    },
+    {
+      "id": "reg-003",
+      "topic": "regulatory-signs",
+      "stem": "The three-sided yield sign means:",
+      "options": [
+        "Slow down, enter with caution, and stop and wait when other vehicles are approaching",
+        "Always come to a complete stop",
+        "You have the right-of-way over the other roadway"
+      ],
+      "answer": 0,
+      "explanation": "The manual adds a plain instruction: always stop when traffic is heavy.",
+      "cite": [
+        {
+          "ruleId": "R129"
+        }
+      ],
+      "signs": [
+        "r1-2-yield"
+      ]
+    },
+    {
+      "id": "reg-004",
+      "topic": "regulatory-signs",
+      "stem": "The KEEP RIGHT / SLOWER TRAFFIC sign on a multi-lane highway means you must:",
+      "options": [
+        "Drive in the extreme right lane unless passing or turning left",
+        "Drive in the center lane",
+        "Straddle the lane line while passing"
+      ],
+      "answer": 0,
+      "explanation": "The manual is explicit that you should never straddle lanes or sit in a center lane while moving slower than traffic.",
+      "cite": [
+        {
+          "pdfPage": 51,
+          "quote": "It means that you must drive in the extreme right lane unless you want to pass a slower moving car or make a left turn."
+        }
+      ],
+      "signs": [
+        "r4-3-slower-traffic-keep-right"
+      ]
+    },
+    {
+      "id": "reg-005",
+      "topic": "regulatory-signs",
+      "stem": "No-passing signs mark passing restrictions that are based on:",
+      "options": [
+        "How far ahead you can see",
+        "The posted speed limit",
+        "The width of the shoulder"
+      ],
+      "answer": 0,
+      "explanation": "Passing zones account for hills, curves, intersections and driveways — anywhere a vehicle could appear.",
+      "cite": [
+        {
+          "pdfPage": 51,
+          "printedPage": 37,
+          "quote": "These signs tell you where passing is not permitted. Passing areas are based on how far you can see ahead."
+        }
+      ],
+      "signs": [
+        "r4-1-do-not-pass"
+      ]
+    },
+    {
+      "id": "reg-006",
+      "topic": "regulatory-signs",
+      "stem": "The triangular NO PASSING ZONE sign is:",
+      "options": [
+        "Yellow or orange and placed on the left side of the roadway",
+        "Red and placed on the right",
+        "Blue and mounted overhead"
+      ],
+      "answer": 0,
+      "explanation": "Left side, pennant shaped — it is aimed at the driver who is thinking about pulling out.",
+      "cite": [
+        {
+          "pdfPage": 51,
+          "printedPage": 37,
+          "quote": "A triangular No Passing Zone sign can also be used. These signs are yellow or orange and placed on the left side of the roadway."
+        }
+      ],
+      "signs": [
+        "w14-3-no-passing-zone"
+      ]
+    },
+    {
+      "id": "reg-007",
+      "topic": "regulatory-signs",
+      "stem": "A High Occupancy Vehicle sign indicates lanes reserved for:",
+      "options": [
+        "Buses and vehicles carrying at least the number of occupants shown on the sign",
+        "Commercial vehicles only",
+        "Vehicles travelling above the speed limit"
+      ],
+      "answer": 0,
+      "explanation": "The sign also carries the hours during which the restriction applies.",
+      "cite": [
+        {
+          "pdfPage": 51,
+          "printedPage": 37,
+          "quote": "This sign (High Occupancy Vehicle) indicates lanes reserved for buses and vehicles with the minimum number of occupants specified on the sign."
+        }
+      ],
+      "signs": [
+        "r3-10-hov-lane"
+      ]
+    },
+    {
+      "id": "reg-008",
+      "topic": "regulatory-signs",
+      "stem": "The one-way sign on the approach to a street tells you:",
+      "options": [
+        "You must not enter from the direction you are traveling",
+        "Traffic may flow either way at off-peak times",
+        "The street ahead is closed"
+      ],
+      "answer": 0,
+      "explanation": "Red DO NOT ENTER and WRONG WAY signs are the last warnings if you miss it.",
+      "cite": [
+        {
+          "pdfPage": 51,
+          "printedPage": 37,
+          "quote": "This sign tells you that you are approaching a one-way street and that you must not enter from the direction you are traveling."
+        }
+      ],
+      "signs": [
+        "r6-1-one-way",
+        "r5-1-do-not-enter"
+      ]
+    },
+    {
+      "id": "reg-009",
+      "topic": "regulatory-signs",
+      "stem": "A blue sign with the international symbol of access marks a parking space that:",
+      "options": [
+        "Is reserved for vehicles displaying a disabled plate or placard",
+        "Is reserved for hospital staff",
+        "Is free of charge for anyone"
+      ],
+      "answer": 0,
+      "explanation": "Using one without the plate or placard is a misdemeanor, and the vehicle may be towed.",
+      "cite": [
+        {
+          "ruleId": "R147"
+        }
+      ],
+      "signs": [
+        "r7-8-accessible-parking"
+      ]
+    },
+    {
+      "id": "reg-010",
+      "topic": "regulatory-signs",
+      "stem": "The NO HITCHHIKING sign reflects that in Tennessee it is illegal to:",
+      "options": [
+        "Stand on a roadway to solicit a ride",
+        "Give a ride to a stranger",
+        "Park on the shoulder"
+      ],
+      "answer": 0,
+      "explanation": "The offense belongs to the person on foot, but the manual notes the risk runs both ways.",
+      "cite": [
+        {
+          "ruleId": "R137"
+        }
+      ],
+      "signs": [
+        "r9-4-no-hitchhiking"
+      ]
+    },
+    {
+      "id": "reg-011",
+      "topic": "regulatory-signs",
+      "stem": "Speed control signs show:",
+      "options": [
+        "The maximum speed allowed, the minimum speed required, or a change in the speed limit",
+        "Only the maximum speed",
+        "Advisory speeds for curves"
+      ],
+      "answer": 0,
+      "explanation": "Advisory speeds for curves come on a yellow plaque below a warning sign, not on a regulatory speed sign.",
+      "cite": [
+        {
+          "pdfPage": 51,
+          "printedPage": 37,
+          "quote": "These signs show the maximum speed allowed, the minimum speed required or a change in speed limit."
+        }
+      ],
+      "signs": [
+        "r2-1-speed-limit",
+        "r2-4p-minimum-speed"
+      ]
+    },
+    {
+      "id": "wrn-001",
+      "topic": "warning-signs",
+      "stem": "A turn sign (a yellow diamond with a sharp bend) is used where the recommended speed is:",
+      "options": [
+        "30 m.p.h. or less",
+        "Between 30 and 55 m.p.h.",
+        "Above 55 m.p.h."
+      ],
+      "answer": 0,
+      "explanation": "The gentler curve sign covers 30 to 55. The sharper the symbol, the slower the corner.",
+      "cite": [
+        {
+          "ruleId": "R138"
+        }
+      ],
+      "signs": [
+        "w1-1-turn"
+      ]
+    },
+    {
+      "id": "wrn-002",
+      "topic": "warning-signs",
+      "stem": "The curve sign marks curves with recommended speeds:",
+      "options": [
+        "Between 30 and 55 m.p.h.",
+        "Under 15 m.p.h.",
+        "Over 65 m.p.h."
+      ],
+      "answer": 0,
+      "explanation": "An advisory speed plaque below it gives the specific number when one is posted.",
+      "cite": [
+        {
+          "ruleId": "R139"
+        }
+      ],
+      "signs": [
+        "w1-2-curve",
+        "w13-1p-advisory-speed"
+      ]
+    },
+    {
+      "id": "wrn-003",
+      "topic": "warning-signs",
+      "stem": "The reverse turn sign warns of two turns in opposite directions that are:",
+      "options": [
+        "Less than 600 feet apart",
+        "More than a mile apart",
+        "Separated by a traffic signal"
+      ],
+      "answer": 0,
+      "explanation": "There is no room to build speed between them, so take the first one at a speed that sets up the second.",
+      "cite": [
+        {
+          "ruleId": "R140"
+        }
+      ],
+      "signs": [
+        "w1-3-reverse-turn"
+      ]
+    },
+    {
+      "id": "wrn-004",
+      "topic": "warning-signs",
+      "stem": "The advisory speed plate mounted below a warning sign gives:",
+      "options": [
+        "The recommended maximum safe speed for the condition ahead",
+        "The legal speed limit",
+        "The minimum speed"
+      ],
+      "answer": 0,
+      "explanation": "It is advice, but the advice is calculated for the geometry ahead.",
+      "cite": [
+        {
+          "pdfPage": 52,
+          "printedPage": 38,
+          "quote": "It gives you the recommended maximum safe speed."
+        }
+      ],
+      "signs": [
+        "w13-1p-advisory-speed"
+      ]
+    },
+    {
+      "id": "wrn-005",
+      "topic": "warning-signs",
+      "stem": "The falling rocks sign warns of:",
+      "options": [
+        "Rocks that may be lying in the road",
+        "Rocks that may strike your vehicle from above",
+        "Loose gravel on the shoulder"
+      ],
+      "answer": 0,
+      "explanation": "The manual's advice is blunt: watch the roadway, not the hill.",
+      "cite": [
+        {
+          "ruleId": "R141"
+        }
+      ],
+      "signs": [
+        "w8-14-fallen-rocks"
+      ]
+    },
+    {
+      "id": "wrn-006",
+      "topic": "warning-signs",
+      "stem": "A yellow diamond showing a stop sign symbol means:",
+      "options": [
+        "There is a stop sign ahead that you cannot see yet — start slowing down",
+        "You may stop here if you wish",
+        "Stop immediately"
+      ],
+      "answer": 0,
+      "explanation": "It exists for stop signs hidden by a curve, a crest or foliage.",
+      "cite": [
+        {
+          "pdfPage": 52,
+          "printedPage": 38,
+          "quote": "This sign indicates that there is a STOP sign just ahead that you cannot yet see. At this point, start to slow down."
+        }
+      ],
+      "signs": [
+        "w3-1-stop-ahead"
+      ]
+    },
+    {
+      "id": "wrn-007",
+      "topic": "warning-signs",
+      "stem": "The merging traffic sign alerts you to:",
+      "options": [
+        "Traffic blending into your stream of travel, so you should move over if you can",
+        "A lane closing ahead of you",
+        "A merge you must make yourself"
+      ],
+      "answer": 0,
+      "explanation": "Check behind first, then leave the merging driver a clear path.",
+      "cite": [
+        {
+          "pdfPage": 52,
+          "quote": "This sign alerts you to the possibility of traffic blending into the main stream of travel."
+        }
+      ],
+      "signs": [
+        "w4-1-merge"
+      ]
+    },
+    {
+      "id": "wrn-008",
+      "topic": "warning-signs",
+      "stem": "A lane-ends sign means you should:",
+      "options": [
+        "Merge in the direction shown, signaling your intentions",
+        "Stop and wait for a gap",
+        "Speed up to get ahead of traffic"
+      ],
+      "answer": 0,
+      "explanation": "Merging early is safer and legal; being a last-chance merger can get you ticketed in a work zone.",
+      "cite": [
+        {
+          "pdfPage": 52,
+          "printedPage": 38,
+          "quote": "This sign is warning of the lane ending and that drivers should merge left. Be sure to signal your intentions."
+        }
+      ],
+      "signs": [
+        "w4-2-lane-ends"
+      ]
+    },
+    {
+      "id": "wrn-009",
+      "topic": "warning-signs",
+      "stem": "The narrow bridge sign tells you:",
+      "options": [
+        "The bridge is narrow and may require passing vehicles to reduce speed",
+        "The bridge is closed to trucks",
+        "The bridge ices before the road"
+      ],
+      "answer": 0,
+      "explanation": "Two vehicles meeting on a narrow bridge have no shoulder and no escape route.",
+      "cite": [
+        {
+          "pdfPage": 52,
+          "quote": "This sign tells you that the bridge is narrow and may require passing cars to reduce speeds."
+        }
+      ],
+      "signs": [
+        "w5-2-narrow-bridge"
+      ]
+    },
+    {
+      "id": "wrn-010",
+      "topic": "warning-signs",
+      "stem": "A yellow diamond near a school warns you to:",
+      "options": [
+        "Slow down, drive with caution and watch for children",
+        "Stop at the school entrance",
+        "Sound your horn"
+      ],
+      "answer": 0,
+      "explanation": "It is placed on the approach to the school, before the zone itself.",
+      "cite": [
+        {
+          "pdfPage": 52,
+          "printedPage": 38,
+          "quote": "It warns you to slow down, drive with caution and watch for children."
+        }
+      ],
+      "signs": [
+        "s1-1-school"
+      ]
+    },
+    {
+      "id": "wrn-011",
+      "topic": "warning-signs",
+      "stem": "The school bus stop ahead sign means:",
+      "options": [
+        "Children are likely to be in the area with a bus loading and unloading during the school season",
+        "A bus stop shelter is ahead",
+        "School buses are prohibited beyond this point"
+      ],
+      "answer": 0,
+      "explanation": "The sign stays up year round; the children only appear in term time, which is when drivers stop expecting them.",
+      "cite": [
+        {
+          "pdfPage": 52,
+          "printedPage": 38,
+          "quote": "This sign indicates that children are likely to be in the area with a school bus loading and unloading during the school season."
+        }
+      ],
+      "signs": [
+        "s3-1-school-bus-stop-ahead"
+      ]
+    },
+    {
+      "id": "wrn-012",
+      "topic": "warning-signs",
+      "stem": "A T-INTERSECTION sign means:",
+      "options": [
+        "You must turn right or left, and be prepared to yield",
+        "A side road joins from the right",
+        "The road ahead narrows"
+      ],
+      "answer": 0,
+      "explanation": "Your road ends. Traffic on the through road has the right-of-way in both directions.",
+      "cite": [
+        {
+          "pdfPage": 53,
+          "printedPage": 39,
+          "quote": "You must turn right or left. Be prepared to yield."
+        }
+      ],
+      "signs": [
+        "w2-4-t-intersection"
+      ]
+    },
+    {
+      "id": "wrn-013",
+      "topic": "warning-signs",
+      "stem": "Chevron signs are used to:",
+      "options": [
+        "Give extra emphasis and guidance for a change in horizontal alignment",
+        "Mark the end of a work zone",
+        "Show the distance to the next exit"
+      ],
+      "answer": 0,
+      "explanation": "A line of them traces the curve so you can see where the road goes at night.",
+      "cite": [
+        {
+          "pdfPage": 53,
+          "printedPage": 39,
+          "quote": "These Chevron signs displayed below are used to provide additional emphasis and guidance for a change in horizontal alignment."
+        }
+      ],
+      "signs": [
+        "w1-8-chevron"
+      ]
+    },
+    {
+      "id": "wrn-014",
+      "topic": "warning-signs",
+      "stem": "A LOW CLEARANCE sign shows:",
+      "options": [
+        "The distance from the road surface to the bottom of a bridge or overpass",
+        "The width of the lane ahead",
+        "The weight limit of the bridge"
+      ],
+      "answer": 0,
+      "explanation": "It matters to anyone driving a truck, an RV or anything with something on the roof.",
+      "cite": [
+        {
+          "pdfPage": 53,
+          "printedPage": 39,
+          "quote": "Shows the distance from road surface to the bottom of a bridge or overpass"
+        }
+      ],
+      "signs": [
+        "w12-2-low-clearance"
+      ]
+    },
+    {
+      "id": "wrn-015",
+      "topic": "warning-signs",
+      "stem": "Object markers warn you of:",
+      "options": [
+        "Objects near the edge of the road, such as bridge ends and underpass abutments",
+        "Objects lying in the travel lane",
+        "The end of the pavement"
+      ],
+      "answer": 0,
+      "explanation": "They mark hazards that are not in the roadway but are close enough to hit.",
+      "cite": [
+        {
+          "pdfPage": 54,
+          "printedPage": 40,
+          "quote": "These markers warn you of objects, not actually in the roadway, but so close to the edge of the road that need marking."
+        }
+      ],
+      "signs": [
+        "om3-l-object-marker"
+      ]
+    },
+    {
+      "id": "wzn-001",
+      "topic": "work-zone-signs",
+      "stem": "Work area signs are:",
+      "options": [
+        "Diamond or rectangular, orange with black letters or symbols",
+        "Yellow with red letters",
+        "Blue with white symbols"
+      ],
+      "answer": 0,
+      "explanation": "They warn that people are working on or near the roadway.",
+      "cite": [
+        {
+          "pdfPage": 53,
+          "printedPage": 39,
+          "quote": "These construction, maintenance or emergency operations signs are generally diamond or rectangular shaped, orange with black letters or symbols and warn you that people are working on or near the roadway."
+        }
+      ],
+      "signs": [
+        "w20-1-road-work-ahead",
+        "w21-1-workers"
+      ]
+    },
+    {
+      "id": "wzn-002",
+      "topic": "work-zone-signs",
+      "stem": "In a work area, a person holding a sign or flag:",
+      "options": [
+        "May control traffic, and you must obey their directions",
+        "May only advise, not direct",
+        "Has authority only when a police officer is present"
+      ],
+      "answer": 0,
+      "explanation": "Flaggers use paddles reading STOP on one side and SLOW on the other, and red flags in emergencies.",
+      "cite": [
+        {
+          "ruleId": "R142"
+        }
+      ],
+      "signs": [
+        "w20-7-flagger"
+      ]
+    },
+    {
+      "id": "wzn-003",
+      "topic": "work-zone-signs",
+      "stem": "A flashing arrow panel in a work zone tells you to:",
+      "options": [
+        "Begin merging into the remaining open lanes well in advance of the sign",
+        "Stop until the panel goes dark",
+        "Move onto the shoulder"
+      ],
+      "answer": 0,
+      "explanation": "Merging early keeps the queue moving; merging at the cones is how the queue turns into a crash.",
+      "cite": [
+        {
+          "ruleId": "R143"
+        }
+      ],
+      "signs": [
+        "w20-5-right-lane-closed"
+      ]
+    },
+    {
+      "id": "wzn-004",
+      "topic": "work-zone-signs",
+      "stem": "Driving among barricades, drums and cones in a work zone, you should:",
+      "options": [
+        "Keep your vehicle in the middle of the lane and obey the posted speed",
+        "Straddle the lane line for extra room",
+        "Change lanes whenever you find a gap"
+      ],
+      "answer": 0,
+      "explanation": "Stay in your lane on the way out too — do not change lanes until you are completely clear of the zone.",
+      "cite": [
+        {
+          "ruleId": "R144"
+        }
+      ]
+    },
+    {
+      "id": "wzn-005",
+      "topic": "work-zone-signs",
+      "stem": "The color orange on a roadway sign always means:",
+      "options": [
+        "Road work — slow down",
+        "School zone",
+        "Emergency incident"
+      ],
+      "answer": 0,
+      "explanation": "Every temporary sign in a work zone is orange with black legend.",
+      "cite": [
+        {
+          "pdfPage": 126,
+          "printedPage": 112,
+          "quote": "Watch for the color orange"
+        },
+        {
+          "pdfPage": 126,
+          "printedPage": 112,
+          "quote": "All temporary signs in work zones have an orange background and black letters or symbols."
+        }
+      ],
+      "signs": [
+        "w20-1-road-work-ahead"
+      ]
+    },
+    {
+      "id": "wzn-006",
+      "topic": "work-zone-signs",
+      "stem": "A sign reading \"Road Work 1500 Feet\" means you will be in that construction zone in about:",
+      "options": [
+        "17 seconds",
+        "Two minutes",
+        "Half a mile of driving"
+      ],
+      "answer": 0,
+      "explanation": "The manual uses the figure to make the point that a work zone arrives far faster than it feels.",
+      "cite": [
+        {
+          "pdfPage": 126,
+          "printedPage": 112,
+          "quote": "If you see a sign that says \"Road Work 1500 Feet\", you'll be in that construction zone in 17 seconds!"
+        }
+      ],
+      "signs": [
+        "w20-1a-road-work-distance"
+      ]
+    },
+    {
+      "id": "wzn-007",
+      "topic": "work-zone-signs",
+      "stem": "You should keep observing work zone signs until you see:",
+      "options": [
+        "The END ROAD WORK sign",
+        "The first orange cone",
+        "A police vehicle"
+      ],
+      "answer": 0,
+      "explanation": "The zone is not over when the workers disappear from view — it is over at the sign.",
+      "cite": [
+        {
+          "pdfPage": 126,
+          "quote": "Observe the posted signs until you see the one that says \"End Road Work\"."
+        }
+      ],
+      "signs": [
+        "g20-2-end-road-work"
+      ]
+    },
+    {
+      "id": "wzn-008",
+      "topic": "work-zone-signs",
+      "stem": "Before entering a work zone you should:",
+      "options": [
+        "Turn on your headlights",
+        "Turn on your hazard flashers",
+        "Switch to high beams"
+      ],
+      "answer": 0,
+      "explanation": "Headlights make you visible to the workers on foot and to the traffic weaving around you.",
+      "cite": [
+        {
+          "ruleId": "R536"
+        }
+      ]
+    },
+    {
+      "id": "wzn-009",
+      "topic": "work-zone-signs",
+      "stem": "Inside a work zone you should change lanes:",
+      "options": [
+        "Only when instructed to do so",
+        "Whenever the next lane is moving faster",
+        "Whenever a gap appears"
+      ],
+      "answer": 0,
+      "explanation": "Lane positions are set by the traffic control plan; freelancing inside the zone is what causes the sideswipes.",
+      "cite": [
+        {
+          "ruleId": "R535"
+        }
+      ]
+    },
+    {
+      "id": "wzn-010",
+      "topic": "work-zone-signs",
+      "stem": "Flaggers, utility workers and other personnel directing traffic in work zones can be seen wearing:",
+      "options": [
+        "Fluorescent yellow-green clothing, vests and hard hats",
+        "Plain white overalls",
+        "Blue reflective jackets"
+      ],
+      "answer": 0,
+      "explanation": "Law enforcement officers wear the same fluorescent yellow-green at traffic emergencies.",
+      "cite": [
+        {
+          "pdfPage": 53,
+          "printedPage": 39,
+          "quote": "can also be seen wearing FLUORESCENT YELLOW-GREEN clothing, vests and hard helmets in these construction work zones"
+        }
+      ]
+    },
+    {
+      "id": "wzn-011",
+      "topic": "work-zone-signs",
+      "stem": "Electronic message and arrow signs in work zones are used to:",
+      "options": [
+        "Give advance warning of construction zones, traffic directions, closures and weather hazards",
+        "Display advertising",
+        "Show the current time and temperature only"
+      ],
+      "answer": 0,
+      "explanation": "They are mobile, so they appear exactly where the hazard is on that day.",
+      "cite": [
+        {
+          "pdfPage": 53,
+          "printedPage": 39,
+          "quote": "These are mobile devices that are often used on some roads to give advance warning of construction zones, special traffic directions, road closures or in some cases weather hazards."
+        }
+      ]
+    },
+    {
+      "id": "rxr-001",
+      "topic": "railroad-crossing-signs",
+      "stem": "The round yellow sign with a black X and two Rs means:",
+      "options": [
+        "You are approaching a railroad grade crossing — slow down and be ready to stop",
+        "A crossing is closed ahead",
+        "Trains have stopped running on this line"
+      ],
+      "answer": 0,
+      "explanation": "It is an advance warning: it is up to you to stop if a train is coming.",
+      "cite": [
+        {
+          "ruleId": "R130"
+        }
+      ],
+      "signs": [
+        "w10-1-railroad-advance"
+      ]
+    },
+    {
+      "id": "rxr-002",
+      "topic": "railroad-crossing-signs",
+      "stem": "The crossbuck sign:",
+      "options": [
+        "Is placed at all railroad grade crossings and shows exactly where the tracks are",
+        "Marks the end of the railroad property",
+        "Is only used where there are no gates"
+      ],
+      "answer": 0,
+      "explanation": "It functions like a yield sign at the tracks themselves.",
+      "cite": [
+        {
+          "ruleId": "R131"
+        }
+      ],
+      "signs": [
+        "r15-1-crossbuck"
+      ]
+    },
+    {
+      "id": "rxr-003",
+      "topic": "railroad-crossing-signs",
+      "stem": "The small sign mounted below a crossbuck shows:",
+      "options": [
+        "The number of tracks at that crossing",
+        "The speed of trains on the line",
+        "The distance to the next crossing"
+      ],
+      "answer": 0,
+      "explanation": "More than one track means a second train may be hidden behind the first.",
+      "cite": [
+        {
+          "pdfPage": 50,
+          "printedPage": 36,
+          "quote": "They show the number of tracks at a particular crossing."
+        }
+      ],
+      "signs": [
+        "r15-2p-number-of-tracks"
+      ]
+    },
+    {
+      "id": "rxr-004",
+      "topic": "railroad-crossing-signs",
+      "stem": "Flashing lights on a crossbuck mean:",
+      "options": [
+        "A train is coming — stop and remain stopped until it has passed",
+        "A train has just passed and you may proceed",
+        "The signal is being tested"
+      ],
+      "answer": 0,
+      "explanation": "Always stop when the lights are flashing, gates or no gates.",
+      "cite": [
+        {
+          "ruleId": "R132"
+        }
+      ],
+      "signs": [
+        "r15-1-crossbuck"
+      ]
+    },
+    {
+      "id": "rxr-005",
+      "topic": "railroad-crossing-signs",
+      "stem": "At a crossing with gates, you must remain stopped until:",
+      "options": [
+        "The gates are raised and the lights stop flashing",
+        "The gate begins to lift",
+        "The last car of the train passes"
+      ],
+      "answer": 0,
+      "explanation": "The gates staying down after a train passes usually means a second train is coming.",
+      "cite": [
+        {
+          "ruleId": "R133"
+        }
+      ]
+    },
+    {
+      "id": "rxr-006",
+      "topic": "railroad-crossing-signs",
+      "stem": "A white crossbuck and the letters RR painted on the pavement are:",
+      "options": [
+        "A warning marker for a railroad grade crossing ahead",
+        "A no-parking marking",
+        "A sign that the tracks are abandoned"
+      ],
+      "answer": 0,
+      "explanation": "Railroad crossing markings also include a no-passing stripe and a stop line.",
+      "cite": [
+        {
+          "pdfPage": 57,
+          "printedPage": 43,
+          "quote": "A white crossbuck and the letters RR are painted on the pavement as a warning marker for many railroad/highway grade crossings."
+        }
+      ]
+    },
+    {
+      "id": "rxr-007",
+      "topic": "railroad-crossing-signs",
+      "stem": "The Emergency Notification System (ENS) sign at a crossing is:",
+      "options": [
+        "Normally blue, and located on the crossbuck post or signal post",
+        "Round and yellow",
+        "Painted on the pavement"
+      ],
+      "answer": 0,
+      "explanation": "It carries the number to call if your vehicle stalls on the tracks — that call can stop the trains.",
+      "cite": [
+        {
+          "pdfPage": 128,
+          "quote": "The Emergency Notification System (ENS) sign, normally blue in color and may be located on the crossbuck post or signal post."
+        }
+      ],
+      "signs": [
+        "i-13-ens"
+      ]
+    },
+    {
+      "id": "rxr-008",
+      "topic": "railroad-crossing-signs",
+      "stem": "A stop sign posted at a railroad crossing means you must:",
+      "options": [
+        "Come to a complete stop and proceed only after looking both ways",
+        "Slow down and proceed if no train is visible",
+        "Stop only if the lights are flashing"
+      ],
+      "answer": 0,
+      "explanation": "It is a stop sign like any other, with a train instead of cross traffic.",
+      "cite": [
+        {
+          "ruleId": "R233"
+        }
+      ],
+      "signs": [
+        "r1-1-stop"
+      ]
+    },
+    {
+      "id": "rxr-009",
+      "topic": "railroad-crossing-signs",
+      "stem": "A yellow diamond warning sign showing tracks crossing a road just beyond an intersection warns that:",
+      "options": [
+        "Railroad tracks cross one of the roadways just past the intersection",
+        "A train station is ahead",
+        "The intersection is closed"
+      ],
+      "answer": 0,
+      "explanation": "It warns you not to turn onto a road and find yourself stopped on the tracks.",
+      "cite": [
+        {
+          "pdfPage": 128,
+          "printedPage": 114,
+          "quote": "will be posted prior to intersections or crossroads where railroad tracks cross one of the roadways"
+        }
+      ],
+      "signs": [
+        "w10-2-railroad-at-intersection"
+      ]
+    },
+    {
+      "id": "rxr-010",
+      "topic": "railroad-crossing-signs",
+      "stem": "Trains are required to sound a horn when they are approximately how far from a crossing?",
+      "options": [
+        "1,500 feet",
+        "100 feet",
+        "5 miles"
+      ],
+      "answer": 0,
+      "explanation": "The horn is a warning, not a guarantee — the manual still tells you to look both ways.",
+      "cite": [
+        {
+          "ruleId": "R227"
+        }
+      ]
+    },
+    {
+      "id": "rxr-011",
+      "topic": "railroad-crossing-signs",
+      "stem": "Violations of railroad signals or signs carry:",
+      "options": [
+        "The same penalties as violations of other traffic control devices",
+        "No penalty unless a train was present",
+        "Only a written warning"
+      ],
+      "answer": 0,
+      "explanation": "And failure to stop at a railroad crossing is worth eight points on your record.",
+      "cite": [
+        {
+          "ruleId": "R229"
+        }
+      ]
+    },
+    {
+      "id": "sig-001",
+      "topic": "traffic-signals",
+      "stem": "On a standard traffic signal, the lights from top to bottom are:",
+      "options": [
+        "Red, yellow, green",
+        "Green, yellow, red",
+        "Yellow, green, red"
+      ],
+      "answer": 0,
+      "explanation": "Position matters as much as color — it is what lets a color-blind driver read the signal.",
+      "cite": [
+        {
+          "ruleId": "R149"
+        }
+      ]
+    },
+    {
+      "id": "sig-002",
+      "topic": "traffic-signals",
+      "stem": "At a steady red light, unless otherwise posted, you may:",
+      "options": [
+        "Turn right after a complete stop when no pedestrians or cross traffic are present",
+        "Turn right without stopping if the way is clear",
+        "Proceed straight if no traffic is coming"
+      ],
+      "answer": 0,
+      "explanation": "Stop first, behind the crosswalk or stop line, and yield to everyone already there.",
+      "cite": [
+        {
+          "ruleId": "R150"
+        }
+      ],
+      "signs": [
+        "r10-11-no-turn-on-red"
+      ]
+    },
+    {
+      "id": "sig-003",
+      "topic": "traffic-signals",
+      "stem": "A steady yellow light means:",
+      "options": [
+        "Prepare to stop — you must stop if it is safe to do so",
+        "Speed up to clear the intersection",
+        "The light is about to turn green"
+      ],
+      "answer": 0,
+      "explanation": "The manual adds the rule people ignore: do not speed up to beat the light.",
+      "cite": [
+        {
+          "ruleId": "R151"
+        }
+      ]
+    },
+    {
+      "id": "sig-004",
+      "topic": "traffic-signals",
+      "stem": "If you are already in the intersection when the light turns yellow you should:",
+      "options": [
+        "Continue cautiously through the intersection",
+        "Stop immediately",
+        "Reverse out of the intersection"
+      ],
+      "answer": 0,
+      "explanation": "Stopping in the box strands you where the cross traffic is about to move.",
+      "cite": [
+        {
+          "pdfPage": 55,
+          "quote": "do not stop, but continue cautiously through the intersection"
+        }
+      ]
+    },
+    {
+      "id": "sig-005",
+      "topic": "traffic-signals",
+      "stem": "Tennessee law requires a yellow light to be displayed for a minimum of:",
+      "options": [
+        "Three seconds",
+        "One second",
+        "Ten seconds"
+      ],
+      "answer": 0,
+      "explanation": "Three seconds is a minimum, not a promise — and it is not a window to accelerate into.",
+      "cite": [
+        {
+          "ruleId": "R153"
+        }
+      ]
+    },
+    {
+      "id": "sig-006",
+      "topic": "traffic-signals",
+      "stem": "A green light means:",
+      "options": [
+        "Go if the intersection is clear, yielding to pedestrians and vehicles still in it",
+        "Go, regardless of what is in the intersection",
+        "Proceed only if turning"
+      ],
+      "answer": 0,
+      "explanation": "Green is permission subject to the right-of-way rules, not a guarantee the way is clear.",
+      "cite": [
+        {
+          "ruleId": "R154"
+        }
+      ]
+    },
+    {
+      "id": "sig-007",
+      "topic": "traffic-signals",
+      "stem": "A flashing red signal means:",
+      "options": [
+        "Complete stop, the same as a stop sign, then proceed when safe",
+        "Slow down and proceed with caution",
+        "The signal is out of service — ignore it"
+      ],
+      "answer": 0,
+      "explanation": "Look both ways, yield to traffic and pedestrians, then go.",
+      "cite": [
+        {
+          "ruleId": "R155"
+        }
+      ]
+    },
+    {
+      "id": "sig-008",
+      "topic": "traffic-signals",
+      "stem": "A flashing yellow signal means:",
+      "options": [
+        "Slow down and proceed with caution at the intersection",
+        "Stop and wait for a green",
+        "Stop only if traffic is approaching"
+      ],
+      "answer": 0,
+      "explanation": "Flashing yellow gives you the intersection with a warning attached; flashing red takes it away.",
+      "cite": [
+        {
+          "ruleId": "R156"
+        }
+      ]
+    },
+    {
+      "id": "sig-009",
+      "topic": "traffic-signals",
+      "stem": "A green protected arrow means you:",
+      "options": [
+        "Have the right-of-way and may drive only in the direction of the arrow",
+        "May turn or go straight",
+        "Must yield to oncoming traffic"
+      ],
+      "answer": 0,
+      "explanation": "You still yield to anyone already in the intersection when the arrow comes on.",
+      "cite": [
+        {
+          "ruleId": "R157"
+        }
+      ]
+    },
+    {
+      "id": "sig-010",
+      "topic": "traffic-signals",
+      "stem": "When your turn arrow is red, or your lane has a red light:",
+      "options": [
+        "All turns are prohibited, even if other lanes have a green signal",
+        "You may turn if the path looks clear",
+        "You may turn after stopping"
+      ],
+      "answer": 0,
+      "explanation": "A green in another lane is not permission for your lane.",
+      "cite": [
+        {
+          "ruleId": "R158"
+        }
+      ]
+    },
+    {
+      "id": "sig-011",
+      "topic": "traffic-signals",
+      "stem": "A flashing yellow arrow means you may:",
+      "options": [
+        "Turn left after yielding to oncoming traffic, bicyclists and pedestrians",
+        "Turn left with the right-of-way",
+        "Not turn at all"
+      ],
+      "answer": 0,
+      "explanation": "Permissive, not protected: you wait for a safe gap yourself.",
+      "cite": [
+        {
+          "ruleId": "R159"
+        }
+      ]
+    },
+    {
+      "id": "sig-012",
+      "topic": "traffic-signals",
+      "stem": "When a traffic signal is not working at all, Tennessee law requires you to treat the intersection as:",
+      "options": [
+        "An all-way stop",
+        "A yield-controlled intersection",
+        "An uncontrolled intersection where the larger road has priority"
+      ],
+      "answer": 0,
+      "explanation": "Stop as if there were stop signs on every approach, then go in order of arrival.",
+      "cite": [
+        {
+          "ruleId": "R160"
+        }
+      ]
+    },
+    {
+      "id": "sig-013",
+      "topic": "traffic-signals",
+      "stem": "A pedestrian signal showing a raised hand or the words DON'T WALK means:",
+      "options": [
+        "It is not safe to begin crossing",
+        "You may cross if you hurry",
+        "The signal is broken"
+      ],
+      "answer": 0,
+      "explanation": "The walking person symbol or WALK is the signal to start.",
+      "cite": [
+        {
+          "pdfPage": 56,
+          "quote": "When the pedestrian signal shows the words \"DON’T WALK,\" or a symbol of a raised hand appears, it is not safe to begin crossing a street or intersection."
+        }
+      ]
+    },
+    {
+      "id": "sig-014",
+      "topic": "traffic-signals",
+      "stem": "Over a lane, a red X signal means:",
+      "options": [
+        "You cannot drive in the lane below it",
+        "The lane is for turning only",
+        "The lane direction is about to change"
+      ],
+      "answer": 0,
+      "explanation": "Green arrow means the lane is yours; flashing yellow X means turning only; steady yellow X means get out of it safely.",
+      "cite": [
+        {
+          "ruleId": "R164"
+        }
+      ]
+    },
+    {
+      "id": "pav-001",
+      "topic": "pavement-markings",
+      "stem": "A solid white line at the edge of the road marks:",
+      "options": [
+        "The right edge of the traffic lane",
+        "The left edge of traffic going your way",
+        "A no-passing zone"
+      ],
+      "answer": 0,
+      "explanation": "Yellow marks the left edge of traffic going your direction; white marks the right.",
+      "cite": [
+        {
+          "ruleId": "R165"
+        }
+      ]
+    },
+    {
+      "id": "pav-002",
+      "topic": "pavement-markings",
+      "stem": "If you find yourself with a yellow line on your right and a white line on your left, you are:",
+      "options": [
+        "Going the wrong way",
+        "In a passing zone",
+        "In a shared center turn lane"
+      ],
+      "answer": 0,
+      "explanation": "Pull over immediately — the lines are telling you that you are facing oncoming traffic.",
+      "cite": [
+        {
+          "ruleId": "R166"
+        }
+      ]
+    },
+    {
+      "id": "pav-003",
+      "topic": "pavement-markings",
+      "stem": "A broken yellow center line means:",
+      "options": [
+        "You may cross to pass when there is no oncoming traffic and it is safe",
+        "You may never cross",
+        "Passing is required"
+      ],
+      "answer": 0,
+      "explanation": "The broken line marks a passing zone; the judgment about the gap is still yours.",
+      "cite": [
+        {
+          "ruleId": "R167"
+        }
+      ]
+    },
+    {
+      "id": "pav-004",
+      "topic": "pavement-markings",
+      "stem": "Two solid yellow lines between lanes mean:",
+      "options": [
+        "You may not cross from either direction, though you may cross to turn into a driveway",
+        "Passing is permitted for the faster vehicle",
+        "The road ahead is one-way"
+      ],
+      "answer": 0,
+      "explanation": "No passing, even with no oncoming vehicle in sight — but turning across them into a driveway is allowed when safe.",
+      "cite": [
+        {
+          "ruleId": "R168"
+        }
+      ]
+    },
+    {
+      "id": "pav-005",
+      "topic": "pavement-markings",
+      "stem": "Broken white lines between lanes mean:",
+      "options": [
+        "You may cross to pass or change lanes when it is safe",
+        "You must stay in your lane",
+        "The lanes carry traffic in opposite directions"
+      ],
+      "answer": 0,
+      "explanation": "White lines separate lanes going the same way; broken means crossing is allowed.",
+      "cite": [
+        {
+          "ruleId": "R170"
+        }
+      ]
+    },
+    {
+      "id": "pav-006",
+      "topic": "pavement-markings",
+      "stem": "A single solid white line between lanes means:",
+      "options": [
+        "You should stay in your lane and not cross to pass",
+        "You may pass freely",
+        "The lane to your right is closed"
+      ],
+      "answer": 0,
+      "explanation": "And you should not cross a double solid white line at all.",
+      "cite": [
+        {
+          "ruleId": "R171"
+        }
+      ]
+    },
+    {
+      "id": "pav-007",
+      "topic": "pavement-markings",
+      "stem": "White crosswalk lines painted across a road:",
+      "options": [
+        "Indicate a pedestrian crossing area, which may be mid-block as well as at an intersection",
+        "Mark the boundary of a school zone",
+        "Show where you must stop at a signal"
+      ],
+      "answer": 0,
+      "explanation": "Not every crosswalk is painted — you must yield at unmarked ones too.",
+      "cite": [
+        {
+          "pdfPage": 57,
+          "printedPage": 43,
+          "quote": "White crosswalk lines are painted across a road to indicate pedestrian crossing areas."
+        }
+      ]
+    },
+    {
+      "id": "pav-008",
+      "topic": "pavement-markings",
+      "stem": "Where a stop line is painted across your lane, you must:",
+      "options": [
+        "Stop the vehicle behind the line",
+        "Stop with the front wheels on the line",
+        "Stop level with the traffic signal"
+      ],
+      "answer": 0,
+      "explanation": "If there is no line, stop before the crosswalk; if there is no crosswalk, stop before your bumper crosses the edge line of the cross street.",
+      "cite": [
+        {
+          "ruleId": "R173"
+        }
+      ]
+    },
+    {
+      "id": "pav-009",
+      "topic": "pavement-markings",
+      "stem": "A diamond-shaped marking painted in the middle of a lane indicates:",
+      "options": [
+        "A High Occupancy Vehicle lane",
+        "A bus stop",
+        "A bicycle lane"
+      ],
+      "answer": 0,
+      "explanation": "Signs beside the lane tell you the minimum occupancy and the hours it applies.",
+      "cite": [
+        {
+          "ruleId": "R174"
+        }
+      ],
+      "signs": [
+        "r3-10-hov-lane"
+      ]
+    },
+    {
+      "id": "pav-010",
+      "topic": "pavement-markings",
+      "stem": "A lane marked with a curved arrow and the word ONLY means:",
+      "options": [
+        "You must turn in the direction of the arrow",
+        "You may turn or continue straight",
+        "Only buses may use the lane"
+      ],
+      "answer": 0,
+      "explanation": "A lane marked with both a curved and a straight arrow lets you choose.",
+      "cite": [
+        {
+          "ruleId": "R175"
+        }
+      ],
+      "signs": [
+        "r3-5-mandatory-turn-lane"
+      ]
+    },
+    {
+      "id": "pav-011",
+      "topic": "pavement-markings",
+      "stem": "Red reflectors facing you on the lane lines always mean:",
+      "options": [
+        "You are facing traffic the wrong way and risk a head-on collision",
+        "The lane is closed ahead",
+        "There is a toll booth ahead"
+      ],
+      "answer": 0,
+      "explanation": "Wrong-way reflectors are a last-chance warning at night on divided highways and ramps.",
+      "cite": [
+        {
+          "ruleId": "R177"
+        }
+      ],
+      "signs": [
+        "r5-1a-wrong-way"
+      ]
+    },
+    {
+      "id": "pav-012",
+      "topic": "pavement-markings",
+      "stem": "Where the center line has a solid yellow line on your side and a broken yellow line on the other side:",
+      "options": [
+        "You may not pass",
+        "You are in a passing zone",
+        "Both directions may pass"
+      ],
+      "answer": 0,
+      "explanation": "Read the line nearest you. Solid on your side means stay put.",
+      "cite": [
+        {
+          "pdfPage": 57,
+          "printedPage": 43,
+          "quote": "you may not pass if the solid yellow line is on your side"
+        }
+      ]
+    },
+    {
+      "id": "gde-001",
+      "topic": "guide-and-service-signs",
+      "stem": "Green is used as a background color for:",
+      "options": [
+        "Guide signs and mileposts",
+        "Warning signs",
+        "Regulatory signs"
+      ],
+      "answer": 0,
+      "explanation": "Green tells you where you are and where things are — it never states a law.",
+      "cite": [
+        {
+          "ruleId": "R123"
+        }
+      ],
+      "signs": [
+        "d1-1-destination",
+        "d10-1-milepost"
+      ]
+    },
+    {
+      "id": "gde-002",
+      "topic": "guide-and-service-signs",
+      "stem": "A blue and red shield route marker means the route is:",
+      "options": [
+        "Part of the national system of interstate and defense highways",
+        "A state secondary route",
+        "A scenic byway"
+      ],
+      "answer": 0,
+      "explanation": "U.S. routes use a black-and-white shield; state routes use their own marker.",
+      "cite": [
+        {
+          "pdfPage": 54,
+          "printedPage": 40,
+          "quote": "Blue and red signs, like the one on the right, indicate that the route is part of the national system of interstate and defense highways."
+        }
+      ],
+      "signs": [
+        "m1-1-interstate-shield"
+      ]
+    },
+    {
+      "id": "gde-003",
+      "topic": "guide-and-service-signs",
+      "stem": "U.S. route markers consist of:",
+      "options": [
+        "Black numerals on a white shield surrounded by a black background",
+        "White numerals on a blue shield",
+        "Black numerals on a yellow diamond"
+      ],
+      "answer": 0,
+      "explanation": "Learning the shield shapes lets you navigate by route number without reading every word.",
+      "cite": [
+        {
+          "pdfPage": 54,
+          "printedPage": 40,
+          "quote": "U.S. Route signs consists of black numerals on a white shield surrounded by a black background without a border."
+        }
+      ],
+      "signs": [
+        "m1-4-us-route"
+      ]
+    },
+    {
+      "id": "gde-004",
+      "topic": "guide-and-service-signs",
+      "stem": "Interstate guide signs have:",
+      "options": [
+        "A green background with white letters and numbers",
+        "A blue background with white letters",
+        "A brown background with white letters"
+      ],
+      "answer": 0,
+      "explanation": "They carry the information you need to choose a lane and an exit in time.",
+      "cite": [
+        {
+          "pdfPage": 54,
+          "printedPage": 40,
+          "quote": "The background is green with white letters and/or numbers visible at some distance."
+        }
+      ],
+      "signs": [
+        "d1-1-destination"
+      ]
+    },
+    {
+      "id": "gde-005",
+      "topic": "guide-and-service-signs",
+      "stem": "If an interstate guide sign is marked EXIT ONLY:",
+      "options": [
+        "All traffic in the lanes directly below the arrows must exit",
+        "Only trucks must exit",
+        "Traffic may exit or continue straight"
+      ],
+      "answer": 0,
+      "explanation": "The yellow EXIT ONLY panel is the warning that your lane is leaving the highway whether you meant it to or not.",
+      "cite": [
+        {
+          "ruleId": "R146"
+        }
+      ],
+      "signs": [
+        "e11-1-exit-only"
+      ]
+    },
+    {
+      "id": "gde-006",
+      "topic": "guide-and-service-signs",
+      "stem": "Blue service signs direct motorists to:",
+      "options": [
+        "Service facilities such as service stations, restaurants and motels",
+        "State parks and historic sites",
+        "Detour routes"
+      ],
+      "answer": 0,
+      "explanation": "Brown is the color for recreational and cultural destinations.",
+      "cite": [
+        {
+          "pdfPage": 54,
+          "printedPage": 40,
+          "quote": "Word message signs will also be used to direct motorists to areas where service stations, restaurants and motels are available."
+        }
+      ],
+      "signs": [
+        "d9-2-hospital",
+        "d9-8-food"
+      ]
+    },
+    {
+      "id": "gde-007",
+      "topic": "guide-and-service-signs",
+      "stem": "Green background signs pointing to bike and hiking trails are:",
+      "options": [
+        "Directional signs",
+        "Warning signs",
+        "Regulatory signs"
+      ],
+      "answer": 0,
+      "explanation": "Green means guidance in every context — routes, distances and directions.",
+      "cite": [
+        {
+          "pdfPage": 55,
+          "printedPage": 41,
+          "quote": "The green background signs indicate that the message is providing directional information."
+        }
+      ]
+    },
+    {
+      "id": "gde-008",
+      "topic": "guide-and-service-signs",
+      "stem": "Interstate reference markers in Tennessee's urban areas are installed:",
+      "options": [
+        "Every 1,000 feet along heavily traveled sections",
+        "Every mile",
+        "Only at exits"
+      ],
+      "answer": 0,
+      "explanation": "They give the route number, the direction of travel and the log mile in tenths — enough for an emergency operator to find you.",
+      "cite": [
+        {
+          "ruleId": "R148"
+        }
+      ],
+      "signs": [
+        "d10-1-milepost"
+      ]
+    },
+    {
+      "id": "gde-009",
+      "topic": "guide-and-service-signs",
+      "stem": "Dynamic message signs on Tennessee interstates provide:",
+      "options": [
+        "Real-time information on incidents, weather-related road conditions and construction ahead",
+        "Advertising for nearby businesses",
+        "Permanent speed limits"
+      ],
+      "answer": 0,
+      "explanation": "They are updated as conditions change, so what they say outranks what you expected.",
+      "cite": [
+        {
+          "pdfPage": 85,
+          "printedPage": 71,
+          "quote": "The signs provide real-time information to motorists of traffic incidents, weather-related road conditions or road construction ahead"
+        }
+      ]
+    },
+    {
+      "id": "gde-010",
+      "topic": "guide-and-service-signs",
+      "stem": "The slow-moving vehicle emblem — an orange triangle with red reflective borders — appears on:",
+      "options": [
+        "Farm tractors, machinery, construction equipment and horse-drawn vehicles",
+        "Emergency vehicles",
+        "School buses"
+      ],
+      "answer": 0,
+      "explanation": "It means the vehicle ahead is travelling well below the limit — often under 25 m.p.h.",
+      "cite": [
+        {
+          "pdfPage": 54,
+          "quote": "During daylight, the bright fluorescent orange solid triangle in the center of the SMV emblem is highly visible."
+        }
+      ]
+    },
+    {
+      "id": "gde-011",
+      "topic": "guide-and-service-signs",
+      "stem": "Signs along Tennessee's interstates reminding motorists to move damaged vehicles to the shoulder apply when:",
+      "options": [
+        "No serious injury has occurred",
+        "The vehicles are undrivable",
+        "A trooper has authorized it"
+      ],
+      "answer": 0,
+      "explanation": "Clearing the lanes prevents the secondary crash that so often follows the first.",
+      "cite": [
+        {
+          "pdfPage": 87,
+          "printedPage": 73,
+          "quote": "reminding motorists to move their damaged vehicles to the shoulder if no serious injury has occurred"
+        }
+      ]
+    }
+  ]
+}

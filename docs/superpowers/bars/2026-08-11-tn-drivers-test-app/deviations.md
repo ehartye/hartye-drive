@@ -421,3 +421,54 @@ Vite on dedicated ports because a test harness that reuses "whatever is already
 answering on 5173" will silently test a different application — which happened
 once during this build, on this machine. The e2e and a11y suites are
 self-contained as a result; nothing about the app's own port changed.
+
+---
+
+## 2026-08-11 — P2 (content pipeline & question bank)
+
+### `practices-checklist.md` D9 cites the exam blueprint at PDF p.31; it is on PDF p.35
+
+D9 says "Manual, PDF p.31 (`tn-dl-manual-extract.txt` line 2413–2421)". The line
+numbers are right and the page number is not: lines 2413–2421 sit under
+`===== PAGE 35 =====`, which is printed page 21 (Chapter A-4, "The
+Examinations"). The blueprint quote used by `taxonomy.json` therefore cites
+**pdfPage 35 / printedPage 21**, and the validator checks that quote verbatim.
+No content changed — only the page label. Recording it so a critic checking
+D16 (PDF vs printed page discipline) does not read the mismatch as our error.
+
+### 15 of the 548 spine rules carry no verbatim-matchable quote and are unused
+
+`scripts/extract-rules.mjs` verifies every quote in `manual-spine.md` §2 against
+the extract before writing `src/content/rules.json`, and drops the ones that do
+not match: 533 of 548 survive. The 15 dropped are all cases where the PDF
+hyphenates a word across a line break (`right-\nof-way`, `two-\nway`) and the
+spine reproduces the joined form. Normalizing that away would mean adding
+de-hyphenation to the matching rule in `executable-floor.md` §3, which is
+frozen, so instead those rules are simply not cited — every affected topic is
+covered by a different rule or by an inline quote that does match. Affected:
+R007, R054, R145, R152, R163, R211, R214, R269, R286, R298, R310, R400, R470,
+R479, R543.
+
+### The sign registry holds signs, not channelizing devices
+
+`executable-floor.md` §3b makes a MUTCD designation mandatory — "a sign with no
+MUTCD designation fails the build". Cones, drums, vertical panels, concrete
+barriers, flagger flags, high-visibility vests, traffic-signal heads and
+pavement markings have no sign designation because they are not signs, so they
+are **not** in `signs.json` (87 entries, all with designations verified against
+the FHWA 2009 MUTCD chapter texts). They remain fully taught: eleven questions
+in the `work-zone-signs` topic and twelve in `pavement-markings` cover them from
+the manual's prose. If P3/P6 want them rendered, they need a separate
+`devices` collection with its own audit rules rather than a fake designation.
+
+### Questions are authored against rule ids and assembled by a build step
+
+`src/content/authoring/*.json` holds the human-written part (stem, options,
+keyed answer, explanation) and references the manual by rule id;
+`scripts/build-questions.mjs` resolves each id into the full citation and writes
+`src/content/questions.json`. Both are committed. This exists so no quote is
+ever retyped by hand — the single largest source of a fabricated citation — and
+so a citation cannot drift from the text it came from. The build step also
+rotates option order by a hash of the question id, because questions authored
+with the correct answer first would otherwise ship a "the answer is always A"
+tell; the 27 official questions are never rotated.

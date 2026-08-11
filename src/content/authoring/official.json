@@ -1,0 +1,297 @@
+{
+  "note": "The 27 sample questions the State of Tennessee prints in the Comprehensive Driver License Manual, reproduced verbatim (stems and options exactly as printed, including the manual's own typography), with the manual's printed answer key (PDF p.104). These are the only questions in the bank whose provenance is the testing authority itself. The manual introduces them as 'actual questions from the driver license test' (PDF p.40). Each carries the manual's own answer pointer, plus a verbatim supporting quote so the learner can read the rule behind the key.",
+  "answerKeyCitation": {
+    "pdfPage": 104,
+    "printedPage": 90,
+    "quote": "STUDY QUESTIONS ANSWER KEY"
+  },
+  "questions": [
+    {
+      "id": "official-01",
+      "topic": "vehicle-readiness",
+      "stem": "Properly adjusted seat head restraints:",
+      "options": ["Are designed to prevent whiplash if hit from behind.", "Both A and C", "Should always be at a level even with the back of head."],
+      "answer": 1,
+      "manualAnswerPointer": { "printedPage": 27 },
+      "explanation": "The manual makes both statements in one sentence: the restraint sits level with the back of the head, and its job is to stop your head snapping backward in a rear-end crash. Because A and C are both true, the combination answer is the only complete one.",
+      "cite": [{ "ruleId": "R387" }]
+    },
+    {
+      "id": "official-02",
+      "topic": "vehicle-readiness",
+      "stem": "The driver should drive with both hands on the steering wheel approximately in the:",
+      "options": ["9 o'clock and 3 o'clock positions", "11 o'clock and 6 o'clock positions", "7 o'clock and 5 o'clock positions"],
+      "answer": 0,
+      "manualAnswerPointer": { "printedPage": 28 },
+      "explanation": "Hands at 9 and 3 keep your arms clear of the air bag as it deploys. The old 10-and-2 grip puts your forearms directly over the bag.",
+      "cite": [{ "ruleId": "R385" }]
+    },
+    {
+      "id": "official-03",
+      "topic": "vehicle-readiness",
+      "stem": "When adjusting the driver's seat for best driving posture, set the seat in an upright position where your body is about how far from the steering wheel?",
+      "options": ["6 to 8 inches", "10 to 12 inches", "18 to 24 inches"],
+      "answer": 1,
+      "manualAnswerPointer": { "printedPage": 27 },
+      "explanation": "Ten to twelve inches gives the air bag room to inflate before it reaches you, and still lets you reach the pedals and wheel comfortably.",
+      "cite": [{ "ruleId": "R386" }]
+    },
+    {
+      "id": "official-04",
+      "topic": "safety-belts-and-restraints",
+      "stem": "A child in a child passenger restraint system (car seat) should:",
+      "options": ["be facing the rear of the car if weighing less than 20 pounds and under 1 year old.", "be facing forward if the child is one through three years old, and weighs more than 20 pounds,", "A & B"],
+      "answer": 2,
+      "manualAnswerPointer": { "printedPage": 31 },
+      "explanation": "Tennessee sets both rules: rear-facing under one year old or under 20 pounds, forward-facing from one through three years old at over 20 pounds. Both statements are law, so the combination is correct.",
+      "cite": [{ "ruleId": "R098" }, { "ruleId": "R099" }]
+    },
+    {
+      "id": "official-05",
+      "topic": "safety-belts-and-restraints",
+      "stem": "The lap belt should be worn:",
+      "options": ["at the abdomen for extra comfort .", "above the pelvis so it doesn't touch the top of the thighs.", "by pregnant women below the abdomen and the shoulder belt above the belly."],
+      "answer": 2,
+      "manualAnswerPointer": { "printedPage": 31 },
+      "explanation": "A lap belt belongs low, across the hip bones — never across the soft abdomen. For a pregnant driver that means the lap belt under the belly and the shoulder belt above it.",
+      "cite": [{ "ruleId": "R106" }, { "ruleId": "R104" }]
+    },
+    {
+      "id": "official-06",
+      "topic": "safety-belts-and-restraints",
+      "stem": "The safest place for children 12 and under to ride in a vehicle equipped with air bags is:",
+      "options": ["The front seat", "The back seat", "The bed of a pick-up truck"],
+      "answer": 1,
+      "manualAnswerPointer": { "printedPage": 33 },
+      "explanation": "A deploying passenger air bag can seriously injure a child. The manual's rule is simple: children 12 and under ride in the back seat.",
+      "cite": [{ "ruleId": "R107" }]
+    },
+    {
+      "id": "official-07",
+      "topic": "regulatory-signs",
+      "stem": "The sign at the right means:",
+      "options": ["Slow down and yield to traffic on main road when merging.", "Always come to a complete stop.", "Give your turn signal and proceed into traffic at regular speed."],
+      "answer": 0,
+      "manualAnswerPointer": { "printedPage": 36 },
+      "signs": ["r1-2-yield"],
+      "artworkNote": "The manual prints this question beside a picture of the sign, and the picture is not in the PDF's text layer. The manual's own answer pointer sends the reader to printed page 36 (PDF 50), where the only sign matching answer A is the YIELD sign, and the keyed answer restates the manual's yield rule almost word for word. The app therefore renders its own YIELD sign (registry id r1-2-yield) next to the stem rather than dropping the question or guessing at unseen artwork.",
+      "explanation": "A yield sign is not a stop sign. You slow down, and you stop only if traffic on the other roadway requires it — but you must give way either way.",
+      "cite": [{ "ruleId": "R129" }]
+    },
+    {
+      "id": "official-08",
+      "topic": "traffic-signals",
+      "stem": "What does a traffic signal with a yellow left arrow indicate to the driver?",
+      "options": ["Prepare to yield to oncoming traffic.", "Protected left turn is about to end.", "Both of the above."],
+      "answer": 2,
+      "manualAnswerPointer": { "printedPage": 41 },
+      "explanation": "The green arrow gave you a protected turn. When it changes to yellow that protection is ending, and oncoming traffic is about to get its own green — so both statements describe the same moment.",
+      "cite": [
+        { "pdfPage": 55, "quote": "When the arrow changes to yellow, prepare to yield to oncoming traffic." },
+        { "ruleId": "R157" }
+      ]
+    },
+    {
+      "id": "official-09",
+      "topic": "pavement-markings",
+      "stem": "The center of the roadway is marked with one solid yellow line and one broken yellow line. If the broken yellow line is on the right of the solid yellow line (your side) it means:",
+      "options": ["You are not allowed to pass in this area.", "You are in a \"passing zone\" and it is safe to pass other vehicles if no oncoming traffic is present.", "You are only allowed to make right turns in this area."],
+      "answer": 1,
+      "manualAnswerPointer": { "printedPage": 43 },
+      "explanation": "Read the line on your own side of the center. Broken on your side means passing is permitted when the way is clear; solid on your side means it is not.",
+      "cite": [{ "pdfPage": 57, "quote": "If the broken yellow line is on your side, you are in the \"passing zone\" and may pass if it is safe to do so." }]
+    },
+    {
+      "id": "official-10",
+      "topic": "parking-and-backing",
+      "stem": "It is illegal to park:",
+      "options": ["Within 15 feet of a fire hydrant.", "Within 50 feet of a railroad crossing.", "Both of the above."],
+      "answer": 2,
+      "manualAnswerPointer": { "printedPage": 65 },
+      "explanation": "Both distances are on the manual's no-parking list, so neither single answer is complete.",
+      "cite": [{ "ruleId": "R367" }]
+    },
+    {
+      "id": "official-11",
+      "topic": "following-and-stopping-distance",
+      "stem": "The two-second rule for following at a safe distance will hold true at:",
+      "options": ["Speeds up to 30 m.p.h.", "Any speed.", "Speeds up to 55 m.p.h."],
+      "answer": 1,
+      "manualAnswerPointer": { "printedPage": 48 },
+      "explanation": "The rule measures time, not distance, so it scales with speed automatically. In bad weather, at interstate speeds, at night, or behind a motorcycle, the manual asks for four seconds instead.",
+      "cite": [{ "ruleId": "R213" }, { "ruleId": "R212" }]
+    },
+    {
+      "id": "official-12",
+      "topic": "turning",
+      "stem": "Which lane must you be in before making a left turn from a one-way street?",
+      "options": ["The lane nearest the left curb.", "The lane nearest the center of the street.", "The lane nearest the right curb."],
+      "answer": 0,
+      "manualAnswerPointer": { "printedPage": 57 },
+      "explanation": "On a one-way street the whole width is yours to choose from, so the left turn starts from the lane closest to the left curb and finishes in the first lane on the left of the new street.",
+      "cite": [{ "ruleId": "R295" }]
+    },
+    {
+      "id": "official-13",
+      "topic": "sharing-road-pedestrians-and-bicycles",
+      "stem": "Motorists are required by law when passing a bicycle traveling in the same direction to allow a minimum distance of:",
+      "options": ["1 foot", "3 feet", "Safely away from the bicycle."],
+      "answer": 1,
+      "manualAnswerPointer": { "printedPage": 63 },
+      "explanation": "Three feet is the legal minimum, and you have to hold that clearance until you are safely past — not just at the moment you draw level.",
+      "cite": [{ "ruleId": "R336" }]
+    },
+    {
+      "id": "official-14",
+      "topic": "interstate-driving",
+      "stem": "When entering an interstate highway, you should:",
+      "options": ["Stop, check for cars and enter when safe.", "Check for cars, reduce speed to 25 MPH before entering traffic lane.", "Check for cars, increase your speed to match the flow of traffic and merge when the way is clear."],
+      "answer": 2,
+      "manualAnswerPointer": { "printedPage": 68 },
+      "explanation": "Entering an interstate reverses the usual habit: you use the acceleration lane to get up to the speed of traffic, then merge. Stopping on a ramp invites a rear-end collision.",
+      "cite": [{ "ruleId": "R339" }]
+    },
+    {
+      "id": "official-15",
+      "topic": "interstate-driving",
+      "stem": "Emergency crossovers on the interstate are legal in Tennessee for:",
+      "options": ["Making a U-Turn when you missed your exit.", "Turning around when no others are present.", "Emergency vehicles and highway maintenance crews only."],
+      "answer": 2,
+      "manualAnswerPointer": { "printedPage": 71 },
+      "explanation": "U-turns on the interstate are illegal for ordinary drivers, crossover or not. If you miss your exit, go on to the next one.",
+      "cite": [{ "ruleId": "R308" }]
+    },
+    {
+      "id": "official-16",
+      "topic": "interstate-driving",
+      "stem": "Interstate driving demands require the driver to:",
+      "options": ["Have a complete awareness of higher speed driving", "Constant alertness by the driver", "Both of the above."],
+      "answer": 2,
+      "manualAnswerPointer": { "printedPage": 68 },
+      "explanation": "The manual names both demands in the same sentence, so neither one alone answers the question.",
+      "cite": [{ "pdfPage": 82, "quote": "Safe use of the interstates demands a complete awareness of a higher speed type of driving and constant alertness by the driver." }]
+    },
+    {
+      "id": "official-17",
+      "topic": "adverse-weather",
+      "stem": "Continuous hard braking on ice and snow often:",
+      "options": ["Helps you stop faster.", "Locks the front wheels causing the loss of steering control.", "Keeps the brakes hot and prevents them from freezing."],
+      "answer": 1,
+      "manualAnswerPointer": { "printedPage": 78 },
+      "explanation": "Locked front wheels cannot steer — the car goes wherever its momentum takes it. Use steady pressure instead of stamping on the pedal.",
+      "cite": [{ "ruleId": "R415" }]
+    },
+    {
+      "id": "official-18",
+      "topic": "adverse-weather",
+      "stem": "When driving in foggy conditions, do not put your headlights on high beam because:",
+      "options": ["The light from the fog creates blurry vision on your eyes.", "Approaching vehicles won't be able to see your oncoming vehicle.", "Low beams provide greater visibility and you can be better seen by other vehicles."],
+      "answer": 2,
+      "manualAnswerPointer": { "printedPage": 75 },
+      "explanation": "High beams bounce off the water droplets straight back at you. Low beams put the light on the road and still let other drivers see you coming.",
+      "cite": [
+        { "ruleId": "R192" },
+        { "pdfPage": 89, "quote": "This gives you better visibility and alerts oncoming cars to your presence, it is also a requirement of Tennessee law." }
+      ]
+    },
+    {
+      "id": "official-19",
+      "topic": "night-driving",
+      "stem": "Driving at night is:",
+      "options": ["Safer because of less traffic and less distractions.", "More hazardous because your range of visibility is limited by your headlights.", "Safer and allows you to increase your speed while adjusting to road conditions."],
+      "answer": 1,
+      "manualAnswerPointer": { "printedPage": 74 },
+      "explanation": "At night you can only see as far as your headlights reach, so your stopping distance has to stay inside that. The manual's phrase for it is: never outrun your headlights.",
+      "cite": [
+        { "pdfPage": 88, "quote": "Driving at night is considerably more hazardous and difficult than daytime driving because your range of visibility is limited by your headlights." },
+        { "ruleId": "R395" }
+      ]
+    },
+    {
+      "id": "official-20",
+      "topic": "dui-penalties",
+      "stem": "Driving while under the influence of drugs carries:",
+      "options": ["The same penalty as for alcohol", "A lesser penalty than for alcohol.", "Absolutely no penalty at all."],
+      "answer": 0,
+      "manualAnswerPointer": { "printedPage": 81 },
+      "explanation": "Tennessee treats drug impairment exactly like alcohol impairment — and a valid prescription is not a defense.",
+      "cite": [{ "ruleId": "R428" }, { "ruleId": "R427" }]
+    },
+    {
+      "id": "official-21",
+      "topic": "alcohol-effects",
+      "stem": "If you have had three beers in the past hour, about how long will it take for all the alcohol to leave your blood stream?",
+      "options": ["One hour", "Two hours", "Three hours"],
+      "answer": 2,
+      "manualAnswerPointer": { "printedPage": 83 },
+      "explanation": "The liver clears roughly one drink per hour and nothing speeds it up — not coffee, not a shower, not food. Three drinks means about three hours.",
+      "cite": [{ "ruleId": "R455" }, { "ruleId": "R422" }]
+    },
+    {
+      "id": "official-22",
+      "topic": "alcohol-effects",
+      "stem": "As the percentage of alcohol (BAC) in your blood increases, you become:",
+      "options": ["More intoxicated", "More sober", "More coordinated"],
+      "answer": 0,
+      "manualAnswerPointer": { "printedPage": 79 },
+      "explanation": "BAC is a direct measure of how much alcohol is in your blood, and impairment rises with it. Alcohol is a depressant at every concentration.",
+      "cite": [{ "ruleId": "R423" }, { "ruleId": "R452" }]
+    },
+    {
+      "id": "official-23",
+      "topic": "dui-law",
+      "stem": "Implied Consent Law means:",
+      "options": ["If asked, you will take a test to determine alcohol or drug content in the blood.", "The laws apply even without any signs, markings or signals present at an intersection.", "The owner of the vehicle will carry proper insurance."],
+      "answer": 0,
+      "manualAnswerPointer": { "printedPage": 81 },
+      "explanation": "By driving in Tennessee you have already consented to testing when an officer has reasonable grounds. Refusing after arrest is itself punished — a likely twelve-month suspension.",
+      "cite": [{ "ruleId": "R429" }, { "ruleId": "R430" }]
+    },
+    {
+      "id": "official-24",
+      "topic": "alcohol-effects",
+      "stem": "Which of the following driving skills are affected by the use of alcohol and/or drugs?",
+      "options": ["Alertness and concentration", "Reaction time and coordination", "All of the above are affected."],
+      "answer": 2,
+      "manualAnswerPointer": { "printedPage": 80 },
+      "explanation": "The manual lists judgment, vision, reaction time, coordination, alertness and concentration — every one of them degrades, which is why no single option is complete.",
+      "cite": [
+        { "pdfPage": 94, "quote": "In addition, your reaction time and coordination begin to deteriorate, while your alertness and concentration fade." }
+      ]
+    },
+    {
+      "id": "official-25",
+      "topic": "driving-responsibilities",
+      "stem": "If involved in a reportable accident, the operator of the vehicle must file an accident report to the Department of Safety within:",
+      "options": ["10 Days", "20 Days", "48 Hours"],
+      "answer": 1,
+      "manualAnswerPointer": { "printedPage": 88 },
+      "pointerNote": "The manual's pointer says printed page 88, but the 20-day rule is printed on page 89 (PDF 103). The citation below points at the rule's real location.",
+      "explanation": "Twenty days, and it applies regardless of who was at fault. Missing the deadline can cost you your driving and registration privileges.",
+      "cite": [{ "ruleId": "R483" }, { "ruleId": "R484" }]
+    },
+    {
+      "id": "official-26",
+      "topic": "driving-responsibilities",
+      "stem": "If you are not the first at the scene of accident and your help is not needed, what should you do:",
+      "options": ["Slow down to calm your nerves.", "Stop and look for your own curiosity.", "Drive on and do not interfere with procedures."],
+      "answer": 2,
+      "manualAnswerPointer": { "printedPage": 89 },
+      "explanation": "Unless you are trained to give aid, the most useful thing you can do is keep moving and leave the road clear for police, fire and ambulance crews.",
+      "cite": [{ "ruleId": "R490" }]
+    },
+    {
+      "id": "official-27",
+      "topic": "driving-responsibilities",
+      "stem": "A driver license may be revoked or suspended for:",
+      "options": ["Frequent convictions of traffic law violations resulting in 12 or more \"points\" within a 12 month period", "Fraudulently altering a driver license", "Both of the above"],
+      "answer": 2,
+      "manualAnswerPointer": { "printedPage": 85 },
+      "explanation": "Twelve points in twelve months starts suspension proceedings for an adult driver, and unlawful use of a license — including altering one — is its own separate ground for revocation.",
+      "cite": [
+        { "ruleId": "R463" },
+        { "pdfPage": 99, "quote": "Allowing unlawful use of a driver license, including fraudulently altering a driver license or allowing another individual to use your license or identification." }
+      ]
+    }
+  ]
+}

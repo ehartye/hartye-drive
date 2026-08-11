@@ -1,0 +1,746 @@
+{
+  "note": "Blueprint area: Rules of the road (25%) — part 1: speed law, right-of-way, turning, lane use and passing. Section B Chapter 4 (PDF pp.59-81) with supporting material from Section C.",
+  "questions": [
+    {
+      "id": "spd-001",
+      "topic": "speed-limits",
+      "stem": "Unless a different limit is posted, the speed limit on Tennessee's primary and secondary state and federal highways is:",
+      "options": ["45 m.p.h.", "55 m.p.h.", "65 m.p.h."],
+      "answer": 1,
+      "explanation": "Fifty-five is the statewide default. A posted sign always wins, but where there is no sign, this is the number.",
+      "cite": [{ "ruleId": "R200" }]
+    },
+    {
+      "id": "spd-002",
+      "topic": "speed-limits",
+      "stem": "The maximum speed set by Tennessee law for interstate highways is:",
+      "options": ["65 m.p.h.", "70 m.p.h.", "75 m.p.h."],
+      "answer": 1,
+      "explanation": "Seventy is the statutory ceiling. Urban stretches are often posted lower, and the posted number is the one that binds you.",
+      "cite": [{ "ruleId": "R201" }]
+    },
+    {
+      "id": "spd-003",
+      "topic": "speed-limits",
+      "stem": "On congested urban or metropolitan stretches of Tennessee interstate, the limit is typically:",
+      "options": ["55 m.p.h.", "70 m.p.h.", "40 m.p.h."],
+      "answer": 0,
+      "explanation": "Traffic volume, merging and exits are all denser in the cities, so the posted limit typically drops to 55.",
+      "cite": [{ "ruleId": "R202" }]
+    },
+    {
+      "id": "spd-004",
+      "topic": "speed-limits",
+      "stem": "Driving slower than 55 m.p.h. in the left-most lane of an interstate is:",
+      "options": ["Unlawful unless congestion prevents driving safely at that speed", "Always permitted", "Permitted whenever you are signaling"],
+      "answer": 0,
+      "explanation": "The left lane is for passing and for moving traffic. If congestion makes 55 unsafe, the rule gives way; otherwise, move right.",
+      "cite": [{ "ruleId": "R203" }]
+    },
+    {
+      "id": "spd-005",
+      "topic": "speed-limits",
+      "stem": "The minimum speed limit in the right lane or lanes of a Tennessee interstate is:",
+      "options": ["35 m.p.h.", "45 m.p.h.", "55 m.p.h."],
+      "answer": 1,
+      "explanation": "Under normal conditions everything on the interstate must move at 45 or better, including in the right lanes.",
+      "cite": [{ "ruleId": "R204" }]
+    },
+    {
+      "id": "spd-006",
+      "topic": "speed-limits",
+      "stem": "Where no minimum speed is posted, driving so slowly that you block traffic is:",
+      "options": ["Legal, since no minimum is posted", "Against the law", "Legal only on two-lane roads"],
+      "answer": 1,
+      "explanation": "Obstructing the flow is an offense in its own right — a posted minimum is not what makes it illegal.",
+      "cite": [{ "ruleId": "R195" }]
+    },
+    {
+      "id": "spd-007",
+      "topic": "speed-limits",
+      "stem": "You are considered to be driving a slow-moving vehicle when your speed is:",
+      "options": ["10 m.p.h. or more below the lawful maximum", "Any speed under 45 m.p.h.", "More than 25 m.p.h. below the limit"],
+      "answer": 0,
+      "explanation": "Ten under the lawful maximum is the line. Below it you are an obstruction other drivers have to work around.",
+      "cite": [{ "ruleId": "R196" }]
+    },
+    {
+      "id": "spd-008",
+      "topic": "speed-limits",
+      "stem": "If five or more vehicles are lined up behind you on a two-lane road, you should:",
+      "options": ["Maintain your speed and let them wait", "Turn or pull off the roadway as soon as you can do so safely", "Speed up to the posted limit even if conditions do not allow it"],
+      "answer": 1,
+      "explanation": "A queue behind you invites risky passing. Letting it clear is safer for everyone, including you.",
+      "cite": [{ "ruleId": "R197" }]
+    },
+    {
+      "id": "spd-009",
+      "topic": "speed-limits",
+      "stem": "Exceeding the speed limit in a school zone is by law considered:",
+      "options": ["Reckless driving, with an automatic six points", "An equipment violation", "A warning-only offense for a first occurrence"],
+      "answer": 0,
+      "explanation": "It is not treated as ordinary speeding. The charge is reckless driving and six points land on your record automatically.",
+      "cite": [{ "ruleId": "R205" }]
+    },
+    {
+      "id": "spd-010",
+      "topic": "speed-limits",
+      "stem": "Tennessee law mandates what fine range for violating a posted speed limit in an active work zone?",
+      "options": ["A minimum of $250 and a maximum of $500", "A flat $25", "No fine, only points"],
+      "answer": 0,
+      "explanation": "The minimum is a floor a judge cannot go under, because work zones put people on foot a few feet from moving traffic.",
+      "cite": [{ "ruleId": "R206" }]
+    },
+    {
+      "id": "spd-011",
+      "topic": "speed-limits",
+      "stem": "If a work zone has no reduced speed limit posted, drivers should:",
+      "options": ["Obey the normal posted speed limit", "Automatically reduce speed by 20 m.p.h.", "Stop and wait for a flagger"],
+      "answer": 0,
+      "explanation": "No reduced posting means the normal limit still applies — though conditions may call for less.",
+      "cite": [{ "ruleId": "R208" }]
+    },
+    {
+      "id": "spd-012",
+      "topic": "speed-limits",
+      "stem": "While passing another vehicle, exceeding the posted speed limit is:",
+      "options": ["Permitted if it shortens the pass", "Illegal", "Permitted only on the interstate"],
+      "answer": 1,
+      "explanation": "There is no passing exemption. If the pass needs more speed than the limit allows, it is not a pass you can legally make.",
+      "cite": [{ "ruleId": "R338" }]
+    },
+    {
+      "id": "spd-013",
+      "topic": "speed-limits",
+      "stem": "The Basic Speed Rule described in the manual is:",
+      "options": ["A Tennessee law with its own fine", "A general safety principle, not a Tennessee law", "A federal interstate regulation"],
+      "answer": 1,
+      "explanation": "The principle — that conditions, not the sign, set your real safe speed — is guidance rather than a statute in Tennessee.",
+      "cite": [{ "ruleId": "R199" }]
+    },
+    {
+      "id": "spd-014",
+      "topic": "speed-limits",
+      "stem": "When you meet a properly identified funeral procession on a two-lane roadway you may not:",
+      "options": ["Pass the procession, or drive between its vehicles unless a traffic officer directs you to", "Stop your vehicle", "Sound your horn"],
+      "answer": 0,
+      "explanation": "Cutting into a procession breaks it up and puts the vehicles behind into a gap they did not expect.",
+      "cite": [{ "ruleId": "R198" }]
+    },
+
+    {
+      "id": "row-001",
+      "topic": "right-of-way",
+      "stem": "Tennessee's right-of-way law:",
+      "options": ["Gives certain drivers the right-of-way", "Only says who must yield the right-of-way", "Gives the right-of-way to whoever signals first"],
+      "answer": 1,
+      "explanation": "Nobody is granted the right-of-way — the law only assigns the duty to give it up. You can be legally right and still be responsible for a crash.",
+      "cite": [{ "ruleId": "R247" }]
+    },
+    {
+      "id": "row-002",
+      "topic": "right-of-way",
+      "stem": "The Left-Right-Left rule at an intersection means you should:",
+      "options": ["Look left first, then right, and look both ways again before moving", "Always turn left before turning right", "Yield to the left, then to the right"],
+      "answer": 0,
+      "explanation": "Traffic from the left reaches you first, so it gets the first look — and the last look happens right before you move.",
+      "cite": [{ "ruleId": "R248" }]
+    },
+    {
+      "id": "row-003",
+      "topic": "right-of-way",
+      "stem": "Blocking an intersection is:",
+      "options": ["Illegal only where a sign says so", "Always illegal, whether the intersection is marked or not", "Legal if the light was green when you entered"],
+      "answer": 1,
+      "explanation": "If your exit is not clear, stay out of the box. A green light is permission to proceed, not permission to trap yourself.",
+      "cite": [{ "ruleId": "R249" }]
+    },
+    {
+      "id": "row-004",
+      "topic": "right-of-way",
+      "stem": "You must yield to a pedestrian who is:",
+      "options": ["In a marked crosswalk only", "In a marked or unmarked crosswalk, or on your half of the road, or approaching closely enough to be in danger", "Only at signalized intersections"],
+      "answer": 1,
+      "explanation": "There is a crosswalk at every intersection whether or not it is painted, and the duty extends to pedestrians close enough to be at risk.",
+      "cite": [{ "ruleId": "R250" }]
+    },
+    {
+      "id": "row-005",
+      "topic": "right-of-way",
+      "stem": "In a marked school zone with the warning flasher operating, a driver approaching a pedestrian in a crosswalk must:",
+      "options": ["Slow to 15 m.p.h. and continue", "Stop and remain stopped until the pedestrian has crossed the roadway the vehicle is on", "Sound the horn to warn the child"],
+      "answer": 1,
+      "explanation": "In a flashing school zone the duty rises from yield to stop, and you stay stopped until they are clear of your side of the road.",
+      "cite": [{ "ruleId": "R251" }]
+    },
+    {
+      "id": "row-006",
+      "topic": "right-of-way",
+      "stem": "When your vehicle crosses a sidewalk to enter or leave a driveway or parking lot, you must:",
+      "options": ["Yield to pedestrians on the sidewalk", "Sound your horn and proceed", "Take the right-of-way, since you are leaving private property"],
+      "answer": 0,
+      "explanation": "The sidewalk belongs to people on foot. Driving on one at all is illegal except to cross it.",
+      "cite": [{ "ruleId": "R252" }]
+    },
+    {
+      "id": "row-007",
+      "topic": "right-of-way",
+      "stem": "When approaching a pedestrian using a white cane or a guide dog you must stop:",
+      "options": ["At least 10 feet away and without sounding your horn", "Directly beside them and offer help", "Only if they step into the roadway"],
+      "answer": 0,
+      "explanation": "Ten feet of space and silence. A horn is disorienting to someone navigating by sound.",
+      "cite": [{ "ruleId": "R253" }]
+    },
+    {
+      "id": "row-008",
+      "topic": "right-of-way",
+      "stem": "When you pull out from a parked position you must:",
+      "options": ["Wait for all moving traffic to pass", "Proceed as soon as you signal", "Take the right-of-way from traffic behind you"],
+      "answer": 0,
+      "explanation": "Traffic already moving has the road. Signal, look and wait for a real gap.",
+      "cite": [{ "ruleId": "R254" }]
+    },
+    {
+      "id": "row-009",
+      "topic": "right-of-way",
+      "stem": "When you are turning left at an intersection, you must yield to:",
+      "options": ["Oncoming traffic going straight ahead or turning right", "Only oncoming traffic that is signaling", "Nobody, if you arrived at the intersection first"],
+      "answer": 0,
+      "explanation": "A left turn crosses the path of everyone coming the other way, so the turn waits.",
+      "cite": [{ "ruleId": "R255" }]
+    },
+    {
+      "id": "row-010",
+      "topic": "right-of-way",
+      "stem": "Entering a main road from a driveway, alley or parking lot, you must yield to:",
+      "options": ["All vehicles already on the main road", "Only vehicles approaching from the left", "Nobody, once you have signaled"],
+      "answer": 0,
+      "explanation": "You are joining their road. Everything already on it goes first.",
+      "cite": [{ "ruleId": "R256" }]
+    },
+    {
+      "id": "row-011",
+      "topic": "right-of-way",
+      "stem": "When entering a roundabout you must yield to:",
+      "options": ["Traffic already circulating in the roundabout", "Traffic waiting to enter behind you", "Nobody — roundabout entries are uncontrolled"],
+      "answer": 0,
+      "explanation": "Circulating traffic has the right-of-way; you enter on a gap and then keep moving.",
+      "cite": [{ "ruleId": "R257" }]
+    },
+    {
+      "id": "row-012",
+      "topic": "right-of-way",
+      "stem": "Approaching a fire station, you should yield to an emergency vehicle that is:",
+      "options": ["About to back into, or already backing into, the station driveway", "Parked inside the bay", "Being washed in the driveway"],
+      "answer": 0,
+      "explanation": "A backing fire truck has almost no view behind it, and it needs the road to finish the manoeuvre.",
+      "cite": [{ "ruleId": "R258" }]
+    },
+    {
+      "id": "row-013",
+      "topic": "right-of-way",
+      "stem": "At an ALL-WAY stop where two vehicles arrive at exactly the same time:",
+      "options": ["The vehicle on the right goes first", "The vehicle on the left goes first", "The larger vehicle goes first"],
+      "answer": 0,
+      "explanation": "First to arrive goes first; on a tie, yield to the driver on your right.",
+      "cite": [{ "ruleId": "R261" }]
+    },
+    {
+      "id": "row-014",
+      "topic": "right-of-way",
+      "stem": "Where two roads cross and there are no stop signs or signals at all, you must yield to:",
+      "options": ["Any vehicle arriving at the same time on your right", "Any vehicle arriving at the same time on your left", "Nobody — the faster vehicle has priority"],
+      "answer": 0,
+      "explanation": "The same tie-breaker applies at uncontrolled crossings: the driver on the right wins.",
+      "cite": [{ "ruleId": "R262" }]
+    },
+    {
+      "id": "row-015",
+      "topic": "right-of-way",
+      "stem": "At a \"T\" intersection, the vehicles on the road that ends must:",
+      "options": ["Yield to traffic from both directions on the through road", "Go first, since they cannot continue straight", "Yield only to traffic from the left"],
+      "answer": 0,
+      "explanation": "Your road is ending, so everything on the through road has priority in both directions.",
+      "cite": [{ "ruleId": "R260" }]
+    },
+    {
+      "id": "row-016",
+      "topic": "right-of-way",
+      "stem": "You have a green light but a vehicle is still in the intersection. You must:",
+      "options": ["Yield to it", "Proceed, because your light is green", "Sound your horn and go around it"],
+      "answer": 0,
+      "explanation": "Green means go if it is clear. Vehicles and pedestrians still in the box at the change keep the right-of-way.",
+      "cite": [{ "ruleId": "R259" }]
+    },
+    {
+      "id": "row-017",
+      "topic": "right-of-way",
+      "stem": "When an emergency vehicle approaches using a siren, air horn or red or blue flashing light, all traffic meeting or being overtaken must:",
+      "options": ["Drive to a position as close as possible to the right-hand edge or curb and stop", "Speed up to clear the area", "Stop where they are, in the travel lane"],
+      "answer": 0,
+      "explanation": "Pull right and stop, and stay stopped until it has passed or an officer waves you on.",
+      "cite": [{ "ruleId": "R264" }]
+    },
+    {
+      "id": "row-018",
+      "topic": "right-of-way",
+      "stem": "You are stopped at a red light when an emergency vehicle approaches from behind and the light turns green. You should:",
+      "options": ["Proceed immediately on the green", "Stay where you are until the emergency vehicle has passed", "Reverse out of the intersection"],
+      "answer": 1,
+      "explanation": "Moving on the green would pull you straight into its path. Hold position and let it clear.",
+      "cite": [{ "ruleId": "R267" }]
+    },
+    {
+      "id": "row-019",
+      "topic": "right-of-way",
+      "stem": "Following a fire truck that is responding to an alarm is:",
+      "options": ["Against the law", "Permitted at a two-second interval", "Permitted if you keep your headlights on"],
+      "answer": 0,
+      "explanation": "It is illegal to follow a responding emergency vehicle, and illegal to bring your vehicle within the block where it has stopped.",
+      "cite": [{ "ruleId": "R265" }]
+    },
+    {
+      "id": "row-020",
+      "topic": "right-of-way",
+      "stem": "An unprotected fire department hose lies across the road. You should:",
+      "options": ["Drive over it slowly", "Not drive over it unless the fire official in command says it is okay", "Drive over it only if it appears empty"],
+      "answer": 1,
+      "explanation": "A charged hose is a lifeline for the crew inside the building, and driving over it can burst it.",
+      "cite": [{ "ruleId": "R266" }]
+    },
+    {
+      "id": "row-021",
+      "topic": "right-of-way",
+      "stem": "A transit bus has signaled and is pulling back onto the roadway from a bus stop. You must:",
+      "options": ["Yield the right-of-way to it", "Maintain speed and pass on the left", "Sound your horn to claim the lane"],
+      "answer": 0,
+      "explanation": "Transit buses get the merge. That is different from a school bus, which you must stop for.",
+      "cite": [{ "ruleId": "R268" }]
+    },
+    {
+      "id": "row-022",
+      "topic": "right-of-way",
+      "stem": "At a railroad crossing, drivers must yield to trains:",
+      "options": ["Always — it is the law", "Only when signals are flashing", "Only when the train sounds its horn"],
+      "answer": 0,
+      "explanation": "A train needs a mile or more to stop and cannot swerve. The duty to yield is unconditional.",
+      "cite": [{ "ruleId": "R276" }]
+    },
+    {
+      "id": "row-023",
+      "topic": "right-of-way",
+      "stem": "The manual states that a crosswalk exists:",
+      "options": ["Only where lines are painted", "At every intersection, even if it is not marked", "Only in school zones"],
+      "answer": 1,
+      "explanation": "Unmarked crosswalks carry the same duty as painted ones. Look for the person, not the paint.",
+      "cite": [{ "ruleId": "R277" }]
+    },
+    {
+      "id": "row-024",
+      "topic": "right-of-way",
+      "stem": "Regardless of who has the right-of-way, the law requires a driver to:",
+      "options": ["Exercise great care and extreme caution to avoid striking pedestrians", "Sound the horn before every intersection", "Yield only to pedestrians in marked crosswalks"],
+      "answer": 0,
+      "explanation": "The duty of care survives the right-of-way rules entirely. Being in the right is no defense for hitting someone.",
+      "cite": [{ "ruleId": "R501" }]
+    },
+
+    {
+      "id": "trn-001",
+      "topic": "turning",
+      "stem": "The first rule of turning is to turn from:",
+      "options": ["The closest lane in your direction into the closest legal lane in the new direction", "Any lane, as long as you signal", "The center lane into the far lane"],
+      "answer": 0,
+      "explanation": "Closest lane to closest lane keeps your path predictable and stops you sweeping across someone else's lane.",
+      "cite": [{ "ruleId": "R282" }]
+    },
+    {
+      "id": "trn-002",
+      "topic": "turning",
+      "stem": "You must switch on your turn signal at least how far before the turn?",
+      "options": ["50 feet", "10 feet", "200 feet"],
+      "answer": 0,
+      "explanation": "Fifty feet, for a turn or a lane change — enough warning for the drivers around you to react.",
+      "cite": [{ "ruleId": "R283" }]
+    },
+    {
+      "id": "trn-003",
+      "topic": "turning",
+      "stem": "If you plan to turn beyond an intersection, you should:",
+      "options": ["Signal well before the intersection", "Not signal until you are in the intersection", "Use your hazard lights instead"],
+      "answer": 1,
+      "explanation": "Signaling early tells drivers you are turning at the intersection, and someone waiting to pull out may move into your path.",
+      "cite": [{ "ruleId": "R287" }]
+    },
+    {
+      "id": "trn-004",
+      "topic": "turning",
+      "stem": "Which of these is a misuse of your turn signals?",
+      "options": ["Signaling a driver behind you to come around and pass", "Signaling 50 feet before a lane change", "Signaling before turning into a driveway"],
+      "answer": 0,
+      "explanation": "Waving someone into a pass takes on responsibility for a gap you cannot properly see. Signals state your own intentions, nothing else.",
+      "cite": [{ "ruleId": "R288" }]
+    },
+    {
+      "id": "trn-005",
+      "topic": "turning",
+      "stem": "When you use hand and arm signals, you should:",
+      "options": ["Keep the arm out through the whole turn", "Bring your arm in during the actual turn to keep control of the wheel", "Signal only for left turns"],
+      "answer": 1,
+      "explanation": "Signal, then get both hands back on the wheel before the steering starts.",
+      "cite": [{ "ruleId": "R289" }]
+    },
+    {
+      "id": "trn-006",
+      "topic": "turning",
+      "stem": "While waiting to turn left across oncoming traffic, your front wheels should be:",
+      "options": ["Turned in the direction of the turn, ready to go", "Kept straight", "Turned toward the curb"],
+      "answer": 1,
+      "explanation": "If someone hits you from behind with the wheels turned, the impact launches you into oncoming traffic.",
+      "cite": [{ "ruleId": "R290" }]
+    },
+    {
+      "id": "trn-007",
+      "topic": "turning",
+      "stem": "Turning left from a two-way street onto another two-way street, you should approach:",
+      "options": ["With the left side of your vehicle as close to the center line as possible", "From the right-hand lane", "Straddling the center line"],
+      "answer": 0,
+      "explanation": "Approach near the center, then finish in the first lane past the center line — never wide into the right lane.",
+      "cite": [{ "ruleId": "R291" }]
+    },
+    {
+      "id": "trn-008",
+      "topic": "turning",
+      "stem": "If an intersection has a lane marked for left turns, you:",
+      "options": ["May turn left from any lane if traffic is light", "Must not make the turn from any other lane", "Must turn from the lane to its right"],
+      "answer": 1,
+      "explanation": "A marked turn lane is mandatory, not a suggestion.",
+      "cite": [{ "ruleId": "R292" }]
+    },
+    {
+      "id": "trn-009",
+      "topic": "turning",
+      "stem": "Turning left onto a one-way street, you should:",
+      "options": ["Turn sharply into the first lane closest to the left curb", "Turn wide into whichever lane is empty", "Turn into the lane nearest the right curb"],
+      "answer": 0,
+      "explanation": "One-way streets take a sharp turn into the leftmost lane, not a lazy sweep across the street.",
+      "cite": [{ "ruleId": "R294" }]
+    },
+    {
+      "id": "trn-010",
+      "topic": "turning",
+      "stem": "A left turn on a red light is permitted in Tennessee, after a complete stop, when you are turning:",
+      "options": ["From a one-way street onto a one-way street", "From a two-way street onto a one-way street", "From a one-way street onto a two-way street"],
+      "answer": 0,
+      "explanation": "One-way to one-way only, at intersections not signed against turns on red — and only after a full stop.",
+      "cite": [{ "ruleId": "R296" }]
+    },
+    {
+      "id": "trn-011",
+      "topic": "turning",
+      "stem": "Turning left from a one-way street onto a two-way street at a red light:",
+      "options": ["Is permitted after a complete stop", "Is not permitted", "Is permitted between 6 a.m. and 10 p.m."],
+      "answer": 1,
+      "explanation": "That turn would cross oncoming traffic that has a green, so the red light means wait.",
+      "cite": [{ "ruleId": "R297" }]
+    },
+    {
+      "id": "trn-012",
+      "topic": "turning",
+      "stem": "Before making a right turn you should position your vehicle:",
+      "options": ["As close as is practical to the right curb or road edge", "In the center of the roadway", "Just left of the center line"],
+      "answer": 0,
+      "explanation": "Hugging the curb closes the gap a cyclist or another driver could try to squeeze into — without crowding pedestrians or parked cars.",
+      "cite": [{ "ruleId": "R299" }]
+    },
+    {
+      "id": "trn-013",
+      "topic": "turning",
+      "stem": "A vehicle in the second lane may make the same turn as a vehicle in the first lane:",
+      "options": ["Whenever traffic allows", "Only when a lane use control sign or marking permits it", "Never"],
+      "answer": 1,
+      "explanation": "Dual turn lanes exist, but only where the signs and pavement markings say so.",
+      "cite": [{ "ruleId": "R301" }]
+    },
+    {
+      "id": "trn-014",
+      "topic": "turning",
+      "stem": "Travel through a roundabout always goes:",
+      "options": ["To the right, counter-clockwise", "To the left, clockwise", "In whichever direction traffic is lighter"],
+      "answer": 0,
+      "explanation": "Keep right and circulate counter-clockwise, staying right of the splitter island as you enter.",
+      "cite": [{ "ruleId": "R302" }]
+    },
+    {
+      "id": "trn-015",
+      "topic": "turning",
+      "stem": "Once you are inside a roundabout you should:",
+      "options": ["Stop to let entering vehicles in", "Not stop unless directed by signs, signals or a traffic officer", "Stop at each exit"],
+      "answer": 1,
+      "explanation": "Stopping inside the circle backs traffic up all the way around it. Yield on entry, then keep moving.",
+      "cite": [{ "ruleId": "R303" }]
+    },
+    {
+      "id": "trn-016",
+      "topic": "turning",
+      "stem": "The speed posted inside a roundabout is usually:",
+      "options": ["15 to 25 m.p.h.", "35 to 45 m.p.h.", "The same as the approach road"],
+      "answer": 0,
+      "explanation": "Roundabouts work because everyone is going slowly enough to merge and to see pedestrians at the crossings.",
+      "cite": [{ "ruleId": "R304" }]
+    },
+    {
+      "id": "trn-017",
+      "topic": "turning",
+      "stem": "In a multi-lane roundabout you should:",
+      "options": ["Pass slower vehicles on the inside", "Not overtake or pass any vehicles", "Change lanes freely to reach your exit"],
+      "answer": 1,
+      "explanation": "Vehicles cross lanes to reach exits, so passing inside a roundabout puts you exactly where someone is about to be.",
+      "cite": [{ "ruleId": "R305" }]
+    },
+    {
+      "id": "trn-018",
+      "topic": "turning",
+      "stem": "When leaving a roundabout you should:",
+      "options": ["Signal your exit with your right turn signal and watch for pedestrians", "Signal left", "Not signal at all"],
+      "answer": 0,
+      "explanation": "The right signal tells the driver waiting to enter that the gap is theirs — and the crosswalk on the exit leg needs your attention.",
+      "cite": [{ "ruleId": "R306" }]
+    },
+    {
+      "id": "trn-019",
+      "topic": "turning",
+      "stem": "A U-turn is prohibited at any location where you cannot see traffic coming from both directions for at least:",
+      "options": ["500 feet in each direction", "100 feet in each direction", "1,000 feet in each direction"],
+      "answer": 0,
+      "explanation": "A U-turn takes time and blocks the whole road while it happens, so you need a long clear view both ways.",
+      "cite": [{ "ruleId": "R307" }]
+    },
+    {
+      "id": "trn-020",
+      "topic": "turning",
+      "stem": "Large trucks and buses turning right often leave an open space on their right. You should:",
+      "options": ["Use the space to pass them", "Stay out of it, because they must make wide turns", "Sound your horn and pass on the left"],
+      "answer": 1,
+      "explanation": "That gap is the truck's turning room, not a lane. Moving into it puts you where the trailer is about to sweep.",
+      "cite": [{ "ruleId": "R300" }]
+    },
+
+    {
+      "id": "lan-001",
+      "topic": "lane-use-and-passing",
+      "stem": "On a road with no center line markings where traffic comes from both directions, drivers must:",
+      "options": ["Give oncoming drivers at least half the road", "Claim the center until someone approaches", "Drive on the left to see farther ahead"],
+      "answer": 0,
+      "explanation": "No paint does not mean no rule — half the road belongs to whoever is coming the other way.",
+      "cite": [{ "ruleId": "R309" }]
+    },
+    {
+      "id": "lan-002",
+      "topic": "lane-use-and-passing",
+      "stem": "You may legally drive to the left of the center of the roadway when:",
+      "options": ["Passing a vehicle going the same direction, passing an obstruction, on a one-way road, or turning left", "Any time the road ahead is clear", "Only between midnight and 6 a.m."],
+      "answer": 0,
+      "explanation": "Those four situations are the whole list. Everything else belongs on the right.",
+      "cite": [{ "ruleId": "R312" }]
+    },
+    {
+      "id": "lan-003",
+      "topic": "lane-use-and-passing",
+      "stem": "The center lane of a two-way, three-lane or five-lane highway is used only for:",
+      "options": ["Turning left", "Passing", "Emergency parking"],
+      "answer": 0,
+      "explanation": "It is a shared turn lane. Traffic from both directions uses it to wait for a left turn, so nobody can travel in it.",
+      "cite": [{ "ruleId": "R311" }]
+    },
+    {
+      "id": "lan-004",
+      "topic": "lane-use-and-passing",
+      "stem": "A shared center turn lane may be used for travel of no more than:",
+      "options": ["300 feet", "One mile", "Half a block"],
+      "answer": 0,
+      "explanation": "You may enter it to set up a left turn, not to drive down it — 300 feet is the limit, and passing in it is never allowed.",
+      "cite": [{ "ruleId": "R315" }]
+    },
+    {
+      "id": "lan-005",
+      "topic": "lane-use-and-passing",
+      "stem": "When two vehicles enter a shared center turn lane from opposite directions:",
+      "options": ["The first vehicle to enter the lane has the right-of-way", "The larger vehicle has the right-of-way", "Both must reverse out"],
+      "answer": 0,
+      "explanation": "First in, first served. The second driver waits for the lane to clear.",
+      "cite": [{ "ruleId": "R316" }]
+    },
+    {
+      "id": "lan-006",
+      "topic": "lane-use-and-passing",
+      "stem": "Using the center turn lane to reach a left turn lane at an intersection is:",
+      "options": ["Encouraged, because it keeps you out of through traffic", "Not permitted", "Permitted below 25 m.p.h."],
+      "answer": 1,
+      "explanation": "Running the center lane up to an intersection turns it into a travel lane, and drivers pulling out of side streets do not expect traffic there.",
+      "cite": [{ "ruleId": "R317" }]
+    },
+    {
+      "id": "lan-007",
+      "topic": "lane-use-and-passing",
+      "stem": "On a divided highway you may cross the median strip or barrier:",
+      "options": ["Any time no traffic is in sight", "Only at an authorized crossover or intersection, or when officially directed", "Only at night"],
+      "answer": 1,
+      "explanation": "The median is not a road. Crossings happen at built openings or at an officer's direction.",
+      "cite": [{ "ruleId": "R313" }]
+    },
+    {
+      "id": "lan-008",
+      "topic": "lane-use-and-passing",
+      "stem": "Crossovers for traffic on the interstate:",
+      "options": ["Are provided every few miles", "Are not provided at all — paved crossovers exist only on four-lane highways", "Are provided only near cities"],
+      "answer": 1,
+      "explanation": "Any gap you see in an interstate median is an emergency crossover for official use, not a place to turn around.",
+      "cite": [{ "ruleId": "R314" }]
+    },
+    {
+      "id": "lan-009",
+      "topic": "lane-use-and-passing",
+      "stem": "You should not travel in a reserved lane unless:",
+      "options": ["You are operating the type of vehicle indicated, or must turn across it within the next half block", "Your own lane is congested", "You are running late"],
+      "answer": 0,
+      "explanation": "Reserved lanes belong to the vehicles named on the sign. Crossing one to make an imminent turn is the only other use.",
+      "cite": [{ "ruleId": "R319" }]
+    },
+    {
+      "id": "lan-010",
+      "topic": "lane-use-and-passing",
+      "stem": "During high inbound and outbound traffic hours, an HOV lane is reserved for vehicles carrying:",
+      "options": ["Two or more persons, including a baby in a car seat", "Three or more adults only", "Any vehicle with its headlights on"],
+      "answer": 0,
+      "explanation": "Buses with two or more occupants, motorcycles, and emergency vehicles also qualify. A baby in a car seat counts as a passenger.",
+      "cite": [{ "ruleId": "R321" }]
+    },
+    {
+      "id": "lan-011",
+      "topic": "lane-use-and-passing",
+      "stem": "A driver found in violation of the HOV lane restriction is subject to:",
+      "options": ["A $50 fine and court costs", "A 30-day suspension", "No penalty, only a warning"],
+      "answer": 0,
+      "explanation": "Fifty dollars plus costs — the restriction is enforceable, not advisory.",
+      "cite": [{ "ruleId": "R322" }]
+    },
+    {
+      "id": "lan-012",
+      "topic": "lane-use-and-passing",
+      "stem": "Which step belongs in a safe lane change?",
+      "options": ["Look over your shoulder in the direction you will be moving", "Rely on the mirrors alone", "Change lanes first and signal afterward"],
+      "answer": 0,
+      "explanation": "Mirrors do not cover the blind spot. Check mirrors, signal, look over your shoulder, check again, then move gradually.",
+      "cite": [{ "ruleId": "R323" }]
+    },
+    {
+      "id": "lan-013",
+      "topic": "lane-use-and-passing",
+      "stem": "On a two-lane road in the United States, you overtake and pass another vehicle:",
+      "options": ["Only on the left", "On whichever side has more room", "On the right if the other driver is slow"],
+      "answer": 0,
+      "explanation": "Passing on the left is the rule; passing on the right is allowed only in the narrow situations the manual lists.",
+      "cite": [{ "ruleId": "R324" }]
+    },
+    {
+      "id": "lan-014",
+      "topic": "lane-use-and-passing",
+      "stem": "After passing a vehicle you should return to the right lane:",
+      "options": ["As soon as you are safely clear of the vehicle you passed", "Immediately after drawing level with it", "Only after passing two more vehicles"],
+      "answer": 0,
+      "explanation": "Cutting back in early clips the front of the car you just passed. Wait until you can see it in your mirror.",
+      "cite": [{ "ruleId": "R325" }]
+    },
+    {
+      "id": "lan-015",
+      "topic": "lane-use-and-passing",
+      "stem": "Passing more than one vehicle at a time in Tennessee is:",
+      "options": ["Illegal", "Not illegal, but not considered safe", "Legal only on interstates"],
+      "answer": 1,
+      "explanation": "You need to complete the whole pass and be back in the right lane before you are within 100 feet of the no-passing markings or an oncoming vehicle.",
+      "cite": [{ "ruleId": "R326" }]
+    },
+    {
+      "id": "lan-016",
+      "topic": "lane-use-and-passing",
+      "stem": "Passing on the right by driving off the pavement of the roadway is:",
+      "options": ["Permitted when the shoulder is paved", "Never permitted", "Permitted below 30 m.p.h."],
+      "answer": 1,
+      "explanation": "Never — not on the shoulder, not on the grass, not to get around a left-turning car.",
+      "cite": [{ "ruleId": "R328" }]
+    },
+    {
+      "id": "lan-017",
+      "topic": "lane-use-and-passing",
+      "stem": "Using a bike lane or parking lane to pass on the right is:",
+      "options": ["Allowed in slow traffic", "Not allowed at any location", "Allowed if you signal first"],
+      "answer": 1,
+      "explanation": "Those lanes hold exactly the road users least able to survive being hit, and the emergency lane near a signal or stop sign is off limits too.",
+      "cite": [{ "ruleId": "R329" }]
+    },
+    {
+      "id": "lan-018",
+      "topic": "lane-use-and-passing",
+      "stem": "You should not pass when approaching:",
+      "options": ["An intersection, railroad crossing, narrow bridge, viaduct or tunnel", "A gas station", "A milepost marker"],
+      "answer": 0,
+      "explanation": "All of them are places where something can appear with no room for you to get back in. Hills and curves are on the same list.",
+      "cite": [{ "ruleId": "R330" }]
+    },
+    {
+      "id": "lan-019",
+      "topic": "lane-use-and-passing",
+      "stem": "The end of a no-passing zone means:",
+      "options": ["It is now safe to pass", "There is increased visibility ahead", "Passing is now required"],
+      "answer": 1,
+      "explanation": "Better sight distance is not the same as a safe pass. You still have to judge the gap yourself.",
+      "cite": [{ "pdfPage": 77, "quote": "The end of a \"no-passing zone\" does not mean it is safe to pass. It means there is increased visibility ahead." }]
+    },
+    {
+      "id": "lan-020",
+      "topic": "lane-use-and-passing",
+      "stem": "When another driver is passing you, you should:",
+      "options": ["Maintain your speed and stay in your lane", "Speed up to shorten their time alongside", "Move onto the shoulder"],
+      "answer": 0,
+      "explanation": "Speeding up strands them in the oncoming lane. Hold your speed and let the pass finish.",
+      "cite": [{ "ruleId": "R335" }]
+    },
+    {
+      "id": "lan-021",
+      "topic": "lane-use-and-passing",
+      "stem": "Passing a bicyclist on a two-lane road when oncoming vehicles are present is:",
+      "options": ["Fine if you sound your horn", "Something you should never attempt", "Required if the cyclist is slow"],
+      "answer": 1,
+      "explanation": "Squeezing between a cyclist and oncoming traffic leaves nowhere for anyone to go. Wait for a real gap.",
+      "cite": [{ "ruleId": "R337" }]
+    },
+    {
+      "id": "lan-022",
+      "topic": "lane-use-and-passing",
+      "stem": "On the roadway, slower traffic must:",
+      "options": ["Drive in the right-hand lane", "Drive in the center lane", "Use the shoulder"],
+      "answer": 0,
+      "explanation": "The left lane is for passing and turning; slower traffic belongs on the right.",
+      "cite": [{ "ruleId": "R533" }]
+    },
+    {
+      "id": "lan-023",
+      "topic": "lane-use-and-passing",
+      "stem": "Reversible lanes are usually marked by:",
+      "options": ["Double-broken yellow lines", "Solid white lines", "Red reflectors"],
+      "answer": 0,
+      "explanation": "Double-broken yellow warns that the lane carries traffic one way at some hours and the other way at others — check the overhead lane signals.",
+      "cite": [{ "pdfPage": 75, "quote": "These lanes are called \"reversible lanes\" and are usually marked by double-broken yellow lines." }]
+    },
+    {
+      "id": "lan-024",
+      "topic": "lane-use-and-passing",
+      "stem": "You may turn left across the center line into a driveway or alley while inside a no-passing zone:",
+      "options": ["Yes — turning across the line is allowed there", "No, never", "Only if a sign permits it"],
+      "answer": 0,
+      "explanation": "A no-passing zone forbids passing, not turning. You may cross the line to enter or leave a driveway, alley, private road or intersection.",
+      "cite": [{ "pdfPage": 77, "quote": "You are allowed to turn across the center line if you are making a left turn into or coming out of an alley, intersection, private road or driveway while in the \"no-passing zone\"." }]
+    }
+  ]
+}

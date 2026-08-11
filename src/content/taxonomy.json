@@ -1,0 +1,49 @@
+{
+  "note": "Topic taxonomy. Every question topic must appear here, and every topic maps to exactly one of the four blueprint areas published by the manual on PDF p.31 (printed 21): traffic signs and signals 25%, safe driving principles 25%, rules of the road 25%, drugs and alcohol 25%.",
+  "blueprint": {
+    "source": { "pdfPage": 35, "printedPage": 21 },
+    "quote": "Traffic signs and signals—25% Safe driving principles—25% Rules of the road—25% Drugs and alcohol—25%",
+    "areas": [
+      { "id": "signs", "label": "Traffic signs and signals", "share": 0.25 },
+      { "id": "safe-driving", "label": "Safe driving principles", "share": 0.25 },
+      { "id": "rules-of-road", "label": "Rules of the road", "share": 0.25 },
+      { "id": "alcohol-drugs", "label": "Drugs and alcohol", "share": 0.25 }
+    ]
+  },
+  "topics": [
+    { "id": "sign-colors-and-shapes", "area": "signs", "label": "Sign colors and shapes", "manualChapter": "B-3", "blurb": "What a sign's background color and outline shape tell you before you can read a word of it." },
+    { "id": "regulatory-signs", "area": "signs", "label": "Regulatory signs", "manualChapter": "B-3", "blurb": "Signs that state the law: stop, yield, speed, turning, parking and prohibitions." },
+    { "id": "warning-signs", "area": "signs", "label": "Warning signs", "manualChapter": "B-3", "blurb": "Yellow diamonds and their cousins — hazards and unexpected conditions ahead." },
+    { "id": "work-zone-signs", "area": "signs", "label": "Work zone signs and devices", "manualChapter": "B-3 / C-3", "blurb": "Orange signs, flaggers, arrow panels and channeling devices." },
+    { "id": "railroad-crossing-signs", "area": "signs", "label": "Railroad crossing signs", "manualChapter": "B-3 / C-3", "blurb": "Crossbucks, advance warning discs, gates and flashing lights." },
+    { "id": "traffic-signals", "area": "signs", "label": "Traffic signals", "manualChapter": "B-3", "blurb": "Steady, flashing and arrow indications, pedestrian signals and lane control signals." },
+    { "id": "pavement-markings", "area": "signs", "label": "Pavement markings", "manualChapter": "B-3", "blurb": "Yellow and white lines, crosswalks, stop lines, arrows and reflectors." },
+    { "id": "guide-and-service-signs", "area": "signs", "label": "Guide and service signs", "manualChapter": "B-3 / B-5", "blurb": "Green, blue and brown signs, route markers and interstate guidance." },
+
+    { "id": "vehicle-readiness", "area": "safe-driving", "label": "Getting familiar with your vehicle", "manualChapter": "B-1 / C-2", "blurb": "Seat, mirrors, hand position, steering technique, tires and carbon monoxide." },
+    { "id": "safety-belts-and-restraints", "area": "safe-driving", "label": "Safety belts and child restraints", "manualChapter": "B-2", "blurb": "Tennessee's belt law, car seats, boosters, air bags and children in vehicles." },
+    { "id": "following-and-stopping-distance", "area": "safe-driving", "label": "Following and stopping distance", "manualChapter": "B-4", "blurb": "The two-second rule, perception and reaction time, braking and space cushions." },
+    { "id": "night-driving", "area": "safe-driving", "label": "Driving at night", "manualChapter": "B-6", "blurb": "Outrunning your headlights, glare, dimming and parking after dark." },
+    { "id": "adverse-weather", "area": "safe-driving", "label": "Rain, fog, ice and flooding", "manualChapter": "B-6", "blurb": "Wet and icy pavement, hydroplaning, fog, high water and winter driving." },
+    { "id": "emergency-handling", "area": "safe-driving", "label": "Skids, emergencies and collisions", "manualChapter": "B-6 / C-2", "blurb": "Skid recovery, dropping a wheel off the pavement, avoiding collisions and animal strikes." },
+    { "id": "defensive-driving", "area": "safe-driving", "label": "Defensive driving", "manualChapter": "C-1", "blurb": "Scanning, space management, gaps, road rage and handling other drivers' errors." },
+    { "id": "sharing-road-pedestrians-and-bicycles", "area": "safe-driving", "label": "Sharing the road with pedestrians and bicycles", "manualChapter": "C-3", "blurb": "Crosswalk duties, the three-foot law, bicycle signals and lane position." },
+    { "id": "sharing-road-large-vehicles", "area": "safe-driving", "label": "Sharing the road with trucks, buses and slow vehicles", "manualChapter": "C-3", "blurb": "No-Zones, wide right turns, motorcycles, farm equipment and horse-drawn vehicles." },
+
+    { "id": "speed-limits", "area": "rules-of-road", "label": "Speed limits and speed law", "manualChapter": "B-4", "blurb": "Tennessee's posted and default limits, minimums, school and work zone speeds." },
+    { "id": "right-of-way", "area": "rules-of-road", "label": "Right-of-way", "manualChapter": "B-4", "blurb": "Who yields at intersections, to pedestrians, to emergency vehicles and in roundabouts." },
+    { "id": "turning", "area": "rules-of-road", "label": "Turning and signaling", "manualChapter": "B-4", "blurb": "Turn positioning, signals, turns on red, roundabouts and U-turns." },
+    { "id": "lane-use-and-passing", "area": "rules-of-road", "label": "Lane use and passing", "manualChapter": "B-4", "blurb": "Keeping right, center turn lanes, reserved lanes, and when passing is legal." },
+    { "id": "interstate-driving", "area": "rules-of-road", "label": "Interstate driving", "manualChapter": "B-5", "blurb": "Entering, exiting, interchanges, shoulders, breakdowns and the Move Over Law." },
+    { "id": "parking-and-backing", "area": "rules-of-road", "label": "Parking and backing", "manualChapter": "B-4", "blurb": "Where parking is illegal, hill parking, parallel parking and safe backing." },
+    { "id": "required-stops", "area": "rules-of-road", "label": "Stops required by law", "manualChapter": "B-4 / C-3", "blurb": "Stop signs, school buses, railroad crossings, flaggers and police stops." },
+    { "id": "vehicle-lighting", "area": "rules-of-road", "label": "Headlights and vehicle lighting", "manualChapter": "B-4", "blurb": "When headlights are required, dimming distances, and restricted light colors." },
+    { "id": "phones-and-distraction", "area": "rules-of-road", "label": "Phones, video and distraction", "manualChapter": "B-1", "blurb": "Tennessee's hand-held phone rules, school-zone phone offense and video devices." },
+    { "id": "driving-responsibilities", "area": "rules-of-road", "label": "Points, suspension and crash duties", "manualChapter": "B-8", "blurb": "The point system, losing your license, financial responsibility and reporting a crash." },
+
+    { "id": "alcohol-effects", "area": "alcohol-drugs", "label": "How alcohol affects driving", "manualChapter": "B-7", "blurb": "BAC, oxidation rate, vision, judgment, reaction time and crash risk." },
+    { "id": "dui-law", "area": "alcohol-drugs", "label": "The DUI and implied consent laws", "manualChapter": "B-7", "blurb": "What counts as DUI in Tennessee, implied consent, refusal and the No Refusal law." },
+    { "id": "dui-penalties", "area": "alcohol-drugs", "label": "DUI penalties", "manualChapter": "B-7", "blurb": "Jail, fines, revocation, vehicle seizure, ignition interlock and child endangerment." },
+    { "id": "underage-and-other-drugs", "area": "alcohol-drugs", "label": "Under 21, drugs and medication", "manualChapter": "B-7", "blurb": "The .02 rule, teen and 18-20 alcohol convictions, prescription and everyday drugs." }
+  ]
+}

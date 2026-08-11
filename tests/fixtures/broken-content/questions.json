@@ -1,0 +1,195 @@
+{
+  "schemaVersion": 1,
+  "note": "DELIBERATELY BROKEN FIXTURE. Every question below carries a defect the content validator must catch. It exists so `npm run validate:content` can be demonstrated failing — a validator nobody has seen fail is not evidence of anything. Never import this from the app.",
+  "counts": { "total": 10, "official": 0, "byArea": {}, "byTopic": {}, "byOptionCount": {} },
+  "questions": [
+    {
+      "id": "broken-fabricated-quote",
+      "topic": "traffic-signals",
+      "area": "signs",
+      "section": "B",
+      "stem": "A steady green light means:",
+      "options": [
+        { "letter": "A", "text": "Go if the intersection is clear" },
+        { "letter": "B", "text": "Stop and wait" },
+        { "letter": "C", "text": "Yield to all traffic" }
+      ],
+      "correctIndex": 0,
+      "correctOption": "Go if the intersection is clear",
+      "explanation": "DEFECT: the citation quote below is invented and appears nowhere in the manual extract.",
+      "citations": [
+        { "pdfPage": 55, "printedPage": 41, "quote": "A green light means the intersection belongs to you and you may proceed at once." }
+      ],
+      "official": false
+    },
+    {
+      "id": "broken-no-citation",
+      "topic": "speed-limits",
+      "area": "rules-of-road",
+      "section": "B",
+      "stem": "The default speed limit on Tennessee state highways is:",
+      "options": [
+        { "letter": "A", "text": "55 m.p.h." },
+        { "letter": "B", "text": "45 m.p.h." },
+        { "letter": "C", "text": "65 m.p.h." }
+      ],
+      "correctIndex": 0,
+      "correctOption": "55 m.p.h.",
+      "explanation": "DEFECT: no citation at all — a true statement with nothing behind it.",
+      "citations": [],
+      "official": false
+    },
+    {
+      "id": "broken-duplicate-option",
+      "topic": "speed-limits",
+      "area": "rules-of-road",
+      "section": "B",
+      "stem": "The maximum speed set by Tennessee law for interstate highways is:",
+      "options": [
+        { "letter": "A", "text": "70 m.p.h." },
+        { "letter": "B", "text": "70 m.p.h." },
+        { "letter": "C", "text": "55 m.p.h." }
+      ],
+      "correctIndex": 0,
+      "correctOption": "70 m.p.h.",
+      "explanation": "DEFECT: two options carry identical text, so two answers are defensibly correct.",
+      "citations": [
+        { "pdfPage": 61, "printedPage": 47, "quote": "The maximum speed set by Tennessee law for interstate highways is 70 m.p.h." }
+      ],
+      "official": false
+    },
+    {
+      "id": "broken-answer-index",
+      "topic": "speed-limits",
+      "area": "rules-of-road",
+      "section": "B",
+      "stem": "It is against the law to drive slower than the posted minimum speed under normal conditions.",
+      "options": [
+        { "letter": "A", "text": "True" },
+        { "letter": "B", "text": "False" }
+      ],
+      "correctIndex": 4,
+      "correctOption": "True",
+      "explanation": "DEFECT: correctIndex points past the end of the options array.",
+      "citations": [
+        { "pdfPage": 60, "printedPage": 46, "quote": "It is against the law to drive slower than the postedminimum speed under normal driving conditions" }
+      ],
+      "official": false
+    },
+    {
+      "id": "broken-banned-rule",
+      "topic": "interstate-driving",
+      "area": "rules-of-road",
+      "section": "B",
+      "stem": "The Move Over Law applies to roadways with:",
+      "options": [
+        { "letter": "A", "text": "Two or more lanes moving in the same direction" },
+        { "letter": "B", "text": "Four or more lanes" },
+        { "letter": "C", "text": "Any number of lanes" }
+      ],
+      "correctIndex": 0,
+      "correctOption": "Two or more lanes moving in the same direction",
+      "explanation": "DEFECT: the manual states this lane threshold two incompatible ways, so it is on the never-generate list.",
+      "citations": [
+        { "pdfPage": 69, "printedPage": 55, "quote": "you must make a lane change into a lane not adjacent to that of the vehicle", "ruleId": "R270" }
+      ],
+      "official": false
+    },
+    {
+      "id": "broken-section-a",
+      "topic": "speed-limits",
+      "area": "rules-of-road",
+      "section": "A",
+      "stem": "New residents must obtain a Tennessee driver license within:",
+      "options": [
+        { "letter": "A", "text": "30 days of establishing residency" },
+        { "letter": "B", "text": "90 days" },
+        { "letter": "C", "text": "One year" }
+      ],
+      "correctIndex": 0,
+      "correctOption": "30 days of establishing residency",
+      "explanation": "DEFECT: Section A material (licensing procedure) is outside the exam pool.",
+      "citations": [
+        { "pdfPage": 25, "printedPage": 11, "quote": "must obtain a Tennessee driver license no later than thirty (30) days after establishing residency." }
+      ],
+      "official": false
+    },
+    {
+      "id": "broken-unknown-topic",
+      "topic": "boat-trailers",
+      "area": "rules-of-road",
+      "section": "B",
+      "stem": "A shared center turn lane may be used for travel of no more than:",
+      "options": [
+        { "letter": "A", "text": "300 feet" },
+        { "letter": "B", "text": "One mile" },
+        { "letter": "C", "text": "Half a block" }
+      ],
+      "correctIndex": 0,
+      "correctOption": "300 feet",
+      "explanation": "DEFECT: the topic is not in the taxonomy, so it maps to no blueprint area.",
+      "citations": [
+        { "pdfPage": 74, "printedPage": 60, "quote": "These lanes cannot be used for passing and cannot be used for travel farther than 300 feet." }
+      ],
+      "official": false
+    },
+    {
+      "id": "broken-unknown-sign",
+      "topic": "warning-signs",
+      "area": "signs",
+      "section": "B",
+      "stem": "The falling rocks sign warns of:",
+      "options": [
+        { "letter": "A", "text": "Rocks that may be in the road" },
+        { "letter": "B", "text": "Rocks that may strike you from overhead" },
+        { "letter": "C", "text": "Gravel on the shoulder" }
+      ],
+      "correctIndex": 0,
+      "correctOption": "Rocks that may be in the road",
+      "explanation": "DEFECT: references a sign id that is not in the registry, so the app would render nothing.",
+      "citations": [
+        { "pdfPage": 52, "printedPage": 38, "quote": "This sign warns of rocks that may be in the road, not of rocks which may strike you from overhead." }
+      ],
+      "signs": ["w8-99-imaginary-sign"],
+      "official": false
+    },
+    {
+      "id": "broken-printed-page",
+      "topic": "right-of-way",
+      "area": "rules-of-road",
+      "section": "B",
+      "stem": "Blocking an intersection is:",
+      "options": [
+        { "letter": "A", "text": "Always illegal, marked or not" },
+        { "letter": "B", "text": "Legal when your light is green" },
+        { "letter": "C", "text": "Legal in slow traffic" }
+      ],
+      "correctIndex": 0,
+      "correctOption": "Always illegal, marked or not",
+      "explanation": "DEFECT: printedPage does not follow printed = pdf - 14, so the citation sends the learner to the wrong page.",
+      "citations": [
+        { "pdfPage": 67, "printedPage": 67, "quote": "It is always illegal to block an intersection, whether it is marked or not." }
+      ],
+      "official": false
+    },
+    {
+      "id": "broken-printed-page",
+      "topic": "right-of-way",
+      "area": "rules-of-road",
+      "section": "B",
+      "stem": "You must yield to a blind pedestrian using a white cane by stopping at least:",
+      "options": [
+        { "letter": "A", "text": "10 feet away" },
+        { "letter": "B", "text": "2 feet away" },
+        { "letter": "C", "text": "30 feet away" }
+      ],
+      "correctIndex": 0,
+      "correctOption": "10 feet away",
+      "explanation": "DEFECT: this question reuses an id that already exists above.",
+      "citations": [
+        { "pdfPage": 67, "printedPage": 53, "quote": "Stop at least 10 feet away until the person is off the roadway." }
+      ],
+      "official": false
+    }
+  ]
+}

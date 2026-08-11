@@ -1,0 +1,69 @@
+{
+  "note": "DELIBERATELY BROKEN FIXTURE taxonomy — a trimmed copy of the real one, kept only so the broken questions.json can be validated in isolation.",
+  "blueprint": {
+    "source": {
+      "pdfPage": 35,
+      "printedPage": 21
+    },
+    "quote": "Traffic signs and signals—25% Safe driving principles—25% Rules of the road—25% Drugs and alcohol—25%",
+    "areas": [
+      {
+        "id": "signs",
+        "label": "Traffic signs and signals",
+        "share": 0.25
+      },
+      {
+        "id": "safe-driving",
+        "label": "Safe driving principles",
+        "share": 0.25
+      },
+      {
+        "id": "rules-of-road",
+        "label": "Rules of the road",
+        "share": 0.25
+      },
+      {
+        "id": "alcohol-drugs",
+        "label": "Drugs and alcohol",
+        "share": 0.25
+      }
+    ]
+  },
+  "topics": [
+    {
+      "id": "warning-signs",
+      "area": "signs",
+      "label": "Warning signs",
+      "manualChapter": "B-3",
+      "blurb": "Yellow diamonds and their cousins — hazards and unexpected conditions ahead."
+    },
+    {
+      "id": "traffic-signals",
+      "area": "signs",
+      "label": "Traffic signals",
+      "manualChapter": "B-3",
+      "blurb": "Steady, flashing and arrow indications, pedestrian signals and lane control signals."
+    },
+    {
+      "id": "speed-limits",
+      "area": "rules-of-road",
+      "label": "Speed limits and speed law",
+      "manualChapter": "B-4",
+      "blurb": "Tennessee's posted and default limits, minimums, school and work zone speeds."
+    },
+    {
+      "id": "right-of-way",
+      "area": "rules-of-road",
+      "label": "Right-of-way",
+      "manualChapter": "B-4",
+      "blurb": "Who yields at intersections, to pedestrians, to emergency vehicles and in roundabouts."
+    },
+    {
+      "id": "interstate-driving",
+      "area": "rules-of-road",
+      "label": "Interstate driving",
+      "manualChapter": "B-5",
+      "blurb": "Entering, exiting, interchanges, shoulders, breakdowns and the Move Over Law."
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "note": "DELIBERATELY BROKEN FIXTURE sign registry: far below the 80-sign floor, and the second entry has no MUTCD designation.",
+  "palette": [
+    "red",
+    "white",
+    "black",
+    "yellow",
+    "orange",
+    "green",
+    "blue",
+    "brown",
+    "fluorescent-yellow-green",
+    "fluorescent-pink",
+    "silver"
+  ],
+  "signs": [
+    {
+      "id": "r1-1-stop",
+      "mutcd": "R1-1",
+      "name": "STOP",
+      "category": "regulatory",
+      "shape": "octagon",
+      "faceColor": "red",
+      "legendColor": "white",
+      "meaning": "Come to a complete stop before the crosswalk or stop line; if you cannot see, edge forward to where you can and go only when it is safe.",
+      "citation": {
+        "pdfPage": 50,
+        "printedPage": 36,
+        "quote": "you must bring your car to a complete stop, not going beyond the crosswalk"
+      }
+    },
+    {
+      "id": "r1-2-yield",
+      "mutcd": "",
+      "name": "YIELD",
+      "category": "regulatory",
+      "shape": "triangle-down",
+      "faceColor": "white",
+      "legendColor": "red",
+      "meaning": "Slow down and enter the intersection with caution; stop and wait when vehicles are approaching on the other roadway.",
+      "citation": {
+        "pdfPage": 50,
+        "printedPage": 36,
+        "quote": "If you are sure no other cars are coming you need not come to a complete stop but you must slow down and enter the intersection with caution."
+      }
+    }
+  ]
+}

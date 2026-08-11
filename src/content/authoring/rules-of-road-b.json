@@ -1,0 +1,1875 @@
+{
+  "note": "Blueprint area: Rules of the road (25%) — part 2: interstate driving, parking and backing, stops required by law, vehicle lighting, phones and distraction, and driving responsibilities. Section B Chapters 4, 5 and 8 with supporting material from Section C Chapter 3.",
+  "questions": [
+    {
+      "id": "int-001",
+      "topic": "interstate-driving",
+      "stem": "Whose responsibility is it to yield when you are merging onto an interstate?",
+      "options": [
+        "The drivers already on the interstate",
+        "Yours",
+        "Whichever vehicle is travelling faster"
+      ],
+      "answer": 1,
+      "explanation": "Drivers on the interstate should make allowance for you, but the legal duty to yield is on the vehicle entering.",
+      "cite": [
+        {
+          "ruleId": "R339",
+          "quotePick": 1
+        }
+      ]
+    },
+    {
+      "id": "int-002",
+      "topic": "interstate-driving",
+      "stem": "A \"lane added\" sign at an on-ramp means:",
+      "options": [
+        "Entering traffic must merge immediately",
+        "The on-ramp becomes a new lane and entering traffic does not need to merge immediately",
+        "The right lane is closing ahead"
+      ],
+      "answer": 1,
+      "explanation": "With a lane added, traffic already on the interstate should avoid moving right there — the entering driver is not expecting company.",
+      "cite": [
+        {
+          "ruleId": "R340"
+        }
+      ]
+    },
+    {
+      "id": "int-003",
+      "topic": "interstate-driving",
+      "stem": "You are travelling in the left lane of an interstate and a faster vehicle comes up behind you. You should:",
+      "options": [
+        "Move one lane to your right",
+        "Maintain your speed to enforce the limit",
+        "Brake to signal the driver behind"
+      ],
+      "answer": 0,
+      "explanation": "The left lane is for passing. Move over and let the faster traffic through rather than policing it.",
+      "cite": [
+        {
+          "ruleId": "R341"
+        }
+      ]
+    },
+    {
+      "id": "int-004",
+      "topic": "interstate-driving",
+      "stem": "Interstate exit signs are usually placed:",
+      "options": [
+        "At least one mile ahead of the exit turn-off",
+        "At the exit itself",
+        "Exactly a quarter mile ahead"
+      ],
+      "answer": 0,
+      "explanation": "A mile of warning gives you time to move right in stages instead of cutting across at the last second.",
+      "cite": [
+        {
+          "ruleId": "R342"
+        }
+      ]
+    },
+    {
+      "id": "int-005",
+      "topic": "interstate-driving",
+      "stem": "The paved shoulder of an interstate may be used:",
+      "options": [
+        "For travel when traffic is heavy",
+        "For deceleration where marked for that purpose, or in an emergency",
+        "For passing on the right"
+      ],
+      "answer": 1,
+      "explanation": "It is not a travel lane. Parking there is prohibited except for an emergency.",
+      "cite": [
+        {
+          "ruleId": "R343"
+        }
+      ]
+    },
+    {
+      "id": "int-006",
+      "topic": "interstate-driving",
+      "stem": "Parking on the paved or unpaved portion of an interstate entrance or exit ramp is:",
+      "options": [
+        "Illegal unless the vehicle is disabled",
+        "Legal for up to fifteen minutes",
+        "Legal if you switch on your hazard lights"
+      ],
+      "answer": 0,
+      "explanation": "Attended or unattended, it is illegal. A disabled vehicle is the only exception.",
+      "cite": [
+        {
+          "ruleId": "R344"
+        }
+      ]
+    },
+    {
+      "id": "int-007",
+      "topic": "interstate-driving",
+      "stem": "If you miss your exit on the interstate, you must:",
+      "options": [
+        "Back up along the shoulder",
+        "Proceed to the next exit",
+        "Use the nearest median crossover"
+      ],
+      "answer": 1,
+      "explanation": "Backing up, U-turns and crossing the median are all illegal on the interstate. The next exit is the only legal option.",
+      "cite": [
+        {
+          "ruleId": "R345"
+        }
+      ]
+    },
+    {
+      "id": "int-008",
+      "topic": "interstate-driving",
+      "stem": "At a diamond interchange, the left turn entrance ramp is always encountered:",
+      "options": [
+        "Before crossing over or under the interstate",
+        "After crossing over or under the interstate",
+        "Only from the frontage road"
+      ],
+      "answer": 1,
+      "explanation": "Right-turn entrance first, then the crossing, then the left-turn entrance. Knowing the pattern keeps you out of a last-second lane change.",
+      "cite": [
+        {
+          "ruleId": "R346"
+        }
+      ]
+    },
+    {
+      "id": "int-009",
+      "topic": "interstate-driving",
+      "stem": "At a cloverleaf interchange, to turn left you actually:",
+      "options": [
+        "Take a right turn just after the overpass",
+        "Take a left turn before the overpass",
+        "Stop and wait for a signal"
+      ],
+      "answer": 0,
+      "explanation": "Every movement at a cloverleaf is a right turn; the loop does the turning for you.",
+      "cite": [
+        {
+          "ruleId": "R347"
+        }
+      ]
+    },
+    {
+      "id": "int-010",
+      "topic": "interstate-driving",
+      "stem": "Your vehicle breaks down on the interstate. The manual says that, except in extreme emergencies, you should:",
+      "options": [
+        "Walk to the nearest exit for help",
+        "Remain in your disabled vehicle until help arrives",
+        "Stand behind the vehicle to flag traffic"
+      ],
+      "answer": 1,
+      "explanation": "Walking on the interstate is both illegal and dangerous. Stay with the car, flashers on, and wait for a trooper or a good Samaritan.",
+      "cite": [
+        {
+          "ruleId": "R349"
+        }
+      ]
+    },
+    {
+      "id": "int-011",
+      "topic": "interstate-driving",
+      "stem": "After a crash on the interstate with no serious injuries and a still-drivable vehicle, Tennessee law allows you to:",
+      "options": [
+        "Pull the vehicle to the emergency lane and wait for an officer",
+        "Leave the scene once information is exchanged",
+        "Leave the vehicles exactly where they stopped in every case"
+      ],
+      "answer": 0,
+      "explanation": "Clearing the travel lanes prevents the second crash. You still may not leave the scene.",
+      "cite": [
+        {
+          "ruleId": "R350"
+        }
+      ]
+    },
+    {
+      "id": "int-012",
+      "topic": "interstate-driving",
+      "stem": "Dialing *THP (*847) from a wireless phone connects you to:",
+      "options": [
+        "The nearest Tennessee Highway Patrol dispatcher, at no charge",
+        "A toll-paid roadside assistance service",
+        "The Department of Transportation billing office"
+      ],
+      "answer": 0,
+      "explanation": "It is free and it routes to the nearest dispatch center — useful when you cannot describe where you are.",
+      "cite": [
+        {
+          "ruleId": "R352"
+        }
+      ]
+    },
+    {
+      "id": "int-013",
+      "topic": "interstate-driving",
+      "stem": "Tennessee's Move Over Law now also applies to:",
+      "options": [
+        "Any stationary motor vehicle with its emergency flasher lights on",
+        "Only police and fire vehicles",
+        "Only vehicles stopped at night"
+      ],
+      "answer": 0,
+      "explanation": "An ordinary car stopped on the shoulder with its hazards on gets the same protection as a patrol car.",
+      "cite": [
+        {
+          "ruleId": "R274"
+        }
+      ],
+      "correctionId": "move-over-any-hazard-lights"
+    },
+    {
+      "id": "int-014",
+      "topic": "interstate-driving",
+      "stem": "The requirement to move over for a stopped emergency vehicle applies:",
+      "options": [
+        "Only when the vehicle is on the right-hand side",
+        "Regardless of which side of the road the vehicle is on",
+        "Only during daylight"
+      ],
+      "answer": 1,
+      "explanation": "Left shoulder or right, the duty is the same.",
+      "cite": [
+        {
+          "ruleId": "R272"
+        }
+      ],
+      "correctionId": "move-over-any-hazard-lights"
+    },
+    {
+      "id": "int-015",
+      "topic": "interstate-driving",
+      "stem": "Under the Move Over Law, a motorist may stay in the same lane and simply slow down:",
+      "options": [
+        "Whenever they prefer to",
+        "Only when traffic conditions make changing lanes unsafe",
+        "Only at night"
+      ],
+      "answer": 1,
+      "explanation": "Changing lanes is the default response. Slowing in place is the fallback when the change cannot be made safely.",
+      "cite": [
+        {
+          "ruleId": "R275"
+        }
+      ]
+    },
+    {
+      "id": "int-016",
+      "topic": "interstate-driving",
+      "stem": "Which vehicles does the manual list as covered by the Move Over Law?",
+      "options": [
+        "Police, ambulance and fire, utility and sanitation, tow trucks and TDOT HELP, and highway maintenance vehicles",
+        "Police vehicles only",
+        "Any vehicle displaying a green light"
+      ],
+      "answer": 0,
+      "explanation": "The list is broad, and it now reaches ordinary vehicles showing hazard lights as well.",
+      "cite": [
+        {
+          "ruleId": "R273"
+        }
+      ],
+      "correctionId": "move-over-any-hazard-lights"
+    },
+    {
+      "id": "int-017",
+      "topic": "interstate-driving",
+      "stem": "On the interstate, the manual advises scanning ahead:",
+      "options": [
+        "15 to 20 seconds in front of your vehicle",
+        "Two car lengths ahead",
+        "Only as far as your headlights reach"
+      ],
+      "answer": 0,
+      "explanation": "At interstate speed you cover ground fast; looking well ahead is what turns a sudden brake light into a gentle lift off the accelerator.",
+      "cite": [
+        {
+          "ruleId": "R546"
+        }
+      ]
+    },
+    {
+      "id": "int-018",
+      "topic": "interstate-driving",
+      "stem": "On a long interstate trip, the manual recommends taking a break:",
+      "options": [
+        "At least every two hours or every 100 miles",
+        "Every six hours",
+        "Only when you feel sleepy"
+      ],
+      "answer": 0,
+      "explanation": "And no more than eight hours of driving in a day. Fatigue builds long before you notice it.",
+      "cite": [
+        {
+          "ruleId": "R547"
+        }
+      ]
+    },
+    {
+      "id": "prk-001",
+      "topic": "parking-and-backing",
+      "stem": "Backing a vehicle into a travel lane is:",
+      "options": [
+        "Never allowed, except when backing into a parallel parking space",
+        "Allowed if you use your hazard lights",
+        "Allowed on residential streets"
+      ],
+      "answer": 0,
+      "explanation": "Parallel parking is the single exception, and even then you back from a stopped position beside the space.",
+      "cite": [
+        {
+          "ruleId": "R353"
+        }
+      ]
+    },
+    {
+      "id": "prk-002",
+      "topic": "parking-and-backing",
+      "stem": "Backing into an intersection from a driveway is:",
+      "options": [
+        "Illegal",
+        "Legal if no traffic is in sight",
+        "Legal below 5 m.p.h."
+      ],
+      "answer": 0,
+      "explanation": "You cannot see cross traffic, and cross traffic cannot see a reversing car. It is prohibited outright.",
+      "cite": [
+        {
+          "ruleId": "R354"
+        }
+      ]
+    },
+    {
+      "id": "prk-003",
+      "topic": "parking-and-backing",
+      "stem": "Backing up on the interstate is:",
+      "options": [
+        "Illegal",
+        "Legal on the shoulder only",
+        "Legal if you missed your exit"
+      ],
+      "answer": 0,
+      "explanation": "It is flatly illegal, along with U-turns and crossing the median.",
+      "cite": [
+        {
+          "ruleId": "R355"
+        }
+      ]
+    },
+    {
+      "id": "prk-004",
+      "topic": "parking-and-backing",
+      "stem": "When you stop at a curb, your vehicle should be within:",
+      "options": [
+        "18 inches of the curb",
+        "3 feet of the curb",
+        "6 inches of the curb"
+      ],
+      "answer": 0,
+      "explanation": "Eighteen inches, both when you stop at a curb and when you finish a parallel park.",
+      "cite": [
+        {
+          "ruleId": "R357"
+        }
+      ]
+    },
+    {
+      "id": "prk-005",
+      "topic": "parking-and-backing",
+      "stem": "Parking beside a roadway outside city limits requires that you leave at least:",
+      "options": [
+        "18 feet of road width for other traffic",
+        "10 feet of road width",
+        "One full lane on each side"
+      ],
+      "answer": 0,
+      "explanation": "Eighteen feet of clear roadway, all four wheels off the pavement if possible, and your vehicle visible for 200 feet in either direction.",
+      "cite": [
+        {
+          "ruleId": "R358"
+        }
+      ]
+    },
+    {
+      "id": "prk-006",
+      "topic": "parking-and-backing",
+      "stem": "Leaving the engine running in a parked, unattended vehicle is:",
+      "options": [
+        "Against the law",
+        "Allowed for up to ten minutes",
+        "Allowed in cold weather"
+      ],
+      "answer": 0,
+      "explanation": "It is illegal, and the manual pairs it with removing the ignition keys.",
+      "cite": [
+        {
+          "ruleId": "R359"
+        }
+      ]
+    },
+    {
+      "id": "prk-007",
+      "topic": "parking-and-backing",
+      "stem": "When pulling out of any type of parking space, including a parallel space, a driver must:",
+      "options": [
+        "Look, signal and yield the right-of-way",
+        "Sound the horn and proceed",
+        "Reverse into the nearest gap"
+      ],
+      "answer": 0,
+      "explanation": "Traffic already moving keeps the right-of-way, so the parked car waits.",
+      "cite": [
+        {
+          "ruleId": "R361"
+        }
+      ]
+    },
+    {
+      "id": "prk-008",
+      "topic": "parking-and-backing",
+      "stem": "Parking on a downhill with a curb, you should turn the front wheels:",
+      "options": [
+        "Toward the curb, and set the parking brake",
+        "Away from the curb",
+        "Straight ahead"
+      ],
+      "answer": 0,
+      "explanation": "If the brakes let go, the front wheel catches the curb instead of the car rolling into traffic.",
+      "cite": [
+        {
+          "ruleId": "R364"
+        }
+      ]
+    },
+    {
+      "id": "prk-009",
+      "topic": "parking-and-backing",
+      "stem": "Parking on an uphill with a curb, you should turn the front wheels:",
+      "options": [
+        "Away from the curb (to the left)",
+        "Toward the curb (to the right)",
+        "Straight ahead"
+      ],
+      "answer": 0,
+      "explanation": "Rolling backward, the car settles back against the curb.",
+      "cite": [
+        {
+          "ruleId": "R365"
+        }
+      ]
+    },
+    {
+      "id": "prk-010",
+      "topic": "parking-and-backing",
+      "stem": "Parking on a hill where there is no curb, you should turn the front wheels:",
+      "options": [
+        "Toward the edge of the roadway",
+        "Toward the center of the road",
+        "Straight ahead"
+      ],
+      "answer": 0,
+      "explanation": "With no curb to catch the wheel, you point the car off the road rather than into it — uphill or down.",
+      "cite": [
+        {
+          "ruleId": "R366"
+        }
+      ]
+    },
+    {
+      "id": "prk-011",
+      "topic": "parking-and-backing",
+      "stem": "It is illegal to park within how many feet of a traffic signal, stop sign or other traffic control device?",
+      "options": [
+        "30 feet",
+        "10 feet",
+        "75 feet"
+      ],
+      "answer": 0,
+      "explanation": "Thirty feet, so the device stays visible to approaching drivers.",
+      "cite": [
+        {
+          "ruleId": "R367"
+        }
+      ]
+    },
+    {
+      "id": "prk-012",
+      "topic": "parking-and-backing",
+      "stem": "It is illegal to park within how many feet of a crosswalk?",
+      "options": [
+        "20 feet",
+        "5 feet",
+        "50 feet"
+      ],
+      "answer": 0,
+      "explanation": "Twenty feet of clearance keeps the crossing visible — a car parked on top of it hides the person stepping out.",
+      "cite": [
+        {
+          "ruleId": "R367"
+        }
+      ]
+    },
+    {
+      "id": "prk-013",
+      "topic": "parking-and-backing",
+      "stem": "A curb painted red means:",
+      "options": [
+        "Do not stop, stand or park under any condition",
+        "Stop only long enough to pick up or drop off passengers",
+        "Loading only"
+      ],
+      "answer": 0,
+      "explanation": "White is for passengers, yellow is for loading while you stay with the car, red means keep moving.",
+      "cite": [
+        {
+          "ruleId": "R368"
+        }
+      ]
+    },
+    {
+      "id": "prk-014",
+      "topic": "parking-and-backing",
+      "stem": "A curb painted white means:",
+      "options": [
+        "Stop only long enough to pick up or drop off passengers",
+        "No stopping at any time",
+        "Reserved for permit holders"
+      ],
+      "answer": 0,
+      "explanation": "Long enough for people to get in or out — not long enough to leave the car.",
+      "cite": [
+        {
+          "ruleId": "R368"
+        }
+      ]
+    },
+    {
+      "id": "prk-015",
+      "topic": "parking-and-backing",
+      "stem": "Starting a parallel park, your vehicle should be:",
+      "options": [
+        "Rear bumper even with the other car's bumper, no closer than two feet",
+        "Touching the other car's bumper",
+        "Six feet out from the other car"
+      ],
+      "answer": 0,
+      "explanation": "Line up the bumpers, leave two feet of side clearance, then back slowly with the wheel turned sharply right.",
+      "cite": [
+        {
+          "ruleId": "R369"
+        }
+      ]
+    },
+    {
+      "id": "prk-016",
+      "topic": "parking-and-backing",
+      "stem": "During a parallel park you back slowly, turning the wheel sharply right until the car reaches an angle of about:",
+      "options": [
+        "45 degrees to the street",
+        "90 degrees to the street",
+        "15 degrees to the street"
+      ],
+      "answer": 0,
+      "explanation": "Forty-five degrees is the pivot point; from there you straighten and bring the front in.",
+      "cite": [
+        {
+          "ruleId": "R370"
+        }
+      ]
+    },
+    {
+      "id": "prk-017",
+      "topic": "parking-and-backing",
+      "stem": "Improperly parking in a space marked with the handicap symbol is:",
+      "options": [
+        "A misdemeanor punishable by a $100 fine, and the vehicle may be towed",
+        "A warning-only offense",
+        "Permitted for under five minutes"
+      ],
+      "answer": 0,
+      "explanation": "The space may only be used by a vehicle displaying a valid placard or plate, and only when transporting the person it was issued to.",
+      "cite": [
+        {
+          "ruleId": "R373"
+        }
+      ]
+    },
+    {
+      "id": "prk-018",
+      "topic": "parking-and-backing",
+      "stem": "If you must leave your vehicle on a highway and cannot move it off the road, you should:",
+      "options": [
+        "Raise the hood or tie a cloth to the left door handle or antenna",
+        "Leave the headlights on high beam",
+        "Leave the driver's door open as a warning"
+      ],
+      "answer": 0,
+      "explanation": "A raised hood is a recognized breakdown signal. Add the four-way flashers and set the parking brake.",
+      "cite": [
+        {
+          "ruleId": "R372"
+        }
+      ]
+    },
+    {
+      "id": "prk-019",
+      "topic": "parking-and-backing",
+      "stem": "Double parking is:",
+      "options": [
+        "Prohibited by law",
+        "Allowed while making a delivery",
+        "Allowed if the hazard lights are on"
+      ],
+      "answer": 0,
+      "explanation": "It forces everyone else into the oncoming lane. The law prohibits it outright.",
+      "cite": [
+        {
+          "ruleId": "R363"
+        }
+      ]
+    },
+    {
+      "id": "prk-020",
+      "topic": "parking-and-backing",
+      "stem": "Whenever you park, the manual says you should:",
+      "options": [
+        "Set the parking brake, and leave the vehicle in gear or in park",
+        "Leave the transmission in neutral",
+        "Leave the engine running to keep the battery charged"
+      ],
+      "answer": 0,
+      "explanation": "Parking brake every time, plus gear or park — two independent things holding the car.",
+      "cite": [
+        {
+          "ruleId": "R362"
+        }
+      ]
+    },
+    {
+      "id": "prk-021",
+      "topic": "parking-and-backing",
+      "stem": "Stopping in a travel lane because you are lost or letting out a passenger is:",
+      "options": [
+        "Not permitted — keep moving until you can pull off the roadway",
+        "Permitted briefly with hazard lights",
+        "Permitted on residential streets"
+      ],
+      "answer": 0,
+      "explanation": "A stopped car in a travel lane is what following drivers least expect. Keep going until you can get off the road.",
+      "cite": [
+        {
+          "ruleId": "R356"
+        }
+      ]
+    },
+    {
+      "id": "stp-001",
+      "topic": "required-stops",
+      "stem": "Tennessee Code defines \"stop\" as:",
+      "options": [
+        "Complete cessation of movement",
+        "Slowing to under 5 m.p.h.",
+        "Any pause of two seconds or more"
+      ],
+      "answer": 0,
+      "explanation": "Rolling through is not stopping. It is grounds for a ticket and for failing the road test.",
+      "cite": [
+        {
+          "pdfPage": 63,
+          "quote": "Tennessee Code defines \"stop\" as \"complete cessation of movement.\""
+        }
+      ]
+    },
+    {
+      "id": "stp-002",
+      "topic": "required-stops",
+      "stem": "At a stop sign with no crosswalk and no stop line, you must stop:",
+      "options": [
+        "At the point nearest the intersecting roadway where you can see approaching traffic, and again before entering the intersection",
+        "Anywhere within 50 feet of the sign",
+        "Only if another vehicle is visible"
+      ],
+      "answer": 0,
+      "explanation": "The law names the sequence: stop where you can see, then stop before entering the intersection itself.",
+      "cite": [
+        {
+          "ruleId": "R218"
+        }
+      ]
+    },
+    {
+      "id": "stp-003",
+      "topic": "required-stops",
+      "stem": "If no pavement markings are present at a stop sign, you should stop when:",
+      "options": [
+        "The front of your vehicle is even with the sign's placement at the roadside",
+        "Your rear bumper passes the sign",
+        "You are one car length past the sign"
+      ],
+      "answer": 0,
+      "explanation": "The sign marks the stopping point when nothing is painted on the road.",
+      "cite": [
+        {
+          "ruleId": "R220"
+        }
+      ]
+    },
+    {
+      "id": "stp-004",
+      "topic": "required-stops",
+      "stem": "A flashing red traffic light requires:",
+      "options": [
+        "A complete stop, just as at a stop sign",
+        "Slowing and proceeding with caution",
+        "No action if the way is clear"
+      ],
+      "answer": 0,
+      "explanation": "Flashing red is a stop sign in light form. Flashing yellow is the one that means slow down and proceed with care.",
+      "cite": [
+        {
+          "ruleId": "R222"
+        }
+      ]
+    },
+    {
+      "id": "stp-005",
+      "topic": "required-stops",
+      "stem": "When a flag person at a construction site directs you to stop, you must:",
+      "options": [
+        "Stop completely",
+        "Slow to 10 m.p.h. and continue",
+        "Continue if the road looks clear"
+      ],
+      "answer": 0,
+      "explanation": "A flagger's directions carry the force of a traffic control device, and so do a police officer's.",
+      "cite": [
+        {
+          "ruleId": "R223"
+        }
+      ]
+    },
+    {
+      "id": "stp-006",
+      "topic": "required-stops",
+      "stem": "When a train is coming, you must stop within what distance of the nearest rail?",
+      "options": [
+        "Between 15 and 50 feet",
+        "Between 5 and 10 feet",
+        "At least 100 feet"
+      ],
+      "answer": 0,
+      "explanation": "No closer than 15 feet, no farther than 50 — and never on the tracks themselves.",
+      "cite": [
+        {
+          "ruleId": "R225"
+        }
+      ]
+    },
+    {
+      "id": "stp-007",
+      "topic": "required-stops",
+      "stem": "At a railroad crossing equipped with electric or mechanical signal devices, a driver must stop:",
+      "options": [
+        "Within 50 feet but no closer than 15 feet from the nearest rail",
+        "At least 100 feet back",
+        "Only when the gate is down"
+      ],
+      "answer": 0,
+      "explanation": "Same window as any other crossing, and you do not move until it is safe.",
+      "cite": [
+        {
+          "ruleId": "R226"
+        }
+      ]
+    },
+    {
+      "id": "stp-008",
+      "topic": "required-stops",
+      "stem": "Which of these must stop at every railroad grade crossing, whether or not signals are activated?",
+      "options": [
+        "Church or school buses, common carriers, and vehicles carrying flammables or explosives",
+        "All passenger cars",
+        "Only vehicles pulling trailers"
+      ],
+      "answer": 0,
+      "explanation": "Buses, taxis and hazardous-cargo vehicles stop every time. Never try to pass one of them stopped at a crossing on a two-way road.",
+      "cite": [
+        {
+          "ruleId": "R228"
+        }
+      ]
+    },
+    {
+      "id": "stp-009",
+      "topic": "required-stops",
+      "stem": "Driving around a crossing gate that has come down is:",
+      "options": [
+        "Against the law",
+        "Allowed if no train is visible",
+        "Allowed if the lights have stopped flashing"
+      ],
+      "answer": 0,
+      "explanation": "Stop and stay put. You do not move until the gates are fully raised and the lights have stopped.",
+      "cite": [
+        {
+          "ruleId": "R230"
+        }
+      ]
+    },
+    {
+      "id": "stp-010",
+      "topic": "required-stops",
+      "stem": "You are meeting a school bus with its red stop warning lights flashing and its stop arm out. You must:",
+      "options": [
+        "Come to a complete stop and remain stopped until the arm is pulled back and the bus moves",
+        "Slow to 15 m.p.h. and pass carefully",
+        "Stop only if children are visible"
+      ],
+      "answer": 0,
+      "explanation": "Complete stop, in both directions, until the arm folds and the bus starts moving again.",
+      "cite": [
+        {
+          "ruleId": "R234"
+        }
+      ]
+    },
+    {
+      "id": "stp-011",
+      "topic": "required-stops",
+      "stem": "Passing a school bus on its right side while it is stopped is:",
+      "options": [
+        "Illegal, because that is where children get on and off",
+        "Allowed if you move slowly",
+        "Allowed on a four-lane road"
+      ],
+      "answer": 0,
+      "explanation": "The right side is the door side. Passing there is illegal and is how children get killed.",
+      "cite": [
+        {
+          "ruleId": "R236"
+        }
+      ]
+    },
+    {
+      "id": "stp-012",
+      "topic": "required-stops",
+      "stem": "A school bus is stopped at an intersection to load or unload children. Drivers from which directions must stop?",
+      "options": [
+        "All directions",
+        "Only the direction behind the bus",
+        "Only the oncoming direction"
+      ],
+      "answer": 0,
+      "explanation": "Children may cross from any approach at an intersection, so every direction stops until the bus moves.",
+      "cite": [
+        {
+          "ruleId": "R237"
+        }
+      ]
+    },
+    {
+      "id": "stp-013",
+      "topic": "required-stops",
+      "stem": "Failing to stop for a stopped school bus in Tennessee is:",
+      "options": [
+        "A Class A misdemeanor carrying a fine between $250 and $1,000",
+        "A non-moving violation",
+        "An infraction with no points"
+      ],
+      "answer": 0,
+      "explanation": "It also carries eight points — the same as failing to stop at a railroad crossing.",
+      "cite": [
+        {
+          "ruleId": "R238"
+        }
+      ]
+    },
+    {
+      "id": "stp-014",
+      "topic": "required-stops",
+      "stem": "You need not stop for a school bus loading children on the opposite roadway when the road:",
+      "options": [
+        "Has separate roadways divided by a median or barrier not suitable for vehicular traffic",
+        "Has four or more lanes",
+        "Has a posted limit above 45 m.p.h."
+      ],
+      "answer": 0,
+      "explanation": "A real median or barrier separates you from the bus. Even then, proceed with caution.",
+      "cite": [
+        {
+          "ruleId": "R239"
+        }
+      ]
+    },
+    {
+      "id": "stp-015",
+      "topic": "required-stops",
+      "stem": "On a four-lane road with a center turn lane, drivers meeting a stopped school bus:",
+      "options": [
+        "Must stop in both directions, because a turn lane is not a barrier",
+        "Need not stop in either direction",
+        "Must stop only in the bus's direction"
+      ],
+      "answer": 0,
+      "explanation": "A fifth lane suitable for traffic is not a divider — it is just more road for a child to cross.",
+      "cite": [
+        {
+          "ruleId": "R240"
+        }
+      ]
+    },
+    {
+      "id": "stp-016",
+      "topic": "required-stops",
+      "stem": "Flashing yellow lights on the front and back of a school bus mean:",
+      "options": [
+        "The bus is preparing to stop to load or unload children",
+        "The bus has broken down",
+        "The bus is about to turn"
+      ],
+      "answer": 0,
+      "explanation": "Yellow is the warning to slow down and get ready to stop. Red with the arm out means stop now.",
+      "cite": [
+        {
+          "ruleId": "R241"
+        }
+      ]
+    },
+    {
+      "id": "stp-017",
+      "topic": "required-stops",
+      "stem": "When a police officer signals you to pull over, you should:",
+      "options": [
+        "Drive as close as is safely practical to the right-hand edge or curb, clear of any intersection, and stop",
+        "Stop immediately in the travel lane",
+        "Continue to the next parking lot regardless of distance"
+      ],
+      "answer": 0,
+      "explanation": "Get out of the traffic lanes, keep your hands on the wheel and stay in the vehicle unless you are asked to get out.",
+      "cite": [
+        {
+          "ruleId": "R244"
+        }
+      ]
+    },
+    {
+      "id": "stp-018",
+      "topic": "required-stops",
+      "stem": "During a traffic stop, a driver who has a handgun permit should:",
+      "options": [
+        "Advise the officer of the permit and whether they are armed",
+        "Say nothing about it",
+        "Hand the weapon to the officer"
+      ],
+      "answer": 0,
+      "explanation": "Tell the officer up front, and keep your hands visible while you do.",
+      "cite": [
+        {
+          "ruleId": "R245"
+        }
+      ]
+    },
+    {
+      "id": "stp-019",
+      "topic": "required-stops",
+      "stem": "If an unmarked car signals you to pull over, you may:",
+      "options": [
+        "Drive slowly a short distance to the nearest area where there are other people",
+        "Ignore it entirely",
+        "Accelerate away to a police station"
+      ],
+      "answer": 0,
+      "explanation": "Slow down, put on your flashers to show you are complying, and stop somewhere populated.",
+      "cite": [
+        {
+          "ruleId": "R246"
+        }
+      ]
+    },
+    {
+      "id": "stp-020",
+      "topic": "required-stops",
+      "stem": "Your vehicle stalls on railroad tracks. You should:",
+      "options": [
+        "Get everyone out immediately and away from the tracks, then call the number on the ENS sign or 911",
+        "Stay in the vehicle and try to restart it",
+        "Push the vehicle backward off the tracks first"
+      ],
+      "answer": 0,
+      "explanation": "People first, even if you cannot see a train. The Emergency Notification System sign carries the number that stops trains.",
+      "cite": [
+        {
+          "ruleId": "R231"
+        }
+      ]
+    },
+    {
+      "id": "stp-021",
+      "topic": "required-stops",
+      "stem": "If a train is approaching your stalled vehicle on the tracks, you should run:",
+      "options": [
+        "Toward the train at a 45 degree angle",
+        "Directly away from the tracks in line with the car",
+        "Alongside the tracks in the direction the train is going"
+      ],
+      "answer": 0,
+      "explanation": "Running toward the train at an angle takes you away from and behind the point of impact, where the debris is thrown.",
+      "cite": [
+        {
+          "ruleId": "R232"
+        }
+      ]
+    },
+    {
+      "id": "stp-022",
+      "topic": "required-stops",
+      "stem": "You are already crossing the tracks when the warning lights start flashing. You should:",
+      "options": [
+        "Keep moving and never try to back up",
+        "Stop and reverse clear of the crossing",
+        "Stop where you are and wait"
+      ],
+      "answer": 0,
+      "explanation": "Keep going. Gates are designed to break, and reversing puts you back into the path of the train.",
+      "cite": [
+        {
+          "ruleId": "R540"
+        }
+      ]
+    },
+    {
+      "id": "stp-023",
+      "topic": "required-stops",
+      "stem": "Where a crossing has more than one track, a driver waiting for a train to pass must:",
+      "options": [
+        "Make sure another train is not approaching from the opposite direction",
+        "Cross as soon as the last car passes",
+        "Follow the vehicle in front closely to clear the crossing"
+      ],
+      "answer": 0,
+      "explanation": "The passing train hides the second one until it is on top of you.",
+      "cite": [
+        {
+          "ruleId": "R539"
+        }
+      ]
+    },
+    {
+      "id": "lit-001",
+      "topic": "vehicle-lighting",
+      "stem": "Headlights must be turned on:",
+      "options": [
+        "30 minutes after sunset until 30 minutes before sunrise",
+        "Only after full darkness",
+        "One hour after sunset until sunrise"
+      ],
+      "answer": 0,
+      "explanation": "The half-hour margins cover dusk and dawn, when the light is worst for spotting pedestrians.",
+      "cite": [
+        {
+          "ruleId": "R181"
+        }
+      ]
+    },
+    {
+      "id": "lit-002",
+      "topic": "vehicle-lighting",
+      "stem": "Headlights are also required any time daylight is not good enough to see people or vehicles clearly at:",
+      "options": [
+        "200 feet ahead",
+        "50 feet ahead",
+        "1,000 feet ahead"
+      ],
+      "answer": 0,
+      "explanation": "Two hundred feet is also the distance your headlights must let you see a person at night.",
+      "cite": [
+        {
+          "ruleId": "R182"
+        }
+      ]
+    },
+    {
+      "id": "lit-003",
+      "topic": "vehicle-lighting",
+      "stem": "In Tennessee, when precipitation requires constant use of your windshield wipers, headlights are:",
+      "options": [
+        "Required by law",
+        "Optional but recommended",
+        "Required only on interstates"
+      ],
+      "answer": 0,
+      "explanation": "Wipers on means lights on — that is the law, not just a courtesy.",
+      "cite": [
+        {
+          "ruleId": "R183"
+        }
+      ]
+    },
+    {
+      "id": "lit-004",
+      "topic": "vehicle-lighting",
+      "stem": "You must dim your high beams when an oncoming vehicle is within:",
+      "options": [
+        "500 feet",
+        "100 feet",
+        "1,000 feet"
+      ],
+      "answer": 0,
+      "explanation": "Five hundred feet — roughly a city block — whether you are meeting the vehicle or following it.",
+      "cite": [
+        {
+          "ruleId": "R184"
+        }
+      ]
+    },
+    {
+      "id": "lit-005",
+      "topic": "vehicle-lighting",
+      "stem": "Driving on parking lights alone when visibility is limited is:",
+      "options": [
+        "Against the law",
+        "Permitted in town",
+        "Permitted below 30 m.p.h."
+      ],
+      "answer": 0,
+      "explanation": "Parking lights mark a stopped car. They are not enough to drive by, and the law says so.",
+      "cite": [
+        {
+          "ruleId": "R185"
+        }
+      ]
+    },
+    {
+      "id": "lit-006",
+      "topic": "vehicle-lighting",
+      "stem": "Using fog lights or auxiliary lights by themselves is:",
+      "options": [
+        "Illegal",
+        "Legal in rural areas",
+        "Legal when it is raining"
+      ],
+      "answer": 0,
+      "explanation": "They are also illegal at any time you are required to dim your high beams.",
+      "cite": [
+        {
+          "ruleId": "R186"
+        }
+      ]
+    },
+    {
+      "id": "lit-007",
+      "topic": "vehicle-lighting",
+      "stem": "Steady-burning lights displayed to the front of a vehicle in Tennessee may only be:",
+      "options": [
+        "White or amber",
+        "Any color except red",
+        "Blue, on any vehicle"
+      ],
+      "answer": 0,
+      "explanation": "White or amber only, with narrow exceptions for certain vehicles. Colored forward lighting is a violation.",
+      "cite": [
+        {
+          "ruleId": "R187"
+        }
+      ]
+    },
+    {
+      "id": "lit-008",
+      "topic": "vehicle-lighting",
+      "stem": "An unauthorized private vehicle equipped with a blue flashing light is:",
+      "options": [
+        "In violation of the law, even if the light is never switched on visibly",
+        "Legal if it is only used off-road",
+        "Legal with a permit from any county"
+      ],
+      "answer": 0,
+      "explanation": "The law reaches installing, maintaining or visibly showing blue — or blue and red — emergency lights on a private vehicle.",
+      "cite": [
+        {
+          "ruleId": "R189"
+        }
+      ]
+    },
+    {
+      "id": "lit-009",
+      "topic": "vehicle-lighting",
+      "stem": "Driving through dense fog, heavy rain or snow in the daytime, Tennessee law requires you to:",
+      "options": [
+        "Turn on your low beam headlights",
+        "Use your high beams",
+        "Use hazard lights instead of headlights"
+      ],
+      "answer": 0,
+      "explanation": "Low beams put light where you need it and make you visible to oncoming drivers.",
+      "cite": [
+        {
+          "ruleId": "R191"
+        }
+      ]
+    },
+    {
+      "id": "lit-010",
+      "topic": "vehicle-lighting",
+      "stem": "When you park on or along a highway at night, you should:",
+      "options": [
+        "Leave your emergency and parking lights on, but never your headlights",
+        "Leave your headlights on so you can be seen",
+        "Switch off all lights to save the battery"
+      ],
+      "answer": 0,
+      "explanation": "Headlights left on blind approaching drivers and confuse them about where the road goes.",
+      "cite": [
+        {
+          "ruleId": "R376"
+        }
+      ]
+    },
+    {
+      "id": "lit-011",
+      "topic": "vehicle-lighting",
+      "stem": "Hazard (four-way) flashers may be displayed during hours of darkness when:",
+      "options": [
+        "The vehicle is disabled or otherwise presents a traffic hazard",
+        "You are driving faster than traffic",
+        "You are looking for an address"
+      ],
+      "answer": 0,
+      "explanation": "They mark a hazard, which is why they belong on a disabled vehicle rather than a moving one.",
+      "cite": [
+        {
+          "ruleId": "R375"
+        }
+      ]
+    },
+    {
+      "id": "lit-012",
+      "topic": "vehicle-lighting",
+      "stem": "In normal daylight, a vehicle with its headlights on is visible:",
+      "options": [
+        "At twice the distance",
+        "At about the same distance",
+        "At half the distance"
+      ],
+      "answer": 0,
+      "explanation": "Daytime headlights double the distance at which other drivers pick you out — cheap insurance.",
+      "cite": [
+        {
+          "ruleId": "R392"
+        }
+      ]
+    },
+    {
+      "id": "phn-001",
+      "topic": "phones-and-distraction",
+      "stem": "Tennessee law prohibits a driver from using a hand-held telephone or personal digital assistant to:",
+      "options": [
+        "Transmit or read a written message while the vehicle is in motion",
+        "Make any call at all, even hands-free",
+        "Carry it in the vehicle"
+      ],
+      "answer": 0,
+      "explanation": "Reading counts, not just typing. The offense is complete the moment the vehicle is moving.",
+      "cite": [
+        {
+          "pdfPage": 44,
+          "quote": "hand-held personal digital assistant to transmit or read a written message while the driver's motor vehicle is in motion"
+        }
+      ]
+    },
+    {
+      "id": "phn-002",
+      "topic": "phones-and-distraction",
+      "stem": "Who is exempt from Tennessee's texting-while-driving law?",
+      "options": [
+        "Law enforcement, firefighters, emergency medical persons and emergency management officers in the discharge of official duties",
+        "Anyone using a phone mount",
+        "Drivers over 65"
+      ],
+      "answer": 0,
+      "explanation": "The exemption is narrow: on-duty emergency personnel only, while actually discharging their duties.",
+      "cite": [
+        {
+          "ruleId": "R380"
+        }
+      ]
+    },
+    {
+      "id": "phn-003",
+      "topic": "phones-and-distraction",
+      "stem": "For a driver 18 or older, using a hand-held mobile phone in a marked school zone while the warning flasher is operating is:",
+      "options": [
+        "An offense, unless the phone is in hands-free mode",
+        "Always permitted",
+        "An offense only if children are present"
+      ],
+      "answer": 0,
+      "explanation": "The flasher is the trigger. Hands-free mode is the only way an adult driver may use the phone there.",
+      "cite": [
+        {
+          "ruleId": "R381"
+        }
+      ]
+    },
+    {
+      "id": "phn-004",
+      "topic": "phones-and-distraction",
+      "stem": "The hands-free exception for phone use in a marked school zone:",
+      "options": [
+        "Does not apply to drivers under 18, and creates a delinquent act for them",
+        "Applies to everyone",
+        "Applies only to drivers over 21"
+      ],
+      "answer": 0,
+      "explanation": "A driver under 18 has no hands-free workaround in a flashing school zone.",
+      "cite": [
+        {
+          "ruleId": "R382"
+        }
+      ]
+    },
+    {
+      "id": "phn-005",
+      "topic": "phones-and-distraction",
+      "stem": "State law prohibits installing a video monitor or screen in a vehicle when it is:",
+      "options": [
+        "Capable of displaying a television broadcast or video signal visible to the driver while the vehicle is in motion",
+        "Larger than eight inches",
+        "Mounted anywhere on the dashboard"
+      ],
+      "answer": 0,
+      "explanation": "The test is whether the driver can see moving video while driving.",
+      "cite": [
+        {
+          "ruleId": "R383"
+        }
+      ]
+    },
+    {
+      "id": "phn-006",
+      "topic": "phones-and-distraction",
+      "stem": "Which in-vehicle display is NOT prohibited by the video device law?",
+      "options": [
+        "A navigation or GPS device",
+        "A television tuner visible to the driver",
+        "A movie player visible to the driver"
+      ],
+      "answer": 0,
+      "explanation": "Navigation, vehicle information displays and camera views forward, behind and to the sides are all allowed.",
+      "cite": [
+        {
+          "ruleId": "R384"
+        }
+      ]
+    },
+    {
+      "id": "phn-007",
+      "topic": "phones-and-distraction",
+      "stem": "Where should video equipment be placed in a vehicle?",
+      "options": [
+        "Where it creates no visual obstruction",
+        "Directly in the center of the windshield",
+        "Anywhere the driver can reach it easily"
+      ],
+      "answer": 0,
+      "explanation": "Even a legal display becomes a hazard if it blocks your view of the road.",
+      "cite": [
+        {
+          "pdfPage": 44,
+          "quote": "Careful consideration should be given to the placement of this equipment to insure no visual obstructions."
+        }
+      ]
+    },
+    {
+      "id": "res-001",
+      "topic": "driving-responsibilities",
+      "stem": "An adult driver receives a notice of proposed suspension after accumulating how many points in a 12-month period?",
+      "options": [
+        "12 or more",
+        "6 or more",
+        "20 or more"
+      ],
+      "answer": 0,
+      "explanation": "Twelve for an adult. A driver under 18 gets the same notice at six.",
+      "cite": [
+        {
+          "ruleId": "R463"
+        }
+      ]
+    },
+    {
+      "id": "res-002",
+      "topic": "driving-responsibilities",
+      "stem": "A driver under 18 receives a notice of proposed suspension after accumulating how many points in 12 months?",
+      "options": [
+        "6 or more",
+        "12 or more",
+        "3 or more"
+      ],
+      "answer": 0,
+      "explanation": "Half the adult threshold — and an advisory letter goes out at just one point.",
+      "cite": [
+        {
+          "ruleId": "R465"
+        }
+      ]
+    },
+    {
+      "id": "res-003",
+      "topic": "driving-responsibilities",
+      "stem": "An advisory letter is mailed to an adult licensee who has how many points within 12 months?",
+      "options": [
+        "6 to 11",
+        "1 to 5",
+        "12 to 20"
+      ],
+      "answer": 0,
+      "explanation": "It is a warning shot before the suspension threshold at twelve.",
+      "cite": [
+        {
+          "ruleId": "R464"
+        }
+      ]
+    },
+    {
+      "id": "res-004",
+      "topic": "driving-responsibilities",
+      "stem": "How many points does contributing to a crash that causes bodily injury add to your record?",
+      "options": [
+        "4 points",
+        "1 point",
+        "8 points"
+      ],
+      "answer": 0,
+      "explanation": "Three for property damage, four for injury, eight for a death.",
+      "cite": [
+        {
+          "ruleId": "R498"
+        }
+      ]
+    },
+    {
+      "id": "res-005",
+      "topic": "driving-responsibilities",
+      "stem": "Passing a stopped school, church or youth bus that is loading or discharging passengers is worth:",
+      "options": [
+        "8 points",
+        "3 points",
+        "1 point"
+      ],
+      "answer": 0,
+      "explanation": "Eight points — the same as failing to stop at a railroad crossing, and enough to suspend a teen driver on its own.",
+      "cite": [
+        {
+          "ruleId": "R494"
+        }
+      ]
+    },
+    {
+      "id": "res-006",
+      "topic": "driving-responsibilities",
+      "stem": "Reckless driving carries how many points?",
+      "options": [
+        "6 points",
+        "2 points",
+        "8 points"
+      ],
+      "answer": 0,
+      "explanation": "Six for reckless driving; reckless endangerment by vehicle is eight.",
+      "cite": [
+        {
+          "ruleId": "R493"
+        }
+      ]
+    },
+    {
+      "id": "res-007",
+      "topic": "driving-responsibilities",
+      "stem": "Operating a vehicle without your driver license in your possession carries:",
+      "options": [
+        "2 points",
+        "6 points",
+        "No points"
+      ],
+      "answer": 0,
+      "explanation": "Small compared with the moving violations, but it still goes on the record.",
+      "cite": [
+        {
+          "ruleId": "R499"
+        }
+      ]
+    },
+    {
+      "id": "res-008",
+      "topic": "driving-responsibilities",
+      "stem": "The Defensive Driving Course option for avoiding or reducing a suspension is available:",
+      "options": [
+        "Once in any five-year period",
+        "Once per calendar year",
+        "Any number of times"
+      ],
+      "answer": 0,
+      "explanation": "Once every five years. It is a second chance, not a subscription.",
+      "cite": [
+        {
+          "ruleId": "R467"
+        }
+      ]
+    },
+    {
+      "id": "res-009",
+      "topic": "driving-responsibilities",
+      "stem": "A suspended or revoked license must be surrendered to the Department of Safety within:",
+      "options": [
+        "20 days",
+        "48 hours",
+        "90 days"
+      ],
+      "answer": 0,
+      "explanation": "Twenty days, and failing to hand it in costs a $75 fine on top of everything else.",
+      "cite": [
+        {
+          "ruleId": "R461"
+        }
+      ]
+    },
+    {
+      "id": "res-010",
+      "topic": "driving-responsibilities",
+      "stem": "Driving while your license is suspended will:",
+      "options": [
+        "Extend the suspension period and could bring criminal prosecution",
+        "Restart the suspension at zero",
+        "Have no effect on the suspension"
+      ],
+      "answer": 0,
+      "explanation": "The clock stretches, and you may face prosecution as well.",
+      "cite": [
+        {
+          "ruleId": "R468"
+        }
+      ]
+    },
+    {
+      "id": "res-011",
+      "topic": "driving-responsibilities",
+      "stem": "Tennessee's Financial Responsibility Law requires a driver to produce evidence of financial responsibility:",
+      "options": [
+        "When charged with any violation or involved in a crash, without regard to fault",
+        "Only when found at fault in a crash",
+        "Only when renewing a registration"
+      ],
+      "answer": 0,
+      "explanation": "Fault is irrelevant to the requirement — you have to be able to show it either way.",
+      "cite": [
+        {
+          "ruleId": "R477"
+        }
+      ]
+    },
+    {
+      "id": "res-012",
+      "topic": "driving-responsibilities",
+      "stem": "Which type of insurance is NOT required by Tennessee law?",
+      "options": [
+        "Collision insurance",
+        "Liability coverage or other evidence of financial responsibility",
+        "None — all coverage types are required"
+      ],
+      "answer": 0,
+      "explanation": "Collision covers your own car and is optional. What the law demands is proof you can answer for damage you cause.",
+      "cite": [
+        {
+          "ruleId": "R478"
+        }
+      ]
+    },
+    {
+      "id": "res-013",
+      "topic": "driving-responsibilities",
+      "stem": "Which of these covers damages you cause to other people?",
+      "options": [
+        "Liability insurance",
+        "Collision insurance",
+        "Uninsured motorist insurance"
+      ],
+      "answer": 0,
+      "explanation": "Liability pays others; collision repairs your vehicle; uninsured motorist covers what an uninsured driver does to you.",
+      "cite": [
+        {
+          "ruleId": "R480"
+        }
+      ]
+    },
+    {
+      "id": "res-014",
+      "topic": "driving-responsibilities",
+      "stem": "A crash must be reported immediately to police when it involves death, injury or property damage over:",
+      "options": [
+        "$50",
+        "$500",
+        "$1,000"
+      ],
+      "answer": 0,
+      "explanation": "Fifty dollars triggers the duty to notify police. A written Owner/Driver Report is required when damage to any one person's property exceeds $400.",
+      "cite": [
+        {
+          "ruleId": "R481"
+        }
+      ]
+    },
+    {
+      "id": "res-015",
+      "topic": "driving-responsibilities",
+      "stem": "A crash is \"reportable\" in Tennessee when someone is killed or injured, or when property damage to any one person exceeds:",
+      "options": [
+        "$400",
+        "$100",
+        "$2,500"
+      ],
+      "answer": 0,
+      "explanation": "Over four hundred dollars — including damage to your own property — makes it reportable.",
+      "cite": [
+        {
+          "ruleId": "R482"
+        }
+      ]
+    },
+    {
+      "id": "res-016",
+      "topic": "driving-responsibilities",
+      "stem": "The law requires a driver involved in a crash to:",
+      "options": [
+        "Stop immediately at the scene, or as close as possible without obstructing traffic",
+        "Drive to the nearest police station",
+        "Continue if the damage looks minor"
+      ],
+      "answer": 0,
+      "explanation": "Leaving the scene of any crash is its own offense, and it is a ground for revocation.",
+      "cite": [
+        {
+          "ruleId": "R486"
+        }
+      ]
+    },
+    {
+      "id": "res-017",
+      "topic": "driving-responsibilities",
+      "stem": "At a crash scene, you should not move an injured person from a wrecked vehicle unless:",
+      "options": [
+        "You have medical or rescue training, or there is an immediate danger such as fire",
+        "They ask you to",
+        "The vehicle is blocking traffic"
+      ],
+      "answer": 0,
+      "explanation": "Moving someone with a spinal injury can do permanent damage. Fire is the exception that overrides that risk.",
+      "cite": [
+        {
+          "ruleId": "R488"
+        }
+      ]
+    },
+    {
+      "id": "res-018",
+      "topic": "driving-responsibilities",
+      "stem": "After a crash you must exchange:",
+      "options": [
+        "Names, addresses, driver license numbers, plate numbers and insurance policy numbers",
+        "Only your phone number",
+        "Nothing, if police were called"
+      ],
+      "answer": 0,
+      "explanation": "Take the witnesses' details too — memories fade and stories change.",
+      "cite": [
+        {
+          "ruleId": "R489"
+        }
+      ]
+    },
+    {
+      "id": "res-019",
+      "topic": "driving-responsibilities",
+      "stem": "Failing to report a reportable crash may result in:",
+      "options": [
+        "Suspension of driving and registration privileges",
+        "A written warning only",
+        "No consequence if no one was hurt"
+      ],
+      "answer": 0,
+      "explanation": "Both your license and your plates can be suspended over a missing report.",
+      "cite": [
+        {
+          "ruleId": "R484"
+        }
+      ]
+    },
+    {
+      "id": "res-020",
+      "topic": "driving-responsibilities",
+      "stem": "Tennessee is a member of the Non-Resident Violator Compact, which means that ignoring a traffic citation from another member state will:",
+      "options": [
+        "Get your Tennessee driving privileges suspended, revoked or canceled",
+        "Have no effect in Tennessee",
+        "Only affect you if you return to that state"
+      ],
+      "answer": 0,
+      "explanation": "The suspension stays until that court tells Tennessee the citation has been dealt with.",
+      "cite": [
+        {
+          "ruleId": "R491"
+        }
+      ]
+    },
+    {
+      "id": "res-021",
+      "topic": "driving-responsibilities",
+      "stem": "Two reckless driving violations within 12 months are:",
+      "options": [
+        "A ground for revoking or suspending a Tennessee driver license",
+        "Worth a warning letter only",
+        "Erased after one year"
+      ],
+      "answer": 0,
+      "explanation": "It is item 9 on the manual's list of grounds for losing the privilege to drive.",
+      "cite": [
+        {
+          "ruleId": "R457",
+          "quotePick": 1
+        }
+      ]
+    },
+    {
+      "id": "res-022",
+      "topic": "driving-responsibilities",
+      "stem": "A driver whose ability to drive is affected by a physical or mental disorder must submit a medical report from a doctor within:",
+      "options": [
+        "30 days of notification",
+        "6 months of notification",
+        "One year of notification"
+      ],
+      "answer": 0,
+      "explanation": "Thirty days from the notice. The department can also require re-examination.",
+      "cite": [
+        {
+          "ruleId": "R474"
+        }
+      ]
+    },
+    {
+      "id": "res-023",
+      "topic": "driving-responsibilities",
+      "stem": "A driver who loses consciousness due to epilepsy, cardiac syncope or diabetes must remain lapse-free for how long before reinstatement is possible?",
+      "options": [
+        "At least six months",
+        "Thirty days",
+        "Two years"
+      ],
+      "answer": 0,
+      "explanation": "Six months clear, under a doctor's care, before driving privileges can come back.",
+      "cite": [
+        {
+          "ruleId": "R475"
+        }
+      ]
+    },
+    {
+      "id": "res-024",
+      "topic": "driving-responsibilities",
+      "stem": "You must notify the Department of Safety of a change of residence address within:",
+      "options": [
+        "10 days",
+        "30 days",
+        "60 days"
+      ],
+      "answer": 0,
+      "explanation": "Ten days — even if the address changed without you moving. Notices about your license go to the address on file.",
+      "cite": [
+        {
+          "pdfPage": 100,
+          "quote": "If you have a new address, you must report it to the Department of Safety within ten (10) days of the change."
+        }
+      ]
+    },
+    {
+      "id": "phn-008",
+      "topic": "phones-and-distraction",
+      "stem": "The manual calls concentration:",
+      "options": [
+        "One of the most important elements of safe and defensive driving",
+        "A skill only new drivers need",
+        "Less important than fast reflexes"
+      ],
+      "answer": 0,
+      "explanation": "Keeping your mind on driving is a habit you build deliberately, the same way you built the habit of checking your mirrors.",
+      "cite": [
+        {
+          "pdfPage": 107,
+          "quote": "Concentration is one of the most important elements of safe and defensive driving. You must develop the habit of keeping your mind on driving."
+        }
+      ]
+    },
+    {
+      "id": "phn-009",
+      "topic": "phones-and-distraction",
+      "stem": "According to the manual, the driver’s seat is no place for:",
+      "options": [
+        "Daydreaming, sightseeing or distracting conversations",
+        "Adjusting your mirrors before you set off",
+        "Checking your blind spot"
+      ],
+      "answer": 0,
+      "explanation": "A conversation that pulls your attention off the road is a distraction whether or not a phone is involved.",
+      "cite": [
+        {
+          "pdfPage": 107,
+          "quote": "The driver’s safety is no place for daydreaming, site-seeing or distracting conversations."
+        }
+      ]
+    },
+    {
+      "id": "phn-010",
+      "topic": "phones-and-distraction",
+      "stem": "Which does the manual list among the leading factors in crashes?",
+      "options": [
+        "Lack of concentration",
+        "Vehicle colour",
+        "Low tyre pressure"
+      ],
+      "answer": 0,
+      "explanation": "Excessive speed, lack of concentration and improper evasive action are the three it names — and human error is the single most common cause.",
+      "cite": [
+        {
+          "pdfPage": 112,
+          "quote": "The leading factors in crashes are:"
+        },
+        {
+          "pdfPage": 112,
+          "quote": "Excessive Speed • Lack of Concentration • Improper Evasive Action"
+        }
+      ]
+    },
+    {
+      "id": "phn-011",
+      "topic": "phones-and-distraction",
+      "stem": "When checking the traffic behind you, the manual warns that you should not:",
+      "options": [
+        "Keep your eyes off the road ahead for more than a brief look behind",
+        "Use your mirrors at all while moving",
+        "Check behind before changing lanes"
+      ],
+      "answer": 0,
+      "explanation": "Mirror checks are quick glances. Anything longer and the road ahead has changed without you.",
+      "cite": [
+        {
+          "pdfPage": 107,
+          "quote": "But don’t keep you eyes off the road ahead for more than a brief look behind."
+        }
+      ]
+    }
+  ]
+}

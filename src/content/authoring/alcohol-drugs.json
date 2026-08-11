@@ -1,0 +1,605 @@
+{
+  "note": "Blueprint area: Drugs and alcohol (25% of the knowledge test). Drawn from Section B Chapter 7 (PDF pp.93-98) and the restricted-license material in Chapter B-8. The manual states that at least 25 percent of test questions come from this chapter, so it is weighted accordingly.",
+  "questions": [
+    {
+      "id": "alc-001",
+      "topic": "alcohol-effects",
+      "stem": "About how much alcohol can the liver oxidize in an hour?",
+      "options": ["About one drink", "About three drinks", "It depends entirely on body weight"],
+      "answer": 0,
+      "explanation": "The liver works at a fixed rate of roughly one drink an hour. Body weight changes how high your BAC climbs, but not how fast it falls.",
+      "cite": [{ "ruleId": "R422" }]
+    },
+    {
+      "id": "alc-002",
+      "topic": "alcohol-effects",
+      "stem": "Coffee, a cold shower or exercise will:",
+      "options": ["Speed up the rate at which alcohol leaves the body", "Do nothing to speed up sobering — only time will", "Lower blood alcohol concentration by about half"],
+      "answer": 1,
+      "explanation": "These tricks may make a drinker feel more awake, but the alcohol is still in the blood. Only time sobers someone up.",
+      "cite": [{ "ruleId": "R422" }]
+    },
+    {
+      "id": "alc-003",
+      "topic": "alcohol-effects",
+      "stem": "Blood Alcohol Concentration (BAC) measures:",
+      "options": ["The number of drinks consumed in the last hour", "The percentage of alcohol in the blood", "How long it has been since the last drink"],
+      "answer": 1,
+      "explanation": "BAC is a percentage of alcohol in the blood, and impairment climbs as that number climbs.",
+      "cite": [{ "ruleId": "R423" }]
+    },
+    {
+      "id": "alc-004",
+      "topic": "alcohol-effects",
+      "stem": "In Tennessee, the blood alcohol concentration that is always illegal for a driver 21 or older is:",
+      "options": [".05", ".08", ".10"],
+      "answer": 1,
+      "explanation": "Point-oh-eight is the line above which intoxication is illegal in Tennessee and most other states — but a driver can be convicted below it.",
+      "cite": [{ "ruleId": "R424" }]
+    },
+    {
+      "id": "alc-005",
+      "topic": "alcohol-effects",
+      "stem": "The first ability alcohol affects is:",
+      "options": ["Judgment", "Hearing", "Muscle strength"],
+      "answer": 0,
+      "explanation": "Judgment goes first, which is exactly why an impaired driver is a poor judge of whether they are impaired.",
+      "cite": [{ "ruleId": "R454" }]
+    },
+    {
+      "id": "alc-006",
+      "topic": "alcohol-effects",
+      "stem": "Alcohol, in any concentration, is:",
+      "options": ["A stimulant", "A depressant", "A stimulant at low doses and a depressant at high doses"],
+      "answer": 1,
+      "explanation": "It is a depressant at every concentration. Feeling lively after a drink is loss of inhibition, not stimulation.",
+      "cite": [{ "ruleId": "R452" }]
+    },
+    {
+      "id": "alc-007",
+      "topic": "alcohol-effects",
+      "stem": "Alcohol reduces the ability to see clearly at night by:",
+      "options": ["Less than a tenth", "About a quarter", "More than half"],
+      "answer": 2,
+      "explanation": "Night vision is more than halved, and glare recovery slows too — which is why drinking and night driving is such a bad combination.",
+      "cite": [{ "ruleId": "R448" }]
+    },
+    {
+      "id": "alc-008",
+      "topic": "alcohol-effects",
+      "stem": "At a BAC of .05 percent, side vision is reduced by about:",
+      "options": ["5 percent", "30 percent", "60 percent"],
+      "answer": 1,
+      "explanation": "Losing roughly a third of your side vision means missing the cross traffic, the cyclist and the child at the curb.",
+      "cite": [{ "ruleId": "R448", "quotePick": 1 }]
+    },
+    {
+      "id": "alc-009",
+      "topic": "alcohol-effects",
+      "stem": "Reaction time and coordination begin to be impaired at a BAC as low as:",
+      "options": [".02 percent", ".08 percent", ".15 percent"],
+      "answer": 0,
+      "explanation": "Impairment starts far below the legal limit — about one drink's worth for many people.",
+      "cite": [{ "ruleId": "R449" }]
+    },
+    {
+      "id": "alc-010",
+      "topic": "alcohol-effects",
+      "stem": "According to the manual, driving skills, judgment and vision are already greatly impaired at BAC levels as low as:",
+      "options": [".03 and .04 percent", ".08 and .09 percent", ".12 and .13 percent"],
+      "answer": 0,
+      "explanation": "Well under the legal limit. The manual also states flatly that everyone at .10 percent is too impaired to drive safely.",
+      "cite": [{ "ruleId": "R450" }]
+    },
+    {
+      "id": "alc-011",
+      "topic": "alcohol-effects",
+      "stem": "At a BAC of .10 percent, a driver is about how much more likely to cause a crash than a sober driver?",
+      "options": ["Twice as likely", "Seven times as likely", "Fifty times as likely"],
+      "answer": 1,
+      "explanation": "Seven times at .10, twenty-five times at .15, and fifty times at .17 — the risk does not rise gently, it explodes.",
+      "cite": [{ "ruleId": "R451" }]
+    },
+    {
+      "id": "alc-012",
+      "topic": "alcohol-effects",
+      "stem": "The alcohol in one 12-ounce bottle of beer is about the same as the alcohol in:",
+      "options": ["A 1-ounce shot of whiskey", "A half-gallon of wine", "Three shots of whiskey"],
+      "answer": 0,
+      "explanation": "Beer, wine and spirits are served in different sizes precisely because their strength differs. A drink is a drink.",
+      "cite": [{ "ruleId": "R453" }]
+    },
+    {
+      "id": "alc-013",
+      "topic": "alcohol-effects",
+      "stem": "About how long does it take to cancel the intoxicating effects of one drink?",
+      "options": ["Fifteen minutes", "About one hour", "About four hours"],
+      "answer": 1,
+      "explanation": "One hour per drink. Three drinks, three hours — and no shortcut shortens it.",
+      "cite": [{ "ruleId": "R455" }]
+    },
+    {
+      "id": "alc-014",
+      "topic": "alcohol-effects",
+      "stem": "About what share of the information a driver uses comes from the eyes?",
+      "options": ["Almost half", "Almost 90 percent", "About 25 percent"],
+      "answer": 1,
+      "explanation": "Nearly everything you use to drive comes in through your eyes, so anything that degrades vision — alcohol, glare, fog — degrades driving.",
+      "cite": [{ "ruleId": "R456" }]
+    },
+    {
+      "id": "alc-015",
+      "topic": "alcohol-effects",
+      "stem": "A driver who has been drinking takes unnecessary risks such as speeding around curves or passing without enough clear distance. This is mainly a failure of:",
+      "options": ["Night vision", "Judgment", "Grip strength"],
+      "answer": 1,
+      "explanation": "Alcohol lowers concern for physical wellbeing, so risks that would look obviously stupid sober start to look fine.",
+      "cite": [{ "pdfPage": 94, "quote": "Good judgment decreases with the use of alcohol. The concern for physical well being also lessens. People under the influence of alcohol take unnecessary and dangerous risks." }]
+    },
+    {
+      "id": "alc-016",
+      "topic": "alcohol-effects",
+      "stem": "The two abilities most important to driving, and most affected by small amounts of alcohol, are:",
+      "options": ["Judgment and vision", "Hearing and balance", "Strength and stamina"],
+      "answer": 0,
+      "explanation": "Both are affected after a single drink, and both are the abilities driving depends on most.",
+      "cite": [{ "pdfPage": 94, "quote": "The two abilities most important to the driving task are judgment and vision, both of which are affected by small amounts of alcohol." }]
+    },
+    {
+      "id": "alc-017",
+      "topic": "alcohol-effects",
+      "stem": "Alcohol affects a driver's ability to judge:",
+      "options": ["Speed, time and distance", "Only distance", "Only the passage of time"],
+      "answer": 0,
+      "explanation": "All three go together, and all three are altered after a single drink — which is why gaps look bigger and closing speeds look slower.",
+      "cite": [{ "pdfPage": 94, "quote": "Your ability to judge speed, time and distance are altered after only one drink." }]
+    },
+    {
+      "id": "alc-018",
+      "topic": "alcohol-effects",
+      "stem": "Glare vision and glare recovery in a drinking driver are:",
+      "options": ["Improved, because the pupils widen", "Made worse, because eye muscles relax and recovery slows", "Unaffected by alcohol"],
+      "answer": 1,
+      "explanation": "Relaxed eye muscles cannot focus properly, and the eyes take longer to recover after oncoming headlights — a longer stretch of driving effectively blind.",
+      "cite": [{ "pdfPage": 94, "quote": "Glare vision is poor because of relaxed eye muscles. Glare recovery is also slowed by alcohol." }]
+    },
+
+    {
+      "id": "alc-019",
+      "topic": "dui-law",
+      "stem": "In Tennessee it is unlawful to drive or be in physical control of a vehicle while under the influence of:",
+      "options": ["Alcohol only", "Any intoxicant, marijuana, narcotic drug or stimulant drug", "Only substances that are illegal to possess"],
+      "answer": 1,
+      "explanation": "The DUI statute covers any intoxicant that impairs you, whether it came from a bar, a dealer or a pharmacy.",
+      "cite": [{ "ruleId": "R425" }]
+    },
+    {
+      "id": "alc-020",
+      "topic": "dui-law",
+      "stem": "A driver who registers a BAC of .00 percent:",
+      "options": ["Cannot be convicted of DUI", "Can still be convicted of DUI", "Can only be charged with reckless driving"],
+      "answer": 1,
+      "explanation": "DUI is about impairment, not just about a number. Drugs — including prescription drugs — impair without registering any alcohol at all.",
+      "cite": [{ "ruleId": "R426" }]
+    },
+    {
+      "id": "alc-021",
+      "topic": "dui-law",
+      "stem": "A BAC reading below .08 percent means the driver:",
+      "options": ["Is automatically cleared of DUI", "Is not cleared — a driver can still be convicted", "Will be charged only if there was a crash"],
+      "answer": 1,
+      "explanation": "The manual says it plainly: a level below .08 does not clear a driver.",
+      "cite": [{ "ruleId": "R426" }]
+    },
+    {
+      "id": "alc-022",
+      "topic": "dui-law",
+      "stem": "Having a valid prescription for a drug that impairs your driving is:",
+      "options": ["A complete defense to a DUI charge", "No defense to driving under the influence of it", "A defense only for a first offense"],
+      "answer": 1,
+      "explanation": "A prescription makes possession legal. It does not make impaired driving legal.",
+      "cite": [{ "ruleId": "R427" }]
+    },
+    {
+      "id": "alc-023",
+      "topic": "dui-law",
+      "stem": "Tennessee's Implied Consent Law means that by driving in this state you have already agreed to:",
+      "options": ["Be tested for alcohol or drug content when an officer has reasonable grounds", "Waive your right to a hearing", "Carry collision insurance"],
+      "answer": 0,
+      "explanation": "Your consent came with the driving privilege. The officer still needs reasonable grounds to believe you were driving impaired.",
+      "cite": [{ "ruleId": "R429" }]
+    },
+    {
+      "id": "alc-024",
+      "topic": "dui-law",
+      "stem": "A driver who is placed under arrest and refuses the officer's request for a blood alcohol test will likely:",
+      "options": ["Have driving privileges suspended by the court for twelve months", "Face no consequence, since the test is voluntary", "Receive a written warning for a first refusal"],
+      "answer": 0,
+      "explanation": "Refusal is its own violation of the implied consent law, and the likely penalty is a twelve-month suspension — separate from anything the DUI charge brings.",
+      "cite": [{ "ruleId": "R430" }]
+    },
+    {
+      "id": "alc-025",
+      "topic": "dui-law",
+      "stem": "Tennessee's \"No Refusal\" law allows law enforcement to:",
+      "options": ["Arrest a driver without probable cause", "Seek a search warrant for a blood sample from a suspected impaired driver", "Suspend a license at the roadside without a court"],
+      "answer": 1,
+      "explanation": "Refusing the test does not end the matter — officers can go to a judge for a warrant and take the sample anyway.",
+      "cite": [{ "ruleId": "R431" }]
+    },
+    {
+      "id": "alc-026",
+      "topic": "dui-law",
+      "stem": "The implied consent test is administered at the request of:",
+      "options": ["Any citizen who witnessed the driving", "A law enforcement officer with reasonable grounds to believe you were driving under the influence", "The driver's insurance company"],
+      "answer": 1,
+      "explanation": "Reasonable grounds are the trigger — an officer cannot demand a test of a driver at random.",
+      "cite": [{ "ruleId": "R429" }]
+    },
+    {
+      "id": "alc-027",
+      "topic": "dui-law",
+      "stem": "Tennessee's DUI law applies on public streets and highways, and also:",
+      "options": ["Only on interstates", "On shopping center, trailer park and apartment complex premises and other places frequented by the public", "Only where a speed limit is posted"],
+      "answer": 1,
+      "explanation": "Private parking lots that the public uses are covered. \"I never left the parking lot\" is not a defense.",
+      "cite": [{ "pdfPage": 95, "quote": "on the premises of any shopping center, trailer park, apartment house complex, or any place frequented by the public" }]
+    },
+    {
+      "id": "alc-028",
+      "topic": "dui-law",
+      "stem": "Under Tennessee law you can be charged with DUI when you are:",
+      "options": ["Driving the vehicle only", "Driving or in physical control of the vehicle", "Only when the vehicle is moving in traffic"],
+      "answer": 1,
+      "explanation": "Physical control counts. Sitting behind the wheel of a running car while impaired can be enough.",
+      "cite": [{ "pdfPage": 95, "quote": "it is unlawful for any person to drive or be in physical control of an automobile or other motor-driven vehicle on any public street, highway, road or alley" }]
+    },
+    {
+      "id": "alc-029",
+      "topic": "dui-law",
+      "stem": "A person whose license is revoked for DUI and who then applies for a photo identification license will find that the ID:",
+      "options": ["Looks exactly like any other state ID", "Must indicate that the person is a DUI offender", "Cannot be issued at all"],
+      "answer": 1,
+      "explanation": "The department is required to mark the ID. The credential itself carries the record.",
+      "cite": [{ "ruleId": "R436" }]
+    },
+    {
+      "id": "alc-030",
+      "topic": "dui-law",
+      "stem": "As a condition of probation, a DUI conviction in Tennessee requires the offender to:",
+      "options": ["Perform litter pick-up for three eight-hour shifts wearing a vest identifying them as a drunk driver", "Serve as a volunteer driving instructor", "Attend one victim-impact lecture"],
+      "answer": 0,
+      "explanation": "Three eight-hour shifts of roadside litter removal, wearing a vest that says \"I am a DRUNK DRIVER.\"",
+      "cite": [{ "ruleId": "R437" }]
+    },
+    {
+      "id": "alc-031",
+      "topic": "dui-law",
+      "stem": "The manual states that alcohol-related questions make up what share of the knowledge test?",
+      "options": ["At least 25 percent", "About 10 percent", "About 50 percent"],
+      "answer": 0,
+      "explanation": "A quarter of the test comes from the alcohol and drugs chapter — by law, not by custom.",
+      "cite": [{ "ruleId": "R070" }]
+    },
+    {
+      "id": "alc-032",
+      "topic": "dui-law",
+      "stem": "A driver who has been drinking and is stopped by an officer with reasonable grounds may be asked for a test of:",
+      "options": ["Blood or breath", "Fingerprints", "Vision only"],
+      "answer": 0,
+      "explanation": "The DUI statute is written around the alcohol concentration of blood or breath, and implied consent covers testing for alcohol or drug content.",
+      "cite": [{ "ruleId": "R425" }]
+    },
+    {
+      "id": "alc-033",
+      "topic": "dui-law",
+      "stem": "Restricted driving privileges after a conviction are NOT available to a driver whose latest offense is:",
+      "options": ["A first speeding conviction", "Vehicular assault or aggravated vehicular homicide", "Failure to display insurance"],
+      "answer": 1,
+      "explanation": "The most serious impaired-driving offenses close the restricted-license door entirely, as does a prior DUI within ten years.",
+      "cite": [{ "ruleId": "R471" }]
+    },
+    {
+      "id": "alc-034",
+      "topic": "dui-law",
+      "stem": "After the first year of a two-year revocation, a driver may apply for a restricted license if they:",
+      "options": ["Install an ignition interlock device for the remaining period of revocation", "Simply pay the reinstatement fee", "Move to another county"],
+      "answer": 0,
+      "explanation": "The interlock buys back part of the revocation: it must stay on the vehicle for the rest of the revocation period.",
+      "cite": [{ "ruleId": "R472" }],
+      "correctionId": "ignition-interlock-gps"
+    },
+
+    {
+      "id": "alc-035",
+      "topic": "dui-penalties",
+      "stem": "The minimum jail time for a first DUI conviction in Tennessee is:",
+      "options": ["48 hours", "30 days", "There is no minimum"],
+      "answer": 0,
+      "explanation": "Forty-eight hours is the floor for a first conviction, and the table sets a longer minimum where the BAC was very high.",
+      "cite": [{ "ruleId": "R432" }]
+    },
+    {
+      "id": "alc-036",
+      "topic": "dui-penalties",
+      "stem": "The fine range for a first DUI conviction in Tennessee is:",
+      "options": ["$350 to $1,500", "$50 to $200", "$3,000 to $15,000"],
+      "answer": 0,
+      "explanation": "And that is only the fine — court costs, bond, attorney fees, treatment and insurance increases come on top.",
+      "cite": [{ "pdfPage": 96, "quote": "$350-$1500 $600-$3500 $1,100 - $10,000 $3,000-$15,000" }]
+    },
+    {
+      "id": "alc-037",
+      "topic": "dui-penalties",
+      "stem": "The license revocation period for a first DUI conviction is:",
+      "options": ["30 days", "1 year", "5 years"],
+      "answer": 1,
+      "explanation": "One year for a first conviction, two for a second, three to ten for a third.",
+      "cite": [{ "pdfPage": 96, "quote": "1 year 2 years 3 -10 years 5 years [to indefinite]" }, { "pdfPage": 96, "quote": "Jail Time Fines License Revocation" }]
+    },
+    {
+      "id": "alc-038",
+      "topic": "dui-penalties",
+      "stem": "On a second DUI conviction, the vehicle:",
+      "options": ["Is subject to seizure and forfeiture", "Is impounded for exactly 48 hours", "Cannot be touched by the state"],
+      "answer": 0,
+      "explanation": "From the second conviction on, the car itself is on the line.",
+      "cite": [{ "ruleId": "R433" }]
+    },
+    {
+      "id": "alc-039",
+      "topic": "dui-penalties",
+      "stem": "A fourth or subsequent DUI conviction in Tennessee is:",
+      "options": ["A Class C misdemeanor", "A Class E felony", "Still a misdemeanor, with a larger fine"],
+      "answer": 1,
+      "explanation": "It stops being a misdemeanor. A felony conviction carries consequences that outlast any driving penalty.",
+      "cite": [{ "ruleId": "R435" }]
+    },
+    {
+      "id": "alc-040",
+      "topic": "dui-penalties",
+      "stem": "A driver's vehicle will be seized if the driver has:",
+      "options": ["Two DUI convictions within five years, both after January 1997", "Any single DUI conviction", "Three moving violations in a year"],
+      "answer": 0,
+      "explanation": "Two convictions inside five years triggers seizure, provided both offenses happened after January 1997.",
+      "cite": [{ "ruleId": "R442" }]
+    },
+    {
+      "id": "alc-041",
+      "topic": "dui-penalties",
+      "stem": "An ignition interlock device keeps a vehicle from starting when:",
+      "options": ["The driver's BAC is too high", "The driver is not wearing a seat belt", "The vehicle is overdue for inspection"],
+      "answer": 0,
+      "explanation": "The driver blows into the device before the engine will start, and again at intervals while driving.",
+      "cite": [{ "pdfPage": 96, "quote": "Only a motor vehicle equipped with a functioning ignition interlock device (which keeps a car from starting if the driver's BAC is too high)." }],
+      "correctionId": "ignition-interlock-gps"
+    },
+    {
+      "id": "alc-042",
+      "topic": "dui-penalties",
+      "stem": "The ignition interlock restriction for a first DUI offense can last:",
+      "options": ["Six months to one year", "Ten years", "Thirty days"],
+      "answer": 0,
+      "explanation": "Six months to a year for a first offense, up to three years for a second, and up to ten years for a third or later.",
+      "cite": [{ "ruleId": "R443" }]
+    },
+    {
+      "id": "alc-043",
+      "topic": "dui-penalties",
+      "stem": "A person with two DUIs in a five-year period must use an ignition interlock device for how long after reinstatement?",
+      "options": ["Six months", "Two weeks", "There is no such requirement"],
+      "answer": 0,
+      "explanation": "The interlock stays on for six months after you get your privileges back — the restriction outlives the revocation.",
+      "cite": [{ "ruleId": "R444" }]
+    },
+    {
+      "id": "alc-044",
+      "topic": "dui-penalties",
+      "stem": "Driving under the influence and causing a crash that kills another person may be charged as:",
+      "options": ["Vehicular homicide", "Reckless driving only", "A non-moving violation"],
+      "answer": 0,
+      "explanation": "Vehicular homicide carries fines and prison, and it is a permanent bar to a restricted license.",
+      "cite": [{ "ruleId": "R438" }]
+    },
+    {
+      "id": "alc-045",
+      "topic": "dui-penalties",
+      "stem": "Driving under the influence and causing a crash that injures another person may be charged as:",
+      "options": ["Aggravated assault", "Simple trespass", "A parking offense"],
+      "answer": 0,
+      "explanation": "An injury crash turns an impaired-driving charge into a violent felony charge carrying fines and prison.",
+      "cite": [{ "ruleId": "R439" }],
+      "correctionId": "aggravated-vehicular-bac-threshold"
+    },
+    {
+      "id": "alc-046",
+      "topic": "dui-penalties",
+      "stem": "Under the Drunk Driving Child Protection Act, violating the DUI laws while a child under 18 is in the vehicle adds a mandatory minimum of:",
+      "options": ["30 days in jail and a $1,000 fine", "A written warning", "One day of community service"],
+      "answer": 0,
+      "explanation": "Both penalties are mandatory minimums, and both are added on top of everything else the DUI carries.",
+      "cite": [{ "ruleId": "R440" }]
+    },
+    {
+      "id": "alc-047",
+      "topic": "dui-penalties",
+      "stem": "If a child suffers serious bodily injury in a DUI crash, the violation is:",
+      "options": ["A Class D felony", "A Class C misdemeanor", "An infraction"],
+      "answer": 0,
+      "explanation": "A Class D felony for serious injury, and a Class C felony — especially aggravated child endangerment — if the child dies.",
+      "cite": [{ "ruleId": "R441" }]
+    },
+    {
+      "id": "alc-048",
+      "topic": "dui-penalties",
+      "stem": "A driver whose privileges are already revoked for DUI and who is caught driving on that revoked license may have the vehicle:",
+      "options": ["Seized", "Returned with a warning", "Re-registered automatically"],
+      "answer": 0,
+      "explanation": "Driving on a DUI revocation puts the car itself at risk of seizure, first offense or not.",
+      "cite": [{ "pdfPage": 96, "quote": "A vehicle can be seized if a driver is charged with driving on a revoked license when his/her driving privileges are already revoked as a result of a DUI conviction" }]
+    },
+    {
+      "id": "alc-049",
+      "topic": "dui-penalties",
+      "stem": "In addition to jail and fines, a judge will require a DUI offender who had a prior DUI in the previous five years to:",
+      "options": ["Undergo a drug and alcohol treatment assessment and receive treatment as appropriate", "Retake the road test only", "Surrender their vehicle registration permanently"],
+      "answer": 0,
+      "explanation": "Repeat offenders are assessed and treated, not just punished — the court treats the drinking as the underlying problem.",
+      "cite": [{ "pdfPage": 96, "quote": "To undergo a drug and alcohol treatment assessment and receive treatment, as appropriate, for those who have had a prior DUI in the five years prior to the current DUI." }]
+    },
+    {
+      "id": "alc-050",
+      "topic": "dui-penalties",
+      "stem": "Besides fines and court costs, the manual lists which of these as a real cost of a DUI?",
+      "options": ["Increased insurance premiums", "A mandatory vehicle upgrade", "A higher speed limit allowance"],
+      "answer": 0,
+      "explanation": "Bond, attorney fees, lost work, treatment fees and higher premiums add up to thousands of dollars beyond the fine.",
+      "cite": [{ "pdfPage": 96, "quote": "increased insurance premiums, and other expenses. This can add up to several thousand dollars." }]
+    },
+    {
+      "id": "alc-051",
+      "topic": "dui-penalties",
+      "stem": "A DUI offender ordered into a restricted license must, in most cases, submit:",
+      "options": ["Two copies of the court order and proof of SR-22 insurance", "A letter from an employer only", "Nothing beyond the application"],
+      "answer": 0,
+      "explanation": "Two copies of the court order, proof of financial responsibility, the required tests and the fees.",
+      "cite": [{ "ruleId": "R473" }]
+    },
+    {
+      "id": "alc-052",
+      "topic": "dui-penalties",
+      "stem": "A restricted license issued after a DUI conviction may permit driving:",
+      "options": ["Anywhere, at any time", "To and from work, college, religious services and required program appointments", "Only between midnight and 6 a.m."],
+      "answer": 1,
+      "explanation": "The order lists the permitted trips — work, full-time college, worship, employment driving, litter pick-up shifts, treatment, probation and interlock appointments.",
+      "cite": [{ "pdfPage": 100, "quote": "the trial judge may issue an order for a restricted license to go to and from work, attend college full time" }]
+    },
+
+    {
+      "id": "alc-053",
+      "topic": "underage-and-other-drugs",
+      "stem": "A driver who is at least 16 but not yet 21 commits underage driving while impaired at a BAC of:",
+      "options": [".02 percent", ".08 percent", ".05 percent"],
+      "answer": 0,
+      "explanation": "Two hundredths of a percent — roughly one drink. Tennessee sets a much lower line for drivers under 21.",
+      "cite": [{ "ruleId": "R447", "quotePick": 1 }]
+    },
+    {
+      "id": "alc-054",
+      "topic": "underage-and-other-drugs",
+      "stem": "The penalty for underage driving while impaired includes:",
+      "options": ["Loss of license for one year and a $250 fine", "A warning letter", "A three-month permit restriction"],
+      "answer": 0,
+      "explanation": "A year without a license and a $250 fine, sometimes with public service work attached.",
+      "cite": [{ "ruleId": "R447" }]
+    },
+    {
+      "id": "alc-055",
+      "topic": "underage-and-other-drugs",
+      "stem": "A person 18, 19 or 20 years old who is convicted of purchasing or possessing alcohol loses the privilege to drive for:",
+      "options": ["One year", "Thirty days", "Only until the fine is paid"],
+      "answer": 0,
+      "explanation": "One year for a first conviction, two for a second — and it applies whether or not a vehicle was involved at all.",
+      "cite": [{ "ruleId": "R445" }]
+    },
+    {
+      "id": "alc-056",
+      "topic": "underage-and-other-drugs",
+      "stem": "The alcohol-conviction suspension for an 18 to 20-year-old applies:",
+      "options": ["Only if the person was driving at the time", "Whether or not the person was driving or even in a vehicle", "Only if the person was in a parking lot"],
+      "answer": 1,
+      "explanation": "It is a driving penalty attached to an alcohol conviction, not a driving offense. Buying a beer at 19 can cost a license.",
+      "cite": [{ "ruleId": "R445" }]
+    },
+    {
+      "id": "alc-057",
+      "topic": "underage-and-other-drugs",
+      "stem": "A person between 13 and 17 found to have possessed, consumed or sold alcohol or drugs has driving privileges suspended for:",
+      "options": ["One year or until age 17, whichever is longer", "Thirty days", "Until the next birthday"],
+      "answer": 0,
+      "explanation": "A second conviction stretches it to two years or until age 18, whichever is longer.",
+      "cite": [{ "ruleId": "R446", "quotePick": 1 }]
+    },
+    {
+      "id": "alc-058",
+      "topic": "underage-and-other-drugs",
+      "stem": "A second juvenile drug or alcohol conviction suspends driving privileges for:",
+      "options": ["Two years or until age 18, whichever is longer", "Six months", "Ninety days"],
+      "answer": 0,
+      "explanation": "The suspensions stack toward adulthood — the second one runs to at least age 18.",
+      "cite": [{ "ruleId": "R446" }]
+    },
+    {
+      "id": "alc-059",
+      "topic": "underage-and-other-drugs",
+      "stem": "A person under 18 may lose driving privileges for a drug or alcohol offense:",
+      "options": ["Only if it happened while driving", "Whether or not the offense occurred while driving", "Only for a second offense"],
+      "answer": 1,
+      "explanation": "For drivers under 18 the offense does not have to touch a car at all.",
+      "cite": [{ "ruleId": "R458" }]
+    },
+    {
+      "id": "alc-060",
+      "topic": "underage-and-other-drugs",
+      "stem": "Everyday over-the-counter medicines such as cold remedies and antihistamines:",
+      "options": ["Never affect driving", "Can affect driving ability and should be checked before driving", "Cancel out the effects of alcohol"],
+      "answer": 1,
+      "explanation": "The manual treats \"every day\" drugs as a real hazard. Read the label, and never mix them with alcohol.",
+      "cite": [{ "pdfPage": 95, "quote": "Non-prescription drugs, such as cold tablets, cough syrups, allergy remedies, etc., purchased over-the-counter may contain antihistamines, alcohol, codeine and other compounds that can be especially dangerous for drivers." }]
+    },
+    {
+      "id": "alc-061",
+      "topic": "underage-and-other-drugs",
+      "stem": "Combining a prescription or over-the-counter drug with alcohol:",
+      "options": ["Is safe as long as the dose is small", "Can multiply the effect of both", "Neutralizes the alcohol"],
+      "answer": 1,
+      "explanation": "Mixing is where people get caught out: the combined effect is far larger than either substance alone.",
+      "cite": [{ "pdfPage": 95, "quote": "when alcohol is combined with another depressant, like tranquilizers or sedatives, the results are not just added together; they are multiplied" }]
+    },
+    {
+      "id": "alc-062",
+      "topic": "underage-and-other-drugs",
+      "stem": "Driving under the influence of an illegal drug in Tennessee carries:",
+      "options": ["The same penalties as driving under the influence of alcohol", "A lesser penalty than alcohol", "Only a fine"],
+      "answer": 0,
+      "explanation": "Same law, same penalties — and prescription drugs are treated the same way.",
+      "cite": [{ "ruleId": "R428" }]
+    },
+    {
+      "id": "alc-063",
+      "topic": "underage-and-other-drugs",
+      "stem": "Possession by a driver of five or more grams of methamphetamine in a vehicle is:",
+      "options": ["A ground for revoking or suspending a Tennessee driver license", "A parking violation", "Not connected to driving privileges"],
+      "answer": 0,
+      "explanation": "It is item 17 on the manual's list of grounds for losing your license.",
+      "cite": [{ "ruleId": "R457" }]
+    },
+    {
+      "id": "alc-064",
+      "topic": "underage-and-other-drugs",
+      "stem": "The best plan for a driver who intends to drink is to:",
+      "options": ["Decide in advance not to drive and arrange another way home", "Drink only beer", "Wait fifteen minutes after the last drink"],
+      "answer": 0,
+      "explanation": "The manual's prevention advice is to plan before the first drink, because judgment is the first thing you lose.",
+      "cite": [{ "pdfPage": 97, "quote": "If you are planning a night on the town, decide before you start drinking that you are not going to drive." }]
+    },
+    {
+      "id": "alc-065",
+      "topic": "underage-and-other-drugs",
+      "stem": "Riding as a passenger with a driver who has been drinking is:",
+      "options": ["Safe as long as you wear a belt", "A serious danger the manual warns young people about specifically", "Only a problem at night"],
+      "answer": 1,
+      "explanation": "The manual singles this out: young people are endangered not only by their own impaired driving but by getting into a car with someone else who is impaired.",
+      "cite": [{ "pdfPage": 96, "quote": "This is not only from their own impaired driving, but also from getting in the car with other drivers who are not sober." }]
+    },
+    {
+      "id": "alc-066",
+      "topic": "underage-and-other-drugs",
+      "stem": "Compared with older drivers, a young driver with a BAC between .01 and .08 percent has:",
+      "options": ["A much greater chance of a crash", "About the same chance of a crash", "A lower chance, because of faster reflexes"],
+      "answer": 0,
+      "explanation": "Low tolerance and limited driving experience combine, so young drivers are in trouble at alcohol levels that would be under the adult limit.",
+      "cite": [{ "pdfPage": 97, "quote": "The young driver's chance of a crash is much greater with BAC between .01-.08 percent than older drivers." }]
+    }
+  ]
+}
