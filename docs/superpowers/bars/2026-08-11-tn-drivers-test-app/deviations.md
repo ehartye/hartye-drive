@@ -385,3 +385,39 @@ line — offline badge`, with the brand rendered **only** by `AppNav` at the hea
 of the side rail (§3), never in the page header. The context line hides below
 900px, where the title and badge need the full bar. `09`, `06b`, `06d`, `11`,
 `11b` still need the same treatment.
+
+---
+
+## 2026-08-11 — P1 foundation & design system (OPEN)
+
+Nothing in `stack-grounding.md`, `executable-floor.md`, `practices-checklist.md`
+or `mockups/_base.css` was edited. Three items to rule on.
+
+### Two components added to the §3 vocabulary — ruling requested
+
+§3 says builders may use **only** the listed components, and that adding one
+means adding it there first via a deviation. Two were unavoidable:
+
+| Component | What it is | Why the list can't carry it |
+|---|---|---|
+| `AppBar` | The §3 app-bar pattern made into a component: `[optional back-link · page title · context line] —— offline badge`, with the context line hidden below 900px. | §3 **specifies** this pattern and names no component that renders it. Leaving it uncomponentised means every one of the ~11 screens re-implements a frozen pattern by hand, which is exactly how the Phase-1 headers drifted into four different shapes. It renders `OfflineBadge`; it never renders the brand. |
+| `ToastDock` | The fixed positioner a `Toast` sits in — offset clear of the bottom bar below 1024px and of the side rail above it. | `Toast` is the notice. Something has to own the offset, and §3's rule that no page undoes a nav offset means it cannot be the page. |
+
+Both are ~25 lines and add no new visual vocabulary. If either is refused, the
+pattern has to live in every page instead.
+
+### `npm run audit` and `npm run audit:signs` are declared, not implemented
+
+Both exit 0 printing `NOT YET IMPLEMENTED — this is not a pass`, the owning
+piece (P9/P10 for Lighthouse, P3 for the sign audit) and the checks they will
+perform. The scripts exist so `npm run verify` has its full shape from the
+start; they are deliberately loud so a critic never reads silence as a pass.
+`validate:content` is P2's and is left untouched.
+
+### Playwright's dev server runs on 5301 / 5302, not 5173
+
+`npm run dev` keeps port 5173 per §9. The two Playwright configs start their own
+Vite on dedicated ports because a test harness that reuses "whatever is already
+answering on 5173" will silently test a different application — which happened
+once during this build, on this machine. The e2e and a11y suites are
+self-contained as a result; nothing about the app's own port changed.

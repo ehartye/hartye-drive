@@ -1,0 +1,135 @@
+import { test, expect } from '@playwright/test';
+
+const ROUTES = ['/study', '/exam', '/signs', '/progress', '/settings', '/gallery'];
+
+test.describe('foundation', () => {
+  test('every destination boots and carries a unique title', async ({ page }) => {
+    const titles = new Set<string>();
+    for (const route of ROUTES) {
+      await page.goto(route);
+      await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+      const title = await page.title();
+      expect(title).toContain('TN Drive');
+      titles.add(title);
+    }
+    expect(titles.size).toBe(ROUTES.length);
+  });
+
+  test('makes zero requests to any third-party origin (practices B2/B3/F5)', async ({ page }) => {
+    const external: string[] = [];
+    page.on('request', (request) => {
+      const url = new URL(request.url());
+      if (url.hostname !== 'localhost' && url.protocol !== 'data:') external.push(request.url());
+    });
+    await page.goto('/gallery');
+    await page.waitForLoadState('networkidle');
+    expect(external).toEqual([]);
+  });
+
+  test('loads the self-hosted faces, not a font CDN', async ({ page }) => {
+    const fonts: string[] = [];
+    page.on('request', (r) => {
+      if (r.resourceType() === 'font') fonts.push(new URL(r.url()).pathname);
+    });
+    await page.goto('/gallery');
+    await page.waitForLoadState('networkidle');
+    expect(fonts.length).toBeGreaterThan(0);
+    for (const path of fonts) expect(path.startsWith('/fonts/')).toBe(true);
+  });
+
+  test('reflows at 320px with no horizontal scrolling (WCAG SC 1.4.10)', async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 800 });
+    for (const route of ROUTES) {
+      await page.goto(route);
+      await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+      const overflow = await page.evaluate(
+        () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      );
+      expect(overflow, `${route} scrolls horizontally at 320px`).toBeLessThanOrEqual(0);
+    }
+  });
+
+  test('holds at 200% zoom without losing function', async ({ page }) => {
+    await page.setViewportSize({ width: 640, height: 800 }); // 1280 CSS px at 200%
+    await page.goto('/gallery');
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    await expect(page.getByRole('navigation', { name: 'Main' }).getByRole('link')).toHaveCount(4);
+    const overflow = await page.evaluate(
+      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    );
+    expect(overflow).toBeLessThanOrEqual(0);
+  });
+
+  test('gives every focused control a visible ring (practices A6)', async ({ page }) => {
+    await page.goto('/gallery');
+    for (let i = 0; i < 25; i += 1) {
+      await page.keyboard.press('Tab');
+      const ring = await page.evaluate(() => {
+        const el = document.activeElement;
+        if (!el || el === document.body) return null;
+        const s = getComputedStyle(el);
+        return { width: s.outlineWidth, style: s.outlineStyle, color: s.outlineColor };
+      });
+      if (!ring) continue;
+      expect(ring.style, 'focused element has no outline style').not.toBe('none');
+      expect(parseFloat(ring.width), 'focused element has a zero-width outline').toBeGreaterThan(0);
+    }
+  });
+
+  test('nav is a bottom bar on mobile and a side rail on desktop (grounding §4)', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/study');
+    const nav = page.getByRole('navigation', { name: 'Main' });
+    const mobile = await nav.boundingBox();
+    const viewport = page.viewportSize();
+    expect(mobile).not.toBeNull();
+    expect(mobile!.y + mobile!.height).toBeGreaterThan(viewport!.height - 4);
+    await expect(page.locator('.railbrand')).toBeHidden();
+
+    await page.setViewportSize({ width: 1440, height: 900 });
+    const rail = await nav.boundingBox();
+    expect(rail!.x).toBeLessThan(4);
+    expect(rail!.height).toBeGreaterThan(400);
+    await expect(page.locator('.railbrand')).toBeVisible();
+  });
+
+  test('honours prefers-reduced-motion (practices A13)', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto('/gallery');
+    const durations = await page.evaluate(() =>
+      [...document.querySelectorAll('.btn, .choice, .skel, .toast')].map((el) => {
+        const s = getComputedStyle(el);
+        return [s.transitionDuration, s.animationDuration].join(' ');
+      }),
+    );
+    expect(durations.length).toBeGreaterThan(0);
+    for (const d of durations) {
+      expect(d).not.toMatch(/\b0\.1[5-9]s|\b1\.4s|\b0\.18s/);
+    }
+  });
+
+  test('focus mode hides the nav and reclaims its offset (grounding §4)', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('/gallery/focus');
+    await expect(page.getByRole('navigation', { name: 'Main' })).toHaveCount(0);
+    await expect(page.getByRole('button', { name: 'End session' })).toBeVisible();
+    await expect(page.getByRole('progressbar')).toBeVisible();
+  });
+
+  test('a choice can be answered with the keyboard alone (practices A4)', async ({ page }) => {
+    await page.goto('/gallery/focus');
+    const choice = page.getByRole('button', { name: /Stop, and stay stopped/ });
+    await choice.focus();
+    await expect(choice).toBeFocused();
+    await page.keyboard.press('Enter');
+    await expect(choice).toBeVisible();
+  });
+
+  test('an unknown deep link lands on a recoverable screen, not a blank one', async ({ page }) => {
+    await page.goto('/definitely-not-a-route');
+    await expect(page.getByRole('heading', { level: 1, name: /Wrong turn/ })).toBeVisible();
+    await expect(page.getByRole('link', { name: /Back to studying/ })).toBeVisible();
+  });
+});

@@ -1,0 +1,94 @@
+/* ============================================================
+   BASE LAYER — element defaults for "the interface is the roadway".
+   Dark-first, because the memorable version of this material is a sign lit by
+   headlights at night.
+   ============================================================ */
+
+:root {
+  /* Layout constants owned by AppNav / FocusChrome. No page may redefine them. */
+  --rail-width: 232px; /* desktop side rail (§4) */
+  --nav-height: 92px; /* mobile bottom bar clearance */
+  --rail-brand-height: 5.5rem; /* brand block at the head of the rail (§3) */
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    color-scheme: dark;
+    background: var(--color-asphalt);
+  }
+
+  body {
+    margin: 0;
+    background: var(--color-asphalt);
+    color: var(--color-sign-white);
+    font-family: var(--font-ui);
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    /* 320px support (§5): nothing may force a horizontal scrollbar. */
+    overflow-x: hidden;
+  }
+
+  /* The `.type-*` aliases exist so a heading's *scale* can be borrowed without
+     borrowing its *level* — the gallery shows all three sizes on a page that
+     may only ever contain one <h1> (practices A10). */
+  h1,
+  h2,
+  h3,
+  h4,
+  .type-h1,
+  .type-h2,
+  .type-h3 {
+    font-family: var(--font-ui);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.12;
+    margin: 0;
+  }
+  h1,
+  .type-h1 {
+    font-size: clamp(1.75rem, 5vw, 2.5rem);
+  }
+  h2,
+  .type-h2 {
+    font-size: clamp(1.25rem, 3.5vw, 1.6rem);
+  }
+  h3,
+  .type-h3 {
+    font-size: 1.0625rem;
+    letter-spacing: 0;
+  }
+
+  p {
+    margin: 0;
+  }
+
+  /* ---------- focus: always visible, never removed (§5, practices A6) ----------
+     Warning yellow on asphalt is 12.1:1 — far above the 3:1 SC 2.4.11 asks for,
+     and it is the one colour that stays visible on every surface in the system,
+     including a guide-green sign face. */
+  :where(a, button, [tabindex], input, select, textarea, summary, dialog):focus-visible {
+    outline: 3px solid var(--color-warning);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+
+  /* ---------- motion preference (§5, practices A13) ---------- */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}

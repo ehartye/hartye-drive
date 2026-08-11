@@ -1,0 +1,63 @@
+/* ============================================================
+   THE TOKEN LAYER — grounding §2, transcribed exactly.
+
+   This is the single source of design truth every piece imports; it is what
+   keeps parallel builders visually cohesive. Nothing downstream may redefine
+   a token. Tailwind v4 turns each entry here into both a CSS custom property
+   on :root and a utility (`bg-asphalt-raised`, `text-guide-text`, …).
+
+   THE TWO-JOB RULE (§2, binding): a sign FACE uses its true MUTCD colour; UI
+   TEXT uses the accessible text tokens. Never set body text in --color-guide-lit
+   or --color-stop-lit — measured 4.45:1 and 3.64:1 on asphalt, both under the
+   4.5:1 §5 commits to.
+   ============================================================ */
+
+@theme {
+  /* --- surfaces --- */
+  --color-asphalt: #14161a;
+  --color-asphalt-raised: #1c1f25;
+  --color-asphalt-sunk: #101216;
+  --color-shoulder: #2a2f38;
+  --color-shoulder-lit: #3a414d;
+
+  /* --- MUTCD semantic palette: SIGN FACES --- */
+  --color-guide: #04684e; /* guide green — primary brand + primary action */
+  --color-guide-lit: #0a8f6c; /* hover/focus state of primary */
+  --color-guide-deep: #033f30;
+  --color-sign-white: #f2f4f1;
+  --color-warning: #ffcc00; /* warning yellow — diamonds, caution, review */
+  --color-stop: #b4151c; /* regulatory red — wrong, prohibition, destructive */
+  --color-stop-lit: #d8232a;
+  --color-work: #e35205; /* construction orange — work zones, in-progress */
+  --color-route: #003f87; /* interstate blue — motorist services, informational */
+  --color-route-lit: #2c6fc4;
+  --color-school: #c7ea00; /* FLUORESCENT YELLOW-GREEN — school / ped / bike warning */
+  --color-incident: #ee5fa7; /* fluorescent pink — INCIDENT MANAGEMENT ONLY. Not school. */
+
+  /* --- UI TEXT tokens (the other job) --- */
+  --color-sign-dim: #9ba3ae; /* 7.2:1 on asphalt */
+  --color-sign-faint: #808894; /* 4.6:1 on asphalt */
+  --color-guide-text: #2fbf95; /* 7.1:1 on raised surface */
+  --color-stop-text: #ff6b70; /* 6.5:1 on asphalt */
+  --color-work-text: #ff8a4c; /* construction orange, legible as text */
+  --color-route-text: #6ba6f5; /* --color-route-lit is 3.28:1 as text; this passes */
+  --color-read: #dde2e6; /* reading copy */
+  --color-quote: #cbd2d8; /* manual quotations */
+
+  /* --- type ---
+     Overpass IS the road (FHWA Highway Gothic derivative); Newsreader is the
+     book/the law. Question stems set in Overpass, explanations in Newsreader.
+     That split is a design rule, not a suggestion. */
+  --font-ui: 'Overpass', system-ui, sans-serif;
+  --font-mono: 'Overpass Mono', ui-monospace, monospace;
+  --font-read: 'Newsreader', Georgia, serif;
+
+  /* --- rhythm --- */
+  --spacing-gut: 1.25rem;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 14px;
+
+  /* --- measure --- */
+  --container-rail: 720px; /* reading measure on desktop (§4) */
+}
