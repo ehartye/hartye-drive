@@ -45,10 +45,25 @@ const browserStorage = (): Storage | null => {
   }
 };
 
+/**
+ * `created` guards the temporal dead zone, exactly as the other four stores do.
+ *
+ * `safe.getItem` below runs at module scope — before `useSettingsStore` is
+ * initialised. If storage refuses that first read (a blocked site-data policy
+ * throws on the property access itself, and `browserStorage()` returning null
+ * makes the very first `getItem` report a failure), this callback fires while
+ * the binding is still in TDZ and throws `ReferenceError: Cannot access
+ * 'useSettingsStore' before initialization` **during module evaluation**. React
+ * then never mounts, no error boundary runs, and the learner sits on the static
+ * boot plate forever — for a browser configuration this app explicitly promises
+ * to handle. `refusedWrite` is read synchronously in the initialiser below, so
+ * the first render still knows.
+ */
+let created = false;
 let refusedWrite = false;
 const safe = createSafeStorage(browserStorage(), () => {
   refusedWrite = true;
-  useSettingsStore.setState({ storageMode: 'session-only' });
+  if (created) useSettingsStore.setState({ storageMode: 'session-only' });
 });
 
 /**
@@ -87,6 +102,8 @@ export const useSettingsStore = create<SettingsStore>()((set, get) => ({
     persistPrefs(prefs);
   },
 }));
+
+created = true;
 
 /** Applied at import, so the first paint already carries the learner's choice. */
 applyAppearance(initial, documentRoot());

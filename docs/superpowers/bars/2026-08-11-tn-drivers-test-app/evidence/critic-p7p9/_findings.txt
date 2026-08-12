@@ -1,0 +1,65 @@
+Blind critic P7/P8/P9 — reproduction notes
+
+[CRITICAL] localStorage access throwing => app never mounts (frozen boot plate)
+  Repro (Chrome/Edge with "Block all cookies and site data", sandboxed frame,
+  or any profile where reading window.localStorage throws SecurityError):
+
+    Object.defineProperty(window,'localStorage',{get(){throw new DOMException('blocked','SecurityError')}});
+
+  Production build, http://localhost:4711/ :
+    [pageerror] Cannot access 'useSettingsStore' before initialization
+    ReferenceError: Cannot access 'useSettingsStore' before initialization
+        at src/store/settings.ts:19:3        <- useSettingsStore.setState(...) in the failure callback
+        at report (src/domain/persistence.ts:116:5)
+        at Object.getItem (src/domain/persistence.ts:121:9)
+        at src/store/settings.ts:26:38       <- const initial = loadPreferences(safe.getItem(...))
+    ROOT TEXT: "TN Drive / The Tennessee Class D knowledge test ... opens at zero bytes of network."
+    (the static index.html boot plate; React never mounts, no error boundary, no recovery)
+
+  Stubbing only Storage.prototype.setItem DOES reach the session-only screen.
+  store/progress.ts, store/exam.ts, store/signs.ts and store/setup.ts all guard
+  this with `let created = false`; store/settings.ts does not.
+
+[MAJOR] Quarantine is dashboard-only. /progress and /settings report 0 answers.
+  Seed a real 41 KB tn-drive:progress payload with version 77 (future schema):
+    - /            -> "Your saved progress can't be read" (correct)
+    - /progress    -> "Early days", "0% of everything you have answered", "0 TOPICS TOUCHED"
+    - /settings    -> "0 sittings · 0 answered questions · 0 topics", reset button ENABLED
+    - reset dialog -> "Erase all 0 of your answers?" / "0 answered questions"
+      then: record before length 41484 -> after DELETED (rewritten to 121 bytes)
+
+[MAJOR] mockup 11 "Offline & install" section is absent from /settings.
+  Mockup headings: Settings & about / Reading & motion / Where these questions come from /
+  What we've corrected since 2022 / Your data / Reset all progress / Offline & install / About
+  App headings:    Settings & about / Reading & motion / Where these questions come from /
+  What we've corrected since 2022 / What we won't teach / Your data / About
+  Nothing anywhere in the app states the update policy ("never applied in the middle of an exam").
+
+[MINOR] Progress.tsx:461 laneCaption() is vacuously true with nothing touched:
+  "Every area you have touched is at or past 80%. That is what walking in ready looks like."
+  rendered with 0 areas answered (reachable in the quarantine state above).
+
+[MINOR] dashboardHeadline: 12 answers, 1 correct -> plate reads 8%, sub-line reads
+  "Nothing is holding you back right now."
+
+[MINOR] install offer: dismissal is component state only; returns on every reload.
+
+[MINOR] settings intro claims all 6 corrections carry "the public chapter that made it";
+  3 of 6 have no public chapter (REAL ID Act 2005/DHS, Tenn. Code Ann. 55-12-102,
+  TDOSHS policy with effectiveDate = the 2026-08-11 verification date, rendered
+  as "In force August 11, 2026").
+
+[NOTE] vite.config.ts criticalPreload doc comment argues for modulepreload;
+  the code emits <link rel="prefetch" as="script">.
+
+GREEN, reproduced:
+  typecheck / lint / build / validate:content / audit:signs / size / test (649) /
+  test:coverage (domain 99.65 lines, 94.01 branches) / test:e2e (299) / test:a11y (122)
+  offline: cold boot + full study session + full 30q exam (halted at 7 wrong) +
+    signs + drill + progress + settings + rule reference, 0 failed requests, 0 console msgs
+  resilience: 5 keys x 6 poisons + 2 combined = 32 scenarios, every payload INTACT,
+    no white screen, no unhandled rejection
+  update: waits, no reload, no toast mid-exam, toast after
+  partial precache: recoverable ErrorState, no white screen
+  axe: 30 scans (15 cells x 390/1440) zero violations
+  1212 data quotes verbatim in tn-dl-manual-extract.txt; settings preview quote verbatim

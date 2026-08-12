@@ -1,0 +1,51 @@
+cell01-onboarding @390: h1="Pass theknowledge test" console=[]
+cell01-onboarding @320: h1="Pass theknowledge test" console=[]
+cell01-onboarding @1440: h1="Pass theknowledge test" console=[]
+cell01b-onboarding-storage-error @390: FAILED locator.waitFor: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for getByRole('heading', { name: /won.t let the app save/i }) to be visible[22m
+ console=["[pageerror] Cannot access 'P0' before initialization"]
+cell01b-onboarding-storage-error @320: FAILED locator.waitFor: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for getByRole('heading', { name: /won.t let the app save/i }) to be visible[22m
+ console=["[pageerror] Cannot access 'P0' before initialization"]
+cell01b-onboarding-storage-error @1440: FAILED locator.waitFor: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for getByRole('heading', { name: /won.t let the app save/i }) to be visible[22m
+ console=["[pageerror] Cannot access 'P0' before initialization"]
+cell02-dashboard-populated @390: h1="Coming together" console=[]
+cell02-dashboard-populated @320: h1="Coming together" console=[]
+cell02-dashboard-populated @1440: h1="Coming together" console=[]
+cell02b-dashboard-empty @390: h1="Start your first mile" console=[]
+cell02b-dashboard-empty @320: h1="Start your first mile" console=[]
+cell02b-dashboard-empty @1440: h1="Start your first mile" console=[]
+cell02c @390: busy=1
+cell02c @320: busy=1
+cell02c @1440: busy=1
+cell02d-dashboard-error @390: h1="Your saved progress can’t be read" console=[]
+cell02d-dashboard-error @320: h1="Your saved progress can’t be read" console=[]
+cell02d-dashboard-error @1440: h1="Your saved progress can’t be read" console=[]
+cell02e-dashboard-offline @390: h1="Coming together" console=[]
+cell02e-dashboard-offline @320: h1="Coming together" console=[]
+cell02f-dashboard-desktop @1440: h1="Coming together" console=[]
+cell09-progress @390: h1="Climbing" console=[]
+cell09-progress @320: h1="Climbing" console=[]
+cell09-progress @1440: h1="Climbing" console=[]
+cell09b-progress-empty @390: h1="You haven’t set off yet" console=[]
+cell09b-progress-empty @320: h1="You haven’t set off yet" console=[]
+cell09b-progress-empty @1440: h1="You haven’t set off yet" console=[]
+cell09c-progress-long @390: h1="Closing on the pass mark" console=[]
+cell09c-progress-long @320: h1="Closing on the pass mark" console=[]
+cell09c-progress-long @1440: h1="Closing on the pass mark" console=[]
+cell10-rule-reference @390: h1="Railroad stop distance" console=[]
+cell10-rule-reference @320: h1="Railroad stop distance" console=[]
+cell10-rule-reference @1440: h1="Railroad stop distance" console=[]
+cell11-settings @390: h1="Settings & about" console=[]
+cell11-settings @320: h1="Settings & about" console=[]
+cell11-settings @1440: h1="Settings & about" console=[]
+cell11b-settings-reset-confirm @390: h1="Settings & about" console=[]
+cell11b-settings-reset-confirm @320: h1="Settings & about" console=[]
+cell11b-settings-reset-confirm @1440: h1="Settings & about" console=[]
+cell11c-settings-reset-failed @390: h1="This browser won’t let the app write" console=[]
+cell11c-settings-reset-failed @320: h1="This browser won’t let the app write" console=[]
+cell11c-settings-reset-failed @1440: h1="This browser won’t let the app write" console=[]
