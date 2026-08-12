@@ -17,7 +17,14 @@ import { shakySignIds, summariseSignMastery } from '~/domain/sign-progress';
 import { useSignStore } from '~/store/signs';
 import { SIGN_CATEGORIES, categoryLabel, categoryMeta } from './signs/categories';
 import { matchesSignQuery, nearMissFor } from './signs/search';
-import { CategoryHead, CategoryLinks, ColorKey, SignCard, SignDetail } from './signs/parts';
+import {
+  CategoryHead,
+  CategoryLinks,
+  ColorKey,
+  SignCard,
+  SignDetail,
+  SignRecordTrouble,
+} from './signs/parts';
 
 /**
  * How many of a category's signs the default view shows before it offers the
@@ -46,6 +53,9 @@ export function SignsLibrary() {
   const [params, setParams] = useSearchParams();
   const record = useSignStore((s) => s.record);
   const storageMode = useSignStore((s) => s.storageMode);
+  const storageStatus = useSignStore((s) => s.storageStatus);
+  const foundVersion = useSignStore((s) => s.foundVersion);
+  const resetSigns = useSignStore((s) => s.resetSigns);
 
   const query = params.get('q') ?? '';
   const category = params.get('cat');
@@ -116,6 +126,14 @@ export function SignsLibrary() {
             word of it.
           </p>
         </section>
+
+        {/* Before the mastery panel on purpose: a record of zero solid signs is
+            a lie when the real one is sitting unreadable on the device. */}
+        <SignRecordTrouble
+          status={storageStatus}
+          foundVersion={foundVersion}
+          onReset={resetSigns}
+        />
 
         <MasterySummary
           solid={summary.solid}

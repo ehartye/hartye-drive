@@ -264,6 +264,50 @@ const DRILL_CELLS: { name: string; route: string; drive?: (page: Page) => Promis
   },
 ];
 
+/* Cells 8-error and 7-error: a sign record this build cannot read. Seeded,
+   because nothing in the app can reach them on its own. */
+const SIGN_KEY = 'tn-drive:signs';
+
+for (const broken of [
+  { name: 'corrupt', payload: 'not json at all' },
+  { name: 'a future schema', payload: JSON.stringify({ version: 9999, state: {} }) },
+]) {
+  test(`axe: signs cell 8-error — ${broken.name}`, async ({ page }) => {
+    await page.goto('/signs');
+    await page.evaluate(
+      ([key, value]) => {
+        localStorage.setItem(key ?? '', value ?? '');
+      },
+      [SIGN_KEY, broken.payload],
+    );
+    await page.goto('/signs');
+    await expect(page.getByRole('alert')).toBeVisible();
+    await page.getByRole('button', { name: /Start a fresh sign record/ }).click();
+    await expect(page.getByRole('dialog')).toBeVisible();
+    const results = await new AxeBuilder({ page }).withTags(TAGS).analyze();
+    expect(
+      results.violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(' | ')}`),
+    ).toEqual([]);
+  });
+
+  test(`axe: sign drill cell 7-error — ${broken.name}`, async ({ page }) => {
+    await page.goto('/signs');
+    await page.evaluate(
+      ([key, value]) => {
+        localStorage.setItem(key ?? '', value ?? '');
+      },
+      [SIGN_KEY, broken.payload],
+    );
+    await page.goto('/signs/drill?seed=7');
+    await page.locator('.choice').first().waitFor();
+    await expect(page.getByRole('alert')).toBeVisible();
+    const results = await new AxeBuilder({ page }).withTags(TAGS).analyze();
+    expect(
+      results.violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(' | ')}`),
+    ).toEqual([]);
+  });
+}
+
 for (const cell of DRILL_CELLS) {
   test(`axe: sign drill ${cell.name}`, async ({ page }) => {
     await page.goto(cell.route);

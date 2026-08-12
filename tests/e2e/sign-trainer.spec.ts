@@ -53,6 +53,55 @@ async function openDrill(page: Page, query = 'seed=7'): Promise<void> {
   await page.locator('.choice').first().waitFor();
 }
 
+/**
+ * The **text-only** resize path of WCAG 2.2 SC 1.4.4 / 1.4.10 (practices A12).
+ *
+ * A browser's text-size setting at 200% raises the *root* font size to 32px and
+ * leaves the viewport alone. Page zoom does not exercise the same code: zoom
+ * scales the viewport too, so a layout that is wrong in `rem` still fits. This
+ * injects the setting the way the browser applies it — `html { font-size }` —
+ * which is what caught `/signs` overflowing by 174px at 320px.
+ */
+async function useDoubleTextSize(page: Page): Promise<void> {
+  await page.addInitScript(() => {
+    document.addEventListener('DOMContentLoaded', () => {
+      const style = document.createElement('style');
+      style.textContent = 'html{font-size:32px !important}';
+      document.head.appendChild(style);
+    });
+  });
+}
+
+interface Overflow {
+  scroll: number;
+  client: number;
+  offenders: string[];
+}
+
+/** Both readings a critic takes: the document's own scroll, and every box in it. */
+async function measureOverflow(page: Page): Promise<Overflow> {
+  return page.evaluate(() => {
+    const client = document.documentElement.clientWidth;
+    const offenders: string[] = [];
+    for (const node of document.querySelectorAll('body *')) {
+      const box = node.getBoundingClientRect();
+      if (box.width === 0 && box.height === 0) continue;
+      // Anything inside an <svg> is clipped by that svg's own viewport, so its
+      // untransformed rect is not something a learner can ever scroll to. The
+      // outermost <svg> itself has a null ownerSVGElement and is still checked.
+      if (node instanceof SVGElement && node.ownerSVGElement !== null) continue;
+      if (box.right > client + 1 || box.left < -1) {
+        const cls = node.getAttribute('class');
+        offenders.push(
+          `${node.tagName.toLowerCase()}${cls ? `.${cls.split(/\s+/).join('.')}` : ''} ` +
+            `[${String(Math.round(box.left))}…${String(Math.round(box.right))}]`,
+        );
+      }
+    }
+    return { scroll: document.documentElement.scrollWidth, client, offenders: offenders.slice(0, 12) };
+  });
+}
+
 test.describe('sign drill — cell 7', () => {
   test('shows one sign at hero scale with no text label anywhere near it', async ({ page }) => {
     await openDrill(page);
@@ -304,5 +353,182 @@ test.describe('sign library — cell 8', () => {
     await page.reload();
     await page.locator('.signcard').first().waitFor();
     await expect(page.locator(`[data-sign="${id}"] .mastery__lab`)).toHaveText(/Review|Solid/);
+  });
+});
+
+test.describe('an unreadable sign record — state-matrix cell 8-error / 7-error', () => {
+  /**
+   * Note 6 of the state matrix: corrupt or future-version persisted state must
+   * **offer a recoverable path**, never a white screen. Both halves matter, and
+   * only the first half was true — garbage in `tn-drive:signs` booted straight
+   * into a working library with nothing said and nothing offered, so a learner
+   * whose mastery had silently stopped being saved had no way to find out or
+   * to fix it.
+   */
+  const BROKEN: { name: string; payload: string; says: RegExp }[] = [
+    { name: 'garbage', payload: 'not json at all', says: /can’t be read|cannot be read/i },
+    { name: 'non-JSON shape', payload: '{"state":42}', says: /can’t be read|cannot be read/i },
+    {
+      name: 'a future schema',
+      payload: JSON.stringify({ version: 9999, state: { schemaVersion: 9999 } }),
+      says: /newer version/i,
+    },
+  ];
+
+  const seed = async (page: Page, payload: string, path: string) => {
+    await page.goto('/signs');
+    await page.evaluate((value) => {
+      localStorage.setItem('tn-drive:signs', value);
+    }, payload);
+    await page.goto(path);
+  };
+
+  for (const broken of BROKEN) {
+    test(`the library says so and offers the reset — ${broken.name}`, async ({ page }) => {
+      await seed(page, broken.payload, '/signs');
+      const alert = page.getByRole('alert');
+      await expect(alert).toBeVisible();
+      await expect(alert).toContainText(broken.says);
+      await expect(page.getByRole('button', { name: /Start a fresh sign record/ })).toBeVisible();
+      // The library itself still works — a recoverable path, not a dead end.
+      await expect(page.locator('.signcard').first()).toBeVisible();
+    });
+
+    test(`the drill says so too — ${broken.name}`, async ({ page }) => {
+      await seed(page, broken.payload, '/signs/drill?seed=7');
+      await page.locator('.choice').first().waitFor();
+      await expect(page.getByRole('alert')).toContainText(/not being saved|can’t be read|newer version/i);
+      await expect(page.getByRole('link', { name: /sign record/i })).toBeVisible();
+    });
+  }
+
+  test('the reset clears the unreadable file and starts recording again', async ({ page }) => {
+    await seed(page, 'not json at all', '/signs');
+    await page.getByRole('button', { name: /Start a fresh sign record/ }).click();
+    await page.getByRole('button', { name: /Erase it and start over/ }).click();
+
+    await expect(page.getByRole('alert')).toHaveCount(0);
+    const stored = await page.evaluate(() => localStorage.getItem('tn-drive:signs'));
+    expect(stored === null || stored.includes('"schemaVersion":1')).toBe(true);
+
+    // And the ladder records again, which is the whole point of the reset.
+    await openDrill(page, 'seed=7&n=1');
+    const id = (await page.locator('[data-sign-drill]').getAttribute('data-sign-drill')) ?? '';
+    await page.locator('.choice').first().click();
+    await page.getByRole('button', { name: /Finish drill/ }).click();
+    await page.goto('/signs?expand=all');
+    await page.locator('.signcard').first().waitFor();
+    await expect(page.locator(`[data-sign="${id}"] .mastery__lab`)).toHaveText(/Review|Solid/);
+  });
+
+  test('nothing is written over the file while it cannot be read', async ({ page }) => {
+    const payload = JSON.stringify({ version: 9999, state: { schemaVersion: 9999 } });
+    await seed(page, payload, '/signs/drill?seed=7');
+    await page.locator('.choice').first().click();
+    await page.getByRole('button', { name: /Next sign/ }).click();
+    expect(await page.evaluate(() => localStorage.getItem('tn-drive:signs'))).toBe(payload);
+  });
+});
+
+test.describe('text resized to 200% — practices A12, WCAG 2.2 SC 1.4.4 / 1.4.10', () => {
+  /* Every sign screen, at the two widths the bar names. Page zoom is already
+     covered above and passes; this is the path it cannot see. */
+  const SCREENS = [
+    { name: 'the library', path: '/signs', ready: '.signcard' },
+    { name: 'the whole library at once', path: '/signs?expand=all', ready: '.signcard' },
+    { name: 'the empty filter', path: '/signs?q=roundabout&cat=warning', ready: '.catlink' },
+    { name: 'the drill', path: '/signs/drill?seed=7', ready: '.choice' },
+  ];
+
+  test('the unreadable-record error state holds at 320px too', async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 800 });
+    await useDoubleTextSize(page);
+    await page.goto('/signs');
+    await page.evaluate(() => {
+      localStorage.setItem('tn-drive:signs', 'not json at all');
+    });
+    await page.goto('/signs');
+    await page.getByRole('alert').waitFor();
+    const { scroll, client, offenders } = await measureOverflow(page);
+    expect(scroll - client, `error cell overflows: ${offenders.join(' | ')}`).toBeLessThanOrEqual(0);
+    expect(offenders).toEqual([]);
+  });
+
+  for (const screen of SCREENS) {
+    for (const width of [320, 390]) {
+      test(`${screen.name} does not scroll sideways at ${String(width)}px`, async ({ page }) => {
+        await page.setViewportSize({ width, height: 800 });
+        await useDoubleTextSize(page);
+        await page.goto(screen.path);
+        await page.locator(screen.ready).first().waitFor();
+        await expect
+          .poll(() => page.evaluate(() => getComputedStyle(document.documentElement).fontSize))
+          .toBe('32px');
+
+        const { scroll, client, offenders } = await measureOverflow(page);
+        expect(
+          scroll - client,
+          `${screen.path} overflows at ${String(width)}px with 32px root text: ${offenders.join(' | ')}`,
+        ).toBeLessThanOrEqual(0);
+        expect(
+          offenders,
+          `boxes past the viewport on ${screen.path} at ${String(width)}px`,
+        ).toEqual([]);
+      });
+    }
+  }
+
+  test('the search field shrinks with the viewport instead of setting its width', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 390, height: 800 });
+    await useDoubleTextSize(page);
+    await page.goto('/signs');
+    await page.locator('.signcard').first().waitFor();
+    for (const selector of ['.field', '.search', '.search input']) {
+      const box = await page.locator(selector).first().boundingBox();
+      expect(box, `${selector} has no box`).not.toBeNull();
+      expect(box!.x + box!.width, `${selector} runs past the 390px viewport`).toBeLessThanOrEqual(
+        390,
+      );
+    }
+  });
+});
+
+test.describe('the meta separator', () => {
+  /* The shipped Overpass subset cut U+00B7 with a zero advance width, so
+     "Sign 1 of 30 · 0 right" painted the dot on top of the space after it and
+     read as "…30 ·0 right". Nothing in the DOM was wrong — only the metrics. */
+  test('the middot occupies width in the UI face, so the space after it survives', async ({
+    page,
+  }) => {
+    await page.goto('/signs');
+    await page.locator('.signcard').first().waitFor();
+    const advance = await page.evaluate(async () => {
+      await document.fonts.ready;
+      const context = document.createElement('canvas').getContext('2d');
+      if (!context) return -1;
+      context.font = `16px ${getComputedStyle(document.body).fontFamily}`;
+      return context.measureText('·').width;
+    });
+    expect(advance, 'U+00B7 has no advance width in the UI font').toBeGreaterThan(2);
+  });
+
+  test('a meta line is wider with its separator than without it', async ({ page }) => {
+    await openDrill(page);
+    // The symptom, not the cause: a zero-advance dot makes "A · B" measure
+    // exactly as wide as "A  B", which is why the dot looked glued to the B.
+    const widths = await page.evaluate(async () => {
+      await document.fonts.ready;
+      const context = document.createElement('canvas').getContext('2d');
+      if (!context) return { withDot: 0, without: 0 };
+      const status = document.querySelector('.focus__status .dim') ?? document.body;
+      context.font = `16px ${getComputedStyle(status).fontFamily}`;
+      return {
+        withDot: context.measureText('Sign 1 of 30 · 0 right so far').width,
+        without: context.measureText('Sign 1 of 30  0 right so far').width,
+      };
+    });
+    expect(widths.withDot - widths.without, 'the middot takes up no room at all').toBeGreaterThan(2);
   });
 });

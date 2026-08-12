@@ -16,6 +16,7 @@ import {
   categoryLesson,
   categoryMeta,
 } from './signs/categories';
+import { SignRecordTroubleLine } from './signs/parts';
 
 /* ------------------------------------------------------------------- copy */
 
@@ -69,6 +70,7 @@ export function SignsDrill() {
   const answerSign = useSignStore((s) => s.answerSign);
   const finishDrill = useSignStore((s) => s.finishDrill);
   const storageMode = useSignStore((s) => s.storageMode);
+  const storageStatus = useSignStore((s) => s.storageStatus);
 
   const modeParam = params.get('mode');
   const mode: DrillMode = isDrillMode(modeParam) ? modeParam : 'meaning';
@@ -88,6 +90,9 @@ export function SignsDrill() {
         id: sign.id,
         category: sign.category,
         meaning: sign.meaning,
+        faceColor: sign.faceColor,
+        legendColor: sign.legendColor,
+        shape: sign.shape,
       })),
       cards: record.cards,
       categories: record.categories,
@@ -294,6 +299,11 @@ export function SignsDrill() {
         }
       >
         <div ref={stageRef} tabIndex={-1} data-sign-drill={sign.id}>
+          {/* Above the stage, not below it: a learner drilling into a record
+              that cannot be written is spending the session for nothing, and
+              the way out is one press away (state-matrix note 6). */}
+          <SignRecordTroubleLine status={storageStatus} />
+
           {/* THE STAGE. One sign, on a post, lit by headlights. No text label —
               the name and the meaning are the question. */}
           <section className="stage" aria-labelledby="drill-ask">
