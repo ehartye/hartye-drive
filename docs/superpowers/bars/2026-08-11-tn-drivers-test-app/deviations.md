@@ -627,3 +627,40 @@ The split route's `HydrateFallback` (P1's `RouteFallback`) renders a
 visually-hidden `<h1>Loading</h1>`, so `getByRole('heading', { level: 1 })`
 resolves *before* the session mounts and any key press is then delivered to the
 fallback. Wait on `.stem` or `.choice`, as `tests/e2e/study.spec.ts` does.
+
+---
+
+## Lead ruling — 2026-08-12 — P5 §1: the mockups depict an impossible exam outcome
+
+**The seven-wrong rule is authoritative. Mockups 06b and 06d are wrong. The
+builder's resolution stands.**
+
+Mockups `06b-exam-failed` and `06d-report-expanded` show a completed
+30-question sitting scored **21/30 with 9 missed**. That outcome cannot occur:
+the exam terminates at the 7th wrong answer, so any sitting that reaches
+question 30 had at most 6 wrong — and 30 − 6 = 24, which is exactly the pass
+mark. **A completed 30-question sitting can only pass or halt.**
+
+Verified independently before ruling. The reachable non-passing outcomes are:
+halted at 7 wrong, the 60-minute timer expiring, or the learner leaving.
+
+The seven-wrong rule wins because it is the load-bearing, TN-specific fact,
+verified in `live-facts.md` against primary sources and confirmed in the
+manual — and `state-matrix.md` note 11 names early termination as "exactly the
+cell an inattentive build will omit". Discarding it to preserve a mockup's
+placeholder arithmetic would delete the most distinctive thing the simulator
+does.
+
+`06b`'s layout, plaque, headline formula and copy are kept at intent parity and
+reached by ending an attempt early (24 answered, 21 correct → "Three short").
+
+**Why this matters beyond the fix:** three rounds of blind mockup critique did
+not catch it. Rendering a screen shows you what it looks like, not whether the
+state it depicts is reachable. **Implementation is the only critic that checks
+whether a specification is self-consistent** — which is an argument for
+building the risky rule earlier, not for critiquing pictures longer.
+
+Also ruled: **exam answers feed the study record and the scheduler** (P5 §7).
+A 30-question sitting is the densest signal the learner ever generates about
+what they don't know; discarding it would make the adaptive engine worse at
+exactly the moment it has the most to learn.
