@@ -7,6 +7,31 @@
    one-off at the call site without a specificity fight.
    ============================================================ */
 
+/* ------------------------------------------------------------------------
+   U+00B7 REPAIR — the meta separator.
+
+   The Overpass latin subset in `public/fonts/` ships MIDDLE DOT with an
+   **advance width of zero** (measured: `measureText('·').width === 0`, ink 0–4px).
+   Every "A · B" meta line in the app therefore painted the dot on top of the
+   space that follows it and read as `Safe driving ·Rain, fog` — the DOM was
+   always correct; only the metrics were wrong. Overpass Mono and Newsreader cut
+   the same code point properly, so this face lends its glyph back to the UI
+   family for that one character. Declared after `fonts.css`, which is what
+   makes it win for the overlapping range (CSS Fonts 4: last matching face wins).
+
+   The real fix is to re-cut the Overpass subset in `scripts/fetch-fonts.mjs`;
+   see deviations.md, 2026-08-12. Until then this keeps the separator readable
+   everywhere without touching a single call site.
+   ------------------------------------------------------------------------ */
+@font-face {
+  font-family: 'Overpass';
+  font-style: normal;
+  font-weight: 300 900;
+  font-display: swap;
+  src: url('/fonts/newsreader-latin.woff2') format('woff2');
+  unicode-range: U+00B7;
+}
+
 @layer components {
   /* ---------- typography roles ---------- */
 
@@ -446,6 +471,11 @@
   .choice__body {
     flex: 1;
     min-width: 0;
+    /* At a 200% browser text size a single long word ("information") is wider
+       than the whole row's content box, and `min-width: 0` cannot help because
+       min-content is still one unbreakable word. `anywhere` is the only value
+       that lowers min-content; `break-word` does not (practices A12). */
+    overflow-wrap: anywhere;
   }
   .choice__text {
     display: block;
@@ -1018,7 +1048,12 @@
     bottom: 0;
     z-index: 30;
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    /* minmax(0, 1fr), not 1fr: a 1fr track cannot shrink below its item's
+       min-content, so at a 200% browser text size the four labels pushed
+       SIGNS and PROGRESS off the right edge of a 320px phone — two
+       destinations unreachable, which is exactly the loss of function
+       SC 1.4.4 forbids (practices A12). */
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     background: color-mix(in srgb, var(--color-asphalt-sunk) 94%, transparent);
     backdrop-filter: blur(14px);
     border-top: 1px solid var(--color-shoulder);
@@ -1037,6 +1072,9 @@
     letter-spacing: 0.06em;
     text-transform: uppercase;
     min-height: 56px;
+    min-width: 0;
+    text-align: center;
+    overflow-wrap: anywhere;
   }
   .nav a[aria-current='page'] {
     color: var(--color-sign-white);
@@ -1433,6 +1471,13 @@
 
   .field {
     display: block;
+    /* A field is nearly always a flex or grid item, and a grid item's automatic
+       minimum size is its *min-content* size — which, for a wrapper around an
+       <input>, is the input's intrinsic character width. At a browser text size
+       of 200% that measured 454px inside a 310px column and dragged the whole
+       page sideways (practices A12). `0` lets it shrink; the input below has
+       always been able to. */
+    min-width: 0;
   }
   .field__label {
     display: block;
@@ -1894,6 +1939,11 @@
 
   .modes {
     display: inline-flex;
+    /* The toggle sits beside the "Sign 3 of 30" line; at 200% text it no longer
+       fits on that line and must be allowed to fold rather than run off the
+       edge (practices A12). */
+    flex-wrap: wrap;
+    max-width: 100%;
     padding: 2px;
     gap: 2px;
     background: var(--color-asphalt-sunk);
@@ -1999,6 +2049,9 @@
     align-items: baseline;
     justify-content: space-between;
     gap: 0.75rem;
+    /* "Regulatory" + "4 of 27" is one line at 16px and two at 32px. Folding is
+       the correct answer; running the count off the edge is not (practices A12). */
+    flex-wrap: wrap;
   }
   .cat__count {
     font-size: 0.75rem;
@@ -2130,6 +2183,9 @@
   }
   .state__q {
     color: var(--color-warning);
+    /* Whatever the learner typed is quoted back verbatim, so it may be one long
+       unbreakable word — it must fold, not push the page sideways. */
+    overflow-wrap: anywhere;
   }
   .state__acts {
     display: grid;

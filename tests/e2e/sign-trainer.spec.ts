@@ -53,6 +53,55 @@ async function openDrill(page: Page, query = 'seed=7'): Promise<void> {
   await page.locator('.choice').first().waitFor();
 }
 
+/**
+ * The **text-only** resize path of WCAG 2.2 SC 1.4.4 / 1.4.10 (practices A12).
+ *
+ * A browser's text-size setting at 200% raises the *root* font size to 32px and
+ * leaves the viewport alone. Page zoom does not exercise the same code: zoom
+ * scales the viewport too, so a layout that is wrong in `rem` still fits. This
+ * injects the setting the way the browser applies it — `html { font-size }` —
+ * which is what caught `/signs` overflowing by 174px at 320px.
+ */
+async function useDoubleTextSize(page: Page): Promise<void> {
+  await page.addInitScript(() => {
+    document.addEventListener('DOMContentLoaded', () => {
+      const style = document.createElement('style');
+      style.textContent = 'html{font-size:32px !important}';
+      document.head.appendChild(style);
+    });
+  });
+}
+
+interface Overflow {
+  scroll: number;
+  client: number;
+  offenders: string[];
+}
+
+/** Both readings a critic takes: the document's own scroll, and every box in it. */
+async function measureOverflow(page: Page): Promise<Overflow> {
+  return page.evaluate(() => {
+    const client = document.documentElement.clientWidth;
+    const offenders: string[] = [];
+    for (const node of document.querySelectorAll('body *')) {
+      const box = node.getBoundingClientRect();
+      if (box.width === 0 && box.height === 0) continue;
+      // Anything inside an <svg> is clipped by that svg's own viewport, so its
+      // untransformed rect is not something a learner can ever scroll to. The
+      // outermost <svg> itself has a null ownerSVGElement and is still checked.
+      if (node instanceof SVGElement && node.ownerSVGElement !== null) continue;
+      if (box.right > client + 1 || box.left < -1) {
+        const cls = node.getAttribute('class');
+        offenders.push(
+          `${node.tagName.toLowerCase()}${cls ? `.${cls.split(/\s+/).join('.')}` : ''} ` +
+            `[${String(Math.round(box.left))}…${String(Math.round(box.right))}]`,
+        );
+      }
+    }
+    return { scroll: document.documentElement.scrollWidth, client, offenders: offenders.slice(0, 12) };
+  });
+}
+
 test.describe('sign drill — cell 7', () => {
   test('shows one sign at hero scale with no text label anywhere near it', async ({ page }) => {
     await openDrill(page);
@@ -304,5 +353,94 @@ test.describe('sign library — cell 8', () => {
     await page.reload();
     await page.locator('.signcard').first().waitFor();
     await expect(page.locator(`[data-sign="${id}"] .mastery__lab`)).toHaveText(/Review|Solid/);
+  });
+});
+
+test.describe('text resized to 200% — practices A12, WCAG 2.2 SC 1.4.4 / 1.4.10', () => {
+  /* Every sign screen, at the two widths the bar names. Page zoom is already
+     covered above and passes; this is the path it cannot see. */
+  const SCREENS = [
+    { name: 'the library', path: '/signs', ready: '.signcard' },
+    { name: 'the whole library at once', path: '/signs?expand=all', ready: '.signcard' },
+    { name: 'the empty filter', path: '/signs?q=roundabout&cat=warning', ready: '.catlink' },
+    { name: 'the drill', path: '/signs/drill?seed=7', ready: '.choice' },
+  ];
+
+  for (const screen of SCREENS) {
+    for (const width of [320, 390]) {
+      test(`${screen.name} does not scroll sideways at ${String(width)}px`, async ({ page }) => {
+        await page.setViewportSize({ width, height: 800 });
+        await useDoubleTextSize(page);
+        await page.goto(screen.path);
+        await page.locator(screen.ready).first().waitFor();
+        await expect
+          .poll(() => page.evaluate(() => getComputedStyle(document.documentElement).fontSize))
+          .toBe('32px');
+
+        const { scroll, client, offenders } = await measureOverflow(page);
+        expect(
+          scroll - client,
+          `${screen.path} overflows at ${String(width)}px with 32px root text: ${offenders.join(' | ')}`,
+        ).toBeLessThanOrEqual(0);
+        expect(
+          offenders,
+          `boxes past the viewport on ${screen.path} at ${String(width)}px`,
+        ).toEqual([]);
+      });
+    }
+  }
+
+  test('the search field shrinks with the viewport instead of setting its width', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 390, height: 800 });
+    await useDoubleTextSize(page);
+    await page.goto('/signs');
+    await page.locator('.signcard').first().waitFor();
+    for (const selector of ['.field', '.search', '.search input']) {
+      const box = await page.locator(selector).first().boundingBox();
+      expect(box, `${selector} has no box`).not.toBeNull();
+      expect(box!.x + box!.width, `${selector} runs past the 390px viewport`).toBeLessThanOrEqual(
+        390,
+      );
+    }
+  });
+});
+
+test.describe('the meta separator', () => {
+  /* The shipped Overpass subset cut U+00B7 with a zero advance width, so
+     "Sign 1 of 30 · 0 right" painted the dot on top of the space after it and
+     read as "…30 ·0 right". Nothing in the DOM was wrong — only the metrics. */
+  test('the middot occupies width in the UI face, so the space after it survives', async ({
+    page,
+  }) => {
+    await page.goto('/signs');
+    await page.locator('.signcard').first().waitFor();
+    const advance = await page.evaluate(async () => {
+      await document.fonts.ready;
+      const context = document.createElement('canvas').getContext('2d');
+      if (!context) return -1;
+      context.font = `16px ${getComputedStyle(document.body).fontFamily}`;
+      return context.measureText('·').width;
+    });
+    expect(advance, 'U+00B7 has no advance width in the UI font').toBeGreaterThan(2);
+  });
+
+  test('a meta line is wider with its separator than without it', async ({ page }) => {
+    await openDrill(page);
+    // The symptom, not the cause: a zero-advance dot makes "A · B" measure
+    // exactly as wide as "A  B", which is why the dot looked glued to the B.
+    const widths = await page.evaluate(async () => {
+      await document.fonts.ready;
+      const context = document.createElement('canvas').getContext('2d');
+      if (!context) return { withDot: 0, without: 0 };
+      const status = document.querySelector('.focus__status .dim') ?? document.body;
+      context.font = `16px ${getComputedStyle(status).fontFamily}`;
+      return {
+        withDot: context.measureText('Sign 1 of 30 · 0 right so far').width,
+        without: context.measureText('Sign 1 of 30  0 right so far').width,
+      };
+    });
+    expect(widths.withDot - widths.without, 'the middot takes up no room at all').toBeGreaterThan(2);
   });
 });
