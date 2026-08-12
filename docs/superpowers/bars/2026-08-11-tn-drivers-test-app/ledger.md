@@ -23,7 +23,41 @@ verification-before-completion.
 | **P7–P9 audit** | — | **GAP → fixed** | **Critical: the app could fail to mount at all.** `store/settings.ts` called `useSettingsStore.setState` from a storage-failure callback firing at module scope, before the binding existed — a blocked site-data policy throws on the property *access*, so it threw `ReferenceError` during module evaluation. React never mounted, no error boundary ran, the learner sat on the boot plate forever. **P7 found this exact bug, fixed it in four stores and documented it; P8 added a fifth store later without the guard.** Existing suites missed it because they stub `Storage.prototype.setItem` only — X21's literal wording, and the milder variant. Fixed + `tests/pwa/storage-blocked.spec.ts`, verified failing on the old code (*"/ never mounted — the learner sees only the static boot plate"*) and passing on the fix. |
 | **P10 — Practices & executable sweep** | 1 | **84 PASS / 2 FAIL / 0 UNVERIFIED** | Both FAILs are the ratified thresholds (Performance 89 v 90; X23 2.53s v 2.5s). Fresh 20-question re-sample: 20/20 verbatim, page-exact, and supporting their keyed answer. All 27 official questions present and flagged, stems *and* all 81 option texts verbatim. All six corrections match `live-facts.md` on date and public chapter. Audit: `practices-audit.md` (907 lines, 86 rows). **Found `npm run verify` structurally broken** — `playwright.config.ts` and `playwright.a11y.config.ts` both bound port 5302 with `--strictPort`, so whichever started second died. Ports now disjoint. |
 | **Mobile compatibility** | 1 | **9 findings, 7 fixed, 2 filed** | Added to the plan because every test to date ran on a desktop engine with a resized viewport while the design target is an iPhone. Real `webkit`/iPhone 14 + Pixel 7 control. **High:** the last ~9.5px of every page sat under the tab bar (nav padded itself with the safe-area inset; the page reserved a flat 92px — two numbers that had to agree with nothing making them); **no blur on iOS ≤17** (unprefixed `backdrop-filter` shipped in Safari 18 — five overlay bars had none, body text read through at 88–94% opacity); **double-tap zoom on 69 controls**. Verified sound on WebKit: all 87 signs, both charts incl. the `<pattern>` hatch, all four woff2, `color-mix()`, `@theme`, and 16px inputs (no iOS focus zoom). **Honest limit: Playwright's "webkit" is WebKitGTK, not Mobile Safari** — six iOS platform behaviours enumerated that only a real device can confirm. |
-| **Smoothing pass** | — | **in progress** | Cross-piece cohesion on the assembled app. |
+| **Smoothing pass** | 1 | **PASS** | Fixed the 6 known cross-piece defects and found 8 more. Highest: **the dashboard counted its own capped list, not the record** — a learner with nine weak topics was told "4 topics are still holding you back" while `/progress` said nine; chasing it exposed **two different definitions of "weak"** on the two screens (4 vs 12 off one record). **Onboarding promised a Settings section that did not exist** ("both answers can be changed later in Settings" — Settings offered neither control). One mock exam carried **two dates in two formats** (`en-GB` on the report, `en-US` in history). And **"Reach 85% readiness first and you will pass on the first try"** — an outcome no study aid can guarantee, on the screen whose stated discipline is inventing nothing. Quarantine now has one owner (`store/health.ts`) so three screens cannot tell a learner three different things about one saved file. |
+
+### Final verification
+
+```
+npm run verify   EXIT 0   159s
+  typecheck · lint · build · test (663) · test:coverage · test:e2e (321)
+  test:mobile (84, iPhone-WebKit + Pixel-Chromium) · validate:content (506 q, 87 signs)
+  audit:signs (87 drawn, 186 legends measured inside their faces)
+  audit:explanations · audit:rule-pages (533/533 page-exact) · size · test:a11y (122)
+  initial JS 158.4 KB / 180 KB   ·   precache 1736.9 KB / 2560 KB
+```
+
+**This was the first clean run of the full chain.** The practices audit
+recorded that it had *never observed `verify` green* — because two Playwright
+configs bound the same port with `--strictPort`, so whichever started second
+died and its suite timed out. That is fixed, and the gate now passes end to
+end on a quiet machine.
+
+---
+
+## Known-missed thresholds — stated, not hidden
+
+| # | Bar | Measured | Status |
+|---|---|---|---|
+| X10 | Lighthouse Performance ≥ 90 | **88–89** simulated | **MISSED.** `npm run audit` exits 1. Moved 83 → 89 by fixing `robots.txt` (the SPA fallback was serving HTML as robots directives, 47 errors) and adding a static boot plate (FCP 3.3s → 1.7s, CLS still 0). The remaining gap is ~106 KB of React in the entry chunk; the real fix is SSR, which grounding §1 forbids. **Not lowered.** |
+| X23 | First question interactive ≤ 2.5s on Slow 4G | **2.53–2.75s** cold; **387–475ms warm** | **MISSED** on the cold first question, met on the dashboard and warm. Measured under both Slow-4G definitions; both reported. **Not lowered.** |
+
+Accessibility **100**, Best Practices **100**, SEO **100**, installability passes.
+
+## What a human still has to do
+
+1. **Open it on a real iPhone.** Playwright's "webkit" is WebKitGTK, not Mobile Safari — the engine core is covered, the iOS platform layer is not. Six behaviours only a device can confirm are enumerated in `deviations.md`: focus zoom, dynamic browser chrome, live `env()` insets, tap highlight, momentum/rubber-band scrolling, and wheel.
+2. **Have someone who knows Tennessee traffic law read a sample of the 506 questions.** Every gate here proves a quote is verbatim, on the cited page, and supports the keyed answer. **None of them can prove a question is pedagogically sound.** A blind critic already found ten where the quote argued for a distractor; that class is closed, but human review is a different check from any machine gate.
+3. **Rule on the two missed thresholds** above — ship as-is, or fund the work.
 
 ### Round-2 fixes closed (evidence)
 
