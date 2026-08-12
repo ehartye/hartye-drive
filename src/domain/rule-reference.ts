@@ -80,6 +80,12 @@ export interface RuleReference {
   /** How many questions cite it in total, which may exceed the rows shown. */
   questionCount: number;
   signIds: string[];
+  /**
+   * `true` when the signs came from the questions citing *this* rule; `false`
+   * when they were borrowed from the rest of the topic. Most rules are prose
+   * with no sign attached, and the page has to say which it is showing.
+   */
+  signsAreDirect: boolean;
   /** The taxonomy topic most of the citing questions belong to. */
   primaryTopic: string | null;
   /** Every question in that topic — what "practice this topic" actually runs. */
@@ -161,12 +167,18 @@ export function buildRuleReference(input: RuleReferenceInput): RuleReference | n
     }
   }
 
-  const signIds: string[] = [];
-  for (const question of citing) {
-    for (const signId of question.signs ?? []) {
-      if (!signIds.includes(signId)) signIds.push(signId);
+  const collectSigns = (from: readonly QuestionLike[]): string[] => {
+    const ids: string[] = [];
+    for (const question of from) {
+      for (const signId of question.signs ?? []) {
+        if (!ids.includes(signId)) ids.push(signId);
+      }
     }
-  }
+    return ids;
+  };
+
+  const direct = collectSigns(citing);
+  const signIds = direct.length > 0 ? direct : collectSigns(inTopic);
 
   const correctionIds: string[] = [];
   for (const question of citing) {
@@ -180,6 +192,7 @@ export function buildRuleReference(input: RuleReferenceInput): RuleReference | n
     questions: related.slice(0, MAX_QUESTIONS),
     questionCount: related.length,
     signIds: signIds.slice(0, MAX_SIGNS),
+    signsAreDirect: direct.length > 0,
     primaryTopic,
     practiceQuestionIds: inTopic.map((question) => question.id),
     siblingRuleIds: siblings.slice(0, MAX_SIBLINGS),

@@ -350,6 +350,9 @@ export function StudySession() {
                   pdfPage: citation.pdfPage,
                   printedPage: citation.printedPage,
                   quote: citation.quote,
+                  // P8: the citation now resolves. `ExplanationBlock` turns the
+                  // rule id into `/rules/:id` itself, so this is the whole wiring.
+                  ruleId: citation.ruleId,
                 }}
                 verdict={answered.correct ? 'correct' : 'incorrect'}
                 answerLetter={correctLetter}

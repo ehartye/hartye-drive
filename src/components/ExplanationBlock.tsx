@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { SignPanel } from './SignPanel';
 import { CitationLink } from './CitationLink';
 import { IconCheck, IconX } from './Icon';
+import { ruleHref } from '~/app/hrefs';
 
 export interface Citation {
   /** Manual section, as the manual names it. */
@@ -17,7 +18,13 @@ export interface Citation {
   printedPage: number;
   /** Verbatim from the manual. The build validates it appears there (D1/D2). */
   quote: string;
-  /** Route to the rule-reference page, when one exists. */
+  /**
+   * The rule in `rules.json` this citation came from. Given one, the citation
+   * resolves to `/rules/:id` on its own — which is what turns a footnote into
+   * something a learner can actually follow.
+   */
+  ruleId?: string | undefined;
+  /** An explicit destination, for the rare citation that points elsewhere. */
   to?: string;
 }
 
@@ -41,6 +48,9 @@ export function ExplanationBlock({
   answerLetter,
 }: ExplanationBlockProps) {
   const headingId = useId();
+  // A citation that names its rule resolves itself. Callers do not have to know
+  // the shape of the rule-reference URL, and none of them can get it wrong.
+  const destination = citation.to ?? (citation.ruleId ? ruleHref(citation.ruleId) : undefined);
 
   return (
     // Guide green regardless of the verdict: the panel is the rule, and the
@@ -68,9 +78,9 @@ export function ExplanationBlock({
         </cite>
       </blockquote>
 
-      {citation.to && (
+      {destination && (
         <p className="mt-3">
-          <CitationLink to={citation.to} section={citation.section} pdfPage={citation.pdfPage} />
+          <CitationLink to={destination} section={citation.section} pdfPage={citation.pdfPage} />
         </p>
       )}
     </SignPanel>

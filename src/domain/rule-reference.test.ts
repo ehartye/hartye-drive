@@ -104,6 +104,24 @@ describe('buildRuleReference', () => {
       cards: {},
     });
     expect(ref?.signIds).toEqual(['w10-1-rr-advance', 'r15-1-crossbuck']);
+    expect(ref?.signsAreDirect).toBe(true);
+  });
+
+  it('falls back to the topic’s own signs, and says that is what it did', () => {
+    // Most rules are prose with no sign attached. Borrowing the signs the rest
+    // of the topic teaches is a real relationship; pretending they illustrate
+    // this sentence in particular would not be.
+    const ref = buildRuleReference({
+      ruleId: 'R225',
+      rules: RULES,
+      questions: [
+        question('q1'),
+        question('q2', { citations: [{ ruleId: 'R226' }], signs: ['r15-1-crossbuck'] }),
+      ],
+      cards: {},
+    });
+    expect(ref?.signIds).toEqual(['r15-1-crossbuck']);
+    expect(ref?.signsAreDirect).toBe(false);
   });
 
   it('names the topic the rule is taught under, so “practice this topic” has somewhere to go', () => {

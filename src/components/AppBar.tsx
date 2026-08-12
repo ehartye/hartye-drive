@@ -35,6 +35,13 @@ export interface AppBarProps {
   /** Hidden below 900px, where the title and badge need the whole bar. */
   context?: string;
   backTo?: string;
+  /**
+   * For a page with no single parent. The rule reference is reached from a
+   * study explanation, an exam review, the sign library and another rule, so
+   * its "up" is genuinely "where you came from" and a fixed `backTo` would send
+   * three of those four learners somewhere they had not been.
+   */
+  onBack?: () => void;
   backLabel?: string;
   online?: boolean;
   /** Replaces the badge, for the rare bar that needs a different trailing slot. */
@@ -50,6 +57,7 @@ export function AppBar({
   title,
   context,
   backTo,
+  onBack,
   backLabel = 'Back',
   online = true,
   trailing,
@@ -57,11 +65,18 @@ export function AppBar({
   return (
     <header className="appbar">
       <div className="row appbar__lead">
-        {backTo && (
+        {backTo ? (
           <Link className="back" to={backTo}>
             <IconArrowLeft size={16} />
             {backLabel}
           </Link>
+        ) : (
+          onBack && (
+            <button type="button" className="back" onClick={onBack}>
+              <IconArrowLeft size={16} />
+              {backLabel}
+            </button>
+          )
         )}
         <strong className="appbar__title">{title}</strong>
         {context && <span className="dim appbar__sub">{context}</span>}

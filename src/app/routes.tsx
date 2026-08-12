@@ -43,6 +43,16 @@ export const routes: RouteObject[] = [
       // is small. It never loads the question bank.
       { path: 'progress', element: <Progress /> },
       { path: 'settings', element: <SettingsRoute /> },
+      // Code-split (practices E7): the rule reference is the only surface that
+      // needs all three large content files at once — 533 rules, the whole
+      // question bank and the sign registry — and a learner who never follows a
+      // citation should not download any of them.
+      {
+        path: 'rules/:id',
+        lazy: async () => ({
+          Component: (await import('~/routes/RuleReference')).RuleReference,
+        }),
+      },
       // Code-split (practices E7): the gallery is a development surface and
       // must not sit in the initial bundle a learner downloads.
       {
