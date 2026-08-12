@@ -140,6 +140,37 @@ export const IconChanged = (p: GlyphProps) => (
   </Glyph>
 );
 
+/** Try again — the storage re-check and the "reopen the app" fix. */
+export const IconRefresh = (p: GlyphProps) => (
+  <Glyph strokeWidth={2.2} {...p}>
+    <path d="M20 11a8 8 0 1 0-2.3 5.7" />
+    <path d="M20 4v7h-7" />
+  </Glyph>
+);
+
+/** Save a file to this device. Nothing here uploads anything. */
+export const IconDownload = (p: GlyphProps) => (
+  <Glyph strokeWidth={2.2} {...p}>
+    <path d="M12 3v12M8 11l4 4 4-4" />
+    <path d="M4 21h16" />
+  </Glyph>
+);
+
+/** iOS Safari's share glyph, for the add-to-home-screen instructions. */
+export const IconShare = (p: GlyphProps) => (
+  <Glyph strokeWidth={2.5} {...p}>
+    <path d="M12 3v13M8 7l4-4 4 4M5 14v6h14v-6" />
+  </Glyph>
+);
+
+/** Time — the pace line on onboarding. */
+export const IconClock = (p: GlyphProps) => (
+  <Glyph {...p}>
+    <path d="M12 7v5l3 2" />
+    <circle cx="12" cy="12" r="9" />
+  </Glyph>
+);
+
 export const IconExternal = (p: GlyphProps) => (
   <Glyph {...p}>
     <path d="M14 4h6v6M20 4l-8 8" />

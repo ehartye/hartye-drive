@@ -2202,6 +2202,736 @@
     font-size: 0.8125rem;
     color: var(--color-sign-faint);
   }
+
+  /* ============================================================
+     DASHBOARD + ONBOARDING (P7) — page-level layouts transcribed from
+     mockups 01, 01b and 02–02f, on the precedent P4 set for `.changed` /
+     `.lookup` / `.again`: compositions of the §3 vocabulary, not new
+     components. See deviations.md, 2026-08-11 (P7).
+     ============================================================ */
+
+  /* ---------- the readiness plate: readiness reads as a speed-limit sign ----
+     Numbers vary, so the face is HTML rather than a registry SVG (the same
+     call `mockups/_signs.js` makes). The legend is TEST READY, never SPEED
+     LIMIT: this is the app's chrome built from the sign system, not a claim
+     that 72 is a speed limit. */
+  .speedplate {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    width: 76px;
+    height: 96px;
+    padding: 6px 4px;
+    background: var(--color-sign-white);
+    color: var(--color-asphalt);
+    border: 3px solid var(--color-asphalt);
+    border-radius: var(--radius-sm);
+    box-shadow:
+      0 0 0 3px var(--color-sign-white),
+      0 2px 8px rgba(0, 0, 0, 0.5);
+    line-height: 1;
+  }
+  .speedplate b {
+    font-size: 0.5rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+  }
+  .speedplate b + b {
+    margin-top: 1px;
+  }
+  .speedplate strong {
+    font-family: var(--font-mono);
+    font-size: 2.25rem;
+    font-weight: 700;
+    margin-top: 5px;
+    font-variant-numeric: tabular-nums;
+  }
+  /* A sign before the headlights hit it: nothing measured yet. */
+  .speedplate--zero {
+    opacity: 0.78;
+  }
+  .speedplate--zero strong {
+    color: #6b7280;
+  }
+
+  .readout {
+    display: flex;
+    align-items: center;
+    gap: 1.15rem;
+  }
+  .readout__copy {
+    min-width: 0;
+  }
+  .readout__copy h1 {
+    margin-bottom: 0.35rem;
+  }
+
+  /* ---------- the signature: progress rendered as a highway guide sign ---- */
+  .guidesign {
+    position: relative;
+    background: var(--color-guide);
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+    overflow: hidden;
+  }
+  .guidesign::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+      130% 100% at 8% -20%,
+      rgba(255, 255, 255, 0.14),
+      rgba(255, 255, 255, 0) 58%
+    );
+  }
+  .guidesign::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.13;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='80' height='80' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .guidesign__face {
+    position: relative;
+    z-index: 1;
+    border: 2.5px solid var(--color-sign-white);
+    border-radius: 6px;
+    padding: 1.15rem 1.15rem 1.25rem;
+  }
+  .guidesign__legend {
+    margin: 0 0 0.5rem;
+    font-size: 0.625rem;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.78);
+  }
+  .guidesign__dest {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid rgba(242, 244, 241, 0.22);
+  }
+  .guidesign__dest:last-of-type {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+  .guidesign__dest b {
+    font-size: 1.0625rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: #fff;
+  }
+  .guidesign__dist {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 1.0625rem;
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .guidesign__dist small {
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+    opacity: 0.82;
+    margin-left: 0.25rem;
+  }
+  /* Zero is honest, so it is dimmed rather than hidden. */
+  .guidesign__dist em {
+    font-style: normal;
+    opacity: 0.62;
+  }
+  .guidesign__note {
+    margin: 0.5rem 0 0;
+    font-size: 0.75rem;
+    line-height: 1.5;
+    color: var(--color-sign-faint);
+  }
+
+  /* ---------- weak topics ---------- */
+  .weak {
+    display: grid;
+    gap: 0.625rem;
+  }
+  .weakrow {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    width: 100%;
+    padding: 0.8rem 0.9rem;
+    background: var(--color-asphalt-raised);
+    border: 1px solid var(--color-shoulder);
+    border-left: 3px solid var(--color-warning);
+    border-radius: var(--radius-md);
+    text-align: left;
+    color: inherit;
+    text-decoration: none;
+    font-family: var(--font-ui);
+    cursor: pointer;
+  }
+  .weakrow:hover {
+    border-color: var(--color-shoulder-lit);
+    border-left-color: var(--color-warning);
+  }
+  /* Nothing measured yet: the structure stands, the accent does not claim. */
+  .weakrow--unmeasured {
+    border-left-color: var(--color-shoulder-lit);
+  }
+  .weakrow__t {
+    flex: 1;
+    min-width: 0;
+  }
+  .weakrow__n {
+    display: block;
+    font-size: 0.9375rem;
+    font-weight: 600;
+  }
+  .weakrow__s {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--color-sign-dim);
+    margin-top: 0.15rem;
+  }
+  .weakrow__pct {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--color-warning);
+  }
+  .weakrow--unmeasured .weakrow__pct {
+    font-weight: 400;
+    font-size: 0.8125rem;
+    color: var(--color-sign-faint);
+  }
+
+  /* ---------- streak ---------- */
+  .streakstrip {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+  .day {
+    width: 26px;
+    height: 26px;
+    border-radius: var(--radius-sm);
+    background: var(--color-asphalt-sunk);
+    border: 1px solid var(--color-shoulder);
+  }
+  .day--on {
+    background: var(--color-guide);
+    border-color: var(--color-guide-lit);
+  }
+  .day--today {
+    border-color: var(--color-warning);
+    border-width: 2px;
+  }
+
+  /* ---------- the first-session invitation (cell 2-empty) ---------- */
+  .invite {
+    border-color: color-mix(in srgb, var(--color-guide-lit) 55%, var(--color-shoulder));
+  }
+  .invite__steps {
+    display: flex;
+    gap: 0.5rem;
+    margin: 1rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .invite__steps li {
+    flex: 1;
+    padding: 0.6rem 0.5rem;
+    background: var(--color-asphalt-sunk);
+    border: 1px solid var(--color-shoulder);
+    border-radius: var(--radius-sm);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-sign-dim);
+    text-align: center;
+  }
+
+  /* ---------- offline (cell 2-offline) ---------- */
+  .offlinestrip {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.7rem 0.9rem;
+    background: var(--color-asphalt-raised);
+    border: 1px solid color-mix(in srgb, var(--color-warning) 38%, var(--color-shoulder));
+    border-left: 3px solid var(--color-warning);
+    border-radius: var(--radius-md);
+  }
+  .offlinestrip > svg {
+    flex: none;
+    width: 20px;
+    height: 20px;
+    color: var(--color-warning);
+  }
+  .offlinestrip p {
+    font-size: 0.875rem;
+    line-height: 1.45;
+  }
+
+  /* A mile-post plate: numbers, no adjectives. Used by the content pack and
+     by the diagnostics on the unreadable-save screen. */
+  .plate {
+    display: grid;
+    gap: 0;
+  }
+  .plate > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    padding: 0.55rem 0;
+    border-bottom: 1px solid var(--color-shoulder);
+  }
+  .plate > div:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+  .plate dt {
+    font-size: 0.8125rem;
+    color: var(--color-sign-dim);
+  }
+  .plate dd {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+  }
+  .plate dd.flag {
+    color: var(--color-warning);
+  }
+  .plate dd.ok {
+    color: var(--color-guide-text);
+  }
+
+  /* Install: the home-screen tile drawn as the sign it becomes. */
+  .install {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .tile-preview {
+    flex: none;
+    width: 62px;
+    height: 62px;
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    background: var(--color-guide);
+    border: 2px solid var(--color-sign-white);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+    font-family: var(--font-ui);
+    font-weight: 800;
+    font-size: 1.25rem;
+    letter-spacing: -0.03em;
+    color: #fff;
+  }
+  .steps {
+    margin: 1rem 0 0;
+    padding-left: 1.1rem;
+  }
+  .steps li {
+    margin-bottom: 0.4rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--color-sign-dim);
+  }
+  .steps li:last-child {
+    margin-bottom: 0;
+  }
+  .steps b {
+    font-weight: 700;
+    color: var(--color-sign-white);
+  }
+
+  /* ---------- unreadable save (cell 2-error) ---------- */
+  .fix {
+    display: grid;
+    gap: 0.75rem;
+  }
+  .fix__note {
+    margin: -0.25rem 0 0;
+    font-size: 0.8125rem;
+    color: var(--color-sign-dim);
+    line-height: 1.5;
+  }
+  .danger-zone {
+    border-top: 1px solid var(--color-shoulder);
+    margin-top: 1.25rem;
+    padding-top: 1.125rem;
+  }
+  .keeps {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0.875rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .keeps li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.3rem 0.6rem;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--color-guide-lit) 50%, transparent);
+    color: var(--color-guide-text);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* ---------- desktop deck (cell 2-responsive, mockup 02f) ----------
+     The extra width buys a companion column, never wider prose: reading
+     content stays at the 720px measure (§4). */
+  .deck {
+    padding: 0 var(--spacing-gut);
+  }
+  .col-main {
+    min-width: 0;
+  }
+  .col-side {
+    display: grid;
+    gap: var(--spacing-gut);
+    margin-top: var(--spacing-gut);
+  }
+  .deckfoot {
+    font-size: 0.75rem;
+    line-height: 1.5;
+    margin: 1.25rem 0 0;
+  }
+  @media (min-width: 1024px) {
+    .deck {
+      display: grid;
+      grid-template-columns: minmax(0, var(--container-rail)) 300px;
+      align-items: start;
+      gap: 2rem;
+      max-width: 1052px;
+      margin: 0 auto;
+      padding: 2.25rem 2.5rem 4rem;
+    }
+    .col-side {
+      margin-top: 0;
+      position: sticky;
+      top: 6.25rem;
+    }
+    .deckfoot {
+      grid-column: 1 / -1;
+      max-width: var(--container-rail);
+      margin-top: 2rem;
+    }
+    /* Four topics read better as a 2×2 board than as four wide bars. */
+    .deck .weak {
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+    .readout {
+      gap: 1.5rem;
+    }
+  }
+
+  /* ============================================================
+     ONBOARDING (mockups 01 / 01b)
+     ============================================================ */
+
+  /* The app announces itself on an overhead guide sign. */
+  .marquee {
+    position: relative;
+    background: var(--color-guide);
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+  }
+  .marquee::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+      130% 100% at 8% -20%,
+      rgba(255, 255, 255, 0.16),
+      rgba(255, 255, 255, 0) 58%
+    );
+  }
+  .marquee::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.13;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='80' height='80' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .marquee__face {
+    position: relative;
+    z-index: 1;
+    border: 2.5px solid var(--color-sign-white);
+    border-radius: 6px;
+    padding: 1.1rem 1.15rem 1.15rem;
+  }
+  .marquee__legend {
+    margin: 0 0 0.45rem;
+    font-size: 0.625rem;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.8);
+  }
+  .marquee__title {
+    margin: 0;
+    font-size: clamp(1.6rem, 7vw, 1.9rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    color: #fff;
+  }
+  .marquee__rule {
+    height: 1px;
+    background: rgba(242, 244, 241, 0.24);
+    margin: 0.9rem 0 0.75rem;
+  }
+  .marquee__facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem 1.4rem;
+  }
+  .marquee__fact b {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  .marquee__fact span {
+    display: block;
+    margin-top: 0.3rem;
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  /* The goal picker: a real radio group, one card per goal. */
+  .picks {
+    display: grid;
+    gap: 0.75rem;
+  }
+  .pick {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    min-height: 76px;
+    padding: 0.9rem 1rem;
+    background: var(--color-asphalt-raised);
+    border: 1px solid var(--color-shoulder);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+  }
+  .pick input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    margin: 0;
+  }
+  .pick:hover {
+    border-color: var(--color-shoulder-lit);
+  }
+  .pick:has(input:checked) {
+    border-color: var(--color-guide-lit);
+    background: color-mix(in srgb, var(--color-guide) 16%, var(--color-asphalt-raised));
+  }
+  .pick:has(input:focus-visible) {
+    outline: 3px solid var(--color-warning);
+    outline-offset: 2px;
+  }
+  .pick__dot {
+    flex: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 999px;
+    border: 2px solid var(--color-shoulder-lit);
+    display: grid;
+    place-items: center;
+  }
+  .pick:has(input:checked) .pick__dot {
+    border-color: var(--color-guide-lit);
+    background: var(--color-guide-lit);
+  }
+  .pick__dot::after {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: #fff;
+    opacity: 0;
+  }
+  .pick:has(input:checked) .pick__dot::after {
+    opacity: 1;
+  }
+  .pick__body {
+    flex: 1;
+    min-width: 0;
+  }
+  .pick__t {
+    display: block;
+    font-size: 1rem;
+    font-weight: 700;
+  }
+  .pick__s {
+    display: block;
+    margin-top: 0.2rem;
+    font-size: 0.8125rem;
+    color: var(--color-sign-dim);
+    line-height: 1.45;
+  }
+
+  /* The promise is a feature, so it is told as a motorist-services sign. */
+  .promise {
+    display: grid;
+    gap: 0.9rem;
+    margin: 0;
+  }
+  /* `dt`/`dd` sit directly inside the wrapping div — the only nesting a `dl`
+     allows — so the tick is placed by grid rather than by a wrapper element. */
+  .promise > div {
+    display: grid;
+    grid-template-columns: 24px minmax(0, 1fr);
+    column-gap: 0.75rem;
+  }
+  .promise .tick {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+  }
+  .promise dt {
+    grid-column: 2;
+    font-size: 0.9375rem;
+    font-weight: 700;
+  }
+  .promise dd {
+    grid-column: 2;
+    margin: 0.15rem 0 0;
+    font-size: 0.8125rem;
+    color: var(--color-sign-dim);
+    line-height: 1.5;
+  }
+  .tick {
+    flex: none;
+    width: 24px;
+    height: 24px;
+    margin-top: 1px;
+    display: grid;
+    place-items: center;
+    border-radius: 3px;
+    background: var(--color-route);
+    border: 1.5px solid var(--color-route-lit);
+    color: #fff;
+  }
+
+  /* One sentence, wrapping as one sentence — the icon rides inline. */
+  .pace {
+    margin: 0.6rem 0 0;
+    font-size: 0.8125rem;
+    line-height: 1.55;
+    color: var(--color-sign-dim);
+  }
+  .pace svg {
+    vertical-align: -3px;
+    margin-right: 0.35rem;
+  }
+  .pace b {
+    font-family: var(--font-mono);
+    color: var(--color-warning);
+    font-weight: 700;
+  }
+
+  /* ---------- storage unavailable (cell 1-error) ---------- */
+  .caution {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  .caution h1 {
+    font-size: clamp(1.4rem, 5vw, 1.6rem);
+    margin-bottom: 0.4rem;
+  }
+  /* Two honest columns: what stops working, and what does not. */
+  .ledger {
+    display: grid;
+    gap: 0.75rem;
+  }
+  @media (min-width: 560px) {
+    .ledger {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .ledger h3 {
+    font-size: 0.9375rem;
+    margin-bottom: 0.6rem;
+  }
+  .ledger ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.5rem;
+  }
+  .ledger li {
+    display: flex;
+    gap: 0.55rem;
+    align-items: flex-start;
+    font-size: 0.875rem;
+    line-height: 1.45;
+  }
+  .ledger li svg {
+    flex: none;
+    width: 16px;
+    height: 16px;
+    margin-top: 0.18rem;
+  }
+  .ledger--lose li {
+    color: var(--color-sign-dim);
+  }
+  .ledger--lose svg {
+    color: var(--color-stop-text);
+  }
+  .ledger--keep svg {
+    color: var(--color-guide-text);
+  }
+  /* The answers from the previous screen survive the failure. */
+  .carried {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.875rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    color: var(--color-sign-dim);
+  }
+  .carried b {
+    color: var(--color-sign-white);
+    font-weight: 700;
+  }
+
 }
 
 @keyframes shimmer {

@@ -304,6 +304,12 @@ test.describe('the exam simulator', () => {
     page,
   }) => {
     await begin(page, 'seed=23');
+    // Wait for the first tick before reading the clock. Without this the two
+    // answers below can land inside the opening second, `before` is still
+    // "60:00", and the assertion at the foot of the test fails for a reason
+    // that has nothing to do with surviving a reload. Pre-existing flake —
+    // reproduced on this branch's base commit; see deviations.md (P7).
+    await expect(page.locator('.timer__val')).not.toHaveText('60:00');
     await answer(page, true);
     await answer(page, false);
     const before = await page.locator('.timer__val').textContent();

@@ -136,6 +136,18 @@ test.describe('foundation', () => {
     page,
   }) => {
     await page.setViewportSize({ width: 390, height: 844 });
+    // Setup answered: on first run `/study` is onboarding, which draws no nav
+    // at all (mockups 01 / 01b — nothing to navigate to yet). This test is
+    // about where the nav sits, so it starts from a set-up device.
+    await page.addInitScript(() => {
+      localStorage.setItem(
+        'tn-drive:setup',
+        JSON.stringify({
+          state: { schemaVersion: 1, goal: 'class-d', testDate: null, completedAt: 1 },
+          version: 1,
+        }),
+      );
+    });
     await page.goto('/study');
     const nav = page.getByRole('navigation', { name: 'Main' });
     const mobile = await nav.boundingBox();

@@ -989,3 +989,173 @@ the first thing to split.
 assertions, superseded by the real page — the same way P5 superseded them for
 `/exam`. A case was also added asserting that every focus mode, the drill
 included, is code-split.
+
+---
+
+## 2026-08-11 — P7 (dashboard & onboarding)
+
+Nothing in `stack-grounding.md`, `executable-floor.md`, `practices-checklist.md`,
+`state-matrix.md` or `mockups/` was edited. Fifteen items; §4 wants a ruling,
+because it changes behaviour three other pieces shipped.
+
+### 1. "Road signs learned" reads the sign trainer's record, not the questions
+
+Mockup `02` reads `61 OF 84`; the registry holds 87, so the row reads `N OF 87`.
+
+The first cut of this piece derived it from the question bank — a sign counted
+as learned once every question showing it had been answered right — which capped
+the denominator at the **55** signs a question happens to mention, a bar the
+learner could never fill. P6 then shipped `src/domain/sign-progress.ts`, a real
+per-sign ladder over all 87, so the dashboard now calls `summariseSignMastery`
+and the question-derived proxy (`signsLearned`) was **deleted** rather than left
+standing as a second answer to the same question. "Learned" therefore means what
+the sign trainer means by it — three right in a row (`GRADUATED_BOX`) — and the
+line under the guide sign says so, naming how many are part-way there.
+
+### 2. Onboarding is a **state of the Study destination**, not its own route
+
+Matrix note 1 says it outright: "onboarding **is** the empty state of the app".
+So `/study` renders onboarding until the two questions are answered, and the
+dashboard after — no `/welcome` route, and the page title stays
+`Study · TN Drive`. Two consequences worth recording:
+
+- `src/app/routing.test.tsx`'s `/` and `/study` heading rows now expect the
+  marquee ("Pass the knowledge test") rather than P1's placeholder `Study`.
+  The A14 title assertion is unchanged and still passes.
+- `tests/e2e/study.spec.ts`'s "reachable from the Study destination" now walks
+  through onboarding first, which is the real journey. P4 anticipated this: its
+  deviation §6 said P7 would absorb the "Start a session" panel.
+
+### 3. No bottom nav on first run
+
+Mockups `01` and `01b` draw none — there is nowhere to navigate to yet. The
+**shell** decides it (`AppShell` reads the setup store), because §3 gives the
+shell the nav offset and no page may undo it, and it applies **only** to the
+Study destination: a deep link to `/signs` or `/exam` before setup still arrives
+with the nav, so nothing is unreachable. `tests/e2e/foundation.spec.ts`'s
+nav-position test now seeds a completed setup, since it is a test about where
+the nav sits rather than whether it is drawn.
+
+### 4. The stores were writing over records they had refused to read — fixed
+
+Two changes to `src/store/progress.ts`, `src/store/exam.ts` and — once the
+dashboard began reading it — `src/store/signs.ts`. All three change behaviour
+P4, P5 and P6 shipped, and all three now behave identically:
+
+**(a) Quarantine.** On a `corrupt` or `future` payload the loader returns an
+empty record — and the store then persisted that empty record over the learner's
+file on the very next write. Mockup `02d` promises in words that "your 248
+answers are still on the device… nothing has been deleted", so the store now
+enters `storageMode: 'quarantined'` and **suppresses every write** until the
+learner chooses. `resetProgress` / `resetRecord` lift it and erase deliberately.
+The X20 e2e test answers a question in this state and asserts the payload is
+byte-identical afterwards.
+
+**(b) A latent bug that made the storage notices unreachable.** Both stores set
+their notice from `onRehydrateStorage`, calling `useProgressStore.setState`
+inside it. `zustand`'s `persist` runs a *synchronous* storage synchronously
+inside `create()`, so that callback fires while the `const` binding is still in
+its temporal dead zone; the `ReferenceError` is swallowed by `persist`'s own
+`.catch`, and the notice never appeared. Both stores now read their payload
+**before** `create` and pass the facts in as initial state. Worth a ruling only
+in the sense that it changes files P4/P5 own.
+
+### 5. Page-level layouts transcribed into `src/styles/components.css`
+
+Exactly P4's precedent (`.changed` / `.lookup` / `.again`): `.speedplate`,
+`.guidesign`, `.readout`, `.weakrow`, `.streakstrip`, `.plate`, `.invite`,
+`.offlinestrip`, `.install`, `.deck`, `.marquee`, `.picks`, `.promise`,
+`.ledger`, `.caution`. **No new component was added to `src/components/`** —
+every one of these is a composition of `SignPanel`, `Button`, `SignSvg`,
+`RouteShield`, `DateField` and `ConfirmGate`. Four glyphs were added to
+`Icon.tsx` (refresh, download, share, clock); `Icon` is P1's internal glyph set,
+not a §3 component.
+
+`.speedplate` is HTML rather than a registry SVG because its number is data —
+the same call `mockups/_signs.js` makes for `.sign-speed`. Its legend is
+**TEST READY**, never SPEED LIMIT: it is the app's chrome built from the sign
+system (§2 signature), not a claim that 72 is a speed limit.
+
+### 6. Readiness is `overallAccuracy`, with its evidence stated
+
+Mockup `09`'s own screen-reader line defines it: "Readiness is your overall
+accuracy across all 248 questions you have answered". So `readiness()` returns
+`overallAccuracy` unchanged — no second scoring rule — plus a `confidence` of
+`none` / `provisional` / `measured` at the twelve-answer mark. Three right
+answers still read 100%, but the headline says "Taking your first reading —
+measured on 3 answers so far" rather than presenting a fluke as a verdict.
+
+### 7. Two product numbers the State of Tennessee does not set
+
+`EXAM_READY_THRESHOLD = 85` (the readiness at which a mock exam is recommended;
+the exam itself passes at 24/30 = 80%, and the five points are margin) and
+`RECOMMENDED_MOCK_PASSES = 5` (the guide sign's third destination). Both are the
+mockups' numbers, both are the app's own recommendation, and both are presented
+as advice — the exam is never locked, only un-recommended.
+
+### 8. The empty state's four topics are one per blueprint area
+
+Mockup `02b` labels its four "these four trip up most people". That is a
+statistic this app does not have. The rows are instead one topic per blueprint
+area — a claim the manual itself supports, since the test draws a quarter from
+each — and the copy says so.
+
+### 9. The "Signs refresher" goal routes to `/signs`, it does not filter study
+
+Honouring it inside the adaptive session would mean adding an `?area=` filter to
+`/study/session`, which is P4's route and out of P7's scope. So the goal changes
+the dashboard: the primary action becomes "Drill the road signs" (P6's
+destination — exactly what the goal promises: signs only, no exam simulator) and
+the mock-exam panel is not drawn. Whoever owns settings can widen this.
+
+### 10. The content-pack panel states what can be checked
+
+Mockup `02e` lists "Pack version 2026.06", "Stored size 3.1 MB" and "Last
+checked". The bank carries no build stamp, there is no server to be up to date
+*against*, and no honest byte figure is available at runtime, so the panel
+states what is true: questions · signs (from the bank's own counts), the 27
+state-authored questions, the 25/25/25/25 blueprint, and the manual's July 1
+2022 currency date. The badge reads **Bundled** rather than "Up to date".
+
+### 11. The install affordance is built, and branches on the platform
+
+Both branches from `02e`: a real button when `beforeinstallprompt` has been
+captured, and the three Safari taps where it never fires (grounding §1 forbids a
+button that cannot work). Neither can appear until P9 ships the manifest and
+service worker, so today it renders on no browser. Dismissal is respected for
+the session; persisting it belongs with P9's install work.
+
+### 12. The dashboard loads the content pack asynchronously
+
+Which is what makes cell 2-loading real rather than decorative: the bank and the
+registry are their own chunks, and the skeleton stands until they land. Note
+that `~/content` is reached by a **dynamic** `import()` — a static one would put
+`taxonomy.json` (no `with { type: 'json' }`) into `routes.tsx`'s module graph and
+break every route-derived sweep, which run in plain Node. See the note in
+`src/app/route-paths.ts`.
+
+### 13. The offline cell drives `navigator.onLine`, not `context.setOffline`
+
+`context.setOffline(true)` also severs the Vite dev server's HMR socket, whose
+client then reloads the page; the reload fails its module fetch and the test
+lands on the content-error screen, measuring Vite rather than the app. The
+offline cell therefore reports no connection from before the page loads, which is
+also the real shape of it — a phone in a Driver Service Center car park. Genuine
+zero-network boot is P9's, under X16–X18, against the production build and the
+service worker.
+
+### 14. One-line fix to a pre-existing flake in `tests/e2e/exam.spec.ts`
+
+"an attempt survives a reload" read the clock before its first tick, leaving
+`before` at `60:00` and failing an assertion that has nothing to do with
+reloading. Reproduced on this branch's base commit (3 of 12 runs) before any P7
+code was involved. The fix waits for the first tick, which strengthens the
+assertion rather than relaxing it.
+
+### 15. Note for whoever drives this with Playwright
+
+The loading skeleton deliberately draws the **real** guide-sign frame, so
+`.guidesign__dest` resolves while the rows are still inert placeholders. Wait on
+`.speedplate` (or a named heading) for the loaded dashboard — `dashboard.spec.ts`
+does. Port 5301 (e2e) and 5302 (a11y) are the harness's; 5173 is occupied on this
+machine by an unrelated app.
