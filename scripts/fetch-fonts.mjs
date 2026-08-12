@@ -7,9 +7,17 @@
  * committed. It is not part of `dev`, `build`, or `verify`.
  *
  * We request the Google Fonts CSS API with a modern-Chrome UA so the response
- * is `woff2` with `unicode-range` subsets, then keep only the `latin` and
- * `latin-ext` subsets — everything this English-only product (ratified
- * exclusion: no i18n) can render.
+ * is `woff2` with `unicode-range` subsets, then keep the `latin` subset only —
+ * everything this English-only product (ratified exclusion: no i18n) renders.
+ *
+ * KNOWN DEFECT in the upstream subset: Overpass's `latin` woff2 cuts U+00B7
+ * (the middle dot this product uses as its meta separator) with a ZERO advance
+ * width, so the dot paints on top of the following space and every `A · B`
+ * line renders as `A ·B`. `src/styles/components.css` patches it with a
+ * single-codepoint `@font-face` borrowing the glyph from the Newsreader file
+ * already bundled. If you re-cut these subsets, re-measure U+00B7 before
+ * deleting that rule — there are regression tests asserting its advance is
+ * greater than 2px, and they will tell you.
  *
  *   node scripts/fetch-fonts.mjs
  */
