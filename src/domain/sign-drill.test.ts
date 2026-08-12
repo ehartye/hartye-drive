@@ -9,6 +9,7 @@ import {
 import type { BuildDrillInput, DrillSign } from './sign-drill';
 import { DAY_MS, newCard, reviewCard } from './scheduler';
 import type { CardState } from './scheduler';
+import { SIGN_REGISTRY } from '~/signs/registry';
 
 const T0 = Date.UTC(2026, 7, 11, 9, 0, 0);
 
@@ -26,11 +27,32 @@ function registry(counts: Record<string, number>): DrillSign[] {
   for (const [category, count] of Object.entries(counts)) {
     for (let i = 0; i < count; i += 1) {
       const id = `${category}-${String(i).padStart(2, '0')}`;
-      out.push({ id, category, meaning: `The meaning of ${id}, spelled out in full.` });
+      out.push({
+        id,
+        category,
+        meaning: `The meaning of ${id}, spelled out in full.`,
+        shape: SHAPE_FOR[category] ?? 'diamond',
+        faceColor: COLOR_FOR[category] ?? 'yellow',
+        legendColor: 'black',
+      });
     }
   }
   return out;
 }
+
+const SHAPE_FOR: Record<string, string> = {
+  regulatory: 'rectangle-vertical',
+  warning: 'diamond',
+  'work-zone': 'diamond',
+  guide: 'rectangle-horizontal',
+};
+
+const COLOR_FOR: Record<string, string> = {
+  regulatory: 'white',
+  warning: 'yellow',
+  'work-zone': 'orange',
+  guide: 'green',
+};
 
 const SIGNS = registry({ regulatory: 8, warning: 10, 'work-zone': 4, guide: 3 });
 
@@ -136,15 +158,32 @@ describe('buildDrill — meaning mode', () => {
     expect(new Set(plan.items.map((i) => i.correctIndex)).size).toBeGreaterThan(1);
   });
 
-  it('draws its distractors from signs the learner could plausibly confuse', () => {
-    // Same category first: a yellow diamond answered against three green guide
-    // meanings is not a test of anything.
+  it('makes an unfiltered drill discriminate across the registry, not inside one colour', () => {
+    // The old behaviour drew all three options from the sign's own category, so
+    // every item was a 1-in-3 inside a single colour family and never asked the
+    // learner to tell a yellow diamond from a green guide sign at all.
     const byId = new Map(SIGNS.map((s) => [s.id, s]));
     const meanings = new Map(SIGNS.map((s) => [s.meaning, s.category]));
     for (const item of plan.items) {
       const own = byId.get(item.signId)?.category;
-      const sameCategory = item.options.filter((o) => meanings.get(o.text) === own).length;
-      expect(sameCategory).toBe(DRILL_CHOICE_COUNT);
+      const elsewhere = item.options.filter((o) => {
+        const from = meanings.get(o.text);
+        return from !== undefined && from !== own;
+      }).length;
+      expect(elsewhere, `${item.signId} was answered entirely inside ${String(own)}`).toBeGreaterThanOrEqual(1);
+    }
+  });
+
+  it('still keeps a confusable neighbour in the line-up', () => {
+    // Cross-category alone would be its own failure: the confusable signs are
+    // the ones wearing the same shape and colour, and one of them stays.
+    const byId = new Map(SIGNS.map((s) => [s.id, s]));
+    const meanings = new Map(SIGNS.map((s) => [s.meaning, s.category]));
+    for (const item of plan.items) {
+      const own = byId.get(item.signId)?.category;
+      const near = item.options.filter((o) => meanings.get(o.text) === own).length;
+      // The answer itself is one; a same-category distractor is the second.
+      expect(near, `${item.signId} lost its confusable neighbour`).toBeGreaterThanOrEqual(2);
     }
   });
 
@@ -202,6 +241,155 @@ describe('buildDrill — shape and colour mode', () => {
     expect(plan1.items[0]?.options[plan1.items[0].correctIndex]?.text).toBe(
       CATEGORY_LESSON['warning'],
     );
+  });
+});
+
+/* -------------------------------------------- the colour-and-shape leak */
+
+const REAL_SIGNS: DrillSign[] = [...SIGN_REGISTRY.values()].map((sign) => ({
+  id: sign.id,
+  category: sign.category,
+  meaning: sign.meaning,
+  shape: sign.shape,
+  faceColor: sign.faceColor,
+  legendColor: sign.legendColor,
+}));
+
+const REAL_LESSON: Record<string, string> = {
+  regulatory: 'The law — you must, or you must not.',
+  warning: 'A warning — something ahead needs you to slow down and look.',
+  guide: 'Guidance — where you may go, which way, and how far.',
+  service: 'Services for drivers — hospital, fuel, food, rest.',
+  'work-zone': 'A work zone — temporary conditions, and people on foot.',
+  school: 'A school zone — children, and a lower limit when it is in force.',
+  railroad: 'A railroad crossing — slow, look, and be ready to stop.',
+};
+
+const says = (text: string, word: string) => new RegExp(`\\b${word}\\b`, 'i').test(text);
+
+/**
+ * Recomputed here from the registry entry rather than imported, so this test
+ * would still catch a `visibleWords` that quietly stopped looking at the
+ * legend colour. Bare orientation words are dropped: `down` comes from
+ * `triangle-down` and is ordinary road English ("slow down"), not a shape name.
+ */
+const ORIENTATION = new Set(['up', 'down', 'left', 'right']);
+
+const seenOn = (sign: DrillSign): string[] => [
+  ...new Set(
+    `${sign.faceColor} ${sign.legendColor} ${sign.shape}`
+      .toLowerCase()
+      .split(/[^a-z]+/)
+      .filter((word) => word.length > 0 && !ORIENTATION.has(word)),
+  ),
+];
+
+/**
+ * The leak, stated exactly: a word naming something the learner can *see* on
+ * the sign that, on its own, tells them which option is the answer. Either the
+ * answer is the only option that says it ("only one option mentions a
+ * **yellow** EXIT ONLY panel"), or the answer is the only option that does not
+ * while the rest do — with three choices, both are decisive.
+ */
+function separator(sign: DrillSign, texts: string[], correctIndex: number): string | null {
+  for (const word of seenOn(sign)) {
+    const saying = texts.map((text, index) => (says(text, word) ? index : -1)).filter((i) => i >= 0);
+    if (saying.length === 0) continue;
+    if (saying.length === 1 && saying[0] === correctIndex) return word;
+    const silent = texts.map((_, index) => index).filter((index) => !saying.includes(index));
+    if (silent.length === 1 && silent[0] === correctIndex) return word;
+  }
+  return null;
+}
+
+describe('buildDrill — a colour or a shape word must never be the answer', () => {
+  const realInput = (over: Partial<BuildDrillInput> = {}): BuildDrillInput => ({
+    signs: REAL_SIGNS,
+    cards: {},
+    categories: {},
+    now: T0,
+    size: DEFAULT_DRILL_SIZE,
+    seed: 1,
+    mode: 'meaning',
+    lessonFor: (category) => REAL_LESSON[category] ?? category,
+    lessonPool: Object.values(REAL_LESSON),
+    ...over,
+  });
+
+  const SEEDS = Array.from({ length: 60 }, (_, i) => i * 977 + 3);
+
+  const REAL_BY_ID = new Map(REAL_SIGNS.map((sign) => [sign.id, sign]));
+
+  it('holds across sixty seeded draws of the real registry, in both modes', () => {
+    const leaks: string[] = [];
+    let asked = 0;
+    for (const seed of SEEDS) {
+      for (const mode of ['meaning', 'shape-color'] as const) {
+        for (const item of buildDrill(realInput({ seed, mode })).items) {
+          asked += 1;
+          const sign = REAL_BY_ID.get(item.signId);
+          if (!sign) throw new Error(`unknown sign ${item.signId}`);
+          const texts = item.options.map((option) => option.text);
+          const word = separator(sign, texts, item.correctIndex);
+          if (word !== null) leaks.push(`${item.signId} [${mode}, seed ${String(seed)}] — “${word}”`);
+        }
+      }
+    }
+    expect(asked).toBeGreaterThan(3000);
+    expect([...new Set(leaks)].slice(0, 12)).toEqual([]);
+  });
+
+  it('holds when the drill is filtered to one category, where every option is that colour', () => {
+    const leaks: string[] = [];
+    for (const category of Object.keys(REAL_LESSON)) {
+      const pool = REAL_SIGNS.filter((sign) => sign.category === category);
+      for (const seed of SEEDS.slice(0, 20)) {
+        for (const item of buildDrill(realInput({ seed, signs: pool })).items) {
+          const sign = REAL_BY_ID.get(item.signId);
+          if (!sign) throw new Error(`unknown sign ${item.signId}`);
+          const word = separator(
+            sign,
+            item.options.map((option) => option.text),
+            item.correctIndex,
+          );
+          if (word !== null) leaks.push(`${item.signId} [${category}] — “${word}”`);
+        }
+      }
+    }
+    expect([...new Set(leaks)].slice(0, 12)).toEqual([]);
+  });
+
+  it('reaches outside the sign’s own category when the drill is not filtered', () => {
+    const byId = new Map(REAL_SIGNS.map((sign) => [sign.id, sign]));
+    const category = new Map(REAL_SIGNS.map((sign) => [sign.meaning, sign.category]));
+    const inbred: string[] = [];
+    for (const seed of SEEDS.slice(0, 20)) {
+      for (const item of buildDrill(realInput({ seed })).items) {
+        const own = byId.get(item.signId)?.category;
+        const elsewhere = item.options.filter((option) => {
+          const from = category.get(option.text);
+          return from !== undefined && from !== own;
+        });
+        if (elsewhere.length === 0) inbred.push(`${item.signId} (seed ${String(seed)})`);
+      }
+    }
+    expect([...new Set(inbred)].slice(0, 12)).toEqual([]);
+  });
+
+  it('still answers the sign with its own meaning, verbatim or clause-trimmed', () => {
+    const byId = new Map(REAL_SIGNS.map((sign) => [sign.id, sign]));
+    for (const item of buildDrill(realInput({ seed: 5 })).items) {
+      const meaning = byId.get(item.signId)?.meaning ?? '';
+      const answer = item.options[item.correctIndex]?.text ?? '';
+      expect(answer.length).toBeGreaterThan(20);
+      // Either the meaning as authored, or the same sentence with the clause
+      // that describes the sign's own colour or shape lifted out of it.
+      const kept = answer.replace(/^./, (c) => c.toLowerCase()).replace(/\.$/, '');
+      expect(
+        meaning.toLowerCase().includes(kept.toLowerCase()),
+        `${item.signId}: “${answer}” is not this sign's meaning`,
+      ).toBe(true);
+    }
   });
 });
 
