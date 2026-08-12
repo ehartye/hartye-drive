@@ -1553,7 +1553,7 @@ React replaces it, so the only `largestContentfulPaint::Candidate` in the trace
 is the post-boot paragraph, and the simulation dates the whole of LCP to the end
 of the JS chain — 3.7 s. Chrome's own `PerformanceObserver` under real Slow 4G
 disagrees: it reports **one** LCP entry, the boot plate, at **1 464 ms**. Under
-Lighthouse's real (`devtools`) throttling the same build scores **91**.
+Lighthouse's real (`devtools`) throttling the same build scores **90–91**.
 
 `npm run audit` runs both passes and prints both, because the difference is the
 honest thing to publish rather than a knob to pick. The gated number is the
