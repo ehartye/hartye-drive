@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import registryJson from '~/content/signs.json';
-import type { SignRegistry } from '~/content/types';
+import { signRegistryData as registryJson } from '~/content';
 import { colorLabel, shapeLabel, signDrillName, signName } from './registry';
 import { SIGN_GEOMETRY, allSigns, getSign } from './signs';
 
@@ -15,7 +14,7 @@ import { SIGN_GEOMETRY, allSigns, getSign } from './signs';
  * the geometry; this file makes sure it inherits a contract rather than a
  * conflict.
  */
-const registry = registryJson as unknown as SignRegistry;
+const registry = registryJson;
 const registryIds = new Set(registry.signs.map((sign) => sign.id));
 
 describe('sign geometry answers to the content registry', () => {

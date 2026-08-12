@@ -27,8 +27,8 @@
  *   - a legend fits inside its own face, measured in a browser, not eyeballed.
  */
 import type { ReactNode } from 'react';
-import registryJson from '~/content/signs.json' with { type: 'json' };
-import type { SignCategory, SignEntry, SignRegistry, SignShape } from '~/content/types';
+import { signRegistryData as registryJson } from '~/content';
+import type { SignCategory, SignEntry, SignShape } from '~/content/types';
 
 /**
  * Re-exported from the content schema on purpose: the category vocabulary has
@@ -38,7 +38,7 @@ import type { SignCategory, SignEntry, SignRegistry, SignShape } from '~/content
 export type { SignCategory, SignEntry, SignShape };
 
 /** The registry as loaded. Static, because `SignSvg` is in the app shell. */
-const registry = registryJson as unknown as SignRegistry;
+const registry = registryJson;
 
 /** Indexed by registry id; `SignSvg` resolves through this map. */
 export const SIGN_REGISTRY: ReadonlyMap<string, SignEntry> = new Map(

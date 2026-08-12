@@ -18,6 +18,7 @@
 // Import attributes must match everywhere a module is imported, or rollup warns
 // and the module can end up in two chunks. `registry.ts` and `Progress.tsx`
 // already use `with { type: 'json' }`, so these do too.
+import signsData from './signs.json' with { type: 'json' };
 import taxonomyData from './taxonomy.json' with { type: 'json' };
 import correctionsData from './corrections.json' with { type: 'json' };
 import neverGenerateData from './never-generate.json' with { type: 'json' };
@@ -44,14 +45,28 @@ export const neverGenerate = neverGenerateData.entries as unknown as NeverGenera
 
 /** The question bank, ~500 questions. Lazily loaded — see the note above. */
 export async function loadQuestionBank(): Promise<QuestionBank> {
-  const mod = await import('./questions.json', { with: { type: 'json' } });
+  const mod = await import('./questions.json');
   return mod.default as unknown as QuestionBank;
 }
 
-/** The sign registry. Lazily loaded. */
-export async function loadSignRegistry(): Promise<SignRegistry> {
-  const mod = await import('./signs.json', { with: { type: 'json' } });
-  return mod.default as unknown as SignRegistry;
+/**
+ * The sign registry. Resolved from the static import above, NOT a dynamic one.
+ *
+ * `~/signs/registry.ts` already imports this file statically, and `SignSvg`
+ * sits in the app shell — so the bytes are in the entry chunk either way. A
+ * second, dynamic import bought no laziness and cost real breakage: rollup
+ * warned the same module was imported with and without an import attribute
+ * (risking two copies), and adding the attribute to satisfy it broke `npm run
+ * dev` outright, because Chromium requires a module imported `with { type:
+ * 'json' }` to arrive as `application/json` and Vite's dev server serves
+ * `text/javascript`. One import path, no attribute mismatch, no dev-only
+ * workaround. Kept async so callers do not change.
+ */
+/** The raw registry. The ONLY module that reads signs.json. */
+export const signRegistryData = signsData as unknown as SignRegistry;
+
+export function loadSignRegistry(): Promise<SignRegistry> {
+  return Promise.resolve(signRegistryData);
 }
 
 /**
@@ -59,7 +74,7 @@ export async function loadSignRegistry(): Promise<SignRegistry> {
  * quote and page. Backs the rule-reference surface a citation links to.
  */
 export async function loadRules(): Promise<ManualRule[]> {
-  const mod = await import('./rules.json', { with: { type: 'json' } });
+  const mod = await import('./rules.json');
   return (mod.default as unknown as { rules: ManualRule[] }).rules;
 }
 

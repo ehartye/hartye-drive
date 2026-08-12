@@ -2,8 +2,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import registryJson from '~/content/signs.json';
-import type { SignRegistry } from '~/content/types';
+import { signRegistryData as registryJson } from './index';
 
 /**
  * Every sign id the product mentions must resolve to a registry entry.
@@ -21,7 +20,7 @@ import type { SignRegistry } from '~/content/types';
  * reading the sources the way a reviewer would and refusing to let a literal
  * sign id exist that the registry does not carry.
  */
-const registry = registryJson as unknown as SignRegistry;
+const registry = registryJson;
 const registryIds = new Set(registry.signs.map((sign) => sign.id));
 
 const SRC = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');

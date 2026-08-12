@@ -12,15 +12,15 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { SignSvg } from '~/components/SignSvg';
 import questionsJson from '~/content/questions.json';
-import registryJson from '~/content/signs.json';
-import type { QuestionBank, SignRegistry } from '~/content/types';
+import { signRegistryData as registryJson } from '~/content';
+import type { QuestionBank } from '~/content/types';
 import type { AuditQuestion } from './audit';
 import { SIGN_GEOMETRY, allSigns } from './signs';
 
 export { auditSigns, MIN_DRAWN_SIGNS } from './audit';
 export type { AuditFailure, AuditInput, RenderedSign } from './audit';
 
-export const registry = registryJson as unknown as SignRegistry;
+export const registry = registryJson;
 
 const bank = questionsJson as unknown as QuestionBank;
 

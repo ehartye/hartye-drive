@@ -10,8 +10,7 @@
  * against the paint.
  */
 import { describe, expect, it } from 'vitest';
-import registryJson from '~/content/signs.json';
-import type { SignRegistry } from '~/content/types';
+import { signRegistryData as registryJson } from '~/content';
 import { describeOutline, measureOutline, outlineMatchesShape } from './outline';
 import {
   FACE_CIRCLE,
@@ -27,7 +26,7 @@ import {
 } from './geometry/shared';
 import { SIGN_GEOMETRY } from './signs';
 
-const registry = registryJson as unknown as SignRegistry;
+const registry = registryJson;
 
 describe('measureOutline', () => {
   it('counts the corners of a straight-edged face', () => {

@@ -44,46 +44,23 @@ const contentSecurityPolicy = (): Plugin => ({
   },
 });
 
-/**
- * A dev-server-only repair, and a pre-existing one — it reproduces on this
- * branch's base commit with none of P9 applied.
+/*
+ * A dev-only plugin used to live here, stripping `with { type: 'json' }` from
+ * dynamic imports because Chromium requires such a module to arrive as
+ * `application/json` while Vite's dev server serves `text/javascript` — which
+ * broke the content pack, and most of tests/e2e, against `npm run dev`.
  *
- * `src/content/index.ts` loads the three large files with import attributes:
- * `await import('./signs.json', { with: { type: 'json' } })`. Rollup needs
- * those — the same file is imported statically by `src/signs/registry.ts`, and
- * a mismatch splits it across two chunks — but Chromium now enforces the HTML
- * spec's rule that a module requested with `type: 'json'` must arrive as
- * `application/json`. Vite's dev server transforms JSON into an ES module and
- * serves it as `text/javascript`, so current Chromium refuses it:
+ * It is gone because the cause is gone. `signs.json` was imported BOTH
+ * statically (`src/signs/registry.ts`) and dynamically (`src/content/index.ts`),
+ * and the attributes existed only to stop rollup splitting it across two
+ * chunks. The dynamic import bought no laziness — `SignSvg` is in the app
+ * shell, so those bytes were always in the entry chunk. `loadSignRegistry()`
+ * now resolves the static import, the dual-import is gone, and the two
+ * genuinely-lazy imports (questions, rules) carry no attribute and need none.
  *
- *   Failed to load module script: Expected a JSON module script but the server
- *   responded with a MIME type of "text/javascript".
- *
- * The consequence is not subtle. The content pack never resolves, so the
- * dashboard, the study session, the exam and the rule reference all land on
- * "The question bank did not load", and most of `tests/e2e` fails against the
- * dev server while the production build is perfectly healthy.
- *
- * This strips the attribute from **dynamic** imports, in **dev only**. Static
- * `import x from './y.json' with { type: 'json' }` is untouched: Vite rewrites
- * those itself and they work. The production build is byte-for-byte unaffected,
- * which is the point — the chunking guarantee the attributes exist for is not
- * traded away to fix a dev-server MIME type. See deviations.md, 2026-08-12 (P9)
- * §5.
+ * If you reintroduce a dynamic JSON import of a file that is also imported
+ * statically, this problem comes back. Import it once.
  */
-const devJsonImportAttributes = (): Plugin => ({
-  name: 'tn-drive-dev-json-import-attributes',
-  apply: 'serve',
-  enforce: 'pre',
-  transform(code, id) {
-    if (!/\.tsx?$/.test(id) || !code.includes('with:')) return null;
-    const stripped = code.replace(
-      /,\s*\{\s*with:\s*\{\s*type:\s*['"]json['"]\s*,?\s*\}\s*,?\s*\}\s*\)/g,
-      ')',
-    );
-    return stripped === code ? null : { code: stripped, map: null };
-  },
-});
 
 /**
  * X23 — flatten the cold-start waterfall.
@@ -224,7 +201,6 @@ const pwa = () =>
 
 export default defineConfig({
   plugins: [
-    devJsonImportAttributes(),
     react(),
     tailwindcss(),
     criticalPreload(),
