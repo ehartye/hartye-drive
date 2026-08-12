@@ -15,6 +15,11 @@ lighthouse-report.*
 # a 900 KB PNG does not belong in history.
 artifacts/
 
+# agent scratch space — parallel builders get their own git worktrees here.
+# They were being tracked as gitlinks, which put another agent's checkout in
+# this repo's index and made eslint walk a second copy of src/.
+.claude/worktrees/
+
 # editor / OS
 .DS_Store
 Thumbs.db
