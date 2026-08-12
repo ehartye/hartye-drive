@@ -1,0 +1,9 @@
+# TN Drive is a single-page app with no server, so every unknown path is
+# answered with index.html. Without this file that fallback is what a crawler
+# receives when it asks for /robots.txt, and it reads an HTML document as
+# directives — which is exactly what Lighthouse's SEO audit reported.
+#
+# Nothing here is private: the whole app is static, and there is no account, no
+# API and no user data to keep out of an index.
+User-agent: *
+Allow: /

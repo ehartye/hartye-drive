@@ -45,6 +45,47 @@ const contentSecurityPolicy = (): Plugin => ({
 });
 
 /**
+ * A dev-server-only repair, and a pre-existing one — it reproduces on this
+ * branch's base commit with none of P9 applied.
+ *
+ * `src/content/index.ts` loads the three large files with import attributes:
+ * `await import('./signs.json', { with: { type: 'json' } })`. Rollup needs
+ * those — the same file is imported statically by `src/signs/registry.ts`, and
+ * a mismatch splits it across two chunks — but Chromium now enforces the HTML
+ * spec's rule that a module requested with `type: 'json'` must arrive as
+ * `application/json`. Vite's dev server transforms JSON into an ES module and
+ * serves it as `text/javascript`, so current Chromium refuses it:
+ *
+ *   Failed to load module script: Expected a JSON module script but the server
+ *   responded with a MIME type of "text/javascript".
+ *
+ * The consequence is not subtle. The content pack never resolves, so the
+ * dashboard, the study session, the exam and the rule reference all land on
+ * "The question bank did not load", and most of `tests/e2e` fails against the
+ * dev server while the production build is perfectly healthy.
+ *
+ * This strips the attribute from **dynamic** imports, in **dev only**. Static
+ * `import x from './y.json' with { type: 'json' }` is untouched: Vite rewrites
+ * those itself and they work. The production build is byte-for-byte unaffected,
+ * which is the point — the chunking guarantee the attributes exist for is not
+ * traded away to fix a dev-server MIME type. See deviations.md, 2026-08-12 (P9)
+ * §5.
+ */
+const devJsonImportAttributes = (): Plugin => ({
+  name: 'tn-drive-dev-json-import-attributes',
+  apply: 'serve',
+  enforce: 'pre',
+  transform(code, id) {
+    if (!/\.tsx?$/.test(id) || !code.includes('with:')) return null;
+    const stripped = code.replace(
+      /,\s*\{\s*with:\s*\{\s*type:\s*['"]json['"]\s*,?\s*\}\s*,?\s*\}\s*\)/g,
+      ')',
+    );
+    return stripped === code ? null : { code: stripped, map: null };
+  },
+});
+
+/**
  * X23 — flatten the cold-start waterfall.
  *
  * Measured on Slow 4G (562 ms RTT) with a 4× CPU throttle, a cold load of
@@ -85,7 +126,7 @@ const criticalPreload = (): Plugin => ({
         .map((chunk) => chunk.fileName)
         .filter((fileName) => !already.has(fileName))
         .sort()
-        .map((fileName) => `    <link rel="modulepreload" crossorigin href="/${fileName}" />`);
+        .map((fileName) => `    <link rel="prefetch" as="script" crossorigin href="/${fileName}" />`);
 
       return links.length === 0 ? html : html.replace('</head>', `${links.join('\n')}\n  </head>`);
     },
@@ -182,7 +223,14 @@ const pwa = () =>
   });
 
 export default defineConfig({
-  plugins: [react(), tailwindcss(), criticalPreload(), contentSecurityPolicy(), pwa()],
+  plugins: [
+    devJsonImportAttributes(),
+    react(),
+    tailwindcss(),
+    criticalPreload(),
+    contentSecurityPolicy(),
+    pwa(),
+  ],
   resolve: {
     alias: {
       '~': fileURLToPath(new URL('./src', import.meta.url)),

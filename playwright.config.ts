@@ -44,12 +44,18 @@ export default defineConfig({
       timeout: 120_000,
     },
     {
-      // The production build is what the offline specs judge, so they build it
-      // rather than trusting whatever `dist/` happens to hold.
-      command: 'npm run build && npx vite preview --port 5302 --strictPort',
+      /*
+       * Serves `dist/`. The build happens in `npm run test:e2e` **before**
+       * Playwright starts, deliberately not here: a `vite build` running
+       * alongside the dev server rewrites hundreds of files inside the project
+       * the dev server is serving, and the specs that happen to be mid-
+       * `import()` fail with "Failed to fetch dynamically imported module".
+       * That cost a whole red suite to diagnose. Build first, then serve.
+       */
+      command: 'npx vite preview --port 5302 --strictPort',
       url: 'http://localhost:5302',
       reuseExistingServer: false,
-      timeout: 240_000,
+      timeout: 120_000,
     },
   ],
 });
