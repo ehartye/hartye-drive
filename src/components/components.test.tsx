@@ -310,6 +310,35 @@ describe('ExplanationBlock', () => {
     );
     expect(screen.getByText('Incorrect · the answer is A')).toBeInTheDocument();
   });
+
+  /**
+   * The whole point of P8's rule reference: a citation that names its rule
+   * resolves itself, so no caller has to know the shape of the URL and none of
+   * them can get it wrong.
+   */
+  it('turns a rule id into a followable link to the rule reference', () => {
+    inRouter(
+      <ExplanationBlock citation={{ ...citation, ruleId: 'R225' }}>rule</ExplanationBlock>,
+    );
+    expect(screen.getByRole('link', { name: /Sharing the Road/ })).toHaveAttribute(
+      'href',
+      '/rules/R225',
+    );
+  });
+
+  it('offers no link at all when the citation names no rule', () => {
+    inRouter(<ExplanationBlock citation={citation}>rule</ExplanationBlock>);
+    expect(screen.queryByRole('link')).toBeNull();
+  });
+
+  it('lets an explicit destination win over the derived one', () => {
+    inRouter(
+      <ExplanationBlock citation={{ ...citation, ruleId: 'R225', to: '/gallery' }}>
+        rule
+      </ExplanationBlock>,
+    );
+    expect(screen.getByRole('link')).toHaveAttribute('href', '/gallery');
+  });
 });
 
 /* ------------------------------------------------------- markers and meters */
@@ -547,6 +576,27 @@ describe('AppBar (grounding §3)', () => {
     expect(screen.getByText('84 signs · MUTCD')).toHaveClass('appbar__sub');
     expect(screen.getByText(/Offline ready/)).toBeInTheDocument();
     expect(screen.queryByText('TN Drive')).toBeNull();
+  });
+
+  /**
+   * The rule reference is reached from a study explanation, an exam review, the
+   * sign library and another rule, so its "up" is genuinely "where you came
+   * from" — a fixed destination would send three of those four learners
+   * somewhere they had not been.
+   */
+  it('offers a back control that goes back, for a page with no single parent', async () => {
+    const user = userEvent.setup();
+    const onBack = vi.fn();
+    inRouter(<AppBar title="Rule reference" onBack={onBack} />);
+    const back = screen.getByRole('button', { name: /Back/ });
+    await user.click(back);
+    expect(onBack).toHaveBeenCalledTimes(1);
+  });
+
+  it('prefers an explicit destination when a page does have one', () => {
+    inRouter(<AppBar title="Settings" backTo="/progress" onBack={() => undefined} />);
+    expect(screen.getByRole('link', { name: /Back/ })).toHaveAttribute('href', '/progress');
+    expect(screen.queryByRole('button', { name: /Back/ })).toBeNull();
   });
 });
 
