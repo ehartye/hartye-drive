@@ -48,10 +48,8 @@ export interface SeedOptions {
   to?: number;
 }
 
-export interface Seed {
-  [PROGRESS_KEY]: string;
-  [EXAM_KEY]: string;
-}
+/** Keyed by storage key, so a caller can hand it straight to `setItem`. */
+export type Seed = Record<string, string>;
 
 interface Attempt {
   questionId: string;

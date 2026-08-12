@@ -3,6 +3,7 @@ import { test, expect } from '@playwright/test';
 import type { Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import { servablePaths } from '../../src/app/route-paths';
+import { LONG_HISTORY, POPULATED } from '../support/seed';
 
 /**
  * X15 — zero violations at wcag2a, wcag2aa, wcag21aa, wcag22aa across every
@@ -282,4 +283,131 @@ test('axe: the open dialog traps and is labelled', async ({ page }) => {
   await expect(page.getByRole('dialog')).toBeVisible();
   const results = await new AxeBuilder({ page }).withTags(TAGS).analyze();
   expect(results.violations.map((v) => v.id)).toEqual([]);
+});
+
+/* --- P8: state-matrix cells 9, 9-empty, 9-long, 10, 11, 11b and 11c. -------
+ *
+ * The seeded cells are driven by writing a real, schema-valid record and
+ * loading the page — the same way the app would have written it. 11c is
+ * reached by making the browser genuinely refuse the erase; nothing here
+ * fabricates a screen through a query parameter.
+ */
+
+async function seedRecords(page: Page, records: Record<string, string>): Promise<void> {
+  await page.addInitScript((payload: Record<string, string>) => {
+    for (const [key, value] of Object.entries(payload)) localStorage.setItem(key, value);
+  }, records);
+}
+
+const PROGRESS_CELLS: {
+  name: string;
+  seed: (() => Record<string, string>) | null;
+  ready: string;
+  drive?: (page: Page) => Promise<void>;
+}[] = [
+  { name: 'cell 9 — populated', seed: POPULATED, ready: '.chart > svg' },
+  // The empty page deliberately draws no readiness chart at all, so its ready
+  // signal is the work-zone plate that stands where the chart will be.
+  { name: 'cell 9-empty — nothing answered', seed: null, ready: '.workzone' },
+  { name: 'cell 9-long — 50+ sittings', seed: LONG_HISTORY, ready: '.monthhead' },
+  {
+    name: 'cell 9-long — a further page of history loaded',
+    seed: LONG_HISTORY,
+    ready: '.monthhead',
+    drive: async (page) => {
+      await page.getByRole('button', { name: /Load \d+ more/ }).click();
+    },
+  },
+  {
+    name: 'cell 9-long — the trend narrowed to mock exams only',
+    seed: LONG_HISTORY,
+    ready: '.seg',
+    drive: async (page) => {
+      await page.getByRole('button', { name: 'Exams only' }).click();
+    },
+  },
+];
+
+for (const cell of PROGRESS_CELLS) {
+  test(`axe: progress ${cell.name}`, async ({ page }) => {
+    if (cell.seed) await seedRecords(page, cell.seed());
+    await page.goto('/progress');
+    await page.locator(cell.ready).first().waitFor();
+    await cell.drive?.(page);
+    const results = await new AxeBuilder({ page }).withTags(TAGS).analyze();
+    expect(
+      results.violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(' | ')}`),
+    ).toEqual([]);
+  });
+}
+
+const RULE_CELLS: { name: string; route: string }[] = [
+  // R119 carries related signs and a long sibling list; R225 is the rule
+  // mockup 10 is drawn around; the last one does not exist.
+  { name: 'cell 10 — a rule with related signs', route: '/rules/R119' },
+  { name: 'cell 10 — a rule with none', route: '/rules/R225' },
+];
+
+for (const cell of RULE_CELLS) {
+  test(`axe: rules ${cell.name}`, async ({ page }) => {
+    await seedRecords(page, POPULATED());
+    await page.goto(cell.route);
+    // Not just an `<h1>`: the split route's fallback renders a hidden one.
+    await page.locator('.plain').waitFor();
+    const results = await new AxeBuilder({ page }).withTags(TAGS).analyze();
+    expect(
+      results.violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(' | ')}`),
+    ).toEqual([]);
+  });
+}
+
+test('axe: rules — an id the manual does not carry', async ({ page }) => {
+  await page.goto('/rules/R99999');
+  await page.getByRole('heading', { level: 1, name: 'No such rule' }).waitFor();
+  const results = await new AxeBuilder({ page }).withTags(TAGS).analyze();
+  expect(results.violations.map((v) => v.id)).toEqual([]);
+});
+
+test('axe: settings — cell 11, with the reading preference turned up', async ({ page }) => {
+  await seedRecords(page, POPULATED());
+  await page.goto('/settings');
+  await page.locator('.corr').first().waitFor();
+  await page.getByRole('radio', { name: 'Larger' }).check();
+  const results = await new AxeBuilder({ page }).withTags(TAGS).analyze();
+  expect(
+    results.violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(' | ')}`),
+  ).toEqual([]);
+});
+
+test('axe: settings — cell 11b, the destructive confirmation', async ({ page }) => {
+  await seedRecords(page, POPULATED());
+  await page.goto('/settings');
+  await page.getByRole('button', { name: 'Reset all progress…' }).click();
+  await expect(page.getByRole('dialog')).toBeVisible();
+  const closed = await new AxeBuilder({ page }).withTags(TAGS).analyze();
+  expect(closed.violations.map((v) => v.id)).toEqual([]);
+
+  // And again with the gate ticked, which is when "Erase everything" becomes
+  // available — a different tree from the one above.
+  await page.getByRole('dialog').getByRole('checkbox').check();
+  const open = await new AxeBuilder({ page }).withTags(TAGS).analyze();
+  expect(open.violations.map((v) => v.id)).toEqual([]);
+});
+
+test('axe: settings — cell 11c, the erase the browser refused', async ({ page }) => {
+  await seedRecords(page, POPULATED());
+  await page.addInitScript(() => {
+    Storage.prototype.removeItem = function removeItem() {
+      throw new DOMException('The operation is insecure.', 'SecurityError');
+    };
+  });
+  await page.goto('/settings');
+  await page.getByRole('button', { name: 'Reset all progress…' }).click();
+  await page.getByRole('dialog').getByRole('checkbox').check();
+  await page.getByRole('dialog').getByRole('button', { name: 'Erase everything' }).click();
+  await page.getByRole('heading', { level: 1, name: /won’t let the app write/ }).waitFor();
+  const results = await new AxeBuilder({ page }).withTags(TAGS).analyze();
+  expect(
+    results.violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(' | ')}`),
+  ).toEqual([]);
 });

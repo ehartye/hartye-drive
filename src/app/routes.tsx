@@ -1,6 +1,6 @@
 import type { RouteObject } from 'react-router';
 import { AppShell } from './AppShell';
-import { ExamRoute, SettingsRoute, StudyRoute } from '~/routes/destinations';
+import { ExamRoute, StudyRoute } from '~/routes/destinations';
 import { Progress } from '~/routes/Progress';
 import { NotFound, RouteError } from '~/routes/NotFound';
 import { SignsLibrary } from '~/routes/SignsLibrary';
@@ -42,7 +42,12 @@ export const routes: RouteObject[] = [
       // it needs — the taxonomy, the two records and the hand-authored charts —
       // is small. It never loads the question bank.
       { path: 'progress', element: <Progress /> },
-      { path: 'settings', element: <SettingsRoute /> },
+      // Code-split (practices E7): settings is not one of the four nav
+      // destinations, and it carries the whole corrections disclosure.
+      {
+        path: 'settings',
+        lazy: async () => ({ Component: (await import('~/routes/Settings')).Settings }),
+      },
       // Code-split (practices E7): the rule reference is the only surface that
       // needs all three large content files at once — 533 rules, the whole
       // question bank and the sign registry — and a learner who never follows a

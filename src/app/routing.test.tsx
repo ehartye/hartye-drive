@@ -13,17 +13,23 @@ describe('routing (grounding §4)', () => {
   });
 
   /**
-   * The headings are the real pages', not P1's placeholders — `/progress` and
-   * `/settings` were superseded by P8 the same way `/signs` was by P6. On a
-   * clean profile the progress page is its empty state, and that state's
-   * heading is an invitation rather than the word "Progress".
+   * The headings are the real pages', not P1's placeholders — `/progress` was
+   * superseded by P8 the same way `/signs` was by P6. On a clean profile the
+   * progress page is its empty state, and that state's heading is an invitation
+   * rather than the word "Progress".
+   *
+   * `/settings` and `/rules/:id` are absent because both are code-split, and
+   * react-router's lazy loading cannot be driven under jsdom (see the note
+   * further down). Their route entries are asserted below and their rendered
+   * pages in the real browser by `tests/e2e/settings.spec.ts`,
+   * `tests/e2e/rules.spec.ts` and `tests/a11y/axe.spec.ts`, all of which derive
+   * their route lists from the table itself.
    */
   it.each([
     ['/study', 'Study'],
     ['/exam', 'Exam'],
     ['/signs', 'Sign library'],
     ['/progress', /set off yet/],
-    ['/settings', /Settings/],
   ])('renders %s', async (path, heading) => {
     at(path);
     expect(await screen.findByRole('heading', { level: 1, name: heading })).toBeInTheDocument();
@@ -35,7 +41,6 @@ describe('routing (grounding §4)', () => {
       ['/exam', 'Mock exam · TN Drive'],
       ['/signs', 'Sign library · TN Drive'],
       ['/progress', 'Progress · TN Drive'],
-      ['/settings', 'Settings · TN Drive'],
     ] as const) {
       const view = at(path);
       await screen.findByRole('heading', { level: 1 });
@@ -78,6 +83,31 @@ describe('routing (grounding §4)', () => {
     for (const path of ['/study/session', '/exam/run', '/signs/drill']) {
       expect(routes.find((r) => r.path === path)?.lazy, path).toBeTypeOf('function');
     }
+  });
+
+  /**
+   * P8's two: settings is not a nav destination, and the rule reference is the
+   * only surface that needs all three large content files at once. Neither
+   * belongs in the bundle a learner downloads to answer their first question.
+   */
+  it('code-splits settings and the rule reference', () => {
+    const children = routes[0]?.children ?? [];
+    for (const path of ['settings', 'rules/:id']) {
+      expect(children.find((r) => r.path === path)?.lazy, path).toBeTypeOf('function');
+    }
+  });
+
+  /**
+   * The rule reference takes a parameter, so `servablePaths()` cannot navigate
+   * it without an example value — and throws rather than skipping it, which is
+   * what stops a parameterised route from silently leaving every sweep.
+   */
+  it('serves the rule reference through a registered example rule id', async () => {
+    const { servablePaths } = await import('./route-paths');
+    expect(servablePaths()).toContain('/rules/R225');
+    expect(() =>
+      servablePaths([{ path: '/unregistered/:thing' }]),
+    ).toThrow(/EXAMPLE_PARAMS/);
   });
 });
 

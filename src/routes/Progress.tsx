@@ -3,7 +3,15 @@ import { Link } from 'react-router';
 import { AppBar, Button, SignPanel, SignSvg, StatTile, TopicMeter } from '~/components';
 import { IconArrowRight, IconChevronRight } from '~/components/Icon';
 import { usePageTitle } from '~/app/usePageTitle';
-import { blueprintAreas, topics as topicDefs } from '~/content';
+/**
+ * The taxonomy is read straight from its JSON rather than through
+ * `~/content/index.ts`, and with the import attribute, for the reason
+ * `src/app/route-paths.ts` documents: `routes.tsx` is imported by Playwright in
+ * plain Node, so everything an **eager** route reaches has to be loadable
+ * there. `~/signs/registry.ts` loads the sign registry the same way.
+ */
+import taxonomyJson from '~/content/taxonomy.json' with { type: 'json' };
+import type { Taxonomy } from '~/content/types';
 import { DEFAULT_SESSION_SIZE } from '~/domain/session';
 import { masteryPercent } from '~/domain/mastery';
 import {
@@ -33,6 +41,10 @@ import {
   WhatLandsHere,
 } from './progress/parts';
 import { formatDay } from './progress/format';
+
+const taxonomy = taxonomyJson as unknown as Taxonomy;
+const topicDefs = taxonomy.topics;
+const blueprintAreas = taxonomy.blueprint.areas;
 
 /** Sittings per page in the history, and the point at which months appear. */
 const PAGE = 20;
