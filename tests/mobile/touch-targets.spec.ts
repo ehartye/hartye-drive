@@ -43,6 +43,11 @@ const isInlineLink = (cls: string, tag: string): boolean =>
  * touches.
  */
 async function sweep(page: Page): Promise<Target[]> {
+  // Fifteen surfaces, walked a screen at a time, probing the hit area of every
+  // control on each. It is the slowest thing in this suite by a wide margin and
+  // legitimately so — measuring is the whole point. `test.slow()` triples the
+  // budget rather than letting a busy machine report a timeout as a defect.
+  test.slow();
   const all: Target[] = [];
 
   await visit(page, '/');

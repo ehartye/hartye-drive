@@ -37,7 +37,11 @@ export async function visit(page: Page, route: string): Promise<void> {
   await page.goto(route);
   const heading = page.getByRole('heading', { level: 1 });
   await expect(heading).toBeVisible();
-  await expect(heading).not.toHaveText('Loading');
+  // Not `not.toHaveText('Loading')` alone: mid-swap the heading can be present
+  // and **empty**, which satisfies "is not Loading" and lets the measurement
+  // run against a half-mounted page. Observed once under load. The route has
+  // arrived only when the heading says something that is not the fallback.
+  await expect(heading).not.toHaveText(/^\s*(Loading)?\s*$/);
 }
 
 /**
@@ -179,41 +183,71 @@ async function measureScreen(page: Page, route: string): Promise<Target[]> {
         const cx = rect.x + rect.width / 2;
         const cy = rect.y + rect.height / 2;
 
+        /**
+         * How far past `edge` the element still answers to a tap, along one
+         * axis, up to `limit`.
+         *
+         * Binary search, not a 1px walk. `elementsFromPoint` is the single most
+         * expensive call in this sweep, and a walk cost up to 44 of them per
+         * axis per control — across every control on every screen of a 20,000px
+         * component gallery, that pushed the two sweeps past the 30s timeout
+         * whenever the machine was busy. Six probes give the same 1px answer.
+         */
+        const reach = (
+          limit: number,
+          bound: number,
+          at: (offset: number) => [number, number],
+        ): number => {
+          if (limit <= 0) return 0;
+          const max = Math.min(limit, bound);
+          if (max <= 0) return 0;
+          // The offset actually needed, asked first and answered exactly. This
+          // is the passing case and the overwhelming majority of controls, and
+          // it costs one probe. A binary search alone converges from below and
+          // would report a healthy 44px target as 43.8px.
+          if (owns(...at(max))) return max;
+          // It falls short. Five halvings are enough to say by how much, which
+          // is only ever read in a failure message.
+          let low = 0;
+          let high = max;
+          for (let step = 0; step < 5; step += 1) {
+            const mid = (low + high) / 2;
+            if (owns(...at(mid))) low = mid;
+            else high = mid;
+          }
+          return low;
+        };
+
+        // Only ever asked of controls that are already short: a control at or
+        // above 44 needs no probing at all, which is most of them.
         let height = rect.height;
         if (height < 44) {
-          let up = 0;
-          let down = 0;
-          while (height + up + down < 44) {
-            const nextUp = up + 1;
-            const nextDown = down + 1;
-            const canUp = cy - rect.height / 2 - nextUp >= 0 && owns(cx, cy - rect.height / 2 - nextUp);
-            const canDown =
-              cy + rect.height / 2 + nextDown <= window.innerHeight &&
-              owns(cx, cy + rect.height / 2 + nextDown);
-            if (!canUp && !canDown) break;
-            if (canUp) up = nextUp;
-            if (canDown) down = nextDown;
-          }
-          height = rect.height + up + down;
+          const want = (44 - rect.height) / 2;
+          const up = reach(want, rect.top, (o) => [cx, rect.top - o]);
+          const down = reach(want, window.innerHeight - rect.bottom, (o) => [cx, rect.bottom + o]);
+          // A one-sided expansion still counts: a control against the top of the
+          // viewport can only grow downward, and a tap there lands all the same.
+          const extra =
+            up + down >= want * 2
+              ? want * 2
+              : up + reach(want * 2 - up, window.innerHeight - rect.bottom, (o) => [
+                  cx,
+                  rect.bottom + o,
+                ]);
+          height = rect.height + Math.min(extra, want * 2);
         }
 
         let width = rect.width;
         if (width < 44) {
-          let left = 0;
-          let right = 0;
-          while (width + left + right < 44) {
-            const nextLeft = left + 1;
-            const nextRight = right + 1;
-            const canLeft =
-              cx - rect.width / 2 - nextLeft >= 0 && owns(cx - rect.width / 2 - nextLeft, cy);
-            const canRight =
-              cx + rect.width / 2 + nextRight <= window.innerWidth &&
-              owns(cx + rect.width / 2 + nextRight, cy);
-            if (!canLeft && !canRight) break;
-            if (canLeft) left = nextLeft;
-            if (canRight) right = nextRight;
-          }
-          width = rect.width + left + right;
+          const want = (44 - rect.width) / 2;
+          const left = reach(want, rect.left, (o) => [rect.left - o, cy]);
+          const right = reach(want, window.innerWidth - rect.right, (o) => [rect.right + o, cy]);
+          const extra =
+            left + right >= want * 2
+              ? want * 2
+              : left +
+                reach(want * 2 - left, window.innerWidth - rect.right, (o) => [rect.right + o, cy]);
+          width = rect.width + Math.min(extra, want * 2);
         }
 
         out.push({
