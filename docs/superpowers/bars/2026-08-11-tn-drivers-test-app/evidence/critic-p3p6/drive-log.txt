@@ -1,0 +1,27 @@
+cell3-study-question-390: hscroll=false consoleIssues=0
+cell3-study-question-320: hscroll=false consoleIssues=0
+cell3-study-question-1440: hscroll=false consoleIssues=0
+cell3b-study-longcontent-390: FAILED page.waitForSelector: Timeout 15000ms exceeded.
+cell3b-study-longcontent-320: FAILED page.waitForSelector: Timeout 15000ms exceeded.
+cell3b-study-longcontent-1440: FAILED page.waitForSelector: Timeout 15000ms exceeded.
+cell4a-study-correct-390: hscroll=false consoleIssues=0
+cell4a-study-correct-320: hscroll=false consoleIssues=0
+cell4a-study-correct-1440: hscroll=false consoleIssues=0
+cell4b-study-incorrect-390: hscroll=false consoleIssues=0
+cell4b-study-incorrect-320: hscroll=false consoleIssues=0
+cell4b-study-incorrect-1440: hscroll=false consoleIssues=0
+cell7-signs-drill-390: hscroll=false consoleIssues=0
+cell7-signs-drill-320: hscroll=false consoleIssues=0
+cell7-signs-drill-1440: hscroll=false consoleIssues=0
+cell8-signs-library-390: hscroll=false consoleIssues=0
+cell8-signs-library-320: hscroll=false consoleIssues=0
+cell8-signs-library-1440: hscroll=false consoleIssues=0
+cell8-empty-390: hscroll=false consoleIssues=0
+cell8-empty-320: hscroll=false consoleIssues=0
+cell8-empty-1440: hscroll=false consoleIssues=0
+cell8-full-390: hscroll=false consoleIssues=0
+cell8-full-320: hscroll=false consoleIssues=0
+cell8-full-1440: hscroll=false consoleIssues=0
+cell5-exam-entry-390: hscroll=false consoleIssues=0
+cell5-exam-entry-320: hscroll=false consoleIssues=0
+cell5-exam-entry-1440: hscroll=false consoleIssues=0

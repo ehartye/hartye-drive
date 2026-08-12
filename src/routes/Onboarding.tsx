@@ -111,7 +111,7 @@ export function Onboarding() {
 
       <p className="read">
         Every question quotes the Tennessee driver manual, and every sign is drawn to spec — right
-        shape, right colour, right proportion. Colours mean on this screen what they mean on the
+        shape, right color, right proportion. Colors mean on this screen what they mean on the
         road, so you learn the road by living in it.
       </p>
 
@@ -158,7 +158,7 @@ export function Onboarding() {
             <span className="pick__body">
               <span className="pick__t">Signs refresher</span>
               <span className="pick__s">
-                {`The ${signCount === null ? '' : `${String(signCount)} `}signs only — shape, colour and meaning. Shorter sessions, no exam simulator.`}
+                {`The ${signCount === null ? '' : `${String(signCount)} `}signs only — shape, color and meaning. Shorter sessions, no exam simulator.`}
               </span>
             </span>
             <SignSvg id="w1-2-curve" size="sm" decorative />
@@ -209,7 +209,7 @@ export function Onboarding() {
             {
               term: 'Works with no signal',
               detail:
-                'Add it to your home screen and every question, sign and explanation opens at zero bytes — in a Driver Service Center car park included.',
+                'Add it to your home screen and every question, sign and explanation opens at zero bytes — in a Driver Service Center parking lot included.',
             },
             {
               term: 'Nothing leaves this phone',

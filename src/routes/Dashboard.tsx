@@ -237,7 +237,7 @@ function LoadedDashboard({
   );
 
   const primary = signsGoal ? (
-    <PrimaryCta to="/signs" under={`All ${String(content.signCount)} signs · shape, colour and meaning`}>
+    <PrimaryCta to="/signs" under={`All ${String(content.signCount)} signs · shape, color and meaning`}>
       Drill the road signs
     </PrimaryCta>
   ) : empty ? null : (

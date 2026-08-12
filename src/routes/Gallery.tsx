@@ -91,15 +91,15 @@ export function Gallery() {
       <main className="wrap pb-16 pt-6">
         <h1>Design system</h1>
         <p className="dim mt-2 max-w-[62ch] text-[0.9375rem]">
-          The interface is the roadway. Every colour below means what it means on a real Tennessee
+          The interface is the roadway. Every color below means what it means on a real Tennessee
           road, and the signage system is the one bold move — everything around it stays quiet.
         </p>
 
         {/* ------------------------------------------------------------ tokens */}
         <Section
           id="tokens"
-          title="Colour tokens"
-          note="Sign faces use true MUTCD colour. UI text uses the accessible text tokens — different jobs, different tokens. School is fluorescent yellow-green; fluorescent pink is incident management only."
+          title="Color tokens"
+          note="Sign faces use true MUTCD color. UI text uses the accessible text tokens — different jobs, different tokens. School is fluorescent yellow-green; fluorescent pink is incident management only."
         >
           <div className="grid grid-cols-[repeat(auto-fill,minmax(9.5rem,1fr))] gap-3">
             {[
@@ -169,7 +169,7 @@ export function Gallery() {
         <Section
           id="signs"
           title="SignSvg"
-          note="Ids and descriptions come from src/content/signs.json, the 87-sign registry; all 87 faces are hand-authored SVG at true MUTCD colour, with no clipart and no raster anywhere. Every sign names its shape, colour and meaning; drill mode withholds the meaning. `npm run audit:signs -- --sheet` renders the whole registry at 200px and machine-checks designation, colour and legend containment."
+          note="Ids and descriptions come from src/content/signs.json, the 87-sign registry; all 87 faces are hand-authored SVG at true MUTCD color, with no clipart and no raster anywhere. Every sign names its shape, color and meaning; drill mode withholds the meaning. `npm run audit:signs -- --sheet` renders the whole registry at 200px and machine-checks designation, color and legend containment."
         >
           <div className="flex flex-wrap gap-6">
             {allSigns.map((sign) => (
@@ -249,7 +249,7 @@ export function Gallery() {
         <Section
           id="choices"
           title="ChoiceRow"
-          note="Five states. The picked-verdict-withheld state is achromatic and keyed off aria-pressed, because in exam mode any colour would leak the answer — and it must never override the correct/incorrect verdict."
+          note="Five states. The picked-verdict-withheld state is achromatic and keyed off aria-pressed, because in exam mode any color would leak the answer — and it must never override the correct/incorrect verdict."
         >
           <div className="grid gap-2.5 max-w-[38rem]">
             <ChoiceRow letter="A" picked={picked === 'A'} onSelect={() => { setPicked('A'); }}>
@@ -491,7 +491,7 @@ export function Gallery() {
                 label="Search signs"
                 value={query}
                 onChange={setQuery}
-                placeholder="Shape, colour or meaning"
+                placeholder="Shape, color or meaning"
               />
             </div>
 

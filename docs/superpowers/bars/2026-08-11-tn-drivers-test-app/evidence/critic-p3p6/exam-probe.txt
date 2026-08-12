@@ -1,0 +1,241 @@
+=== A. seven wrong ===
+Q1 leakage probe: {"verdictClasses":0,"quotes":0,"ariaCorrect":false}; after selecting, verdict classes = 0; options = 3
+questions asked before it stopped: 7
+url after: http://localhost:5399/exam/report?a=f5ed7604-e900-4c52-9223-fb69cff0e952
+--- report ---
+STUDY
+EXAM
+SIGNS
+PROGRESS
+BACK
+Score report
+OFFLINE READY
+
+Stopped at question 7. 0 correct of 30.
+
+MOCK EXAM · 11 AUGUST, 11:39 PM
+
+Stopped at question 7
+STOP
+
+SEVEN WRONG ENDS THE ATTEMPT
+
+0
+
+ENDED EARLY
+
+0 of 30 correct · 24 needed to pass
+
+7 / 7 wrong
+LIMIT REACHED
+
+Tennessee asks 30 questions and requires 24 correct. Once seven answers are wrong, 24 is no longer reachable — 30 minus 7 leaves 23 — so the test ends on the seventh miss. The real one at a Driver Services Center stops at the same point, for the same reason. 23 of your 30 questions were never asked.
+
+7
+ANSWERED
+0
+CORRECT
+00:01
+TIME
+What you were asked
+Traffic signs and signals
+0 / 2 · 0%
+— Weak
+
+Weak
+
+Safe driving principles
+0 / 2 · 0%
+— Weak
+
+Weak
+
+Rules of the road
+0 / 2 · 0%
+— Weak
+
+Weak
+
+Drugs and alcohol
+0 / 1 · 0%
+— Weak
+
+Weak
+
+Sampled across the four areas the manual publishes. The other 23 questions were never asked — they stay in the bank for your next attempt.
+
+DO THIS NEXT
+
+Redo the 7 you missed, one at a time
+
+Your misses clustered in traffic signs and signals and safe driving principles. Each one comes back with the rule and the manual page behind it, then again tomorrow, then next week.
+
+Start the fix-it session
+Review the 7 you answered
+Take the exam again
+
+A practice result. It is not a state score and carries no official weight.
+Not affiliated with the State of Tennessee.
+console noise: none
+
+=== B. passing sitting ===
+area mix: {"alcohol-drugs":8,"signs":8,"rules-of-road":7,"safe-driving":7}
+unique question ids: 30 of 30
+--- report ---
+STUDY
+EXAM
+SIGNS
+PROGRESS
+BACK
+Score report
+OFFLINE READY
+
+You passed. 30 correct of 30.
+
+MOCK EXAM · 11 AUGUST, 11:39 PM
+
+You passed
+
+CLASS D KNOWLEDGE TEST · SIMULATED
+
+30
+
+PASSED
+
+30 of 30 correct · 24 needed to pass
+
+Tennessee asks 30 questions and requires 24 correct. You cleared it by six.
+
+0
+WRONG
+00:04
+TIME
+24
+NEEDED
+Where the 0 went
+Traffic signs and signals
+8 / 8 · 100%
+— Solid
+
+Solid
+
+Safe driving principles
+7 / 7 · 100%
+— Solid
+
+Solid
+
+Rules of the road
+7 / 7 · 100%
+— Solid
+
+Solid
+
+Drugs and alcohol
+8 / 8 · 100%
+— Solid
+
+Solid
+
+The four areas the manual publishes, each a quarter of the test.
+
+Review all 30 answers
+Take another mock exam
+
+A practice result. It is not a state score and carries no official weight.
+Not affiliated with the State of Tennessee.
+review url: http://localhost:5399/exam/review?a=7862197d-afc9-4559-a539-09661f2d0494
+
+=== C. ended early ===
+end-button count: 1
+exit dialog:
+End the exam now?
+
+You are 24 questions in. Ending now scores what you have answered — 21 correct out of 30 — and the attempt is closed.
+
+Keep going
+End exam and score it
+url: http://localhost:5399/exam/report?a=55dcc0ff-0d8a-4f80-8627-5a56c8e9a14e
+--- report ---
+STUDY
+EXAM
+SIGNS
+PROGRESS
+BACK
+Score report
+OFFLINE READY
+
+Three short. 21 correct of 30.
+
+MOCK EXAM · 11 AUGUST, 11:39 PM
+
+Three short
+
+24 CORRECT REQUIRED TO PASS
+
+21
+
+NOT YET
+
+21 of 30 correct · 24 needed to pass
+
+Tennessee requires 24 of 30. You had 21 correct when you ended the attempt, with six never asked — unanswered questions count against you, exactly as they do at a Driver Services Center.
+
+3
+WRONG
+00:04
+TIME
+24
+NEEDED
+What sank it
+Traffic signs and signals
+4 / 5 · 80%
+— Solid
+
+Solid
+
+Safe driving principles
+7 / 7 · 100%
+— Solid
+
+Solid
+
+Rules of the road
+6 / 7 · 86%
+— Solid
+
+Solid
+
+Drugs and alcohol
+4 / 5 · 80%
+— Solid
+
+Solid
+
+The four areas the manual publishes, each a quarter of the test.
+
+DO THIS NEXT
+
+Redo the 3 you missed, one at a time
+
+Each one comes back with the rule and the manual page behind it, then again tomorrow, then next week.
+
+Start the fix-it session
+Review the 24 you answered
+Take the exam again
+
+A practice result. It is not a state score and carries no official weight.
+Not affiliated with the State of Tennessee.
+
+=== D. back navigation ===
+mile before back: 03
+url after goBack: about:blank
+dialog open after back: 0
+mile after back: (gone)
+body starts: 
+
+=== E. blueprint mix across sittings ===
+seed 101: {"rules-of-road":8,"safe-driving":8,"alcohol-drugs":7,"signs":7} (total 30)
+seed 202: {"rules-of-road":8,"alcohol-drugs":8,"signs":7,"safe-driving":7} (total 30)
+seed 303: {"alcohol-drugs":8,"signs":8,"safe-driving":7,"rules-of-road":7} (total 30)
+seed 404: {"safe-driving":8,"signs":8,"rules-of-road":7,"alcohol-drugs":7} (total 30)
