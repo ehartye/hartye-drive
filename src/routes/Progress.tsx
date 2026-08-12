@@ -10,8 +10,7 @@ import { usePageTitle } from '~/app/usePageTitle';
  * plain Node, so everything an **eager** route reaches has to be loadable
  * there. `~/signs/registry.ts` loads the sign registry the same way.
  */
-import taxonomyJson from '~/content/taxonomy.json' with { type: 'json' };
-import type { Taxonomy } from '~/content/types';
+import { topics as topicDefs, blueprintAreas } from '~/content';
 import { DEFAULT_SESSION_SIZE } from '~/domain/session';
 import { masteryPercent } from '~/domain/mastery';
 import {
@@ -42,9 +41,6 @@ import {
 } from './progress/parts';
 import { formatDay } from './progress/format';
 
-const taxonomy = taxonomyJson as unknown as Taxonomy;
-const topicDefs = taxonomy.topics;
-const blueprintAreas = taxonomy.blueprint.areas;
 
 /** Sittings per page in the history, and the point at which months appear. */
 const PAGE = 20;

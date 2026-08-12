@@ -15,9 +15,12 @@
  * Everything here is data plus types. Scoring, scheduling and exam sampling
  * live in `src/domain/`, not in this file.
  */
-import taxonomyData from './taxonomy.json';
-import correctionsData from './corrections.json';
-import neverGenerateData from './never-generate.json';
+// Import attributes must match everywhere a module is imported, or rollup warns
+// and the module can end up in two chunks. `registry.ts` and `Progress.tsx`
+// already use `with { type: 'json' }`, so these do too.
+import taxonomyData from './taxonomy.json' with { type: 'json' };
+import correctionsData from './corrections.json' with { type: 'json' };
+import neverGenerateData from './never-generate.json' with { type: 'json' };
 import type {
   Correction,
   ManualRule,
@@ -41,13 +44,13 @@ export const neverGenerate = neverGenerateData.entries as unknown as NeverGenera
 
 /** The question bank, ~500 questions. Lazily loaded — see the note above. */
 export async function loadQuestionBank(): Promise<QuestionBank> {
-  const mod = await import('./questions.json');
+  const mod = await import('./questions.json', { with: { type: 'json' } });
   return mod.default as unknown as QuestionBank;
 }
 
 /** The sign registry. Lazily loaded. */
 export async function loadSignRegistry(): Promise<SignRegistry> {
-  const mod = await import('./signs.json');
+  const mod = await import('./signs.json', { with: { type: 'json' } });
   return mod.default as unknown as SignRegistry;
 }
 
@@ -56,7 +59,7 @@ export async function loadSignRegistry(): Promise<SignRegistry> {
  * quote and page. Backs the rule-reference surface a citation links to.
  */
 export async function loadRules(): Promise<ManualRule[]> {
-  const mod = await import('./rules.json');
+  const mod = await import('./rules.json', { with: { type: 'json' } });
   return (mod.default as unknown as { rules: ManualRule[] }).rules;
 }
 
