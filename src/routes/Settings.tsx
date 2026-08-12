@@ -151,9 +151,15 @@ export function Settings() {
                   <span className="eyebrow block mb-1.5">
                     {`Preview · ${textSizeLabel(prefs.textSize)}`}
                   </span>
+                  {/* Verbatim from the manual, PDF p.65 / printed p.51. The preview
+                      is set in the same treatment as a real quotation, so it must be
+                      a real quotation — a manual-sounding sentence that is not in the
+                      manual is the one thing this app must never show. */}
                   <span className="read block">
-                    You must stop when you meet or overtake a school bus that is stopped with its
-                    red lights flashing and its stop arm extended.
+                    &ldquo;A turn lane in the middle of a four-lane highway is NOT considered a
+                    barrier, but a fifth lane that is suitable for vehicular traffic. Drivers
+                    meeting a stopped school bus on this type of road would be required to stop in
+                    both directions.&rdquo;
                   </span>
                 </span>
               </span>
