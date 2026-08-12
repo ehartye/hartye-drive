@@ -1159,3 +1159,74 @@ The loading skeleton deliberately draws the **real** guide-sign frame, so
 `.speedplate` (or a named heading) for the loaded dashboard — `dashboard.spec.ts`
 does. Port 5301 (e2e) and 5302 (a11y) are the harness's; 5173 is occupied on this
 machine by an unrelated app.
+
+---
+
+## 2026-08-12 — P6 round 2 (sign trainer & library)
+
+Filed while fixing the four defects the blind critic raised. All four are fixed;
+these are the notes a reviewer needs in order to judge *how*.
+
+### 1. The Overpass subset ships U+00B7 with a zero advance width — patched in CSS, not re-cut
+
+`public/fonts/overpass-latin.woff2` cuts MIDDLE DOT with an advance width of
+**zero** (measured in the running app: `measureText('·').width === 0`, ink
+0–4px). Every `A · B` meta line in the product therefore painted the dot on top
+of the space that follows it and read as `Safe driving ·Rain, fog` — the DOM was
+always correct; only the metrics were wrong. It is not confined to the sign
+screens: it is every AppBar context line, every citation line, the study
+session's topic path and the exam legend. Overpass Mono and Newsreader cut the
+same code point properly.
+
+The proper fix is to re-cut the subset in `scripts/fetch-fonts.mjs`, which this
+piece may not touch. So `src/styles/components.css` declares one extra
+`@font-face` for family `Overpass` restricted to `unicode-range: U+00B7`, sourced
+from the Newsreader file already in the bundle and already precached; declared
+after `fonts.css`, which is what makes it win for the overlapping range. No new
+asset, no new request, no call site changed. **Whoever owns the font pipeline
+should re-cut the subset and delete that rule.**
+
+### 2. Three CSS fixes land outside the sign screens
+
+The 200% text-resize failure was not only the search field. Fixing `.field`
+exposed three more boxes that fail the same way and are styled in the same file:
+`.nav` (the bottom tab bar's `1fr` tracks pushed SIGNS and PROGRESS off a 320px
+phone entirely — two destinations unreachable), `.choice__body` and `.cat__row`.
+All three live in `src/styles/components.css`, which this piece owns; none
+touches another piece's TSX. The nav fix in particular repairs `/study`,
+`/exam` and `/progress` as well.
+
+### 3. The drill's leak check is scoped to what the learner can *see* on the sign
+
+The property the drill now guarantees is: no word naming the shown sign's **face
+colour, legend colour or shape** may be said by the answer alone, or by every
+option except the answer. That is the defect as raised ("naming the shown sign's
+colour or shape"), and it is the scope that can be justified — a learner looking
+at a white NO TURN ON RED sign cannot use the word "red" in an option to confirm
+anything, because there is no red on the board.
+
+A wider check against the whole registry's colour vocabulary leaves four
+residual hits, all of the same kind and none of them a giveaway:
+`r10-11-no-turn-on-red` ("red" and "green" — a white sign whose legend reads NO
+TURN ON RED), `e11-1-exit-only` ("green" — a yellow panel described as sitting on
+a green guide sign), `r15-2p-number-of-tracks` ("crossbuck" — a rectangle mounted
+below one) and `d1-1-destination` ("yellow", in the mirror direction). Recorded
+so a later critic does not have to re-derive that they are harmless.
+
+### 4. Three registry meanings describe their own sign and have no twin to hide behind
+
+`w20-1-road-work-ahead` ("…; orange always means road work"), `w11-2-pedestrian`
+("… use fluorescent yellow-green") and `w2-1-cross-road` ("… the black lines show
+its shape") name their own colour, and no other meaning in the registry names
+the same colour, so no choice of distractor can balance them. For those the
+drill lifts the describing **clause** out of the option and restores it in full
+in the explanation after the learner answers — the same bargain `SignSvg`'s
+drill-mode accessible name already makes. The trimmed answers read cleanly
+("Road work is ahead — slow down and be ready to stop.", "Watch for people
+crossing on foot.").
+
+**This is a workaround for a content shape, and the better fix is content.**
+`src/content/signs.json` is off-limits to this piece and another agent is
+hardening the sign audit. Whoever owns it should consider moving the "orange
+always means road work" style of clause out of `meaning` into a separate
+teaching field, at which point the clause trim can be deleted.
