@@ -76,8 +76,8 @@ test.describe('cell 1 — first run', () => {
     await expect(page.getByLabel('Month')).toBeVisible();
     await expect(page.getByText('No account, ever')).toBeVisible();
     await expect(page.getByText('Nothing leaves this phone')).toBeVisible();
-    // The nav is not drawn on a screen with nowhere to go yet.
-    await expect(page.getByRole('navigation', { name: 'Main' })).toBeVisible();
+    // Mockup 01: no bottom nav on first run — nothing to navigate to yet.
+    await expect(page.getByRole('navigation', { name: 'Main' })).toHaveCount(0);
 
     await page.getByLabel('Month').fill('09');
     await page.getByLabel('Day').fill('12');
@@ -87,6 +87,8 @@ test.describe('cell 1 — first run', () => {
     await page.getByRole('button', { name: /Start studying/ }).click();
     await dashboardReady(page);
     await expect(page.getByRole('heading', { level: 1, name: /first mile/i })).toBeVisible();
+    // …and the four destinations arrive with it.
+    await expect(page.getByRole('navigation', { name: 'Main' })).toBeVisible();
 
     const stored = await page.evaluate(() => localStorage.getItem('tn-drive:setup'));
     expect(stored).toContain('completedAt');
