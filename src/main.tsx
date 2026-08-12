@@ -1,6 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router';
+import { AppErrorBoundary } from './app/AppErrorBoundary';
 import { routes } from './app/routes';
 import { applyAppearance, useSettingsStore } from './store/settings';
 import './styles/index.css';
@@ -21,6 +22,8 @@ applyAppearance(useSettingsStore.getState().prefs, document.documentElement);
 
 createRoot(container).render(
   <StrictMode>
-    <RouterProvider router={createBrowserRouter(routes)} />
+    <AppErrorBoundary>
+      <RouterProvider router={createBrowserRouter(routes)} />
+    </AppErrorBoundary>
   </StrictMode>,
 );
