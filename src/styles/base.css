@@ -7,8 +7,26 @@
 :root {
   /* Layout constants owned by AppNav / FocusChrome. No page may redefine them. */
   --rail-width: 232px; /* desktop side rail (§4) */
-  --nav-height: 92px; /* mobile bottom bar clearance */
+  --nav-height: 92px; /* mobile bottom bar clearance, EXCLUDING the inset below */
   --rail-brand-height: 5.5rem; /* brand block at the head of the rail (§3) */
+
+  /* ---------- safe-area insets (§4: "safe-area inset respected") ----------
+     Read once, here, and referenced by name everywhere else.
+
+     Naming them buys two things. The first is correctness: the bottom bar pads
+     itself out of the home-indicator band, and `.shell` has to reserve the
+     bar's *padded* height or the tail of every page ends up underneath it — the
+     two declarations have to agree, and they only agree if they read the same
+     value. Measured on an iPhone 14, the bar is 67.5px and the flat 92px
+     reservation was comfortable until a 34px inset made the bar 101.5px.
+
+     The second is that it becomes testable. No engine Playwright ships emulates
+     a notch, so `env()` resolves to zero on every device profile and a suite
+     that only loads the page is testing the un-notched case. Overriding these
+     two custom properties puts a real inset into the same `calc()` production
+     runs. See tests/mobile/support.ts. */
+  --safe-b: env(safe-area-inset-bottom, 0px);
+  --safe-t: env(safe-area-inset-top, 0px);
 }
 
 @layer base {
@@ -78,6 +96,55 @@
     outline: 3px solid var(--color-warning);
     outline-offset: 2px;
     border-radius: var(--radius-sm);
+  }
+
+  /* ---------- behaviour under a thumb ----------
+     The design target is an iPhone held one-handed in a Driver Service Center
+     parking lot (grounding §1), and these are the three things a pointer never
+     exposes:
+
+     `touch-action: manipulation` drops the double-tap-to-zoom gesture on these
+     elements and nothing else — pan and pinch-zoom are untouched, so WCAG 2.2
+     SC 1.4.4 is not being traded away. Without it a second, impatient tap on an
+     answer choice zooms the page instead of doing nothing. It also removes the
+     legacy 300ms click delay wherever that still survives.
+
+     `-webkit-tap-highlight-color` suppresses iOS Safari's grey flash. The app
+     draws its own `:active` and `:focus-visible` states, and the flash sits on
+     top of them in a colour that belongs to no token in §2.
+
+     Selection is handled separately below: it must be suppressed on widgets and
+     preserved on prose. */
+  :where(a[href], button, [role='button'], summary, label, input, select, textarea) {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Widgets only. A long press on a control should press it, not raise the iOS
+     selection callout over the sign the learner is trying to read, and a tap
+     that drags a pixel should still be a tap.
+
+     Deliberately NOT applied to `a[href]` at large: a citation link sits inline
+     in a manual quotation, and the quotation is the thing that makes this app
+     trustworthy (practices D1/D2). A learner has every reason to want to select
+     and copy it, and `user-select: none` on the link would punch a hole in the
+     middle of the selection. Prose stays selectable. */
+  :where(
+    button,
+    [role='button'],
+    summary,
+    .btn,
+    .chip,
+    .signcard,
+    .choice,
+    .switch,
+    .nav a,
+    .modes button,
+    .exit,
+    .back
+  ) {
+    -webkit-user-select: none;
+    user-select: none;
   }
 
   /* ---------- motion preference (§5, practices A13) ---------- */
