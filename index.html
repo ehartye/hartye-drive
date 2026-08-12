@@ -19,24 +19,18 @@
     <meta name="apple-mobile-web-app-title" content="TN Drive" />
 
     <!--
-      Self-hosted faces (grounding §2, practices F5). Preloaded rather than
-      fetched from a CDN: the app makes zero font requests at runtime and must
-      work at zero bytes of network after first load.
+      The four faces are self-hosted woff2 and precached by the service worker
+      (grounding §2, practices F5) — that, not a preload hint, is what makes the
+      app work at zero bytes of network.
+
+      They are deliberately **not** preloaded. Measured on Slow 4G with a 4× CPU
+      throttle, two `rel="preload"` font links took 59 KB of the first parallel
+      batch and pushed the first question from 2.15 s to 2.60 s: on a slow link
+      the fonts were competing with the code that draws the question. They now
+      load at their natural priority, `font-display: swap` covers the first
+      paint, and every visit after the first is served from the precache with no
+      swap at all. See deviations.md, 2026-08-12 (P9) §2.
     -->
-    <link
-      rel="preload"
-      href="/fonts/overpass-latin.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin
-    />
-    <link
-      rel="preload"
-      href="/fonts/overpass-mono-latin.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin
-    />
 
     <title>TN Drive · Tennessee Class D knowledge test</title>
   </head>

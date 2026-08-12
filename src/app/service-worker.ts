@@ -13,9 +13,11 @@
  * what keeps a banner off a question. The two concerns are simply split: the
  * worker registers everywhere, the prompt appears somewhere.
  *
- * `immediate: true` registers as soon as this module runs rather than waiting
- * for `window.onload`, so a slow first paint does not delay the point at which
- * the app becomes usable offline.
+ * Registration waits for `window.onload` (the `registerSW` default) rather than
+ * running immediately, so `workbox-window` and the worker's install never
+ * compete with the code that draws the first question (X23). Nothing about the
+ * offline promise needs the worker a few hundred milliseconds sooner — the
+ * visit it has to serve is the *next* one.
  */
 import { registerSW } from 'virtual:pwa-register';
 
@@ -32,7 +34,6 @@ function announce(): void {
 /** Called once, from `main.tsx`. Safe to call in a browser with no SW support. */
 export function startServiceWorker(): void {
   apply = registerSW({
-    immediate: true,
     onNeedRefresh() {
       waiting = true;
       announce();

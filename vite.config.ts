@@ -44,6 +44,54 @@ const contentSecurityPolicy = (): Plugin => ({
   },
 });
 
+/**
+ * X23 — flatten the cold-start waterfall.
+ *
+ * Measured on Slow 4G (562 ms RTT) with a 4× CPU throttle, a cold load of
+ * `/study/session` cost four sequential round trips: HTML → entry chunk →
+ * route chunk → question bank. The last two carry 88 KB between them and spent
+ * more than a second of that just waiting to be *discovered*, because a lazy
+ * `import()` cannot be seen until the importer has run.
+ *
+ * Exactly one chunk is therefore announced in the HTML: **the question bank**.
+ * It is the only one that is not speculative — the dashboard, the study
+ * session, the exam simulator, progress and the rule reference all await it,
+ * so every entry point in the app pays for its round trip. Announcing it moves
+ * 84 KB from the end of the chain into the first parallel batch.
+ *
+ * Nothing else is listed, deliberately. `scripts/size.mjs` counts a
+ * modulepreloaded chunk against the X8 initial-JS budget — correctly, because
+ * that is what the learner downloads — so preloading the route chunks as well
+ * would buy a round trip by spending the budget the same executable floor
+ * sets. The bank is excluded from X8 as content, which is exactly what it is.
+ *
+ * `modulepreload` and not `prefetch`: it is needed on this navigation, not a
+ * possible next one.
+ */
+const criticalPreload = (): Plugin => ({
+  name: 'tn-drive-critical-preload',
+  apply: 'build',
+  transformIndexHtml: {
+    order: 'post',
+    handler(html, ctx) {
+      if (!ctx.bundle) return html;
+
+      const already = new Set(
+        [...html.matchAll(/href="\/([^"]+\.js)"/g)].map((match) => match[1]),
+      );
+      const links = Object.values(ctx.bundle)
+        .filter((output) => output.type === 'chunk')
+        .filter((chunk) => /(^|\/)questions-[\w-]*\.js$/.test(chunk.fileName))
+        .map((chunk) => chunk.fileName)
+        .filter((fileName) => !already.has(fileName))
+        .sort()
+        .map((fileName) => `    <link rel="modulepreload" crossorigin href="/${fileName}" />`);
+
+      return links.length === 0 ? html : html.replace('</head>', `${links.join('\n')}\n  </head>`);
+    },
+  },
+});
+
 const DESCRIPTION =
   'Offline-first study app for the Tennessee Class D knowledge test. Every answer cites the ' +
   'official manual. Not affiliated with the State of Tennessee.';
@@ -134,7 +182,7 @@ const pwa = () =>
   });
 
 export default defineConfig({
-  plugins: [react(), tailwindcss(), contentSecurityPolicy(), pwa()],
+  plugins: [react(), tailwindcss(), criticalPreload(), contentSecurityPolicy(), pwa()],
   resolve: {
     alias: {
       '~': fileURLToPath(new URL('./src', import.meta.url)),
