@@ -234,6 +234,21 @@ export default defineConfig({
       ),
     },
     setupFiles: ['./src/test/setup.ts'],
+    /**
+     * Route tests await a dynamic `import()` of a code-split chunk, not just a
+     * re-render. Vitest's default 5s test budget is the same as the async
+     * budget Testing Library is configured with in `setup.ts`, so under
+     * parallel load the test could die before the query it was waiting on ever
+     * gave up — reporting a slow chunk as a wrong assertion. Two independent
+     * audits hit this in `Dashboard.test.tsx` (~1 run in 5 under load, green in
+     * isolation every time).
+     *
+     * The test budget must sit comfortably ABOVE the async budget for the
+     * failure message to be the true one. A real failure still fails; it just
+     * says what actually went wrong.
+     */
+    testTimeout: 20_000,
+    hookTimeout: 20_000,
     css: false,
     include: ['src/**/*.test.{ts,tsx}'],
     coverage: {
