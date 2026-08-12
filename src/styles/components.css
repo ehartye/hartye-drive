@@ -123,10 +123,18 @@
     gap: 0.75rem;
   }
 
-  /* The shell owns the nav offset so no page has to undo body padding (§3). */
+  /* The shell owns the nav offset so no page has to undo body padding (§3).
+
+     `100dvh`, never `100vh`: on iOS Safari `vh` is measured against the viewport
+     with the browser chrome retracted, so a `100vh` shell is taller than what
+     the learner can see whenever the URL bar is showing.
+
+     The reservation includes the safe-area inset because the nav grows by it.
+     A flat `--nav-height` left the last ~10px of every page under the tab bar
+     on every notched iPhone (see base.css). */
   .shell {
     min-height: 100dvh;
-    padding-bottom: var(--nav-height);
+    padding-bottom: calc(var(--nav-height) + var(--safe-b));
   }
   @media (min-width: 1024px) {
     .shell {
@@ -157,7 +165,28 @@
     justify-content: space-between;
     gap: 0.75rem;
     padding: 0.875rem var(--spacing-gut);
-    background: color-mix(in srgb, var(--color-asphalt) 88%, transparent);
+    /* ---------- the frosted bars, and why they are nearly opaque ----------
+       This bar, the tab bar, the focus bar and the action shelf all sit over
+       scrolling content and leaned on `backdrop-filter` to stay legible.
+
+       Two things were wrong. Unprefixed `backdrop-filter` did not ship in
+       Safari until 18, so every iPhone on iOS 17 or earlier — including every
+       device that cannot upgrade past it — applied no blur at all; the
+       `-webkit-` prefix below is what actually reaches them. And the bar was
+       only 88% opaque, which with no blur behind it left body text plainly
+       readable *through* the bar. Screenshotted on WebKit, the sign library's
+       "Color is the first thing you read" ran straight across the tab bar's
+       own labels.
+
+       So the opacity carries the legibility on its own and the blur is now
+       only the frost on top: at 98% the bar reads as solid on any engine, and
+       a capable one still softens what passes underneath. The alternative —
+       keeping 88% and gating translucency behind `@supports` — cannot be
+       verified anywhere, because an engine that claims support may still
+       decline to composite the filter. Legibility on the stated target device
+       outranks the flourish. */
+    background: color-mix(in srgb, var(--color-asphalt) 98%, transparent);
+    -webkit-backdrop-filter: blur(12px);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--color-shoulder);
   }
@@ -224,7 +253,9 @@
     display: inline-flex;
     align-items: center;
     gap: 0.45rem;
-    min-height: 40px;
+    /* 44, not 40: these eight category filters are the primary control on the
+       sign library and are driven with a thumb. */
+    min-height: 44px;
     padding: 0 0.75rem;
     background: var(--color-asphalt-raised);
     border: 1px solid var(--color-shoulder);
@@ -725,7 +756,10 @@
     flex-wrap: wrap;
     margin: 0 calc(var(--spacing-gut) * -1);
     padding: 0.7rem var(--spacing-gut);
-    background: color-mix(in srgb, var(--color-asphalt) 93%, transparent);
+    /* Near-opaque for the same reason as `.appbar`: with no blur on iOS 17 this
+       bar sat over the answers it is scrolling across. */
+    background: color-mix(in srgb, var(--color-asphalt) 98%, transparent);
+    -webkit-backdrop-filter: blur(12px);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--color-shoulder);
   }
@@ -1054,10 +1088,11 @@
        destinations unreachable, which is exactly the loss of function
        SC 1.4.4 forbids (practices A12). */
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    background: color-mix(in srgb, var(--color-asphalt-sunk) 94%, transparent);
+    background: color-mix(in srgb, var(--color-asphalt-sunk) 98%, transparent);
+    -webkit-backdrop-filter: blur(14px);
     backdrop-filter: blur(14px);
     border-top: 1px solid var(--color-shoulder);
-    padding-bottom: env(safe-area-inset-bottom, 0);
+    padding-bottom: var(--safe-b);
   }
   .nav a {
     display: flex;
@@ -1147,7 +1182,8 @@
     top: 0;
     z-index: 20;
     padding: 0.7rem var(--spacing-gut) 0.8rem;
-    background: color-mix(in srgb, var(--color-asphalt) 92%, transparent);
+    background: color-mix(in srgb, var(--color-asphalt) 98%, transparent);
+    -webkit-backdrop-filter: blur(12px);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--color-shoulder);
   }
@@ -1209,8 +1245,9 @@
     bottom: 0;
     z-index: 15;
     margin-top: 1.75rem;
-    padding: 0.875rem var(--spacing-gut) calc(0.875rem + env(safe-area-inset-bottom, 0px));
-    background: color-mix(in srgb, var(--color-asphalt) 94%, transparent);
+    padding: 0.875rem var(--spacing-gut) calc(0.875rem + var(--safe-b));
+    background: color-mix(in srgb, var(--color-asphalt) 98%, transparent);
+    -webkit-backdrop-filter: blur(12px);
     backdrop-filter: blur(12px);
     border-top: 1px solid var(--color-shoulder);
   }
@@ -1422,6 +1459,7 @@
     display: block;
   }
   .toast__dismiss {
+    position: relative;
     flex: none;
     display: grid;
     place-items: center;
@@ -1432,6 +1470,13 @@
     color: var(--color-sign-dim);
     cursor: pointer;
   }
+  /* A 24px glyph with a 44px tap, the same way the switch does it. Dismissing a
+     toast by mistake is cheap; failing to dismiss it three times is not. */
+  .toast__dismiss::before {
+    content: '';
+    position: absolute;
+    inset: -12px;
+  }
   .toast__dismiss:hover {
     color: var(--color-sign-white);
   }
@@ -1440,6 +1485,16 @@
 
   .dialog {
     width: min(100% - 2rem, 30rem);
+    /* Landscape on a phone is 390px tall. A confirmation whose buttons fall
+       below the fold, in a box that does not itself scroll, is a dead end — and
+       the exam-exit confirm is the one a learner meets under the most pressure.
+       `overscroll-behavior: contain` then stops a scroll that reaches the end
+       of this box from being handed to the page underneath, which would
+       otherwise be sitting at a different offset when the dialog closes.
+       Honoured from iOS Safari 16; see deviations.md for the engine gap. */
+    max-height: calc(100dvh - 2rem - var(--safe-b));
+    overflow-y: auto;
+    overscroll-behavior: contain;
     padding: 0;
     color: var(--color-sign-white);
     background: var(--color-asphalt-raised);
@@ -1447,8 +1502,12 @@
     border-radius: var(--radius-lg);
     box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
   }
+  /* The scrim is the one surface that is *meant* to be seen through — it exists
+     to show that the page is still there and inert. It keeps its 0.72, and only
+     gains the prefix so the softening reaches iOS 17 too. */
   .dialog::backdrop {
     background: rgba(6, 8, 11, 0.72);
+    -webkit-backdrop-filter: blur(3px);
     backdrop-filter: blur(3px);
   }
   .dialog__in {
@@ -1524,7 +1583,11 @@
   }
   .datefield__seg input {
     width: 3ch;
-    min-height: 32px;
+    /* The first control a learner ever touches, and it was a 30×32 box. A date
+       is three of these in a row, so a near miss lands in the wrong segment
+       rather than on nothing — the worst kind of miss. */
+    min-width: 44px;
+    min-height: 44px;
     padding: 0.15rem 0.35rem;
     background: var(--color-asphalt-raised);
     border: 1px solid var(--color-shoulder-lit);
@@ -1560,6 +1623,7 @@
     cursor: pointer;
   }
   .gate input {
+    position: relative;
     appearance: none;
     -webkit-appearance: none;
     flex: none;
@@ -1572,6 +1636,15 @@
     cursor: pointer;
     display: grid;
     place-items: center;
+  }
+  /* 24px is the drawn box — the size a checkbox should be. The tap is 48px.
+     `.gate` aligns to `flex-start`, so the label's own text gives the box no
+     room to grow upward and the acknowledgement on a destructive action was a
+     24px target. */
+  .gate input::before {
+    content: '';
+    position: absolute;
+    inset: -12px;
   }
   .gate input::after {
     content: '';
@@ -1615,10 +1688,17 @@
   .search input {
     flex: 1;
     min-width: 0;
+    /* The field draws a 48px box; the input inside it was 24px tall, so most of
+       what looks like the search field was the wrapper's padding and tapping it
+       focused nothing at all. The input has to *be* the target, not merely sit
+       inside one. */
+    min-height: 46px;
     background: none;
     border: 0;
     color: var(--color-sign-white);
     font-family: var(--font-ui);
+    /* 1rem = 16px, and it must never go below it: iOS Safari zooms the page on
+       focus under 16px and does not zoom back (tests/mobile/ios-input-zoom). */
     font-size: 1rem;
   }
   .search input::placeholder {
@@ -1692,6 +1772,17 @@
     background: var(--color-asphalt-sunk);
     cursor: pointer;
     transition: background-color 0.15s ease;
+  }
+  /* The switch is drawn at 48×28 because that is what a switch looks like, and
+     making it 44px tall would turn it into a slab. The hit area is grown
+     instead: a transparent ::before takes the tap out to 48×44 while the track
+     keeps its size. `elementsFromPoint` resolves a pseudo-element to its
+     originating element, so this is a real target and not a visual trick —
+     tests/mobile/touch-targets.spec.ts measures it that way. */
+  .switch::before {
+    content: '';
+    position: absolute;
+    inset: -12px 0;
   }
   .switch::after {
     content: '';
@@ -1951,8 +2042,8 @@
     border-radius: 999px;
   }
   .modes button {
-    min-height: 30px;
-    padding: 0 0.7rem;
+    min-height: 44px;
+    padding: 0 0.9rem;
     background: transparent;
     border: 0;
     border-radius: 999px;
@@ -3411,6 +3502,18 @@
   }
   .rulelist li + li {
     margin-top: 0.9rem;
+  }
+  /* The topic link opens a rule. Its inline box is the font's ascent+descent —
+     22px for Overpass extrabold at this size — which is under the 24×24 that
+     WCAG 2.2 SC 2.5.8 and practices A7 require, and a desktop viewport never
+     surfaced it. The padding is part of the hit area, so this is a real 26px
+     target rather than a measurement trick.
+     Not taken to 44: these sit inline in running prose one line apart, and a
+     44px target here would overlap the link on the line below it — which trades
+     one mis-tap for another. That is the case SC 2.5.8's inline exception is
+     written for. */
+  .rulelist a {
+    padding-block: 2px;
   }
   .rulelist li::before {
     content: '';
