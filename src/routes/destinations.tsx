@@ -42,10 +42,15 @@ export function ExamRoute() {
       <main className="wrap stack pt-6">
         <div>
           <p className="eyebrow">Class D knowledge test</p>
-          <h1>Exam</h1>
+          {/* "Mock exam" everywhere it is named — the app bar, the tab title,
+              the dashboard panel and the history all use it, and "Exam" here
+              was the one place the destination went by a shorter name. */}
+          <h1>Mock exam</h1>
+          {/* Digits, like the rules below it and the bar above it. The same
+              four figures were spelled out here and set as numerals three lines
+              later, on one screen. */}
           <p className="dim mt-2 text-[0.9375rem]">
-            A faithful simulation: thirty questions, sixty minutes, and seven wrong ends it early —
-            same as the real one.
+            {`A faithful simulation: ${String(EXAM_QUESTION_COUNT)} questions, 60 minutes, and ${String(EXAM_WRONG_LIMIT)} wrong ends it early — same as the real one.`}
           </p>
         </div>
 

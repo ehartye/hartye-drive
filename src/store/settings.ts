@@ -32,6 +32,8 @@ export interface SettingsStore {
   storageMode: StorageMode;
   setTextSize: (size: TextSize) => void;
   setMotion: (motion: MotionSetting) => void;
+  /** `true` hides the install offer for good; `false` puts it back. */
+  setInstallDismissed: (dismissed: boolean) => void;
 }
 
 const documentRoot = (): HTMLElement | null =>
@@ -98,6 +100,12 @@ export const useSettingsStore = create<SettingsStore>()((set, get) => ({
 
   setMotion(motion) {
     const prefs = { ...get().prefs, motion };
+    set({ prefs });
+    persistPrefs(prefs);
+  },
+
+  setInstallDismissed(installDismissed) {
+    const prefs = { ...get().prefs, installDismissed };
     set({ prefs });
     persistPrefs(prefs);
   },

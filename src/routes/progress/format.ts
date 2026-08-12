@@ -37,6 +37,19 @@ const time = (at: number): string =>
     .toLowerCase();
 
 /**
+ * `Aug 12, 9:09 am` — one moment, dated absolutely.
+ *
+ * The score report and the progress history both stamp the same mock exam, and
+ * until this existed they stamped it differently: the report was the only
+ * surface in the app formatted `en-GB` ("12 August, 9:09 AM") while everything
+ * else was `en-US`. One event, two spellings, on two screens a learner moves
+ * between in one tap.
+ */
+export function formatAt(at: number): string {
+  return `${formatDay(at)}, ${time(at)}`;
+}
+
+/**
  * `Today, 4:12 pm` · `Yesterday, 9:34 pm` · `28 Jul, 6:02 pm`. Today and
  * yesterday are named rather than dated, because that is how the learner holds
  * them — everything older gets its date back.
@@ -58,7 +71,7 @@ export function formatDuration(ms: number): string {
   return `${hours > 0 ? `${String(hours)}:` : ''}${mm}:${String(seconds).padStart(2, '0')}`;
 }
 
-/** `1 July 2022` — the manual's own currency date, written out. */
+/** `July 1, 2022` — the manual's own currency date, written out. */
 export function formatFullDate(iso: string): string {
   const [y, m, d] = iso.split('-').map(Number);
   return new Date(Date.UTC(y ?? 1970, (m ?? 1) - 1, d ?? 1)).toLocaleDateString('en-US', {

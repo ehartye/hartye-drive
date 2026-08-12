@@ -20,6 +20,25 @@ describe('preferences', () => {
       schemaVersion: PREFERENCES_VERSION,
       textSize: 'standard',
       motion: 'system',
+      installDismissed: false,
+    });
+  });
+
+  it('remembers that the install offer was waved away', () => {
+    const prefs = { ...defaultPreferences(), installDismissed: true };
+    expect(loadPreferences(serializePreferences(prefs)).prefs.installDismissed).toBe(true);
+  });
+
+  it('reads a record written before the flag existed as “not dismissed”', () => {
+    // Additive, so a record from the build that shipped without it still
+    // loads — a learner does not lose their text size to a new boolean.
+    const raw = JSON.stringify({
+      version: PREFERENCES_VERSION,
+      state: { schemaVersion: PREFERENCES_VERSION, textSize: 'large', motion: 'system' },
+    });
+    expect(loadPreferences(raw)).toEqual({
+      status: 'ok',
+      prefs: { ...defaultPreferences(), textSize: 'large', installDismissed: false },
     });
   });
 

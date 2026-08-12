@@ -88,7 +88,7 @@ export const SIGN_CATEGORIES: readonly CategoryMeta[] = [
     label: 'School',
     lesson: 'A school zone — children, and a lower limit when it is in force.',
     rule:
-      'Five sides — and nothing else on the road has five sides. That shape is how you identify it at a distance, in the dark, or half covered by a branch. School, pedestrian and bicycle warnings are posted in fluorescent yellow-green, which is a different colour from warning yellow and means the same urgency.',
+      'Five sides — and nothing else on the road has five sides. That shape is how you identify it at a distance, in the dark, or half covered by a branch. School, pedestrian and bicycle warnings are posted in fluorescent yellow-green, which is a different color from warning yellow and means the same urgency.',
     blurb: 'Five sides — the only five-sided sign on the road',
     swatch: 'var(--color-school)',
     exemplar: 's1-1-school',

@@ -50,6 +50,44 @@ test.describe('install affordance', () => {
   });
 });
 
+test.describe('dismissing the install offer', () => {
+  /**
+   * "Not now" was React state alone: it hid the panel until the next reload and
+   * then the offer came straight back. A control that visibly does nothing on
+   * the second visit teaches the learner that the app's buttons are decorative.
+   *
+   * Driven on WebKit because iOS is the one platform that reliably *has* an
+   * offer to dismiss — Chromium fires `beforeinstallprompt` only after a real
+   * installability check, which headless does not perform.
+   */
+  test('is remembered across a reload, and is undoable from settings', async ({
+    page,
+  }, testInfo) => {
+    test.skip(testInfo.project.name !== 'iphone-webkit', 'only iOS is offered the Share steps');
+
+    await setUpDevice(page);
+    await visit(page, '/study');
+
+    const panel = page.locator('section[aria-labelledby="install-head"]');
+    await expect(panel).toBeVisible();
+    await panel.getByRole('button', { name: 'Not now' }).click();
+    await expect(panel).toHaveCount(0);
+
+    await page.reload();
+    await visit(page, '/study');
+    await expect(panel, 'the offer came back after a reload').toHaveCount(0);
+
+    // Settings keeps a permanent home for it, so dismissing is not a one-way
+    // door: the affordance can always be looked up, and put back.
+    await visit(page, '/settings');
+    await expect(page.getByRole('heading', { name: 'Offline & install' })).toBeVisible();
+    await page.getByRole('button', { name: /Show the offer on the dashboard again/ }).click();
+
+    await visit(page, '/study');
+    await expect(panel).toBeVisible();
+  });
+});
+
 test.describe('iOS home-screen metadata', () => {
   test('carries the tags iOS reads instead of the manifest', async ({ page }) => {
     await page.goto('/');

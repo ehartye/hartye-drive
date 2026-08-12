@@ -6,6 +6,7 @@
 import { blueprintAreas } from '~/content';
 import type { Citation, Question } from '~/content';
 import type { ExamArea } from '~/domain/exam';
+import { formatAt } from '../progress/format';
 
 /**
  * The four published areas, as the engine wants them. Read straight from the
@@ -28,15 +29,17 @@ export function joinAreaLabels(ids: readonly string[]): string {
   return `${labels.slice(0, -1).join(', ')} and ${labels[labels.length - 1] ?? ''}`;
 }
 
-// Day-first for the date ("11 August"), 12-hour for the clock ("8:54 PM") —
-// the stamp the ratified reports carry.
-const WHEN_DAY = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'long' });
-const WHEN_TIME = new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: '2-digit' });
-
-/** "11 August, 8:54 PM" — the stamp the score report carries. */
+/**
+ * "Aug 12, 9:09 am" — the stamp the score report carries, and the identical
+ * one the progress history carries for the same attempt.
+ *
+ * This was `en-GB` day-first ("12 August, 9:09 AM"), the only non-`en-US`
+ * formatter in the app, so one mock exam was dated two ways on the two screens
+ * that both name it. `progress/format.ts` owns the app's dates and pins the
+ * locale for a reason it states; the report now reads through it.
+ */
 export function formatAttemptWhen(at: number): string {
-  const when = new Date(at);
-  return `${WHEN_DAY.format(when)}, ${WHEN_TIME.format(when)}`;
+  return formatAt(at);
 }
 
 /** Both page numbers, always: the manual's own pointers use the printed one. */

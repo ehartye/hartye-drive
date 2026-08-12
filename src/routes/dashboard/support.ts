@@ -6,8 +6,9 @@
  * the test are all `src/domain/dashboard.ts`, so they are tested without a DOM;
  * this file only fetches, listens and formats.
  */
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useSyncExternalStore } from 'react';
 import type { BlueprintArea } from '~/content';
+import { useSettingsStore } from '~/store/settings';
 import { STORAGE_KEY } from '~/domain/persistence';
 import { EXAM_STORAGE_KEY } from '~/domain/exam-history';
 import { SETUP_STORAGE_KEY } from '~/domain/setup';
@@ -170,36 +171,63 @@ export interface InstallState {
   dismiss: () => void;
 }
 
+/**
+ * The captured prompt is module state, not component state.
+ *
+ * `beforeinstallprompt` fires **once**, early, and only ever once — so a hook
+ * that starts listening when its component mounts sees it only if that
+ * component happened to be on screen at the time. With the affordance on two
+ * surfaces (the dashboard and settings) that made the offer appear or vanish
+ * depending on which screen the learner opened first. Captured once at module
+ * load and published to every subscriber, both screens agree.
+ */
+let captured: InstallPromptEvent | null = null;
+let installedAlready = false;
+const watchers = new Set<() => void>();
+
+const notify = (): void => {
+  for (const watcher of watchers) watcher();
+};
+
+if (typeof window !== 'undefined') {
+  window.addEventListener('beforeinstallprompt', (raw: Event) => {
+    // Holding the event is what lets the app choose the moment (practices F6).
+    raw.preventDefault();
+    if (!isInstallPromptEvent(raw)) return;
+    captured = raw;
+    notify();
+  });
+  window.addEventListener('appinstalled', () => {
+    installedAlready = true;
+    captured = null;
+    notify();
+  });
+}
+
+function subscribeToInstall(onChange: () => void): () => void {
+  watchers.add(onChange);
+  return () => {
+    watchers.delete(onChange);
+  };
+}
+
+/** A primitive, so `useSyncExternalStore` never sees a new object each read. */
+function platformOffer(): InstallOffer {
+  if (installedAlready || isStandalone()) return 'none';
+  if (captured) return 'prompt';
+  return isIosSafari() ? 'ios' : 'none';
+}
+
 export function useInstallOffer(): InstallState {
-  const [event, setEvent] = useState<InstallPromptEvent | null>(null);
-  const [dismissed, setDismissed] = useState(false);
-  const [installed, setInstalled] = useState(() => isStandalone());
-
-  useEffect(() => {
-    const capture = (raw: Event) => {
-      // Holding the event is what lets the app choose the moment (practices F6).
-      raw.preventDefault();
-      if (isInstallPromptEvent(raw)) setEvent(raw);
-    };
-    const done = () => {
-      setInstalled(true);
-    };
-    window.addEventListener('beforeinstallprompt', capture);
-    window.addEventListener('appinstalled', done);
-    return () => {
-      window.removeEventListener('beforeinstallprompt', capture);
-      window.removeEventListener('appinstalled', done);
-    };
-  }, []);
-
-  const offer: InstallOffer =
-    dismissed || installed ? 'none' : event ? 'prompt' : isIosSafari() ? 'ios' : 'none';
+  const platform = useSyncExternalStore(subscribeToInstall, platformOffer, () => 'none' as const);
+  const dismissed = useSettingsStore((s) => s.prefs.installDismissed);
+  const setDismissed = useSettingsStore((s) => s.setInstallDismissed);
 
   return {
-    offer,
+    offer: dismissed ? 'none' : platform,
     install: () => {
-      if (!event) return;
-      void event.prompt();
+      if (!captured) return;
+      void captured.prompt();
       setDismissed(true);
     },
     dismiss: () => {

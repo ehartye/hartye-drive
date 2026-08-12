@@ -304,6 +304,80 @@ test.describe('settings', () => {
     expect((await download).suggestedFilename()).toContain('tn-drive-progress');
   });
 
+  /**
+   * Onboarding ends on "Both answers can be changed later in Settings", and
+   * tells a learner whose date has passed to "change it in Settings whenever
+   * you rebook". Settings offered neither, so the app made a promise on one
+   * screen and broke it on the next.
+   */
+  test('the two answers onboarding takes can actually be changed here', async ({ page }) => {
+    // Written once rather than through an init script: the point of the test is
+    // that a change sticks, and an init script would rewrite the setup record
+    // on the very reload that is meant to prove it.
+    await page.goto('/settings');
+    await page.evaluate(
+      ([setupKey, setup]: string[]) => {
+        localStorage.setItem(setupKey ?? '', setup ?? '');
+      },
+      [
+        'tn-drive:setup',
+        JSON.stringify({
+          version: 1,
+          state: {
+            schemaVersion: 1,
+            goal: 'class-d',
+            testDate: '2026-09-12',
+            completedAt: 1_760_000_000_000,
+          },
+        }),
+      ],
+    );
+    await page.goto('/settings');
+    const section = page.locator('section[aria-labelledby="test-h"]');
+    await expect(section).toBeVisible();
+
+    await section.getByRole('radio', { name: 'Signs only' }).check();
+    await page.goto('/study');
+    // The goal decides what the dashboard leads with, so it is visible proof.
+    await expect(page.getByRole('link', { name: /Drill the road signs/ })).toBeVisible();
+
+    await page.goto('/settings');
+    await section.getByLabel('Month').fill('11');
+    await section.getByLabel('Day').fill('03');
+    await section.getByLabel('Year').fill('2027');
+    await expect(section).toContainText(/November 3, 2027/);
+
+    await page.reload();
+    await expect(page.locator('section[aria-labelledby="test-h"]')).toContainText(
+      /November 3, 2027/,
+    );
+  });
+
+  /**
+   * Mockup 11's third section, in its published order. It was missing from the
+   * build entirely, and with it the only permanent statement of the update
+   * policy the service worker actually implements.
+   */
+  test('cell 11 — the offline & install section states what is stored and how updates land', async ({
+    page,
+  }) => {
+    await seed(page);
+    await page.goto('/settings');
+    await expect(page.getByRole('heading', { name: 'Offline & install' })).toBeVisible();
+
+    const section = page.locator('section[aria-labelledby="offline-h"]');
+    await expect(section).toContainText(/questions/);
+    await expect(section).toContainText(/87 signs/);
+    // The headline promise of `registerType: 'prompt'`, said out loud.
+    await expect(section).toContainText(/Ask me first/);
+    await expect(section).toContainText(/never applied in the middle of an exam/);
+    await expect(section).toContainText(/Add to home screen/);
+
+    // Published order: Your data · Reset · Offline & install · About.
+    const headings = await page.locator('.sect > h2').allInnerTexts();
+    expect(headings.slice(-3)).toEqual(['Your data', 'Offline & install', 'About']);
+  });
+
   test('holds at 320px with no horizontal scrolling', async ({ page }) => {
     await seed(page);
     await page.setViewportSize({ width: 320, height: 900 });

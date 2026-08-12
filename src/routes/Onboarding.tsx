@@ -209,7 +209,7 @@ export function Onboarding() {
             {
               term: 'Works with no signal',
               detail:
-                'Add it to your home screen and every question, sign and explanation opens at zero bytes — in a Driver Service Center parking lot included.',
+                'Add it to your home screen and every question, sign and explanation opens at zero bytes — in a Driver Services Center parking lot included.',
             },
             {
               term: 'Nothing leaves this phone',

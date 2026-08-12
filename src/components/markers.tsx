@@ -6,6 +6,12 @@ export interface MileMarkerProps {
   /** 1-based position. Only use this where an ordered sequence genuinely exists. */
   index: number;
   total: number;
+  /**
+   * What is being counted, for the accessible name. The sign drill counts
+   * signs, not questions — a screen reader hearing "Question 1 of 30" over a
+   * drill whose own status line says "Sign 1 of 30" is being told two things.
+   */
+  unit?: string;
 }
 
 /**
@@ -13,7 +19,7 @@ export interface MileMarkerProps {
  * simulator and the study session, where order is real — never on the
  * dashboard (grounding §2).
  */
-export function MileMarker({ index, total }: MileMarkerProps) {
+export function MileMarker({ index, total, unit = 'Question' }: MileMarkerProps) {
   return (
     <span className="row gap-2">
       <span className="milemarker" aria-hidden="true">
@@ -22,7 +28,7 @@ export function MileMarker({ index, total }: MileMarkerProps) {
       </span>
       <span className="num dim text-[0.8125rem]">of {total}</span>
       <span className="sr-only">
-        Question {index} of {total}
+        {unit} {index} of {total}
       </span>
     </span>
   );

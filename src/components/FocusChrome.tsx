@@ -8,7 +8,7 @@ export interface FocusChromeProps {
   exitLabel: string;
   onExit: () => void;
   progress?: { value: number; max: number; label: string };
-  marker?: { index: number; total: number };
+  marker?: { index: number; total: number; unit?: string };
   /** Timer, strike counter — whatever the mode needs in the trailing slot. */
   instruments?: ReactNode;
   /**
@@ -48,7 +48,13 @@ export function FocusChrome({
               {exitLabel}
             </button>
             <div className="focusbar__instruments">
-              {marker && <MileMarker index={marker.index} total={marker.total} />}
+              {marker && (
+              <MileMarker
+                index={marker.index}
+                total={marker.total}
+                {...(marker.unit === undefined ? {} : { unit: marker.unit })}
+              />
+            )}
               {instruments}
             </div>
           </div>

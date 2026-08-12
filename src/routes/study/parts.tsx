@@ -67,7 +67,7 @@ export function ManualLookup({ citation, section, supersededNote }: ManualLookup
           <cite className="cite__src">
             {`Tennessee Comprehensive Driver License Manual · ${section} · PDF p. ${String(citation.pdfPage)} (printed p. ${String(citation.printedPage)})`}
             <br />
-            {supersededNote ?? 'Content current as of 1 July 2022'}
+            {supersededNote ?? 'Content current as of July 1, 2022'}
           </cite>
         </blockquote>
         <p className="dim text-[0.8125rem] mt-3.5 leading-normal">

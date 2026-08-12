@@ -6,11 +6,13 @@ import {
   dashboardHeadline,
   estimatedMinutes,
   examRecommendation,
+  judgedTopicCount,
   readiness,
   relativeDay,
   routeToTest,  starterTopics,
   studyStreak,
   topicDrillIds,
+  weakTopicCount,
   weakTopics,
 } from './dashboard';
 import { emptyProgress, recordAttempt } from './progress';
@@ -279,6 +281,60 @@ describe('wording', () => {
     expect(ready.percent).toBe(95);
     expect(dashboardHeadline(ready, 0).heading).toMatch(/ready/i);
     expect(dashboardHeadline(ready, 0).sub).toMatch(/holding you back/i);
+  });
+
+  it('never reads "nothing is holding you back" over a failing readiness', () => {
+    // The first session samples one question per topic, so no topic clears
+    // `WEAK_TOPIC_MIN_SEEN` and the weak list is empty — which used to be read
+    // as "all clear" and printed beside a readiness of 8%.
+    const spread: [string, string, boolean][] = [
+      ['q1', 'right-of-way', true],
+      ['q2', 'speed-limits', false],
+      ['q3', 'night-driving', false],
+      ['q4', 'dui-law', false],
+      ['q5', 'warning-signs', false],
+      ['q6', 'regulatory-signs', false],
+      ['q7', 'adverse-weather', false],
+      ['q8', 'required-stops', false],
+      ['q9', 'traffic-signals', false],
+      ['q10', 'alcohol-effects', false],
+      ['q11', 'lane-use-and-passing', false],
+      ['q12', 'following-and-stopping-distance', false],
+    ];
+    const state = withHistory(spread);
+    const thin = readiness(state);
+    expect(thin.percent).toBe(8);
+    expect(weakTopics(state, {}, 4)).toHaveLength(0);
+    expect(judgedTopicCount(state)).toBe(0);
+
+    const sub = dashboardHeadline(thin, 0, judgedTopicCount(state)).sub;
+    expect(sub).not.toMatch(/nothing is holding you back/i);
+    expect(sub).toMatch(/enough answers/i);
+  });
+
+  it('counts every weak topic in the headline, not just the four it can show', () => {
+    // `weakTopics` is capped at four rows because four rows is what fits. The
+    // headline was handed that capped array's length, so a learner with nine
+    // weak topics was told "4 topics are still holding you back" — and the
+    // progress page, working off the full list, said nine.
+    const rows = (topic: string): [string, string, boolean][] =>
+      Array.from({ length: 6 }, (_, i) => [`${topic}${String(i)}`, topic, i < 2]);
+    const topics = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i'];
+    const state = withHistory(topics.flatMap(rows));
+
+    expect(weakTopics(state, {}, 4)).toHaveLength(4);
+    expect(weakTopicCount(state)).toBe(9);
+    expect(dashboardHeadline(readiness(state), weakTopicCount(state), 9).sub).toMatch(/9 topics/);
+  });
+
+  it('says the gap is spread once topics have been judged and none is weak', () => {
+    const rows = (topic: string, n: number, correct: number): [string, string, boolean][] =>
+      Array.from({ length: n }, (_, i) => [`${topic}${String(i)}`, topic, i < correct]);
+    const state = withHistory([...rows('right-of-way', 10, 7), ...rows('speed-limits', 10, 7)]);
+    expect(judgedTopicCount(state)).toBe(2);
+    const sub = dashboardHeadline(readiness(state), 0, judgedTopicCount(state)).sub;
+    expect(sub).not.toMatch(/nothing is holding you back/i);
+    expect(sub).toMatch(/spread/i);
   });
 });
 

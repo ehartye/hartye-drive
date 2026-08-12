@@ -11,13 +11,15 @@ import { usePageTitle } from '~/app/usePageTitle';
  * there. `~/signs/registry.ts` loads the sign registry the same way.
  */
 import { topics as topicDefs, blueprintAreas } from '~/content';
-import { DEFAULT_SESSION_SIZE } from '~/domain/session';
+import { DEFAULT_SESSION_SIZE, isWeakTopic } from '~/domain/session';
 import { masteryPercent } from '~/domain/mastery';
+import { EXAM_READY_THRESHOLD, estimatedMinutes } from '~/domain/dashboard';
 import {
   READINESS_TARGET,
   accuracyByArea,
   groupRuns,
   historyTimeline,
+  laneCaption,
   readinessSeries,
   summariseProgress,
   topicRows,
@@ -28,12 +30,14 @@ import type { SeriesPoint } from '~/domain/charts';
 import { ATTEMPT_HISTORY_LIMIT } from '~/domain/progress';
 import { useProgressStore } from '~/store/progress';
 import { useExamStore } from '~/store/exam';
+import { recordNames, useUnreadableRecords } from '~/store/health';
 import { BlueprintChart, BlueprintKey, ReadinessChart, ReadinessKey } from './progress/charts';
 import type { ExamMark } from './progress/charts';
 import {
   BlueprintTable,
   ChartNotOpenYet,
   HistoryList,
+  HistoryUnreadable,
   ProgressFooter,
   ReadinessTable,
   StartOfTheRoad,
@@ -69,6 +73,7 @@ export function Progress() {
   const progress = useProgressStore((s) => s.progress);
   const storageMode = useProgressStore((s) => s.storageMode);
   const examRecord = useExamStore((s) => s.record);
+  const unreadable = useUnreadableRecords();
 
   // Pinned once per visit: "Today" must not change reading mid-session, and a
   // clock read during render would re-run the memos below on every keystroke.
@@ -121,12 +126,40 @@ export function Progress() {
     return map;
   }, [examMarks, fullSeries]);
 
-  const weak = weakestFirst(rows).filter((row) => row.band !== 'guide');
+  /**
+   * The same definition of "weak" the dashboard prints and the study session
+   * actually schedules against — `session.ts`'s `isWeakTopic`, not "under 80%".
+   *
+   * They disagreed: on one record the dashboard said "4 topics are still
+   * holding you back" while this page offered to "drill the 12 topics you're
+   * weakest on". Both counts were defensible in isolation and the learner has
+   * no way to tell that they mean different things, so one of them had to go —
+   * and it had to be this one, because the button under it starts the very
+   * session whose queue uses the other definition.
+   */
+  const weak = weakestFirst(rows).filter((row) => isWeakTopic(progress.topics[row.id]));
   /** Answers folded into the totals but no longer in the log (grounding §6). */
   const pruned = Math.max(0, summary.answered - progress.attempts.length);
   const long = events.length >= LONG_HISTORY;
   const visible = events.slice(0, shown);
   const remaining = events.length - visible.length;
+
+  // Before any derived figure is reported. A quarantined record derives to all
+  // zeroes, and printing those would deny a record the dashboard has just
+  // promised is intact — so the check comes ahead of both other branches.
+  if (unreadable.length > 0) {
+    return (
+      <>
+        <AppBar title="Progress" context="Saved progress unreadable" />
+        <main className="wrap stack pt-6">
+          <HistoryUnreadable records={recordNames(unreadable)} />
+          <hr className="centreline" />
+          <WhatLandsHere />
+          <ProgressFooter />
+        </main>
+      </>
+    );
+  }
 
   if (!summary.hasHistory) {
     return (
@@ -147,7 +180,7 @@ export function Progress() {
               <IconArrowRight size={18} />
             </Button>
             <p className="dim text-center mt-2 text-[0.8125rem]">
-              About six minutes · works with no signal
+              {`About ${String(estimatedMinutes(DEFAULT_SESSION_SIZE))} minutes · works with no signal`}
             </p>
           </div>
 
@@ -364,7 +397,7 @@ export function Progress() {
                 </Button>
               </div>
               <p className="dim text-center mt-2.5 text-[0.8125rem]">
-                {`${String(DEFAULT_SESSION_SIZE)} questions · about six minutes · the session weights itself toward ${weak
+                {`${String(DEFAULT_SESSION_SIZE)} questions · about ${String(estimatedMinutes(DEFAULT_SESSION_SIZE))} minutes · the session weights itself toward ${weak
                   .slice(0, 2)
                   .map((row) => row.label.toLowerCase())
                   .join(' and ')}`}
@@ -445,10 +478,17 @@ function SignSpeedPlate({ readiness }: { readiness: number }) {
   return <SignSvg id="r2-1-speed-limit" size="lg" value={readiness} decorative />;
 }
 
+/**
+ * The same three thresholds the dashboard heads itself with — 85, 80, 50 — so
+ * one readiness figure cannot be read two ways on two screens. At 82% this page
+ * said "Past the pass mark" while the dashboard said "You're nearly there"; the
+ * words differ by design (this page is the record, that one is the plan), but
+ * the lines they are drawn against may not.
+ */
 function headline(readiness: number): string {
-  if (readiness >= READINESS_TARGET) return 'Past the pass mark';
-  if (readiness >= 65) return 'Closing on the pass mark';
-  if (readiness >= 40) return 'Climbing';
+  if (readiness >= EXAM_READY_THRESHOLD) return 'Clear of the pass mark';
+  if (readiness >= READINESS_TARGET) return 'On the pass mark';
+  if (readiness >= 50) return 'Climbing';
   return 'Early days';
 }
 
@@ -457,16 +497,6 @@ const labelFor = (topicId: string): string =>
 
 const shareOf = (areaId: string): number =>
   blueprintAreas.find((area) => area.id === areaId)?.share ?? 0.25;
-
-function laneCaption(areas: readonly AreaRow[]): string {
-  const short = areas.filter((area) => area.touched && !area.meetsTarget);
-  if (short.length === 0) {
-    return `Every area you have touched is at or past ${String(READINESS_TARGET)}%. That is what walking in ready looks like.`;
-  }
-  return `${short.length === 1 ? 'One lane is' : `${String(short.length)} lanes are`} hatched — short of target. ${
-    short.length === 1 ? 'It is' : 'They are'
-  } a quarter of the real test each.`;
-}
 
 function groupByArea(
   rows: readonly TopicRow[],

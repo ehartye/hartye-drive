@@ -381,6 +381,15 @@ describe('TopicMeter (grounding §3)', () => {
     expect(container.querySelector('.meter__bar')).toHaveAttribute('aria-hidden', 'true');
   });
 
+  it('states the band once, not twice', () => {
+    // The band label used to be carried both by a visually-hidden span beside
+    // the numbers and by the visible line under the rail, so a screen reader
+    // heard "6 / 12 · 50% — Review" and then "Review" again. The visible label
+    // is text; it needs no hidden twin.
+    render(<TopicMeter name="Night driving" correct={6} total={12} />);
+    expect(screen.getAllByText('Review')).toHaveLength(1);
+  });
+
   it.each([
     [9, 10, 'rail'],
     [6, 10, 'rail--warn'],

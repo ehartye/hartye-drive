@@ -1,6 +1,15 @@
-import { Button, ConfirmGate, Dialog, SignPanel, SignSvg } from '~/components';
+import {
+  Button,
+  ConfirmGate,
+  DateField,
+  Dialog,
+  SegmentedField,
+  SignPanel,
+  SignSvg,
+} from '~/components';
 import { IconAlert, IconCheck, IconX } from '~/components/Icon';
 import type { Correction } from '~/content';
+import { correctionDate } from '~/domain/corrections';
 import { formatFullDate } from '../progress/format';
 
 /* ------------------------------------------------------ the corrections */
@@ -15,13 +24,14 @@ import { formatFullDate } from '../progress/format';
  * "1 July 2023 · Public Chapter 354" is.
  */
 export function CorrectionCard({ correction }: { correction: Correction }) {
+  const dated = correctionDate(correction);
   return (
     <article className="corr" aria-labelledby={`corr-${correction.id}`}>
       <div className="corr__head">
         <span className="corr__tag">
           {correction.appliesToContent ? 'Corrected' : 'Disclosed'}
         </span>
-        <span className="corr__when">{`In force ${formatFullDate(correction.effectiveDate)}`}</span>
+        <span className="corr__when">{`${dated.prefix} ${formatFullDate(dated.iso)}`}</span>
       </div>
       <h3 id={`corr-${correction.id}`}>{correction.summary}</h3>
       <dl className="corr__d">
@@ -48,6 +58,219 @@ export function CorrectionCard({ correction }: { correction: Correction }) {
           : 'Outside the exam pool — recorded here so the app does not pretend the manual is current.'}
       </span>
     </article>
+  );
+}
+
+/* ---------------------------------------------------------- your test */
+
+export interface YourTestProps {
+  goal: 'class-d' | 'signs';
+  /** ISO `YYYY-MM-DD`, or `''` for "no date given". */
+  testDate: string;
+  onGoal: (goal: 'class-d' | 'signs') => void;
+  onTestDate: (iso: string) => void;
+  /** Days until the test, or `null` when no date is set. */
+  days: number | null;
+  /** Questions a day to cover the bank, or `null` when it cannot be computed. */
+  pace: number | null;
+  /** Session-only mode: the answers will not survive the tab. */
+  sessionOnly: boolean;
+}
+
+/**
+ * The two questions onboarding asks, where onboarding promises they can be
+ * changed.
+ *
+ * Mockup 01 says "Both answers can be changed later in Settings" and, on a test
+ * date in the past, "Change it in Settings whenever you rebook" — and mockup 11
+ * has no such section, so the built app made a promise on one screen and did
+ * not keep it on the other. A learner who rebooks their test has no way to tell
+ * the app, and one who picked the signs refresher is stuck with it.
+ *
+ * No new components: the same `SegmentedField` and `DateField` onboarding uses,
+ * so the two screens ask the question the same way.
+ */
+export function YourTest({
+  goal,
+  testDate,
+  onGoal,
+  onTestDate,
+  days,
+  pace,
+  sessionOnly,
+}: YourTestProps) {
+  return (
+    <section className="sect" aria-labelledby="test-h">
+      <h2 id="test-h">Your test</h2>
+      <p className="sect__intro">
+        The two answers you gave when you started. Changing the goal changes which questions you
+        get; changing the date changes the daily pace, and nothing else — nothing is scheduled and
+        nothing reminds you.
+      </p>
+
+      <SignPanel flat>
+        <div className="srow">
+          <span className="srow__t">
+            <SegmentedField
+              legend="What are you studying for?"
+              name="study-goal"
+              value={goal}
+              options={[
+                { value: 'class-d', label: 'Class D test' },
+                { value: 'signs', label: 'Signs only' },
+              ]}
+              onChange={(value) => {
+                onGoal(value === 'signs' ? 'signs' : 'class-d');
+              }}
+            />
+            <span className="srow__s mt-2">
+              {goal === 'signs'
+                ? 'The signs only — shape, color and meaning. The mock exam stays available; the dashboard just stops leading with it.'
+                : 'Every question and every sign, with 30-question mock exams timed like the real one.'}
+            </span>
+          </span>
+        </div>
+
+        <div className="srow">
+          <span className="srow__t">
+            <DateField
+              legend="When is your test?"
+              value={testDate}
+              onChange={onTestDate}
+              hint="Optional. Clear any part of it to go back to no date."
+            />
+            {days !== null && (
+              <span className="srow__s mt-2">
+                {days > 0
+                  ? `${String(days)} days out${pace === null ? '.' : ` — about ${String(pace)} questions a day to cover the bank.`}`
+                  : days === 0
+                    ? 'Your test is today. Good luck — a short refresher still helps.'
+                    : 'That date has passed. Set a new one whenever you rebook.'}
+              </span>
+            )}
+          </span>
+        </div>
+      </SignPanel>
+
+      {sessionOnly && (
+        <p className="faint text-[0.75rem] mt-2 leading-normal">
+          This device is not letting the app save anything, so both answers go back to their
+          defaults when you close the tab.
+        </p>
+      )}
+    </section>
+  );
+}
+
+/* -------------------------------------------------- offline & install */
+
+export interface OfflineAndInstallProps {
+  /** `null` until the content pack has been read — never guessed at. */
+  bankSize: number | null;
+  signCount: number;
+  /** A newer build is installed and waiting for permission to take over. */
+  updateWaiting: boolean;
+  /** Which install affordance this platform can honestly offer. */
+  offer: 'none' | 'prompt' | 'ios';
+  /** `true` once the learner has waved the offer away, here or on the dashboard. */
+  dismissed: boolean;
+  onInstall: () => void;
+  onRestore: () => void;
+}
+
+/**
+ * Mockup 11's third section, between "Your data" and "About".
+ *
+ * It went missing in the build, and with it the only permanent statement of the
+ * update policy — "ask me first … never applied in the middle of an exam" —
+ * which is the headline behaviour of the service worker (`registerType:
+ * 'prompt'`, `skipWaiting` off). A promise the product keeps in code and states
+ * nowhere is a promise the learner cannot rely on. The content-pack status and
+ * the install affordance lived only on the dashboard, where the first
+ * disappears the moment a connection returns and the second disappears for good
+ * once it is dismissed — so settings is the only place either can be *looked
+ * up*, which is exactly what a settings page is for.
+ *
+ * Restraint rule (§2): no sign is used here. This is chrome, not curriculum.
+ */
+export function OfflineAndInstall({
+  bankSize,
+  signCount,
+  updateWaiting,
+  offer,
+  dismissed,
+  onInstall,
+  onRestore,
+}: OfflineAndInstallProps) {
+  return (
+    <section className="sect" aria-labelledby="offline-h">
+      <h2 id="offline-h">Offline &amp; install</h2>
+      <p className="sect__intro">
+        Built for a Driver Services Center parking lot with one bar of signal.
+      </p>
+
+      <SignPanel flat>
+        <div className="srow">
+          <span className="srow__t">
+            <span className="srow__n">Content pack</span>
+            <span className="srow__s">
+              {bankSize === null
+                ? `On this device — every question, ${String(signCount)} signs and all three typefaces. Nothing is fetched while you study.`
+                : `On this device — ${String(bankSize)} questions, ${String(signCount)} signs and all three typefaces. Nothing is fetched while you study.`}
+            </span>
+          </span>
+          <span className="badge badge--live">Ready</span>
+        </div>
+
+        <div className="srow">
+          <span className="srow__t">
+            <span className="srow__n">Updates</span>
+            <span className="srow__s">
+              Ask me first. A new version downloads in the background and then waits — it only
+              replaces the running app when you press the button in the prompt, and it is never
+              applied in the middle of an exam or a study session.
+            </span>
+          </span>
+          <span className={`badge${updateWaiting ? ' badge--offline' : ''}`}>
+            {updateWaiting ? 'Waiting' : 'Up to date'}
+          </span>
+        </div>
+
+        <div className="srow">
+          <span className="srow__t">
+            <span className="srow__n">Add to home screen</span>
+            <span className="srow__s">
+              Opens full-screen with no browser chrome, and starts faster. On iPhone and iPad, use
+              Share then <b>Add to Home Screen</b> — Safari gives a web app no button to press for
+              you.
+            </span>
+            {offer === 'prompt' && (
+              <span className="block mt-3">
+                <Button variant="guide" onClick={onInstall}>
+                  Install TN Drive
+                </Button>
+              </span>
+            )}
+            {dismissed && (
+              <span className="block mt-3">
+                <Button variant="quiet" onClick={onRestore}>
+                  Show the offer on the dashboard again
+                </Button>
+              </span>
+            )}
+          </span>
+          {/* Not "Manual": in this product "the manual" is the Tennessee
+              Comprehensive Driver License Manual, named on every question. */}
+          <span className="badge">{offer === 'prompt' ? 'Offered' : 'Not offered'}</span>
+        </div>
+      </SignPanel>
+
+      <p className="dim text-[0.8125rem] mt-3.5 leading-relaxed">
+        {offer === 'prompt'
+          ? 'The button is here because this browser offered us an install prompt. Nothing is downloaded when you press it — the whole app is already on the device.'
+          : 'There is no install button here because this browser does not offer the app one. Where a browser does, it appears in this row.'}
+      </p>
+    </section>
   );
 }
 

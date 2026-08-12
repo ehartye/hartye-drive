@@ -80,6 +80,38 @@ test.describe('rule reference', () => {
     await expect(page.getByRole('link', { name: /Back to studying/ })).toBeVisible();
   });
 
+  /**
+   * Two pages in this app have several parents and no single "up": this one,
+   * and settings. Both must go back where the learner came from — and neither
+   * may leave a dead control on a cold deep link, which is a supported entry
+   * (deep links work offline, grounding §1).
+   */
+  test('back goes where you came from, and still works on a cold deep link', async ({ page }) => {
+    // A fresh tab straight onto a rule: no in-app history, so "back" must be a
+    // real destination rather than a `navigate(-1)` that does nothing at all.
+    await page.goto('/rules/R225');
+    await page.locator('.plain').waitFor();
+    const cold = page.getByRole('link', { name: 'Back' });
+    await expect(cold).toBeVisible();
+
+    // Follow a sibling rule — now there IS somewhere to go back to, and back
+    // means there rather than the fixed fallback.
+    await page.locator('.rulelist a').first().click();
+    await page.locator('.plain').waitFor();
+    await expect(page).not.toHaveURL(/R225$/);
+    await page.getByRole('button', { name: 'Back' }).click();
+    await expect(page).toHaveURL(/\/rules\/R225$/);
+  });
+
+  test('settings goes back to whichever screen sent you there', async ({ page }) => {
+    await page.goto('/rules/R119');
+    await page.locator('.plain').waitFor();
+    await page.getByRole('link', { name: /See every correction we apply/ }).click();
+    await expect(page.getByRole('heading', { level: 1, name: /Settings/ })).toBeVisible();
+    await page.getByRole('button', { name: 'Back' }).click();
+    await expect(page).toHaveURL(/\/rules\/R119$/);
+  });
+
   test('holds at 320px with no horizontal scrolling', async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 900 });
     await page.goto('/rules/R119');

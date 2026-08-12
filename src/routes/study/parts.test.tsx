@@ -52,7 +52,7 @@ describe('ManualLookup', () => {
   it('records both page numbers, because the manual cross-references the printed one', () => {
     render(<ManualLookup citation={citation} section="Interstate driving" />);
     expect(screen.getByText(/PDF p\. 86 \(printed p\. 72\)/)).toBeInTheDocument();
-    expect(screen.getByText(/Content current as of 1 July 2022/)).toBeInTheDocument();
+    expect(screen.getByText(/Content current as of July 1, 2022/)).toBeInTheDocument();
   });
 
   it('is a real disclosure control, closed until asked for', () => {

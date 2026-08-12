@@ -104,6 +104,37 @@ export function accuracyByArea(
   });
 }
 
+/**
+ * The sentence under the four lanes.
+ *
+ * It lives here rather than in the page because it is a **claim about the
+ * record**, and every claim about the record is derived in one place and
+ * tested. The bug it replaces made that case: the page filtered for lanes that
+ * were touched *and* short, and read the empty result as success — so a learner
+ * who had answered nothing at all was told "that is what walking in ready looks
+ * like". An empty list of failures is not a pass; an untouched lane is a
+ * quarter of the test nobody has opened, and it is counted out loud.
+ */
+export function laneCaption(areas: readonly AreaRow[]): string {
+  const short = areas.filter((area) => area.touched && !area.meetsTarget);
+  const untouched = areas.filter((area) => !area.touched).length;
+
+  if (short.length > 0) {
+    return `${short.length === 1 ? 'One lane is' : `${String(short.length)} lanes are`} hatched — short of target. ${
+      short.length === 1 ? 'It is' : 'They are'
+    } a quarter of the real test each.`;
+  }
+  if (untouched === areas.length) {
+    return 'Nothing measured yet — all four lanes are open road. Answer anything and they start filling.';
+  }
+  if (untouched > 0) {
+    return `Every lane you have driven is at or past ${String(READINESS_TARGET)}%, but ${String(untouched)} of the four ${
+      untouched === 1 ? 'is' : 'are'
+    } still open road — and each one is a quarter of the real test.`;
+  }
+  return `All four lanes are at or past ${String(READINESS_TARGET)}%. That is what walking in ready looks like.`;
+}
+
 /* ------------------------------------------------------- topic by topic */
 
 export interface TopicRow {

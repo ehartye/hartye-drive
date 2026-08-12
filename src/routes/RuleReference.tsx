@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router';
+import { Link, useParams } from 'react-router';
 import {
   AppBar,
   Button,
@@ -11,6 +11,7 @@ import {
 } from '~/components';
 import { IconArrowRight, IconCheck, IconChevronRight, IconX } from '~/components/Icon';
 import { usePageTitle } from '~/app/usePageTitle';
+import { useUpLink } from '~/app/useUpLink';
 import { practiceHref, ruleHref } from '~/app/hrefs';
 import { correctionById, loadQuestionBank, loadRules, loadSignRegistry, topicById } from '~/content';
 import type { Correction, ManualRule, Question, SignEntry } from '~/content';
@@ -46,7 +47,9 @@ type State =
  */
 export function RuleReference() {
   const { id = '' } = useParams();
-  const navigate = useNavigate();
+  // Reached from a study explanation, an exam review, the sign library, another
+  // rule — and by a cold deep link, which has no history to go back to.
+  const up = useUpLink('/study');
   const cards = useProgressStore((s) => s.progress.cards);
   const topicStats = useProgressStore((s) => s.progress.topics);
 
@@ -90,14 +93,10 @@ export function RuleReference() {
 
   usePageTitle(reference ? `${reference.rule.topic} · rule reference` : 'Rule reference');
 
-  const goBack = () => {
-    void navigate(-1);
-  };
-
   if (state.status === 'loading') {
     return (
       <>
-        <AppBar title="Rule reference" onBack={goBack} />
+        <AppBar title="Rule reference" {...up} />
         <main className="wrap stack pt-6">
           <h1>Rule reference</h1>
           <SignPanel flat>
@@ -111,7 +110,7 @@ export function RuleReference() {
   if (state.status === 'error') {
     return (
       <>
-        <AppBar title="Rule reference" onBack={goBack} />
+        <AppBar title="Rule reference" {...up} />
         <main className="wrap stack pt-6">
           <ErrorState
             headingLevel={1}
@@ -135,7 +134,7 @@ export function RuleReference() {
   if (!reference) {
     return (
       <>
-        <AppBar title="Rule reference" onBack={goBack} />
+        <AppBar title="Rule reference" {...up} />
         <main className="wrap stack pt-6">
           <ErrorState
             headingLevel={1}
@@ -159,7 +158,7 @@ export function RuleReference() {
       topicStat={
         reference.primaryTopic ? topicStats[reference.primaryTopic] : undefined
       }
-      onBack={goBack}
+      up={up}
     />
   );
 }
@@ -170,10 +169,10 @@ interface ReferenceProps {
   reference: RuleReferenceModel;
   data: Loaded;
   topicStat: { seen: number; correct: number } | undefined;
-  onBack: () => void;
+  up: ReturnType<typeof useUpLink>;
 }
 
-function Reference({ reference, data, topicStat, onBack }: ReferenceProps) {
+function Reference({ reference, data, topicStat, up }: ReferenceProps) {
   const { rule } = reference;
   const topic = reference.primaryTopic ? topicById(reference.primaryTopic) : undefined;
   const signs = reference.signIds
@@ -191,7 +190,7 @@ function Reference({ reference, data, topicStat, onBack }: ReferenceProps) {
 
   return (
     <>
-      <AppBar title="Rule reference" context={rule.topic} onBack={onBack} />
+      <AppBar title="Rule reference" context={rule.topic} {...up} />
 
       <main className="wrap stack pt-6">
         <section className="row items-start gap-4">
@@ -379,7 +378,7 @@ function Reference({ reference, data, topicStat, onBack }: ReferenceProps) {
           <p className="srcnote">
             <span>Tennessee Comprehensive Driver License Manual</span>
             <span>
-              TN Dept. of Safety &amp; Homeland Security · content current as of 1 July 2022
+              TN Dept. of Safety &amp; Homeland Security · content current as of July 1, 2022
             </span>
             <span>
               {`${rule.group} · PDF p. ${String(rule.pdfPage)}${
@@ -392,8 +391,9 @@ function Reference({ reference, data, topicStat, onBack }: ReferenceProps) {
             Where Tennessee law has changed since the manual was published, TN&nbsp;Drive shows the
             correction beside the quotation rather than editing it.{' '}
             <Link className="citelink normal-case" to="/settings">
-              Every correction we apply
+              See every correction we apply
             </Link>
+            .
           </p>
         </SignPanel>
 

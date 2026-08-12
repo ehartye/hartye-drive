@@ -31,6 +31,17 @@ export interface Preferences {
   schemaVersion: number;
   textSize: TextSize;
   motion: MotionSetting;
+  /**
+   * The learner waved the install offer away.
+   *
+   * It lives with the preferences rather than with the progress record for two
+   * reasons. It *is* a preference — "stop asking me to install this" — and it
+   * must survive a reset: erasing three weeks of work is what the learner asked
+   * for; being nagged to install again as a side effect is not. Held in React
+   * state alone it survived until the next reload, which made "Not now" a
+   * button that did nothing a learner could notice.
+   */
+  installDismissed: boolean;
 }
 
 const TEXT_SIZES: readonly TextSize[] = ['standard', 'large', 'larger'];
@@ -44,7 +55,12 @@ const TEXT_SCALE: Record<TextSize, number> = {
 };
 
 export function defaultPreferences(): Preferences {
-  return { schemaVersion: PREFERENCES_VERSION, textSize: 'standard', motion: 'system' };
+  return {
+    schemaVersion: PREFERENCES_VERSION,
+    textSize: 'standard',
+    motion: 'system',
+    installDismissed: false,
+  };
 }
 
 export function textSizeScale(size: TextSize): number {
@@ -101,7 +117,7 @@ export function loadPreferences(raw: string | null): PreferencesResult {
   const version = typeof parsed.version === 'number' ? parsed.version : 0;
   if (version > PREFERENCES_VERSION) return { status: 'future', prefs: defaultPreferences() };
 
-  const { textSize, motion } = parsed.state;
+  const { textSize, motion, installDismissed } = parsed.state;
   if (
     typeof textSize !== 'string' ||
     !TEXT_SIZES.includes(textSize as TextSize) ||
@@ -117,6 +133,10 @@ export function loadPreferences(raw: string | null): PreferencesResult {
       schemaVersion: PREFERENCES_VERSION,
       textSize: textSize as TextSize,
       motion: motion as MotionSetting,
+      // Added after the first shipped build, so its absence is a record from
+      // before it existed rather than a corrupt one. Missing means "not asked
+      // yet", which is exactly the default.
+      installDismissed: installDismissed === true,
     },
   };
 }

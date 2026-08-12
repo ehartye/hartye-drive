@@ -335,7 +335,7 @@ export function StudySession() {
                 section={topic?.label ?? question.topic}
                 supersededNote={
                   correction
-                    ? 'Content current as of 1 July 2022 · superseded — see the correction above'
+                    ? 'Content current as of July 1, 2022 · superseded — see the correction above'
                     : undefined
                 }
               />

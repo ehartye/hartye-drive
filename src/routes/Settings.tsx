@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 import {
   AppBar,
   Button,
@@ -29,9 +29,28 @@ import { summariseProgress } from '~/domain/progress-report';
 import { useProgressStore } from '~/store/progress';
 import { useExamStore } from '~/store/exam';
 import { useSettingsStore } from '~/store/settings';
+import { recordNames, useUnreadableRecords } from '~/store/health';
 import { RECORD_KEYS, readRecordSizes, resetAllRecords } from '~/store/reset';
-import { CorrectionCard, ResetDialog, ResetFailed } from './settings/parts';
+import { useSetupStore } from '~/store/setup';
+import { useUpLink } from '~/app/useUpLink';
+import { dailyPace, daysUntilTest } from '~/domain/setup';
+import {
+  CorrectionCard,
+  OfflineAndInstall,
+  ResetDialog,
+  ResetFailed,
+  YourTest,
+} from './settings/parts';
 import { formatFullDate } from './progress/format';
+/**
+ * The content loader and the install-offer hook live with the dashboard because
+ * that is where they were first needed; they are plumbing, not dashboard
+ * decisions — nothing in either picks a number or a word. Settings is the
+ * second surface to need both, and duplicating them is how two screens come to
+ * disagree about whether a browser offered an install prompt.
+ */
+import { useContent, useInstallOffer } from './dashboard/support';
+import { isUpdateWaiting, subscribeToUpdates } from '~/app/update-store';
 
 const CURRENCY = correctionsData.manualCurrency;
 const DO_NOT_TEACH = correctionsData.doNotTeach;
@@ -65,6 +84,27 @@ export function Settings() {
   const setTextSize = useSettingsStore((s) => s.setTextSize);
   const setMotion = useSettingsStore((s) => s.setMotion);
   const prefsStorage = useSettingsStore((s) => s.storageMode);
+  const setInstallDismissed = useSettingsStore((s) => s.setInstallDismissed);
+  // Same owner the dashboard and the progress page ask, so the three screens
+  // cannot tell a learner three different things about one saved file.
+  const unreadable = useUnreadableRecords();
+  const content = useContent();
+  const install = useInstallOffer();
+  const updateWaiting = useSyncExternalStore(subscribeToUpdates, isUpdateWaiting, () => false);
+  const setup = useSetupStore((s) => s.setup);
+  const setupStorage = useSetupStore((s) => s.storageMode);
+  const saveSetup = useSetupStore((s) => s.save);
+  // Pinned per visit, like every other clock read in the app: "42 days out"
+  // must not change reading while the learner is typing a date next to it.
+  const [today] = useState(() => Date.now());
+  const days = daysUntilTest(setup.testDate, today);
+  /**
+   * Settings has four parents, not one: the progress footer, the progress
+   * export row, a correction tag in an exam review, and the rule reference. A
+   * fixed `backTo="/progress"` sent half of them to a page they had not been
+   * on — the very case `AppBar.onBack` exists for, applied to the wrong screen.
+   */
+  const up = useUpLink('/progress');
 
   const [reset, setReset] = useState<ResetState>('idle');
   const [acknowledged, setAcknowledged] = useState(false);
@@ -89,7 +129,7 @@ export function Settings() {
   if (reset === 'failed') {
     return (
       <>
-        <AppBar title="Settings" context="Reset failed · nothing was erased" backTo="/progress" />
+        <AppBar title="Settings" context="Reset failed · nothing was erased" {...up} />
         <ResetFailed
           answered={summary.answered}
           sittings={summary.sittings}
@@ -110,11 +150,26 @@ export function Settings() {
 
   return (
     <>
-      <AppBar title="Settings" context="Sources, corrections and your data" backTo="/progress" />
+      <AppBar title="Settings" context="Sources, corrections and your data" {...up} />
 
       <main className="wrap pt-6">
         <p className="eyebrow">TN Drive</p>
         <h1>Settings &amp; about</h1>
+
+        {/* ------------------------------------------------------- your test */}
+        <YourTest
+          goal={setup.goal}
+          testDate={setup.testDate ?? ''}
+          days={days}
+          pace={dailyPace(content.status === 'ready' ? content.content.bankSize : 0, days)}
+          sessionOnly={setupStorage === 'session-only'}
+          onGoal={(goal) => {
+            saveSetup({ goal, testDate: setup.testDate, at: Date.now() });
+          }}
+          onTestDate={(iso) => {
+            saveSetup({ goal: setup.goal, testDate: iso === '' ? null : iso, at: Date.now() });
+          }}
+        />
 
         {/* ---------------------------------------------- reading & motion */}
         <section className="sect mt-7" aria-labelledby="read-h">
@@ -211,7 +266,7 @@ export function Settings() {
         <section className="sect" aria-labelledby="corr-h">
           <h2 id="corr-h">What we&rsquo;ve corrected since 2022</h2>
           <p className="sect__intro">
-            {`The manual disclaims its own currency. Where Tennessee law has moved since ${formatFullDate(CURRENCY.statedCurrentAsOf)} we teach the current rule — and we say so, here and on every question that touches it. ${String(corrections.length)} are on file, each with the date it took effect and the public chapter that made it.`}
+            {`The manual disclaims its own currency. Where Tennessee law has moved since ${formatFullDate(CURRENCY.statedCurrentAsOf)} we teach the current rule — and we say so, here and on every question that touches it. ${String(corrections.length)} are on file. Each names its authority: a public chapter where the legislature made the change, the statute or federal act where no single chapter did, and the department's own published policy where nothing is legislated at all. The date beside each one says which of those it is.`}
           </p>
 
           <SignPanel flat>
@@ -266,7 +321,9 @@ export function Settings() {
               label={`Storage used: about ${String(usedPercent)} percent of the space this browser gives the app`}
             />
             <p className="dim text-[0.8125rem] mt-2.5">
-              {`${String(summary.sittings)} sittings · ${String(summary.answered)} answered questions · ${String(summary.topicsTouched)} topics. The most recent 200 answers are kept in full; older ones are folded into your totals so this never fills up.`}
+              {unreadable.length > 0
+                ? `That space is a saved ${recordNames(unreadable)} this build cannot read, so none of it can be counted here. Nothing has been deleted.`
+                : `${String(summary.sittings)} sittings · ${String(summary.answered)} answered questions · ${String(summary.topicsTouched)} topics. The most recent 200 answers are kept in full; older ones are folded into your totals so this never fills up.`}
             </p>
           </SignPanel>
 
@@ -295,32 +352,73 @@ export function Settings() {
                 </p>
               </div>
             </div>
-            <div className="mt-4">
-              <Button
-                variant="danger"
-                block
-                disabled={!summary.hasHistory}
-                {...(summary.hasHistory ? {} : { describedBy: 'nothing-to-erase' })}
-                onClick={() => {
-                  setReset('confirming');
-                }}
-              >
-                Reset all progress…
-              </Button>
-            </div>
-            {!summary.hasHistory && (
-              <p className="faint text-[0.75rem] text-center mt-2" id="nothing-to-erase">
-                There is nothing to erase yet.
-              </p>
+            {/* An unreadable record must not be erased from here. This page can
+                only offer a confirmation built out of derived numbers, and while
+                a quarantine is in force every one of them is zero — which is how
+                "Erase all 0 of your answers?" came to be the last thing a
+                learner saw before a 41 KB file was deleted. The recovery screen
+                has the raw payload and can put a real ledger in front of them. */}
+            {unreadable.length > 0 ? (
+              <>
+                <div className="mt-4">
+                  <Button variant="quiet" block to="/">
+                    Sort out the unreadable record first
+                  </Button>
+                </div>
+                <p className="faint text-[0.75rem] text-center mt-2">
+                  Erasing from here would delete a file this build cannot count. The Study screen
+                  shows what is in it and offers you a copy before anything goes.
+                </p>
+              </>
+            ) : (
+              <>
+                <div className="mt-4">
+                  <Button
+                    variant="danger"
+                    block
+                    disabled={!summary.hasHistory}
+                    {...(summary.hasHistory ? {} : { describedBy: 'nothing-to-erase' })}
+                    onClick={() => {
+                      setReset('confirming');
+                    }}
+                  >
+                    Reset all progress…
+                  </Button>
+                </div>
+                {!summary.hasHistory && (
+                  <p className="faint text-[0.75rem] text-center mt-2" id="nothing-to-erase">
+                    There is nothing to erase yet.
+                  </p>
+                )}
+              </>
             )}
           </SignPanel>
         </section>
+
+        {/* ------------------------------------------------- offline & install */}
+        <OfflineAndInstall
+          bankSize={content.status === 'ready' ? content.content.bankSize : null}
+          signCount={allSigns.length}
+          updateWaiting={updateWaiting}
+          offer={install.offer}
+          dismissed={prefs.installDismissed}
+          onInstall={install.install}
+          onRestore={() => {
+            setInstallDismissed(false);
+          }}
+        />
 
         {/* ------------------------------------------------------------ about */}
         <section className="sect" aria-labelledby="about-h">
           <h2 id="about-h">About</h2>
           <SignPanel flat>
             <ul className="about">
+              {content.status === 'ready' && (
+                <li>
+                  <b>Question bank</b>
+                  <span>{`${String(content.content.bankSize)} questions · ${String(content.content.officialCount)} state-authored`}</span>
+                </li>
+              )}
               <li>
                 <b>Sign registry</b>
                 <span>{`${String(allSigns.length)} signs`}</span>
