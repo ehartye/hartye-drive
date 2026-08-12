@@ -1407,11 +1407,13 @@ teaching field, at which point the clause trim can be deleted.
 
 ## 2026-08-12 — P9 (offline, PWA & resilience)
 
-Four items. One is a threshold this piece could not reach and did not lower;
-two are decisions that moved a measured number and are recorded so nobody has
-to re-derive them; one is a bar item Lighthouse no longer answers.
+Five items. **Two are thresholds this piece could not reach and did not
+lower** — X23 and Lighthouse Performance. Two are decisions that moved a
+measured number, recorded so nobody has to re-derive them. One is a bar item
+Lighthouse no longer answers. The fifth is a pre-existing defect that had to be
+repaired before the e2e suite could run at all.
 
-### 1. X23 "Slow 4G" names two different profiles. Both are measured; the budget is asserted against one
+### 1. X23 is not met for the first question, on either reading of "Slow 4G"
 
 `executable-floor.md` X23 reads "Cold load on Slow-4G + 4× CPU throttle,
 production build | first question interactive ≤ 2.5 s". **"Slow 4G" is not one
@@ -1517,7 +1519,7 @@ Lighthouse 13.4.1 — category scores (simulated throttling)
 
   category scores (real throttling) — reported, not gated
 
-    Performance        91
+    Performance        90        (90-91 across runs)
     Accessibility     100
     Best Practices    100
     SEO               100
