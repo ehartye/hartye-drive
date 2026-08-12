@@ -150,7 +150,12 @@ export const WARNING: Readonly<Record<string, SignGeometry>> = {
   'w2-2-side-road': {
     viewBox: BOX_SQUARE,
     face: FACE_DIAMOND,
-    draw: () => warn(<>{stroke('M50 22 V78 M50 50 L76 24', 8)}</>),
+    // A PERPENDICULAR branch. The 45° branch this used to draw is W2-3, the
+    // other member of the pair: MUTCD 2009 §2C.46 lists "Side Road (W2-2 or
+    // W2-3) symbol" and requires that "the symbol design should approximate
+    // the configuration of the intersecting roadway(s)" — which is the whole
+    // point of the family, and the whole difference between the two.
+    draw: () => warn(<>{stroke('M50 22 V78 M50 50 H76', 8)}</>),
   },
 
   'w2-4-t-intersection': {
