@@ -1,6 +1,12 @@
 import type { ElementType, ReactNode } from 'react';
 
-export type PanelVariant = 'plain' | 'guide' | 'stop' | 'warn' | 'route';
+/**
+ * `work` — construction orange, for content that *moved*: the post-2022
+ * corrections the app must disclose rather than apply silently. Added by P4
+ * from mockup `03b`; recorded in `deviations.md` because §3 enumerates the
+ * panel variants.
+ */
+export type PanelVariant = 'plain' | 'guide' | 'stop' | 'warn' | 'route' | 'work';
 
 export interface SignPanelProps {
   variant?: PanelVariant;

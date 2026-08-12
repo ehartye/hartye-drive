@@ -281,6 +281,12 @@
   .panel--route {
     border-color: color-mix(in srgb, var(--color-route-lit) 50%, var(--color-shoulder));
   }
+  /* Construction orange = content that moved. Used by the corrections notice,
+     transcribed from mockup 03b. See deviations.md 2026-08-11 (P4). */
+  .panel--work {
+    border-color: color-mix(in srgb, var(--color-work-text) 55%, transparent);
+    background: color-mix(in srgb, var(--color-work) 9%, var(--color-asphalt-raised));
+  }
   .panel--flat::before,
   .panel--flat::after {
     display: none;
@@ -542,6 +548,100 @@
   }
   .citelink:hover {
     color: var(--color-sign-white);
+  }
+
+  /* ---------- study session: the three patterns mockups 03b/04a/04b add ----
+     None of these is a new component — they are layouts over `.panel` and a
+     native <details>. Recorded in deviations.md (2026-08-11, P4) because §3
+     enumerates the panel variants. */
+
+  /* The corrections notice. Names the change and its date; never applies it
+     silently (practices D6 / D10). */
+  .changed {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.7rem;
+    padding: 0.75rem 0.85rem;
+  }
+  .changed > svg {
+    flex: none;
+    margin-top: 2px;
+    color: var(--color-work-text);
+  }
+  .changed p {
+    margin: 0;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--color-sign-dim);
+  }
+  .changed__when {
+    display: block;
+    margin-top: 0.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.04em;
+    line-height: 1.5;
+    color: var(--color-work-text);
+  }
+
+  /* "Look it up in the manual" — the whole passage, opt-in, before answering. */
+  .lookup {
+    border: 1px solid var(--color-shoulder);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+  .lookup > summary {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 48px;
+    padding: 0.6rem 0.9rem;
+    background: var(--color-asphalt-raised);
+    cursor: pointer;
+    list-style: none;
+    font-size: 0.875rem;
+    font-weight: 700;
+  }
+  .lookup > summary::-webkit-details-marker {
+    display: none;
+  }
+  .lookup > summary > svg:first-child {
+    flex: none;
+    color: var(--color-sign-dim);
+  }
+  .lookup__chev {
+    margin-left: auto;
+    flex: none;
+    color: var(--color-sign-dim);
+    transition: transform 0.15s ease;
+  }
+  .lookup[open] .lookup__chev {
+    transform: rotate(90deg);
+  }
+  .lookup__label {
+    min-width: 0;
+  }
+  .lookup__label small {
+    display: block;
+    font-weight: 400;
+    color: var(--color-sign-dim);
+    font-size: 0.75rem;
+    margin-top: 0.1rem;
+  }
+  .lookup__body {
+    padding: 0.25rem 0.9rem 1rem;
+  }
+
+  /* "Queued again" — a diamond, because this is now content the learner is
+     weak on, which is the one thing a diamond may mean (§2). */
+  .again {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.875rem;
+    border-left: 3px solid var(--color-warning);
+  }
+  .again p {
+    margin: 0;
   }
 
   /* ---------- mile marker ---------- */

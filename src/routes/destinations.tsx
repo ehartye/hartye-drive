@@ -1,4 +1,6 @@
+import { Button, SignPanel } from '~/components';
 import { Placeholder } from './Placeholder';
+import { DEFAULT_SESSION_SIZE } from '~/domain/session';
 
 /**
  * The four destinations plus Settings, stood up with real chrome and honest
@@ -13,8 +15,20 @@ export function StudyRoute() {
       context="Class D knowledge test · offline"
       heading="Study"
       lede="Adaptive practice that returns to whatever you keep getting wrong, with the manual's own words behind every answer."
-      owner="P7 builds the dashboard and onboarding here; P4 builds the study session it starts."
-    />
+      owner="P7 builds the dashboard and onboarding that belong on this page. The session button below is P4's way in and is expected to be absorbed by it."
+    >
+      <SignPanel as="section" variant="guide">
+        <p className="eyebrow eyebrow--guide">Adaptive session</p>
+        <p className="dim text-[0.9375rem]">
+          {`${String(DEFAULT_SESSION_SIZE)} questions, built around whatever you keep getting wrong. Anything you miss comes back in about ten minutes, then tomorrow, then next week.`}
+        </p>
+        <div className="mt-4">
+          <Button variant="guide" block to="/study/session">
+            Start a session
+          </Button>
+        </div>
+      </SignPanel>
+    </Placeholder>
   );
 }
 
