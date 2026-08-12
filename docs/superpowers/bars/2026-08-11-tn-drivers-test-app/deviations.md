@@ -1,5 +1,35 @@
 # Deviations
 
+## Lead ruling — 2026-08-12 — smoothing §"Driver Services Center": REVERTED
+
+The smoothing pass reported that `stack-grounding.md` §1 and mockup 11 "misname
+a Tennessee institution" and corrected **Driver Service Center → Driver
+Services Center** across the app. It flagged the change as needing a human
+ruling, which was the right call, because **the correction is backwards.**
+
+Checked against the source of truth before ruling:
+
+| Form | Occurrences in `tn-dl-manual-extract.txt` |
+|---|---|
+| `Driver Service Center` | **16** |
+| `Driver Service Centers` | **6** |
+| `Driver Services Center` | **0** |
+| `Driver Services Centers` | **0** |
+
+The official Tennessee Comprehensive Driver License Manual — the same document
+every question in this app cites — uses "Driver Service Center" exclusively.
+The original text was correct and the rename introduced an error into
+learner-facing copy on the one subject this product is supposed to be careful
+about. Reverted across 8 files.
+
+**Worth keeping as a lesson:** the agent was right to stop and flag rather than
+land it silently, and wrong on the substance. A confident correction to a
+proper noun is exactly the kind of change that deserves a source check, not a
+plausibility check — the app's whole discipline is that a claim about
+Tennessee is verified against the manual, and that applies to claims *about
+the app* too.
+
+
 The bar freezes at ratification. A builder who believes a bar item is
 infeasible or wrong does **not** build around it silently and does **not**
 redefine it — they append here, continue with the rest of the piece, and the
@@ -1809,12 +1839,12 @@ identically on the two screens that name it.
 **A critic wanting the mockups' day-first form instead should say so** — the
 change is one function, `formatAt`, and both callers already go through it.
 
-### 2. "Driver Service Center" → "Driver Services Center"
+### 2. "Driver Service Center" → "Driver Service Center"
 
 **DEVIATION FROM `stack-grounding.md` §1 AND FROM MOCKUP 11 — accepted.**
 
 Both documents write "a Driver Service Center parking lot". Tennessee's
-facilities are **Driver Services Centers**, and the exam simulator already had
+facilities are **Driver Service Centers**, and the exam simulator already had
 it right in three places (`domain/exam.ts`, `routes/ExamRun.tsx`) while the
 dashboard, onboarding and the new settings section had it wrong. A product
 whose whole premise is factual accuracy about Tennessee should not misname a

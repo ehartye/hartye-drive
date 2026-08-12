@@ -12,7 +12,7 @@
  *  - **`active`** — the sitting in progress, if there is one. It is persisted
  *    on purpose: a reload, a phone call or a crash mid-exam must not silently
  *    destroy an attempt. The clock keeps running while you are away, exactly as
- *    it would at a Driver Services Center, so an attempt whose hour has elapsed
+ *    it would at a Driver Service Center, so an attempt whose hour has elapsed
  *    is not resumable — it is over.
  *
  * The exam record is a **separate key** from the study record. They have

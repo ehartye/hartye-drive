@@ -441,7 +441,7 @@ function Briefing({ onStart, onLeave }: { onStart: () => void; onLeave: () => vo
     },
     {
       term: `${String(EXAM_PASS_MARK)} correct to pass`,
-      detail: 'The same mark the Driver Services Center uses.',
+      detail: 'The same mark the Driver Service Center uses.',
     },
     {
       term: '60 minutes',

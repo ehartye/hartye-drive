@@ -501,6 +501,6 @@ describe('the words the report uses', () => {
     const report = scoreExam(play(begin(), 30, () => true), AREAS);
     expect(describeExamOutcome(report)).toContain('30 minus 7 leaves 23');
     expect(describeExamOutcome(report)).toContain('never asked');
-    expect(describeExamOutcome(report)).toContain('Driver Services Center');
+    expect(describeExamOutcome(report)).toContain('Driver Service Center');
   });
 });

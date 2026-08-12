@@ -497,7 +497,7 @@ export function describeExamOutcome(report: ExamReport): string {
       `Tennessee asks ${String(report.outOf)} questions and requires ${String(report.passMark)} correct. ` +
       `Once ${numberWord(report.wrongLimit)} answers are wrong, ${String(report.passMark)} is no longer reachable — ` +
       `${String(report.outOf)} minus ${String(report.wrongLimit)} leaves ${String(REACHABLE_AFTER_WRONG_LIMIT)} — so the test ends on the ` +
-      `${numberWord(report.wrongLimit)}th miss. The real one at a Driver Services Center stops at the same point, for the same reason. ` +
+      `${numberWord(report.wrongLimit)}th miss. The real one at a Driver Service Center stops at the same point, for the same reason. ` +
       `${capitalize(numberWord(report.unasked))} of your ${String(report.outOf)} questions were never asked.`
     );
   }
@@ -505,7 +505,7 @@ export function describeExamOutcome(report: ExamReport): string {
   const head = `Tennessee requires ${String(report.passMark)} of ${String(report.outOf)}.`;
   const tail =
     `, with ${numberWord(report.unasked)} never asked — unanswered questions count against you, ` +
-    'exactly as they do at a Driver Services Center.';
+    'exactly as they do at a Driver Service Center.';
 
   if (report.endReason === 'timeout') {
     return `${head} You had ${String(report.correct)} correct when the hour ran out${tail}`;
