@@ -36,7 +36,7 @@ export function ReadinessPlate({ percent, measured }: ReadinessPlateProps) {
 export interface GuideSignProps {
   rows: readonly RouteRow[];
   /** The one line of small print the sign's numbers need. */
-  note?: string;
+  note?: string | undefined;
 }
 
 /** Progress rendered as an overhead guide sign: destinations and distances. */

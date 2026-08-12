@@ -158,6 +158,9 @@ test.describe('cell 2 — the dashboard, populated', () => {
     const guide = page.getByRole('region', { name: /Route to your test/i });
     await expect(guide.getByText('Practice questions')).toBeVisible();
     await expect(guide.getByText(/OF 506/)).toBeVisible();
+    // Signs come from the sign trainer's own record, over the whole registry.
+    await expect(guide.getByText('Road signs learned')).toBeVisible();
+    await expect(guide.getByText(/OF 87/)).toBeVisible();
     await expect(guide.getByText('Mock exams passed')).toBeVisible();
 
     const weak = page.locator('.weakrow');

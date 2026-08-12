@@ -8,9 +8,7 @@ import {
   examRecommendation,
   readiness,
   relativeDay,
-  routeToTest,
-  signsLearned,
-  starterTopics,
+  routeToTest,  starterTopics,
   studyStreak,
   topicDrillIds,
   weakTopics,
@@ -164,33 +162,6 @@ describe('starter topics — the pre-measurement stand-in', () => {
   });
 });
 
-describe('signs learned', () => {
-  const QUESTIONS = [
-    { id: 'q1', signs: ['r1-1-stop'] },
-    { id: 'q2', signs: ['r1-1-stop', 'r1-2-yield'] },
-    { id: 'q3', signs: ['w1-2-curve'] },
-    { id: 'q4' },
-  ];
-
-  it('counts only the signs the bank can actually teach', () => {
-    expect(signsLearned(QUESTIONS, emptyProgress().cards).coverable).toBe(3);
-    expect(signsLearned(QUESTIONS, emptyProgress().cards).learned).toBe(0);
-  });
-
-  it('learns a sign only when every question that shows it has been answered right', () => {
-    let state = answer(emptyProgress(), 'q1', 'regulatory-signs', true);
-    expect(signsLearned(QUESTIONS, state.cards).learned).toBe(0);
-    state = answer(state, 'q2', 'regulatory-signs', true);
-    // Both q1 and q2 right: stop is learned, and so is yield (only q2 shows it).
-    expect(signsLearned(QUESTIONS, state.cards).learned).toBe(2);
-  });
-
-  it('does not count a sign whose question has only ever been missed', () => {
-    const state = answer(emptyProgress(), 'q3', 'warning-signs', false);
-    expect(signsLearned(QUESTIONS, state.cards).learned).toBe(0);
-  });
-});
-
 describe('route to the test', () => {
   it('states three destinations, each with a reachable target', () => {
     const state = withHistory([
@@ -200,12 +171,12 @@ describe('route to the test', () => {
     const rows = routeToTest({
       progress: state,
       bankSize: 506,
-      signs: { learned: 12, coverable: 55 },
+      signs: { solid: 12, total: 87 },
       examsPassed: 3,
     });
     expect(rows.map((r) => [r.value, r.target])).toEqual([
       [2, 506],
-      [12, 55],
+      [12, 87],
       [3, RECOMMENDED_MOCK_PASSES],
     ]);
     for (const row of rows) expect(row.value).toBeLessThanOrEqual(row.target);
@@ -215,7 +186,7 @@ describe('route to the test', () => {
     const rows = routeToTest({
       progress: emptyProgress(),
       bankSize: 506,
-      signs: { learned: 0, coverable: 0 },
+      signs: { solid: 0, total: 87 },
       examsPassed: 9,
     });
     expect(rows[2]?.value).toBe(RECOMMENDED_MOCK_PASSES);

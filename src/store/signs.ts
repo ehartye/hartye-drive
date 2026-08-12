@@ -27,14 +27,22 @@ import type {
   RecordedSignAnswer,
   SignAnswerInput,
   SignLoadResult,
+  SignLoadStatus,
   SignRecord,
 } from '~/domain/sign-progress';
 
-export type StorageMode = 'ok' | 'session-only';
+/**
+ * `quarantined`: the device holds a sign record this build cannot read, so every
+ * write is suppressed rather than overwriting the only copy. Same rule as the
+ * study and exam records — see `store/progress.ts`.
+ */
+export type StorageMode = 'ok' | 'session-only' | 'quarantined';
 
 export interface SignStore {
   record: SignRecord;
   storageMode: StorageMode;
+  storageStatus: SignLoadStatus;
+  foundVersion: number | null;
   storageNotice: string | null;
   answerSign: (input: SignAnswerInput) => RecordedSignAnswer;
   finishDrill: (at: number) => void;
@@ -43,8 +51,17 @@ export interface SignStore {
 
 type Persisted = Pick<SignStore, 'record'>;
 
-/** Discovered during rehydration, which runs before the store exists. */
-let pending: Pick<SignStore, 'storageMode' | 'storageNotice'> | null = null;
+type StorageFacts = Pick<
+  SignStore,
+  'storageMode' | 'storageNotice' | 'storageStatus' | 'foundVersion'
+>;
+
+/** Set while an unreadable record is on the device. Suppresses every write. */
+let quarantined = false;
+
+/** See `store/progress.ts`: nothing during `create` may touch the binding. */
+let created = false;
+let failure: StorageFacts | null = null;
 
 const browserStorage = (): Storage | null => {
   try {
@@ -55,13 +72,15 @@ const browserStorage = (): Storage | null => {
 };
 
 const safe = createSafeStorage(browserStorage(), () => {
-  pending = {
+  failure = {
     storageMode: 'session-only',
+    storageStatus: 'empty',
+    foundVersion: null,
     storageNotice:
       'This device is not letting the app save anything — private browsing or a full storage ' +
       'quota. You can keep drilling; which signs you have learned just will not be remembered.',
   };
-  useSignStore.setState(pending);
+  if (created) useSignStore.setState(failure);
 });
 
 function noticeFor(result: SignLoadResult): string | null {
@@ -75,14 +94,29 @@ function noticeFor(result: SignLoadResult): string | null {
   }
 }
 
+function factsFor(result: SignLoadResult): StorageFacts {
+  // Corrupt and future payloads are the two the app must not write over.
+  quarantined = result.status === 'corrupt' || result.status === 'future';
+  return {
+    storageMode: quarantined ? 'quarantined' : 'ok',
+    storageNotice: noticeFor(result),
+    storageStatus: result.status,
+    foundVersion: result.foundVersion ?? null,
+  };
+}
+
+/** Read once, before the store exists, so the first render already knows. */
+const initial = loadSignRecord(safe.getItem(SIGN_STORAGE_KEY));
+const initialFacts = factsFor(initial);
+
 const storage: PersistStorage<Persisted> = {
   getItem(name) {
     const result = loadSignRecord(safe.getItem(name));
-    const notice = noticeFor(result);
-    if (notice) pending = { storageMode: 'ok', storageNotice: notice };
+    factsFor(result);
     return { state: { record: result.state }, version: SIGN_RECORD_VERSION };
   },
   setItem(name, value) {
+    if (quarantined) return;
     safe.setItem(name, serializeSignRecord(value.state.record));
   },
   removeItem(name) {
@@ -93,9 +127,8 @@ const storage: PersistStorage<Persisted> = {
 export const useSignStore = create<SignStore>()(
   persist(
     (set, get) => ({
-      record: emptySignRecord(),
-      storageMode: 'ok',
-      storageNotice: null,
+      record: initial.state,
+      ...initialFacts,
 
       answerSign(input) {
         const result = recordSignAnswer(get().record, input);
@@ -108,7 +141,17 @@ export const useSignStore = create<SignStore>()(
       },
 
       resetSigns() {
-        set({ record: emptySignRecord() });
+        // Lifting the quarantine is the point of the button: the learner has
+        // been shown what is on the device and has chosen to replace it.
+        quarantined = false;
+        safe.removeItem(SIGN_STORAGE_KEY);
+        set({
+          record: emptySignRecord(),
+          storageMode: get().storageMode === 'session-only' ? 'session-only' : 'ok',
+          storageStatus: 'empty',
+          foundVersion: null,
+          storageNotice: null,
+        });
       },
     }),
     {
@@ -116,9 +159,10 @@ export const useSignStore = create<SignStore>()(
       storage,
       version: SIGN_RECORD_VERSION,
       partialize: (state): Persisted => ({ record: state.record }),
-      onRehydrateStorage: () => () => {
-        if (pending) useSignStore.setState(pending);
-      },
     },
   ),
 );
+
+created = true;
+// A device that refused the read has already reported it by now.
+if (failure) useSignStore.setState(failure);

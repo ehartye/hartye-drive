@@ -164,42 +164,6 @@ export function starterTopics(
   return rows;
 }
 
-/* ------------------------------------------------------------ signs learned */
-
-export interface SignProgress {
-  learned: number;
-  /** Signs the question bank can actually measure. See the note below. */
-  coverable: number;
-}
-
-/**
- * A sign counts as learned once **every** question that shows it has been
- * answered correctly at least once.
- *
- * `coverable` is deliberately not the size of the sign registry: 55 of the 87
- * signs are referenced by a question, and a denominator the learner could never
- * reach would be a lie told by an honest-looking progress bar. The library
- * still teaches all 87 — the dashboard says which number this row is counting.
- */
-export function signsLearned(
-  questions: readonly { id: string; signs?: readonly string[] }[],
-  cards: StudyProgress['cards'],
-): SignProgress {
-  const bySign = new Map<string, string[]>();
-  for (const question of questions) {
-    for (const sign of question.signs ?? []) {
-      const bucket = bySign.get(sign);
-      if (bucket) bucket.push(question.id);
-      else bySign.set(sign, [question.id]);
-    }
-  }
-  let learned = 0;
-  for (const questionIds of bySign.values()) {
-    if (questionIds.every((id) => (cards[id]?.correct ?? 0) > 0)) learned += 1;
-  }
-  return { learned, coverable: bySign.size };
-}
-
 /* ------------------------------------------------------- route to your test */
 
 export interface RouteRow {
@@ -212,7 +176,13 @@ export interface RouteRow {
 export interface RouteInput {
   progress: StudyProgress;
   bankSize: number;
-  signs: SignProgress;
+  /**
+   * Signs mastered, from the **sign trainer's own record** — `sign-progress.ts`
+   * is the single source of truth for what a learner knows about a sign, so the
+   * dashboard reads `summariseSignMastery` rather than inferring mastery from
+   * the questions that happen to mention one.
+   */
+  signs: { solid: number; total: number };
   examsPassed: number;
 }
 
@@ -230,8 +200,8 @@ export function routeToTest({ progress, bankSize, signs, examsPassed }: RouteInp
     {
       id: 'signs',
       label: 'Road signs learned',
-      value: clamp(signs.learned, signs.coverable),
-      target: signs.coverable,
+      value: clamp(signs.solid, signs.total),
+      target: signs.total,
     },
     {
       id: 'exams',

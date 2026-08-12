@@ -11,6 +11,7 @@ import type { BlueprintArea } from '~/content';
 import { STORAGE_KEY } from '~/domain/persistence';
 import { EXAM_STORAGE_KEY } from '~/domain/exam-history';
 import { SETUP_STORAGE_KEY } from '~/domain/setup';
+import { SIGN_STORAGE_KEY } from '~/domain/sign-progress';
 
 /* ------------------------------------------------------------ content pack */
 
@@ -34,6 +35,8 @@ export interface ContentSummary {
   officialCount: number;
   topicCounts: Readonly<Record<string, number>>;
   signCount: number;
+  /** Registry ids, so the sign trainer record can be summarised over them. */
+  signIds: string[];
   /** The taxonomy, carried alongside the bank so labels never need a second read. */
   topics: TopicRef[];
 }
@@ -82,6 +85,7 @@ export function useContent(): ContentState {
             officialCount: bank.counts.official,
             topicCounts: bank.counts.byTopic,
             signCount: registry.signs.length,
+            signIds: registry.signs.map((sign) => sign.id),
             topics: topics.map((topic) => ({ id: topic.id, area: topic.area, label: topic.label })),
           },
         });
@@ -206,8 +210,13 @@ export function useInstallOffer(): InstallState {
 
 /* --------------------------------------------------------- raw payloads */
 
-/** The three keys the app owns. Read only for the diagnostic export. */
-export const OWNED_KEYS = [STORAGE_KEY, EXAM_STORAGE_KEY, SETUP_STORAGE_KEY] as const;
+/** Every key the app owns. Read only for the diagnostic export. */
+export const OWNED_KEYS = [
+  STORAGE_KEY,
+  EXAM_STORAGE_KEY,
+  SIGN_STORAGE_KEY,
+  SETUP_STORAGE_KEY,
+] as const;
 
 /** Never throws: the whole point is that it runs when storage is misbehaving. */
 export function readRaw(key: string): string | null {

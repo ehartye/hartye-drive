@@ -995,23 +995,22 @@ included, is code-split.
 ## 2026-08-11 — P7 (dashboard & onboarding)
 
 Nothing in `stack-grounding.md`, `executable-floor.md`, `practices-checklist.md`,
-`state-matrix.md` or `mockups/` was edited. Fifteen items; two want a ruling
-(§1 and §4).
+`state-matrix.md` or `mockups/` was edited. Fifteen items; §4 wants a ruling,
+because it changes behaviour three other pieces shipped.
 
-### 1. "Road signs learned" counts 55, not 87 — ruling requested
+### 1. "Road signs learned" reads the sign trainer's record, not the questions
 
-Mockup `02` reads `61 OF 84`. The registry holds 87 signs, but only **55** are
-referenced by a question, so a learner's sign progress can only ever be measured
-against those 55 — a denominator of 87 would be a bar that cannot fill. Per-sign
-mastery from the drill is P6's, and did not exist when this was built.
+Mockup `02` reads `61 OF 84`; the registry holds 87, so the row reads `N OF 87`.
 
-The row therefore reads `N OF 55`, with one line of small print under the guide
-sign: *"Signs progress counts the 55 signs the question bank tests; the sign
-library holds all 87."* A sign counts as learned once **every** question that
-shows it has been answered correctly at least once (`signsLearned`, tested).
-
-If the ruling prefers 87, the honest version needs P6's per-sign record as the
-source; the dashboard would then read that instead, and this note comes out.
+The first cut of this piece derived it from the question bank — a sign counted
+as learned once every question showing it had been answered right — which capped
+the denominator at the **55** signs a question happens to mention, a bar the
+learner could never fill. P6 then shipped `src/domain/sign-progress.ts`, a real
+per-sign ladder over all 87, so the dashboard now calls `summariseSignMastery`
+and the question-derived proxy (`signsLearned`) was **deleted** rather than left
+standing as a second answer to the same question. "Learned" therefore means what
+the sign trainer means by it — three right in a row (`GRADUATED_BOX`) — and the
+line under the guide sign says so, naming how many are part-way there.
 
 ### 2. Onboarding is a **state of the Study destination**, not its own route
 
@@ -1039,8 +1038,9 @@ the nav sits rather than whether it is drawn.
 
 ### 4. The stores were writing over records they had refused to read — fixed
 
-Two changes to `src/store/progress.ts` and `src/store/exam.ts`, both of which
-change behaviour P4 and P5 shipped:
+Two changes to `src/store/progress.ts`, `src/store/exam.ts` and — once the
+dashboard began reading it — `src/store/signs.ts`. All three change behaviour
+P4, P5 and P6 shipped, and all three now behave identically:
 
 **(a) Quarantine.** On a `corrupt` or `future` payload the loader returns an
 empty record — and the store then persisted that empty record over the learner's

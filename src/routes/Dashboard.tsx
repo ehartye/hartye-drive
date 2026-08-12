@@ -10,7 +10,6 @@ import {
   examRecommendation,
   readiness,
   routeToTest,
-  signsLearned,
   starterTopics,
   studyStreak,
   topicDrillIds,
@@ -29,6 +28,8 @@ import {
 } from '~/domain/diagnostics';
 import { useExamStore } from '~/store/exam';
 import { useProgressStore } from '~/store/progress';
+import { useSignStore } from '~/store/signs';
+import { SIGN_RECORD_VERSION, SIGN_STORAGE_KEY, summariseSignMastery } from '~/domain/sign-progress';
 import { isReady, useSetupStore } from '~/store/setup';
 import { Onboarding } from './Onboarding';
 import {
@@ -76,11 +77,15 @@ export function Dashboard() {
   const examStatus = useExamStore((s) => s.storageStatus);
   const examFound = useExamStore((s) => s.foundVersion);
   const examMode = useExamStore((s) => s.storageMode);
+  const signStatus = useSignStore((s) => s.storageStatus);
+  const signFound = useSignStore((s) => s.foundVersion);
+  const signMode = useSignStore((s) => s.storageMode);
 
   const content = useContent();
   const online = useOnline();
 
-  const quarantined = progressMode === 'quarantined' || examMode === 'quarantined';
+  const quarantined =
+    progressMode === 'quarantined' || examMode === 'quarantined' || signMode === 'quarantined';
   const counts =
     content.status === 'ready'
       ? { bankSize: content.content.bankSize, signCount: content.content.signCount }
@@ -109,6 +114,13 @@ export function Dashboard() {
             status: examStatus,
             found: examFound,
             reads: EXAM_RECORD_VERSION,
+          },
+          {
+            key: SIGN_STORAGE_KEY,
+            name: 'sign record',
+            status: signStatus,
+            found: signFound,
+            reads: SIGN_RECORD_VERSION,
           },
         ].filter((entry) => entry.status === 'corrupt' || entry.status === 'future')}
       />
@@ -166,14 +178,18 @@ function LoadedDashboard({
   const reading = readiness(progress);
   const weak = weakTopics(progress, content.topicCounts, 4);
   const headline = dashboardHeadline(reading, weak.length);
+  // Sign mastery is the sign trainer's own record (P6's `sign-progress.ts`),
+  // not an inference from the questions that happen to mention a sign — one
+  // source of truth per thing the learner has learned.
+  const signCards = useSignStore((s) => s.record.cards);
   const signs = useMemo(
-    () => signsLearned(content.questions, progress.cards),
-    [content.questions, progress.cards],
+    () => summariseSignMastery(signCards, content.signIds),
+    [signCards, content.signIds],
   );
   const rows = routeToTest({
     progress,
     bankSize: content.bankSize,
-    signs,
+    signs: { solid: signs.solid, total: signs.total },
     examsPassed,
   });
   const streak = studyStreak(progress.attempts, now);
@@ -212,7 +228,11 @@ function LoadedDashboard({
   const guide = (
     <GuideSign
       rows={rows}
-      note={`Signs progress counts the ${String(signs.coverable)} signs the question bank tests; the sign library holds all ${String(content.signCount)}.`}
+      note={
+        signs.review > 0
+          ? `A sign is learned once you have had it right three times running — ${String(signs.review)} more are part-way there.`
+          : undefined
+      }
     />
   );
 
@@ -509,6 +529,7 @@ function UnreadableSave({ online, goalLabel: label, counts, keys }: UnreadablePr
   const [openedAt] = useState(() => Date.now());
   const resetProgress = useProgressStore((s) => s.resetProgress);
   const resetExams = useExamStore((s) => s.resetRecord);
+  const resetSigns = useSignStore((s) => s.resetSigns);
 
   const reports = keys.map((entry) => ({ ...entry, payload: inspectPayload(entry.key, readRaw(entry.key)) }));
   const future = reports.some((report) => report.status === 'future');
@@ -533,6 +554,7 @@ function UnreadableSave({ online, goalLabel: label, counts, keys }: UnreadablePr
           readsUpTo: {
             [STORAGE_KEY]: CURRENT_SCHEMA_VERSION,
             [EXAM_STORAGE_KEY]: EXAM_RECORD_VERSION,
+            [SIGN_STORAGE_KEY]: SIGN_RECORD_VERSION,
             [SETUP_STORAGE_KEY]: 1,
           },
           payloads,
@@ -656,6 +678,7 @@ function UnreadableSave({ online, goalLabel: label, counts, keys }: UnreadablePr
                   if (!gate) return;
                   resetProgress();
                   resetExams();
+                  resetSigns();
                 }}
               >
                 Reset saved progress
