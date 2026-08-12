@@ -2220,3 +2220,832 @@
     transform: none;
   }
 }
+
+/* ============================================================
+   P8 — progress, rule reference and settings.
+
+   Charts are hand-authored inline SVG (grounding §1 — no chart library), so
+   what lives here is only the frame around them: the figure, the shape-based
+   legend, and the road the attempt history is drawn on. Nothing in this block
+   carries meaning by colour alone; every state that matters is also a word, a
+   shape or a hatch.
+   ============================================================ */
+
+@layer components {
+  /* ---------- charts ----------
+     Authored at a 320-unit viewBox, so every glyph scales with the rendered
+     width. Left unbounded, a 660px desktop panel scales "PASS MARK 80%" past
+     the panel's own <h2> and the type hierarchy inverts. 420px caps the
+     largest chart glyph (12 units) at 15.75px — under the heading, and
+     unchanged at mobile widths. */
+  .chart {
+    margin: 0;
+    max-width: 420px;
+  }
+  .chart svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .chart figcaption {
+    font-size: 0.75rem;
+    color: var(--color-sign-dim);
+    margin-top: 0.75rem;
+    line-height: 1.5;
+  }
+
+  /* The legend is a key of SHAPES, not of colours. */
+  .key {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem 0.95rem;
+    margin: 0.75rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .key li {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.6875rem;
+    color: var(--color-sign-dim);
+  }
+  .key svg {
+    width: 22px;
+    height: 12px;
+    flex: none;
+  }
+
+  .charthead {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.875rem;
+  }
+  .charthead h2 {
+    font-size: 1.0625rem;
+    letter-spacing: 0;
+  }
+  .delta {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: var(--color-guide-text);
+    white-space: nowrap;
+  }
+  .delta--quiet {
+    color: var(--color-sign-dim);
+  }
+
+  /* The readiness plate and its headline sit beside the chart, never on it. */
+  .readout {
+    display: flex;
+    align-items: center;
+    gap: 1.15rem;
+  }
+  .readout__copy h1 {
+    margin-bottom: 0.35rem;
+  }
+
+  .meter__rail {
+    margin-top: 0.1rem;
+  }
+  .meter__name .sign {
+    width: 20px;
+    height: 20px;
+    flex: none;
+  }
+  /* The numerals are a fixed column: they never shrink and never wrap onto a
+     line of their own, so every meter head stays one row. */
+  .meter__name {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .meter__val {
+    flex: none;
+    white-space: nowrap;
+  }
+
+  /* ---------- the road you have already driven ----------
+     A dashed centre line runs down the list; every sitting is a node on it.
+     It reads as a route log rather than a table of rows. */
+  .trace {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0 28px;
+    position: relative;
+  }
+  .trace::before {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 10px;
+    bottom: 10px;
+    width: 2px;
+    background: repeating-linear-gradient(
+      180deg,
+      var(--color-warning) 0 9px,
+      transparent 9px 19px
+    );
+    opacity: 0.38;
+  }
+  .trace li {
+    position: relative;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid var(--color-shoulder);
+  }
+  .trace li:last-child {
+    border-bottom: 0;
+  }
+  .trace__node {
+    position: absolute;
+    left: -28px;
+    top: 1.05rem;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--color-asphalt-raised);
+    border: 2px solid var(--color-shoulder-lit);
+  }
+  .trace__node--pass {
+    background: var(--color-guide-lit);
+    border-color: var(--color-guide-lit);
+  }
+  .trace__node--fail {
+    background: var(--color-stop-lit);
+    border-color: var(--color-stop-lit);
+  }
+  .trace__node--here {
+    border-color: var(--color-warning);
+  }
+  .trace__kind {
+    margin: 0;
+    font-size: 0.9375rem;
+    font-weight: 600;
+  }
+  .trace__meta {
+    margin: 0.15rem 0 0;
+    font-size: 0.75rem;
+    color: var(--color-sign-dim);
+  }
+
+  /* A static score plate. Deliberately not `.chip`, which is the pressable
+     filter pill — shadowing a shared component's name is how two things end
+     up fighting over one rule. */
+  .score {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    flex: none;
+    padding: 0.3rem 0.5rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-shoulder-lit);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--color-sign-dim);
+    white-space: nowrap;
+  }
+  .score--ok {
+    color: var(--color-guide-text);
+    border-color: color-mix(in srgb, var(--color-guide-text) 55%, transparent);
+  }
+  .score--bad {
+    color: var(--color-stop-text);
+    border-color: color-mix(in srgb, var(--color-stop-text) 55%, transparent);
+  }
+
+  .monthhead {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin: 1.4rem 0 0.5rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--color-shoulder);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-warning);
+  }
+  .monthhead:first-child {
+    margin-top: 0;
+  }
+  .monthhead__n {
+    color: var(--color-sign-faint);
+    letter-spacing: 0.06em;
+  }
+
+  .linkrow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    width: 100%;
+    min-height: 48px;
+    padding: 0.75rem 0.25rem;
+    background: none;
+    border: 0;
+    border-top: 1px solid var(--color-shoulder);
+    color: var(--color-sign-white);
+    font-family: var(--font-ui);
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-decoration: none;
+    text-align: left;
+    cursor: pointer;
+  }
+  .linkrow:hover {
+    color: var(--color-guide-text);
+  }
+
+  /* ---------- the zero state ----------
+     Construction orange is the project's token for "in progress" (§2). An
+     empty time series has nothing true to say, so it is not drawn at all;
+     this plate stands where it will be. */
+  .workzone {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.95rem;
+    padding: 1.05rem 1rem;
+    background: color-mix(in srgb, var(--color-work) 8%, var(--color-asphalt-raised));
+    border: 2px dashed color-mix(in srgb, var(--color-work) 62%, transparent);
+    border-radius: var(--radius-md);
+  }
+  .workzone__t {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    margin: 0;
+  }
+  .workzone__s {
+    font-size: 0.8125rem;
+    color: var(--color-sign-dim);
+    margin: 0.25rem 0 0;
+    line-height: 1.5;
+  }
+
+  .whatlist {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .whatlist li {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.7rem 0;
+    border-bottom: 1px solid var(--color-shoulder);
+  }
+  .whatlist li:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+  .whatlist b {
+    display: block;
+    font-size: 0.9375rem;
+    font-weight: 700;
+  }
+  .whatlist span {
+    display: block;
+    font-size: 0.8125rem;
+    color: var(--color-sign-dim);
+    margin-top: 0.15rem;
+    line-height: 1.5;
+  }
+  .whatlist .sign,
+  .whatlist .ico {
+    width: 26px;
+    height: 26px;
+    flex: none;
+    margin-top: 2px;
+  }
+  .whatlist .ico {
+    color: var(--color-route-text);
+  }
+
+  /* Range control on the trend — quiet, deliberately recessive. */
+  .seg {
+    display: inline-flex;
+    gap: 2px;
+    padding: 2px;
+    background: var(--color-asphalt-sunk);
+    border: 1px solid var(--color-shoulder);
+    border-radius: var(--radius-md);
+  }
+  .seg button {
+    min-height: 44px;
+    padding: 0 0.7rem;
+    background: none;
+    border: 0;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-ui);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--color-sign-dim);
+    cursor: pointer;
+  }
+  .seg button[aria-pressed='true'] {
+    background: var(--color-shoulder);
+    color: var(--color-sign-white);
+  }
+  .seg button:hover {
+    color: var(--color-sign-white);
+  }
+
+  /* A flex summary drops the native triangle, so the chevron is drawn
+     explicitly and turns when the section opens. */
+  .disclose > summary {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    cursor: pointer;
+    list-style: none;
+    font-size: 0.875rem;
+    font-weight: 700;
+  }
+  .disclose > summary::-webkit-details-marker {
+    display: none;
+  }
+  .disclose > summary:hover {
+    color: var(--color-guide-text);
+  }
+  .disclose > summary .chev {
+    flex: none;
+    margin-left: auto;
+    color: var(--color-sign-dim);
+    transition: transform 0.15s ease;
+  }
+  .disclose[open] > summary .chev {
+    transform: rotate(90deg);
+  }
+  .steps {
+    margin: 0.5rem 0 0;
+    padding-left: 1.1rem;
+  }
+  .steps li {
+    margin-bottom: 0.35rem;
+    font-size: 0.9375rem;
+  }
+
+  /* ---------- rule reference ---------- */
+
+  /* The rule in one sentence — the thing you would say out loud. */
+  .plain {
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-size: clamp(1.125rem, 4vw, 1.375rem);
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+    margin: 0;
+    text-wrap: pretty;
+  }
+
+  /* Requirements marked with lane stripes rather than numerals — the order is
+     not a sequence, so it must not read as one. */
+  .rulelist {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .rulelist li {
+    position: relative;
+    padding-left: 1.9rem;
+    font-family: var(--font-read);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    color: var(--color-read);
+  }
+  .rulelist li + li {
+    margin-top: 0.9rem;
+  }
+  .rulelist li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.72em;
+    width: 15px;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--color-warning);
+  }
+
+  .relsigns {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+    gap: 0.75rem;
+  }
+  .relsign {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 1rem 0.625rem 0.875rem;
+    background: var(--color-asphalt-raised);
+    border: 1px solid var(--color-shoulder);
+    border-radius: var(--radius-lg);
+    color: inherit;
+    text-align: center;
+  }
+  .relsign__face {
+    display: grid;
+    place-items: center;
+    min-height: 100px;
+  }
+  .relsign__face .sign {
+    max-width: 100%;
+  }
+  .relsign__n {
+    font-size: 0.875rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+  }
+  .relsign__s {
+    margin: 0;
+    font-family: var(--font-read);
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    color: var(--color-sign-dim);
+  }
+
+  .qrow {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    width: 100%;
+    min-height: 60px;
+    padding: 0.8rem 0.9rem;
+    background: var(--color-asphalt-raised);
+    border: 1px solid var(--color-shoulder);
+    border-left: 3px solid var(--color-shoulder-lit);
+    border-radius: var(--radius-md);
+    color: inherit;
+    text-decoration: none;
+    text-align: left;
+  }
+  .qrow + .qrow {
+    margin-top: 0.5rem;
+  }
+  .qrow--missed {
+    border-left-color: var(--color-stop-lit);
+  }
+  .qrow--ok {
+    border-left-color: var(--color-guide-lit);
+  }
+  .qrow__t {
+    flex: 1;
+    min-width: 0;
+  }
+  .qrow__q {
+    display: block;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+  .qrow__s {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-top: 0.3rem;
+    font-size: 0.6875rem;
+    font-weight: 800;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--color-sign-dim);
+  }
+  .qrow__chev {
+    flex: none;
+    color: var(--color-sign-faint);
+  }
+
+  .srcnote {
+    display: grid;
+    gap: 0.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    line-height: 1.6;
+    letter-spacing: 0.03em;
+    color: var(--color-sign-faint);
+  }
+
+  /* ---------- settings ----------
+     Settings is where the restraint rule earns its keep: no sign used as
+     decoration. The only two places colour appears are the ones that mean
+     something — construction orange on the post-2022 corrections, and
+     regulatory red on the one destructive action. */
+  .sect + .sect {
+    margin-top: 2rem;
+  }
+  .sect > h2 {
+    margin-bottom: 0.35rem;
+  }
+  .sect__intro {
+    margin: 0 0 0.875rem;
+    font-size: 0.875rem;
+    color: var(--color-sign-dim);
+    line-height: 1.55;
+  }
+
+  .srow {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 0.9rem 0;
+  }
+  .srow + .srow,
+  .srow + .field {
+    border-top: 1px solid var(--color-shoulder);
+    padding-top: 0.9rem;
+  }
+  .srow:first-child {
+    padding-top: 0;
+  }
+  .srow__t {
+    flex: 1;
+    min-width: 0;
+  }
+  .srow__n {
+    display: block;
+    font-size: 0.9375rem;
+    font-weight: 700;
+  }
+  .srow__s {
+    display: block;
+    margin-top: 0.2rem;
+    font-size: 0.8125rem;
+    color: var(--color-sign-dim);
+    line-height: 1.5;
+  }
+
+  .preview {
+    margin: 0.875rem 0 0;
+    padding: 0.875rem 1rem;
+    background: var(--color-asphalt-sunk);
+    border: 1px dashed var(--color-shoulder-lit);
+    border-radius: var(--radius-md);
+  }
+
+  /* Post-2022 corrections. Disclosed with the real effective date and the real
+     public chapter — never applied silently (practices D6/D10). */
+  .corr {
+    padding: 1rem 0;
+  }
+  .corr + .corr {
+    border-top: 1px solid var(--color-shoulder);
+  }
+  .corr:first-child {
+    padding-top: 0;
+  }
+  .corr:last-child {
+    padding-bottom: 0;
+  }
+  .corr__head {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+  }
+  .corr__tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--color-work-text) 65%, transparent);
+    color: var(--color-work-text);
+    font-size: 0.625rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .corr__when {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    color: var(--color-sign-faint);
+    letter-spacing: 0.04em;
+  }
+  .corr h3 {
+    margin-bottom: 0.55rem;
+  }
+  .corr__d {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.35rem 0.75rem;
+    margin: 0 0 0.6rem;
+  }
+  .corr__d dt {
+    font-size: 0.6875rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-sign-faint);
+    padding-top: 0.15rem;
+  }
+  .corr__d dd {
+    margin: 0;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--color-read);
+  }
+  .corr__why {
+    margin: 0;
+    font-family: var(--font-read);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--color-read);
+  }
+  .corr__src {
+    display: block;
+    margin-top: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    color: var(--color-sign-faint);
+    letter-spacing: 0.04em;
+  }
+
+  .store {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.45rem;
+  }
+  .store span {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--color-sign-dim);
+  }
+
+  .about {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .about li {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.55rem 0;
+    border-bottom: 1px solid var(--color-shoulder);
+    font-size: 0.875rem;
+  }
+  .about li:last-child {
+    border-bottom: 0;
+  }
+  .about span {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--color-sign-dim);
+    text-align: right;
+  }
+
+  /* ---------- the reset, and the reset that was refused ---------- */
+  .ledger {
+    border: 1px solid var(--color-shoulder);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+  .ledger + .ledger {
+    margin-top: 0.75rem;
+  }
+  .ledger__head {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin: 0;
+    padding: 0.55rem 0.8rem;
+    font-size: 0.6875rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .ledger--lose .ledger__head {
+    background: color-mix(in srgb, var(--color-stop) 26%, var(--color-asphalt-sunk));
+    color: #ffd9da;
+  }
+  .ledger--keep .ledger__head {
+    background: color-mix(in srgb, var(--color-guide) 26%, var(--color-asphalt-sunk));
+    color: #c9ede0;
+  }
+  .ledger ul {
+    list-style: none;
+    margin: 0;
+    padding: 0.35rem 0.8rem 0.6rem;
+  }
+  .ledger li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.55rem;
+    padding: 0.42rem 0;
+    font-size: 0.875rem;
+    line-height: 1.45;
+  }
+  .ledger li svg {
+    flex: none;
+    margin-top: 3px;
+  }
+  .ledger--lose li svg {
+    color: var(--color-stop-text);
+  }
+  .ledger--keep li svg {
+    color: var(--color-guide-text);
+  }
+  .ledger b {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    color: var(--color-sign-white);
+  }
+
+  .factrow {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--color-shoulder);
+    font-size: 0.875rem;
+  }
+  .factrow:last-child {
+    border-bottom: 0;
+  }
+  .factrow dt {
+    color: var(--color-sign-dim);
+    margin: 0;
+  }
+  .factrow dd {
+    margin: 0;
+    font-family: var(--font-mono);
+    text-align: right;
+  }
+
+  /* Explanatory, so the glyph is interstate blue — informational, per §2 —
+     rather than a warning or a loss. */
+  .why {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .why li {
+    display: flex;
+    gap: 0.7rem;
+    align-items: flex-start;
+    margin-bottom: 0.6rem;
+  }
+  .why li:last-child {
+    margin-bottom: 0;
+  }
+  .why li svg {
+    flex: none;
+    width: 18px;
+    height: 18px;
+    margin-top: 0.3rem;
+    color: var(--color-route-text);
+  }
+
+  .safe {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.7rem;
+    font-size: 0.9375rem;
+  }
+  .safe svg {
+    flex: none;
+    margin-top: 2px;
+    color: var(--color-guide-text);
+  }
+}
+
+/* ---------- the text-size preference ----------
+   Scales reading copy and manual quotations only. Question stems stay in
+   Overpass at their own size, because they are the sign, not the book. The
+   browser's own zoom still works on top of this. Outside @layer components so
+   it wins without a specificity fight. */
+html[data-text-size='large'] .read,
+html[data-text-size='large'] .cite__quote,
+html[data-text-size='large'] .rulelist li {
+  font-size: 1.1875rem;
+}
+html[data-text-size='larger'] .read,
+html[data-text-size='larger'] .cite__quote,
+html[data-text-size='larger'] .rulelist li {
+  font-size: 1.3125rem;
+}
+
+/* The declared motion preference, additive with the device's own media query
+   in base.css. Neither can undo the other. */
+html[data-motion='reduced'] *,
+html[data-motion='reduced'] *::before,
+html[data-motion='reduced'] *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}

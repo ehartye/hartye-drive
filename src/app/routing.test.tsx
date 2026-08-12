@@ -12,12 +12,18 @@ describe('routing (grounding §4)', () => {
     expect(await screen.findByRole('heading', { level: 1, name: 'Study' })).toBeInTheDocument();
   });
 
+  /**
+   * The headings are the real pages', not P1's placeholders — `/progress` and
+   * `/settings` were superseded by P8 the same way `/signs` was by P6. On a
+   * clean profile the progress page is its empty state, and that state's
+   * heading is an invitation rather than the word "Progress".
+   */
   it.each([
     ['/study', 'Study'],
     ['/exam', 'Exam'],
     ['/signs', 'Sign library'],
-    ['/progress', 'Progress'],
-    ['/settings', 'Settings'],
+    ['/progress', /set off yet/],
+    ['/settings', /Settings/],
   ])('renders %s', async (path, heading) => {
     at(path);
     expect(await screen.findByRole('heading', { level: 1, name: heading })).toBeInTheDocument();
