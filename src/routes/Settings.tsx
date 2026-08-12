@@ -29,6 +29,7 @@ import { summariseProgress } from '~/domain/progress-report';
 import { useProgressStore } from '~/store/progress';
 import { useExamStore } from '~/store/exam';
 import { useSettingsStore } from '~/store/settings';
+import { recordNames, useUnreadableRecords } from '~/store/health';
 import { RECORD_KEYS, readRecordSizes, resetAllRecords } from '~/store/reset';
 import { CorrectionCard, ResetDialog, ResetFailed } from './settings/parts';
 import { formatFullDate } from './progress/format';
@@ -65,6 +66,9 @@ export function Settings() {
   const setTextSize = useSettingsStore((s) => s.setTextSize);
   const setMotion = useSettingsStore((s) => s.setMotion);
   const prefsStorage = useSettingsStore((s) => s.storageMode);
+  // Same owner the dashboard and the progress page ask, so the three screens
+  // cannot tell a learner three different things about one saved file.
+  const unreadable = useUnreadableRecords();
 
   const [reset, setReset] = useState<ResetState>('idle');
   const [acknowledged, setAcknowledged] = useState(false);
@@ -266,7 +270,9 @@ export function Settings() {
               label={`Storage used: about ${String(usedPercent)} percent of the space this browser gives the app`}
             />
             <p className="dim text-[0.8125rem] mt-2.5">
-              {`${String(summary.sittings)} sittings · ${String(summary.answered)} answered questions · ${String(summary.topicsTouched)} topics. The most recent 200 answers are kept in full; older ones are folded into your totals so this never fills up.`}
+              {unreadable.length > 0
+                ? `That space is a saved ${recordNames(unreadable)} this build cannot read, so none of it can be counted here. Nothing has been deleted.`
+                : `${String(summary.sittings)} sittings · ${String(summary.answered)} answered questions · ${String(summary.topicsTouched)} topics. The most recent 200 answers are kept in full; older ones are folded into your totals so this never fills up.`}
             </p>
           </SignPanel>
 
@@ -295,23 +301,45 @@ export function Settings() {
                 </p>
               </div>
             </div>
-            <div className="mt-4">
-              <Button
-                variant="danger"
-                block
-                disabled={!summary.hasHistory}
-                {...(summary.hasHistory ? {} : { describedBy: 'nothing-to-erase' })}
-                onClick={() => {
-                  setReset('confirming');
-                }}
-              >
-                Reset all progress…
-              </Button>
-            </div>
-            {!summary.hasHistory && (
-              <p className="faint text-[0.75rem] text-center mt-2" id="nothing-to-erase">
-                There is nothing to erase yet.
-              </p>
+            {/* An unreadable record must not be erased from here. This page can
+                only offer a confirmation built out of derived numbers, and while
+                a quarantine is in force every one of them is zero — which is how
+                "Erase all 0 of your answers?" came to be the last thing a
+                learner saw before a 41 KB file was deleted. The recovery screen
+                has the raw payload and can put a real ledger in front of them. */}
+            {unreadable.length > 0 ? (
+              <>
+                <div className="mt-4">
+                  <Button variant="quiet" block to="/">
+                    Sort out the unreadable record first
+                  </Button>
+                </div>
+                <p className="faint text-[0.75rem] text-center mt-2">
+                  Erasing from here would delete a file this build cannot count. The Study screen
+                  shows what is in it and offers you a copy before anything goes.
+                </p>
+              </>
+            ) : (
+              <>
+                <div className="mt-4">
+                  <Button
+                    variant="danger"
+                    block
+                    disabled={!summary.hasHistory}
+                    {...(summary.hasHistory ? {} : { describedBy: 'nothing-to-erase' })}
+                    onClick={() => {
+                      setReset('confirming');
+                    }}
+                  >
+                    Reset all progress…
+                  </Button>
+                </div>
+                {!summary.hasHistory && (
+                  <p className="faint text-[0.75rem] text-center mt-2" id="nothing-to-erase">
+                    There is nothing to erase yet.
+                  </p>
+                )}
+              </>
             )}
           </SignPanel>
         </section>

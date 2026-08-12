@@ -29,12 +29,14 @@ import type { SeriesPoint } from '~/domain/charts';
 import { ATTEMPT_HISTORY_LIMIT } from '~/domain/progress';
 import { useProgressStore } from '~/store/progress';
 import { useExamStore } from '~/store/exam';
+import { recordNames, useUnreadableRecords } from '~/store/health';
 import { BlueprintChart, BlueprintKey, ReadinessChart, ReadinessKey } from './progress/charts';
 import type { ExamMark } from './progress/charts';
 import {
   BlueprintTable,
   ChartNotOpenYet,
   HistoryList,
+  HistoryUnreadable,
   ProgressFooter,
   ReadinessTable,
   StartOfTheRoad,
@@ -70,6 +72,7 @@ export function Progress() {
   const progress = useProgressStore((s) => s.progress);
   const storageMode = useProgressStore((s) => s.storageMode);
   const examRecord = useExamStore((s) => s.record);
+  const unreadable = useUnreadableRecords();
 
   // Pinned once per visit: "Today" must not change reading mid-session, and a
   // clock read during render would re-run the memos below on every keystroke.
@@ -128,6 +131,23 @@ export function Progress() {
   const long = events.length >= LONG_HISTORY;
   const visible = events.slice(0, shown);
   const remaining = events.length - visible.length;
+
+  // Before any derived figure is reported. A quarantined record derives to all
+  // zeroes, and printing those would deny a record the dashboard has just
+  // promised is intact — so the check comes ahead of both other branches.
+  if (unreadable.length > 0) {
+    return (
+      <>
+        <AppBar title="Progress" context="Saved progress unreadable" />
+        <main className="wrap stack pt-6">
+          <HistoryUnreadable records={recordNames(unreadable)} />
+          <hr className="centreline" />
+          <WhatLandsHere />
+          <ProgressFooter />
+        </main>
+      </>
+    );
+  }
 
   if (!summary.hasHistory) {
     return (

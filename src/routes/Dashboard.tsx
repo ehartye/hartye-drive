@@ -31,6 +31,8 @@ import {
 import { useExamStore } from '~/store/exam';
 import { useProgressStore } from '~/store/progress';
 import { useSignStore } from '~/store/signs';
+import { useUnreadableRecords } from '~/store/health';
+import type { RecordReport } from '~/store/health';
 import { SIGN_RECORD_VERSION, SIGN_STORAGE_KEY, summariseSignMastery } from '~/domain/sign-progress';
 import { isReady, useSetupStore } from '~/store/setup';
 import { Onboarding } from './Onboarding';
@@ -72,22 +74,15 @@ export function Dashboard() {
   const setupStorage = useSetupStore((s) => s.storageMode);
   const setup = useSetupStore((s) => s.setup);
   const progress = useProgressStore((s) => s.progress);
-  const progressStatus = useProgressStore((s) => s.storageStatus);
-  const progressFound = useProgressStore((s) => s.foundVersion);
   const progressMode = useProgressStore((s) => s.storageMode);
   const examRecord = useExamStore((s) => s.record);
-  const examStatus = useExamStore((s) => s.storageStatus);
-  const examFound = useExamStore((s) => s.foundVersion);
-  const examMode = useExamStore((s) => s.storageMode);
-  const signStatus = useSignStore((s) => s.storageStatus);
-  const signFound = useSignStore((s) => s.foundVersion);
-  const signMode = useSignStore((s) => s.storageMode);
 
   const content = useContent();
   const online = useOnline();
 
-  const quarantined =
-    progressMode === 'quarantined' || examMode === 'quarantined' || signMode === 'quarantined';
+  // One owner for "can the saved record be read" — `/progress` and `/settings`
+  // ask the same module, so the three screens cannot disagree about it.
+  const unreadable = useUnreadableRecords();
   const counts =
     content.status === 'ready'
       ? { bankSize: content.content.bankSize, signCount: content.content.signCount }
@@ -95,36 +90,14 @@ export function Dashboard() {
 
   if (!ready) return <Onboarding />;
 
-  if (quarantined) {
+  if (unreadable.length > 0) {
     return (
       <UnreadableSave
         online={online}
         goalLabel={goalLabel(setup.goal)}
         testDate={setup.testDate}
         counts={counts}
-        keys={[
-          {
-            key: STORAGE_KEY,
-            name: 'study record',
-            status: progressStatus,
-            found: progressFound,
-            reads: CURRENT_SCHEMA_VERSION,
-          },
-          {
-            key: EXAM_STORAGE_KEY,
-            name: 'exam history',
-            status: examStatus,
-            found: examFound,
-            reads: EXAM_RECORD_VERSION,
-          },
-          {
-            key: SIGN_STORAGE_KEY,
-            name: 'sign record',
-            status: signStatus,
-            found: signFound,
-            reads: SIGN_RECORD_VERSION,
-          },
-        ].filter((entry) => entry.status === 'corrupt' || entry.status === 'future')}
+        keys={unreadable}
       />
     );
   }
@@ -512,20 +485,12 @@ function ContentError({
 
 /* ------------------------------------------- the saved record cannot be read */
 
-interface KeyReport {
-  key: string;
-  name: string;
-  status: string;
-  found: number | null;
-  reads: number;
-}
-
 interface UnreadableProps {
   online: boolean;
   goalLabel: string;
   testDate: string | null;
   counts: { bankSize: number; signCount: number } | null;
-  keys: KeyReport[];
+  keys: RecordReport[];
 }
 
 /**

@@ -1,6 +1,6 @@
 import { Fragment } from 'react';
 import { Link } from 'react-router';
-import { SignSvg } from '~/components';
+import { Button, SignSvg } from '~/components';
 import { IconCheck, IconX } from '~/components/Icon';
 import type { SeriesPoint } from '~/domain/charts';
 import { READINESS_TARGET } from '~/domain/progress-report';
@@ -319,6 +319,49 @@ export function ChartNotOpenYet() {
         </p>
       </div>
     </div>
+  );
+}
+
+/**
+ * What this page has to say while a saved record sits on the device that this
+ * build cannot read.
+ *
+ * It is emphatically **not** the empty state. Empty means "you have not started
+ * yet, here is how"; this means "you have a history and we cannot get at it" —
+ * and the difference matters enough that showing the wrong one is the whole
+ * defect. Reporting 0% readiness and 0 topics touched here would contradict the
+ * dashboard's promise that nothing has been deleted, and it would invite the
+ * learner to start a first session that will not be recorded.
+ *
+ * The recovery itself lives on one screen (Study), because it needs the raw
+ * payload, the diagnostic export and an acknowledgement. This names the problem
+ * and hands them over.
+ */
+export function HistoryUnreadable({ records }: { records: string }) {
+  return (
+    <>
+      <section className="caution" role="alert">
+        <SignSvg id="r1-1-stop" size="lg" label="Red octagonal stop sign — a full stop" />
+        <div>
+          <p className="eyebrow eyebrow--stop">Saved progress halted</p>
+          <h1>There is nothing to chart until your record can be read</h1>
+        </div>
+      </section>
+
+      <p className="read">
+        {`Your ${records} is still on this device, exactly as it was — this build just cannot read it, so none of it can be charted or counted. Nothing has been deleted. Every figure on this page would be a zero that isn't true, so the page holds off rather than print one.`}
+      </p>
+
+      <div>
+        <Button variant="guide" block to="/">
+          See what is on the device
+        </Button>
+        <p className="dim text-center mt-2 text-[0.8125rem]">
+          The Study screen shows the file, offers a diagnostic copy, and is the only place that can
+          clear it.
+        </p>
+      </div>
+    </>
   );
 }
 
