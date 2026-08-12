@@ -1605,3 +1605,175 @@ The better fix is in `src/content/index.ts`, which this piece may not touch:
 Vite and Rollup both resolve JSON without the attribute, and the mismatch that
 motivated it is really the signs registry being imported two ways. Whoever owns
 `src/content/` should reconcile that and delete this plugin.
+
+---
+
+## 2026-08-12 — Mobile compatibility pass (iPhone 14 / WebKit + Pixel 7 / Chromium)
+
+The design target is stated in grounding §1 and repeated on the onboarding
+screen: **an iPhone in a Driver Service Center parking lot.** Until this pass,
+nothing had ever been run on a mobile engine. `playwright.config.ts` has a
+project named `mobile`, but a `devices['Pixel 7']` profile on **Chromium** is a
+resized desktop browser — it cannot show an iOS input zoom, a WebKit SVG
+difference, a safe-area inset, or a double-tap zoom. Every mobile-shaped defect
+the app had was invisible to a suite that was, by every other measure,
+thorough.
+
+`playwright.mobile.config.ts` adds `iphone-webkit` (`devices['iPhone 14']`,
+which pins the WebKit engine) and keeps `pixel-chromium` as the control, so a
+finding that reproduces on one engine and not the other is *identifiable* as an
+engine difference rather than guessed at. `npm run test:mobile`; wired into
+`verify`. 81 specs, both engines.
+
+Findings and fixes are in the commit log. What follows is only what could not
+be fixed, or could not be tested the obvious way.
+
+### 1. Playwright's "webkit" is not Mobile Safari — what this suite can and cannot prove
+
+**NOT FIXABLE — a property of the tool. Scope stated so the evidence is not
+over-read.**
+
+Playwright ships WebKitGTK/WPE, not iOS Safari. It shares the engine core —
+CSS cascade, layout, SVG, font handling, the CSSOM — which is where the
+signature (the 87 MUTCD faces, the two hand-authored charts, the self-hosted
+woff2) lives, and that is genuinely covered. It does **not** carry iOS's
+platform layer. Specifically **out of reach on any engine Playwright ships**:
+
+| Behaviour | Why it cannot be driven here | How it is covered instead |
+|---|---|---|
+| The focus zoom itself | The zoom is a UIKit behaviour, not a rendering one | The **cause** is asserted: no text-entry control may compute below 16px, on any route, measured on the device profile |
+| Dynamic browser chrome (URL bar retracting, `100vh` overshooting the visible area) | The harness viewport is fixed | `100vh` is banned outright by a sweep of the shipped stylesheet; `100dvh` is asserted against `innerHeight` |
+| `env(safe-area-inset-*)` | No engine build emulates a notch; `env()` is zero everywhere | The app reads insets through `--safe-b` / `--safe-t`, which the test overrides with the real 34px figure — the `calc()` under test is the same declaration production runs. See §2 below |
+| `-webkit-tap-highlight-color` | Not implemented in WebKitGTK (`CSS.supports` returns false) | Declared unconditionally; harmless where unsupported |
+| Momentum / rubber-band scrolling | No touch scroller in the harness | The failure mode that *is* reachable is asserted: nothing traps the page with `overflow: hidden` on `html`/`body` |
+| `mouse.wheel` | Unsupported in mobile WebKit, by design | That one spec is skipped on WebKit with the reason inline; the declaration-level assertion still runs on both |
+
+**A real iPhone is still required before release for those six rows.** This
+suite closes the gap from "nothing has ever been checked" to "everything
+checkable in CI is checked, and the rest is enumerated."
+
+### 2. Safe-area insets are tested through a variable, not through `env()`
+
+**NOT A WORKAROUND — the fix and the test are the same change.**
+
+The bug: `.nav` padded itself out of the home-indicator band with
+`env(safe-area-inset-bottom)`, but `.shell` reserved a flat `--nav-height:
+92px` for it. Measured on the device profile the bar is **67.5px**; add a 34px
+inset and it is **101.5px**, so the last ~9.5px of every page sat under the tab
+bar, where iOS takes the touch. Two declarations that had to agree, and only
+one of them knew about the inset.
+
+Insets now resolve once, on `:root`, into `--safe-b` / `--safe-t`, each
+defaulting to the real `env()`. Both the bar's padding and the page's
+reservation read the same name, so they cannot drift apart again — and
+`emulateNotch()` in `tests/mobile/support.ts` can put a real 34px inset into
+the same `calc()`. Without the variable this defect is untestable in CI on any
+engine, which is exactly how it survived to now.
+
+### 3. `overscroll-behavior` is unimplemented in Playwright's WebKit
+
+**NOT FIXABLE in the harness. Shipped anyway; iOS Safari has honoured it since
+16.**
+
+`CSS.supports('overscroll-behavior', 'contain')` is **false** on the WebKit
+build Playwright ships and **true** on Chromium. The engine therefore drops the
+declaration on parse, and the CSSOM reports the shipped stylesheet as not
+containing it. `.dialog { overscroll-behavior: contain }` is correct and
+reaches real iPhones; the assertion is made against the **shipped bytes**
+(`stylesheetText()` in `support.ts`) with the computed value checked only where
+the engine implements it.
+
+**This cuts both ways and is worth stating as a general rule for this repo: the
+CSSOM answers "what does this engine understand", not "what did we ship".**
+Chromium drops `-webkit-backdrop-filter` because it needs no prefix; WebKit
+drops `overscroll-behavior` and reports `undefined` for `userSelect`. Asked
+through `rule.style.cssText`, a correct stylesheet looks broken on one engine
+and fine on the other, **in opposite directions** — the first draft of these
+tests failed exactly that way. Any future test asserting what the CSS *says*
+must read the bytes.
+
+### 4. The overlay bars trade some frost for legibility
+
+**ACCEPTED — a deliberate visual concession, flagged for the human.**
+
+Unprefixed `backdrop-filter` did not ship until **Safari 18**. Every iPhone on
+iOS 17 or earlier — including every device that cannot upgrade past it —
+applied **no blur at all** to the five overlay bars (`.appbar`, `.nav`,
+`.focusbar`, `.actionbar`, `.reviewbar`). At the authored 88–94% opacity that
+left page text plainly readable *through* the chrome: the captured evidence
+shows the sign library's body copy running straight across the tab bar's own
+labels.
+
+The `-webkit-` prefix is the actual fix and reaches iOS 9 onward. The bars were
+**also** taken to 98% opacity so that legibility no longer depends on a filter
+compositing at all. That is the concession: on an engine that does blur, the
+frost is now subtle rather than showy.
+
+The alternative considered and rejected was gating translucency behind
+`@supports (backdrop-filter: …) or (-webkit-backdrop-filter: …)`. It cannot be
+verified anywhere — an engine may *claim* support and still decline to
+composite the filter, which is precisely what Playwright's WebKit does — so it
+would have restored the flourish while making the legibility unprovable. On a
+product whose premise is a learner reading a screen in a parking lot,
+legibility outranks the flourish. **`.dialog::backdrop` keeps its 0.72**: being
+seen through is that surface's job.
+
+### 5. Two touch-target floors, and where the 44px one is deliberately not applied
+
+**RATIFIED READING, not a deviation — recorded because the two numbers look
+like a contradiction.**
+
+`practices-checklist.md` A7 ratifies **24×24** (WCAG 2.2 SC 2.5.8 level AA,
+with answer choices ≥44px tall). The Apple HIG figure, and the one that matters
+for a phone held one-handed, is **44×44**. Both are now enforced: 24 as a
+conformance gate across every control, 44 across every control a learner
+actually drives the app with.
+
+Measured on the device profile, the **hit area** rather than the drawn box —
+several controls present a deliberately small visual and take a 44px tap
+through a transparent `::before` (the switch stays 48×28, the toast dismiss
+stays a 24px glyph). `elementsFromPoint` resolves a pseudo-element to its
+originating element and a `<label>` to the control it labels, so a control
+passes only if a tap at that distance really would land on it.
+
+**Exempted from 44, and held to 24:** links inline in running prose
+(`.citelink`, and the rules page's `.rulelist` topic links). These sit one line
+apart in a paragraph. A 44px target on a 27px line rhythm would overlap the
+link on the line below it — trading one mis-tap for another — and this is the
+case SC 2.5.8's inline exception is written for. The rules links were measured
+at **22px**, genuinely under the project's own ratified floor, and now take
+padding to 26px. That was a pre-existing A7 violation no desktop viewport
+surfaced.
+
+### 6. Confirmed sound on WebKit — recorded so it is not re-litigated
+
+Checked and **passing**, with evidence in
+`evidence/mobile-*-{iphone-webkit,pixel-chromium}.png`:
+
+- **All 87 MUTCD faces.** No missing or pending face, no collapsed geometry, no
+  legend spilling its plate, every legend setting in Overpass. `getBBox()`,
+  `clip-path` and `paint-order` all behave. Regulatory red rasterises as
+  `#B4151C`.
+- **Both hand-authored charts.** The `<pattern>` hatch — the carrier that keeps
+  "short of target" readable without colour (§5, practices A3) — resolves and
+  paints on WebKit. No dangling `url(#…)` references.
+- **All four self-hosted woff2 faces load on WebKit**, including the italic. No
+  fallback face is in use; the metric proof is in `rendering.spec.ts`.
+- **The U+00B7 separator patch holds on WebKit.** The `unicode-range` override
+  that lends Newsreader's MIDDLE DOT to the UI family relies on
+  last-matching-face-wins, which is the kind of rule engines differ on.
+  Measured advance 3.79px on WebKit against 3.94px on Chromium; the bug it
+  repairs is a **zero** advance.
+- **`color-mix()` and the `@theme` custom properties resolve identically** on
+  both engines, byte for byte.
+- **iOS input zoom: no defect.** Every text-entry control already computed at
+  16px, including the sign-library search and the onboarding date segments.
+  Guarded now so it stays that way, and `user-scalable=no` / `maximum-scale=1`
+  are asserted **absent** — suppressing the symptom by taking pinch-zoom away
+  would fail SC 1.4.4 and is the fix this project must never reach for.
+- **PWA on iOS.** `apple-touch-icon` (served, 200, an image),
+  `apple-mobile-web-app-capable`, `apple-mobile-web-app-title` and
+  `theme-color` all present; the manifest declares `standalone` and every icon
+  it names resolves. The install affordance correctly branches: iPhone gets the
+  three Share-sheet steps and **no button**, because Safari fires no
+  `beforeinstallprompt` and a button there could never work.
