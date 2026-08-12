@@ -1,11 +1,153 @@
-import { Button, Dialog, SignSvg } from '~/components';
+import { useState } from 'react';
+import { Button, Dialog, ErrorState, SignPanel, SignSvg } from '~/components';
 import { IconChevronRight } from '~/components/Icon';
 import { colorLabel, shapeLabel } from '~/signs/registry';
 import type { SignEntry } from '~/signs/registry';
-import { masteryPips, masteryTier, tierLabel } from '~/domain/sign-progress';
+import { SIGN_RECORD_VERSION, masteryPips, masteryTier, tierLabel } from '~/domain/sign-progress';
+import type { SignLoadStatus } from '~/domain/sign-progress';
 import type { CardState } from '~/domain/scheduler';
 import { COLOR_KEY, SIGN_CATEGORIES, categoryLabel, categoryMeta } from './categories';
 import type { CategoryMeta } from './categories';
+
+/* ------------------------------------------------ the record cannot be read */
+
+/** The two load results the store quarantines: it will not write over either. */
+const isUnreadable = (status: SignLoadStatus): boolean =>
+  status === 'corrupt' || status === 'future';
+
+interface TroubleCopy {
+  title: string;
+  body: string;
+  detail: string | undefined;
+}
+
+function troubleCopy(status: SignLoadStatus, foundVersion: number | null): TroubleCopy {
+  if (status === 'future') {
+    return {
+      title: 'Your sign record is from a newer version',
+      body:
+        'It was written by a newer version of TN Drive than the one running here, so this build ' +
+        'will not touch it — reading it wrong would be worse than not reading it. The library and ' +
+        'the drill work exactly as they should; nothing you learn from here on is being saved.',
+      detail:
+        foundVersion === null
+          ? undefined
+          : `on this device: schema ${String(foundVersion)} · this app reads up to schema ${String(SIGN_RECORD_VERSION)}`,
+    };
+  }
+  return {
+    title: 'Your sign record can’t be read',
+    body:
+      'The saved file is damaged, so this build will not write over it — that would destroy ' +
+      'whatever is still in there. The library and the drill work exactly as they should; ' +
+      'nothing you learn from here on is being saved.',
+    detail: undefined,
+  };
+}
+
+export interface SignRecordTroubleProps {
+  status: SignLoadStatus;
+  foundVersion: number | null;
+  onReset: () => void;
+}
+
+/**
+ * State-matrix cell 8-error, and its note 6: a corrupt or future-version
+ * payload must **offer a recoverable path**, never a white screen. Degrading
+ * quietly into a working library was only half of that — it left a learner
+ * whose mastery had silently stopped being recorded with nothing to read and
+ * nothing to press. This is the other half, and it is the same bargain the
+ * dashboard strikes: the file on the device is not touched, and the one
+ * destructive way out is behind a confirmation.
+ */
+export function SignRecordTrouble({ status, foundVersion, onReset }: SignRecordTroubleProps) {
+  const [confirming, setConfirming] = useState(false);
+  if (!isUnreadable(status)) return null;
+  const copy = troubleCopy(status, foundVersion);
+
+  return (
+    <>
+      <ErrorState
+        title={copy.title}
+        body={copy.body}
+        {...(copy.detail === undefined ? {} : { detail: copy.detail })}
+        onRetry={() => {
+          setConfirming(true);
+        }}
+        retryLabel="Start a fresh sign record"
+        secondaryAction={
+          <Button
+            variant="quiet"
+            onClick={() => {
+              window.location.reload();
+            }}
+          >
+            Reload and try reading it again
+          </Button>
+        }
+      />
+      <Dialog
+        open={confirming}
+        tone="stop"
+        title="Erase the unreadable sign record?"
+        onClose={() => {
+          setConfirming(false);
+        }}
+        actions={
+          <>
+            <Button
+              variant="quiet"
+              onClick={() => {
+                setConfirming(false);
+              }}
+            >
+              Keep it as it is
+            </Button>
+            <Button
+              variant="danger"
+              onClick={() => {
+                setConfirming(false);
+                onReset();
+              }}
+            >
+              Erase it and start over
+            </Button>
+          </>
+        }
+      >
+        <p className="dim text-[0.9375rem]">
+          This deletes the file this build cannot read and starts a clean one, so the drill can
+          record again. Whatever mastery is inside it is lost — your questions, your exams and every
+          sign in the library are stored separately and are not affected.
+        </p>
+      </Dialog>
+    </>
+  );
+}
+
+/**
+ * The same fact, said in the drill's focus mode, where a full error state would
+ * push the sign the learner is meant to be looking at off the screen. The way
+ * out lives in the library, so this points at it rather than repeating it.
+ */
+export function SignRecordTroubleLine({ status }: { status: SignLoadStatus }) {
+  if (!isUnreadable(status)) return null;
+  return (
+    <SignPanel as="section" variant="stop" flat className="mb-5">
+      <p className="eyebrow eyebrow--stop mb-1.5">Not being saved</p>
+      <p className="dim text-[0.875rem] m-0" role="alert">
+        {status === 'future'
+          ? 'Your sign record was written by a newer version of TN Drive, so this build will not touch it. This drill is not being saved.'
+          : 'Your sign record can’t be read, so this build will not write over it. This drill is not being saved.'}
+      </p>
+      <div className="mt-3">
+        <Button variant="quiet" to="/signs">
+          Fix the sign record
+        </Button>
+      </div>
+    </SignPanel>
+  );
+}
 
 /* ---------------------------------------------------------------- mastery */
 

@@ -356,6 +356,80 @@ test.describe('sign library — cell 8', () => {
   });
 });
 
+test.describe('an unreadable sign record — state-matrix cell 8-error / 7-error', () => {
+  /**
+   * Note 6 of the state matrix: corrupt or future-version persisted state must
+   * **offer a recoverable path**, never a white screen. Both halves matter, and
+   * only the first half was true — garbage in `tn-drive:signs` booted straight
+   * into a working library with nothing said and nothing offered, so a learner
+   * whose mastery had silently stopped being saved had no way to find out or
+   * to fix it.
+   */
+  const BROKEN: { name: string; payload: string; says: RegExp }[] = [
+    { name: 'garbage', payload: 'not json at all', says: /can’t be read|cannot be read/i },
+    { name: 'non-JSON shape', payload: '{"state":42}', says: /can’t be read|cannot be read/i },
+    {
+      name: 'a future schema',
+      payload: JSON.stringify({ version: 9999, state: { schemaVersion: 9999 } }),
+      says: /newer version/i,
+    },
+  ];
+
+  const seed = async (page: Page, payload: string, path: string) => {
+    await page.goto('/signs');
+    await page.evaluate((value) => {
+      localStorage.setItem('tn-drive:signs', value);
+    }, payload);
+    await page.goto(path);
+  };
+
+  for (const broken of BROKEN) {
+    test(`the library says so and offers the reset — ${broken.name}`, async ({ page }) => {
+      await seed(page, broken.payload, '/signs');
+      const alert = page.getByRole('alert');
+      await expect(alert).toBeVisible();
+      await expect(alert).toContainText(broken.says);
+      await expect(page.getByRole('button', { name: /Start a fresh sign record/ })).toBeVisible();
+      // The library itself still works — a recoverable path, not a dead end.
+      await expect(page.locator('.signcard').first()).toBeVisible();
+    });
+
+    test(`the drill says so too — ${broken.name}`, async ({ page }) => {
+      await seed(page, broken.payload, '/signs/drill?seed=7');
+      await page.locator('.choice').first().waitFor();
+      await expect(page.getByRole('alert')).toContainText(/not being saved|can’t be read|newer version/i);
+      await expect(page.getByRole('link', { name: /sign record/i })).toBeVisible();
+    });
+  }
+
+  test('the reset clears the unreadable file and starts recording again', async ({ page }) => {
+    await seed(page, 'not json at all', '/signs');
+    await page.getByRole('button', { name: /Start a fresh sign record/ }).click();
+    await page.getByRole('button', { name: /Erase it and start over/ }).click();
+
+    await expect(page.getByRole('alert')).toHaveCount(0);
+    const stored = await page.evaluate(() => localStorage.getItem('tn-drive:signs'));
+    expect(stored === null || stored.includes('"schemaVersion":1')).toBe(true);
+
+    // And the ladder records again, which is the whole point of the reset.
+    await openDrill(page, 'seed=7&n=1');
+    const id = (await page.locator('[data-sign-drill]').getAttribute('data-sign-drill')) ?? '';
+    await page.locator('.choice').first().click();
+    await page.getByRole('button', { name: /Finish drill/ }).click();
+    await page.goto('/signs?expand=all');
+    await page.locator('.signcard').first().waitFor();
+    await expect(page.locator(`[data-sign="${id}"] .mastery__lab`)).toHaveText(/Review|Solid/);
+  });
+
+  test('nothing is written over the file while it cannot be read', async ({ page }) => {
+    const payload = JSON.stringify({ version: 9999, state: { schemaVersion: 9999 } });
+    await seed(page, payload, '/signs/drill?seed=7');
+    await page.locator('.choice').first().click();
+    await page.getByRole('button', { name: /Next sign/ }).click();
+    expect(await page.evaluate(() => localStorage.getItem('tn-drive:signs'))).toBe(payload);
+  });
+});
+
 test.describe('text resized to 200% — practices A12, WCAG 2.2 SC 1.4.4 / 1.4.10', () => {
   /* Every sign screen, at the two widths the bar names. Page zoom is already
      covered above and passes; this is the path it cannot see. */
@@ -365,6 +439,20 @@ test.describe('text resized to 200% — practices A12, WCAG 2.2 SC 1.4.4 / 1.4.1
     { name: 'the empty filter', path: '/signs?q=roundabout&cat=warning', ready: '.catlink' },
     { name: 'the drill', path: '/signs/drill?seed=7', ready: '.choice' },
   ];
+
+  test('the unreadable-record error state holds at 320px too', async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 800 });
+    await useDoubleTextSize(page);
+    await page.goto('/signs');
+    await page.evaluate(() => {
+      localStorage.setItem('tn-drive:signs', 'not json at all');
+    });
+    await page.goto('/signs');
+    await page.getByRole('alert').waitFor();
+    const { scroll, client, offenders } = await measureOverflow(page);
+    expect(scroll - client, `error cell overflows: ${offenders.join(' | ')}`).toBeLessThanOrEqual(0);
+    expect(offenders).toEqual([]);
+  });
 
   for (const screen of SCREENS) {
     for (const width of [320, 390]) {
