@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router';
 import { AppErrorBoundary } from './app/AppErrorBoundary';
 import { routes } from './app/routes';
+import { startServiceWorker } from './app/service-worker';
 import { applyAppearance, useSettingsStore } from './store/settings';
 import './styles/index.css';
 
@@ -19,6 +20,14 @@ if (!container) throw new Error('Root element is missing from index.html');
  * claims to apply "everywhere in the app, including mid-exam" must not have.
  */
 applyAppearance(useSettingsStore.getState().prefs, document.documentElement);
+
+/**
+ * The offline promise, started here rather than inside a route: `/study/session`,
+ * `/exam/run` and `/signs/drill` are routed outside `AppShell`, so a deep link
+ * into any of them would otherwise never install the app (grounding §1).
+ * It never activates a new build on its own — see `app/service-worker.ts`.
+ */
+startServiceWorker();
 
 createRoot(container).render(
   <StrictMode>

@@ -157,7 +157,7 @@ export default defineConfig({
     // `virtual:pwa-register/react` only exists while the PWA plugin is
     // generating a service worker. A unit test should not have to build one.
     alias: {
-      'virtual:pwa-register/react': fileURLToPath(
+      'virtual:pwa-register': fileURLToPath(
         new URL('./src/test/pwa-register-stub.ts', import.meta.url),
       ),
     },
