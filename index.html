@@ -10,6 +10,13 @@
       content="Offline-first study app for the Tennessee Class D knowledge test. Every answer cites the official manual. Not affiliated with the State of Tennessee."
     />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <!--
+      iOS never reads the manifest's icons and applies its own mask, so it gets
+      the safe-zone drawing. Same guide sign, rasterized by `npm run icons`.
+    -->
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon-180.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="TN Drive" />
 
     <!--
       Self-hosted faces (grounding §2, practices F5). Preloaded rather than

@@ -24,7 +24,8 @@
     "audit": "node scripts/not-implemented.mjs 'npm run audit' 'P9 (PWA) + P10 (executable sweep)' 'Lighthouse on the production build: Performance >=90, Accessibility =100, Best Practices >=95, SEO >=90, installable PWA'",
     "audit:signs": "node scripts/audit-signs.mjs",
     "fonts:fetch": "node scripts/fetch-fonts.mjs",
-    "verify": "npm run typecheck && npm run lint && npm run build && npm test && npm run test:coverage && npm run test:e2e && npm run validate:content && npm run audit:signs && npm run size && npm run test:a11y"
+    "verify": "npm run typecheck && npm run lint && npm run build && npm test && npm run test:coverage && npm run test:e2e && npm run validate:content && npm run audit:signs && npm run size && npm run test:a11y",
+    "icons": "node scripts/generate-icons.mjs"
   },
   "dependencies": {
     "react": "^19.2.0",

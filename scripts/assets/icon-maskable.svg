@@ -1,0 +1,34 @@
+<!--
+  The maskable variant of the same guide sign. Android crops a maskable icon to
+  whatever shape the launcher chooses and guarantees only the central 80% — a
+  circle of radius 204.8px in this 512 box. So the green field bleeds edge to
+  edge with no corner radius of its own, and the whole sign is pulled inside
+  that circle: the 288×288 border box centred on (256,256) puts its corners at
+  203.6px from centre, just inside the guarantee, so no launcher shape can clip
+  the border or the legend.
+
+  Same two §2 tokens as the `any` icon: #04684E guide green, #F2F4F1 sign white.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <rect x="0" y="0" width="512" height="512" fill="#04684E" />
+  <rect
+    x="112"
+    y="112"
+    width="288"
+    height="288"
+    rx="26"
+    fill="none"
+    stroke="#F2F4F1"
+    stroke-width="13"
+  />
+  <text
+    x="256"
+    y="311"
+    fill="#F2F4F1"
+    font-size="152"
+    font-family="Overpass"
+    font-weight="800"
+    letter-spacing="3"
+    text-anchor="middle"
+  >TN</text>
+</svg>
