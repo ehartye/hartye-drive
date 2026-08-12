@@ -1,13 +1,8 @@
 import type { RouteObject } from 'react-router';
 import { AppShell } from './AppShell';
-import {
-  ExamRoute,
-  ProgressRoute,
-  SettingsRoute,
-  SignsRoute,
-  StudyRoute,
-} from '~/routes/destinations';
+import { ExamRoute, ProgressRoute, SettingsRoute, StudyRoute } from '~/routes/destinations';
 import { NotFound, RouteError } from '~/routes/NotFound';
+import { SignsLibrary } from '~/routes/SignsLibrary';
 import { RouteFallback } from '~/routes/RouteFallback';
 
 /**
@@ -38,7 +33,10 @@ export const routes: RouteObject[] = [
         path: 'exam/review',
         lazy: async () => ({ Component: (await import('~/routes/ExamReview')).ExamReview }),
       },
-      { path: 'signs', element: <SignsRoute /> },
+      // Eager, unlike the drill below: `/signs` is one of the four nav
+      // destinations, and everything heavy about it — the 87-entry registry and
+      // its geometry — is already in the shell because `SignSvg` is.
+      { path: 'signs', element: <SignsLibrary /> },
       { path: 'progress', element: <ProgressRoute /> },
       { path: 'settings', element: <SettingsRoute /> },
       // Code-split (practices E7): the gallery is a development surface and
@@ -60,6 +58,12 @@ export const routes: RouteObject[] = [
   {
     path: '/exam/run',
     lazy: async () => ({ Component: (await import('~/routes/ExamRun')).ExamRun }),
+    errorElement: <RouteError />,
+    HydrateFallback: RouteFallback,
+  },
+  {
+    path: '/signs/drill',
+    lazy: async () => ({ Component: (await import('~/routes/SignsDrill')).SignsDrill }),
     errorElement: <RouteError />,
     HydrateFallback: RouteFallback,
   },

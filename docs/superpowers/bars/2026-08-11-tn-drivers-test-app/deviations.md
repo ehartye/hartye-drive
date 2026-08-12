@@ -876,3 +876,116 @@ white border, W3-2 a white triangle with a red border, W3-3 a signal with red,
 yellow and green lenses. Drawing them in black outline would have been
 MUTCD-wrong; the colours are declared so the audit's "no undeclared colour"
 rule still bites everywhere else.
+
+---
+
+## 2026-08-11 — P6 (sign trainer & library)
+
+### 1. The library shows **seven** category chips, not the mockups' six
+
+`src/content/signs.json` carries seven MUTCD categories: `regulatory`,
+`warning`, `guide`, `service`, `work-zone`, `school`, `railroad`. Mockups 08 and
+08b fold `service` into `Guide` and show six chips, with the Guide rule written
+to cover both colours ("Green tells you where. Blue tells you what's
+available."). The registry is the source of truth for the taxonomy, and folding
+two categories into one would mean the library teaches a grouping the content
+does not carry — and a learner filtering for the blue signs could not.
+
+Both rules are kept, split at the seam the sentence already had: Guide teaches
+green, Services teaches blue. The chip row, the category sections and the
+empty-state recovery list all run to seven. `Construction` is also renamed
+**Work zone**, matching the registry's `work-zone` and the bar's own wording.
+
+### 2. Sign cards carry the **whole** registry meaning, not a shortened gloss
+
+The mockups' cards carry a hand-written one-liner ("Full stop at the line, every
+time.") next to the sign name. The registry carries one meaning per sign, cited
+to a manual page; there is no second, shorter field, and inventing one would put
+uncited teaching text on the screen — exactly what D17 forbids. Truncating the
+cited meaning visually was the other option and was rejected: a clipped meaning
+is a meaning that can mislead.
+
+The consequence is real and visible: cards are taller than the mockups', and the
+fully expanded library (cell 8-full) is a long page. It holds at 320px and at
+200% zoom, asserted in `tests/e2e/sign-trainer.spec.ts`.
+
+### 3. What "Shape & color" mode asks
+
+The mode toggle is the mockup's, verbatim. What the mode *asks* is not specified
+by the mockup, and the obvious reading — show the sign, ask "what shape and
+colour is this?" — is unbuildable without breaking the piece's own load-bearing
+rule. The drill's accessible name must be shape and colour (bar: "shape and
+color only — never the meaning"), so that question would be answered out loud in
+the name for a screen-reader learner and by the picture for a sighted one.
+
+So the mode asks what the shape and colour **tell you**: three category lessons,
+one right. It is the lesson the library states at the head of every category,
+asked back — yellow diamond is a warning, orange is a work zone, red is a
+prohibition — and it holds parity: the sighted learner sees a yellow diamond,
+the screen-reader learner hears "Diamond, yellow", and neither is handed the
+answer string.
+
+A filtered drill (`?cat=school`) still draws its wrong answers from all seven
+categories (`buildDrill`'s `lessonPool`); otherwise a one-category drill would
+offer one choice.
+
+### 4. `.btn--guide:hover` changed — a pre-existing AA contrast failure
+
+Not a P6 surface, and found by P6's axe sweep: the hover fill was
+`--color-guide-lit` (`#0A8F6C`), which measures **3.72:1** against
+`--color-sign-white`, under the 4.5:1 §5 commits to. It fires on the primary
+action of every screen in the app the moment a pointer rests on it — the axe
+cell that caught it was the drill's "Skip", where the "Next sign" button renders
+under the cursor that just clicked.
+
+Fixed in place rather than worked around, because the bar requires
+`npm run test:a11y` to exit 0 and excluding the cell would have hidden a real
+defect. Now `color-mix(in srgb, var(--color-guide-lit) 40%, var(--color-guide))`,
+which measures **4.94:1** — still a visible lift, no new token, no hardcoded hex.
+This is the same two-job rule §2 already states: `guide-lit` is a sign-face
+colour and a button carrying text is not a sign face.
+
+### 5. Sign cards open a dialog, not `10-rule-reference`
+
+Every card in mockups 08 and 08c links to `10-rule-reference.html`, which is
+P8's route and does not exist yet. Rather than ship 87 links to a 404, a card
+opens the sign's detail in the existing `Dialog`: the meaning in full, its MUTCD
+designation, shape and colour said out loud, per-sign mastery, and **the
+manual's own words with both page numbers**. When P8 lands the rule reference,
+this dialog is the natural place to link out from.
+
+### 6. One control the mockups do not have: "Show every one of the 87 signs"
+
+Mockup 08 collapses each category to four cards with a per-category "Show all N"
+button; mockup 08c is the same library with **nothing** collapsed. Nothing in
+the mockups navigates between them — pressing "Show all" seven times is the only
+path. A single quiet toggle under the filter chips does it in one press, and is
+what puts cell 8-full one click from cell 8. Search and the category filter also
+drop the cap on their own, because asking for the warning signs and being handed
+four of the thirty-three would be a bug, not a preview.
+
+### 7. Search, filter, expansion and the open sign live in the URL
+
+`?q=`, `?cat=`, `?expand=all` and `?sign=` are all real, linkable state. This is
+a product decision (back button works, a state is shareable) and a review
+decision: every one of P6's state-matrix cells is reachable by URL, so no cell
+is only accessible by knowing which four things to click.
+
+### 8. `/signs` is **not** code-split; `/signs/drill` is
+
+Initial JS went 118.4 KB → 126.3 KB gzipped against the 180 KB budget. The
+library is one of the four nav destinations and everything heavy about it — the
+87-entry registry and its geometry — already sits in the shell because `SignSvg`
+does. Splitting it would also have cost the jsdom render assertion in
+`src/app/routing.test.tsx`, which cannot drive a lazy route (the note above that
+test says so). The drill is a focus mode and is split, at 3.8 KB, exactly like
+`/study/session` and `/exam/run`. If a later piece needs the 8 KB back, this is
+the first thing to split.
+
+### 9. `routing.test.tsx` rows for `/signs` updated
+
+`['/signs', 'Signs']` → `['/signs', 'Sign library']`, and the title
+`'Road signs · TN Drive'` → `'Sign library · TN Drive'`. P1's placeholder
+assertions, superseded by the real page — the same way P5 superseded them for
+`/exam`. A case was also added asserting that every focus mode, the drill
+included, is code-split.

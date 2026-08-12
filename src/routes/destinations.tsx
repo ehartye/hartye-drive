@@ -113,18 +113,6 @@ export function ExamRoute() {
   );
 }
 
-export function SignsRoute() {
-  return (
-    <Placeholder
-      title="Road signs"
-      context="MUTCD shapes, colors and meanings"
-      heading="Signs"
-      lede="Every sign drawn to spec — correct shape, correct color, correct proportion — with the rule it stands for."
-      owner="P3 authors the registry; P6 builds the drill and the browsable library."
-    />
-  );
-}
-
 export function ProgressRoute() {
   return (
     <Placeholder

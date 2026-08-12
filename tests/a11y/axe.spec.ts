@@ -187,6 +187,95 @@ test('axe: exam — the report of an attempt halted at seven wrong (cell 6c)', a
   ).toEqual([]);
 });
 
+/* --- P6: state-matrix cells 7, 8, 8-empty and 8-full, driven into place. --- */
+
+const LIBRARY_CELLS: { name: string; route: string; ready: string; drive?: (page: Page) => Promise<void> }[] = [
+  { name: 'cell 8 — library, populated', route: '/signs', ready: '.signcard' },
+  { name: 'cell 8-full — the whole registry, nothing collapsed', route: '/signs?expand=all', ready: '.signcard' },
+  {
+    name: 'cell 8-empty — search and filter match nothing',
+    route: '/signs?q=roundabout&cat=warning',
+    ready: '.catlink',
+  },
+  {
+    name: 'cell 8 — a category filtered to itself',
+    route: '/signs?cat=school',
+    ready: '.signcard',
+  },
+  {
+    name: 'cell 8 — the sign detail, with its citation',
+    route: '/signs?expand=all',
+    ready: '.signcard',
+    drive: async (page) => {
+      await page.locator('[data-sign="w8-5-slippery-when-wet"]').click();
+      await expect(page.getByRole('dialog')).toBeVisible();
+    },
+  },
+];
+
+for (const cell of LIBRARY_CELLS) {
+  test(`axe: signs ${cell.name}`, async ({ page }) => {
+    await page.goto(cell.route);
+    await page.locator(cell.ready).first().waitFor();
+    await cell.drive?.(page);
+    const results = await new AxeBuilder({ page }).withTags(TAGS).analyze();
+    expect(
+      results.violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(' | ')}`),
+    ).toEqual([]);
+  });
+}
+
+const DRILL_CELLS: { name: string; route: string; drive?: (page: Page) => Promise<void> }[] = [
+  { name: 'cell 7 — asked', route: '/signs/drill?seed=7' },
+  { name: 'cell 7 — shape and colour mode', route: '/signs/drill?seed=7&mode=shape-color' },
+  {
+    name: 'cell 7 — answered, rule and citation revealed',
+    route: '/signs/drill?seed=7',
+    drive: async (page) => {
+      await page.locator('.choice').first().click();
+      await page.locator('.cite__quote').waitFor();
+    },
+  },
+  {
+    name: 'cell 7 — skipped',
+    route: '/signs/drill?seed=7',
+    drive: async (page) => {
+      await page.getByRole('button', { name: /Skip/ }).click();
+      await page.locator('.cite__quote').waitFor();
+    },
+  },
+  {
+    name: 'cell 7 — the exit guard',
+    route: '/signs/drill?seed=7',
+    drive: async (page) => {
+      await page.getByRole('button', { name: /End drill/ }).first().click();
+      await expect(page.getByRole('dialog')).toBeVisible();
+    },
+  },
+  {
+    name: 'cell 7 — drill complete',
+    route: '/signs/drill?seed=7&n=1',
+    drive: async (page) => {
+      await page.locator('.choice').first().click();
+      await page.getByRole('button', { name: /Finish drill/ }).click();
+      await page.getByRole('heading', { level: 1, name: /right/ }).waitFor();
+    },
+  },
+];
+
+for (const cell of DRILL_CELLS) {
+  test(`axe: sign drill ${cell.name}`, async ({ page }) => {
+    await page.goto(cell.route);
+    // Not just an <h1>: the split route's fallback renders a hidden one.
+    await page.locator('.choice').first().waitFor();
+    await cell.drive?.(page);
+    const results = await new AxeBuilder({ page }).withTags(TAGS).analyze();
+    expect(
+      results.violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(' | ')}`),
+    ).toEqual([]);
+  });
+}
+
 test('axe: the open dialog traps and is labelled', async ({ page }) => {
   await page.goto('/gallery');
   await page.getByRole('button', { name: 'Open the confirmation' }).click();

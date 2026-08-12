@@ -15,7 +15,7 @@ describe('routing (grounding §4)', () => {
   it.each([
     ['/study', 'Study'],
     ['/exam', 'Exam'],
-    ['/signs', 'Signs'],
+    ['/signs', 'Sign library'],
     ['/progress', 'Progress'],
     ['/settings', 'Settings'],
   ])('renders %s', async (path, heading) => {
@@ -27,7 +27,7 @@ describe('routing (grounding §4)', () => {
     for (const [path, expected] of [
       ['/study', 'Study · TN Drive'],
       ['/exam', 'Mock exam · TN Drive'],
-      ['/signs', 'Road signs · TN Drive'],
+      ['/signs', 'Sign library · TN Drive'],
       ['/progress', 'Progress · TN Drive'],
       ['/settings', 'Settings · TN Drive'],
     ] as const) {
@@ -65,6 +65,13 @@ describe('routing (grounding §4)', () => {
     expect(gallery?.lazy).toBeTypeOf('function');
     expect(shell?.HydrateFallback).toBeTypeOf('function');
     expect(routes.find((r) => r.path === '/gallery/focus')?.lazy).toBeTypeOf('function');
+  });
+
+  /** Focus modes are code-split for the same reason, and asserted the same way. */
+  it('code-splits every focus mode, including the sign drill', () => {
+    for (const path of ['/study/session', '/exam/run', '/signs/drill']) {
+      expect(routes.find((r) => r.path === path)?.lazy, path).toBeTypeOf('function');
+    }
   });
 });
 

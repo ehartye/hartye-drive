@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { servablePaths } from '~/app/route-paths';
 
 /**
  * The sign system, checked in the running app rather than in a unit test.
@@ -9,16 +10,18 @@ import { expect, test } from '@playwright/test';
  * logged — `SignSvg` degrades quietly on purpose — so only a screenshot or an
  * assertion like this one catches it.
  */
+/**
+ * Derived from the router, plus the query-string variants no route table can
+ * yield. A hand-typed list is how the one route that regresses gets left out.
+ */
 const ROUTES = [
-  '/',
-  '/study',
-  '/study/session',
+  ...servablePaths(),
   '/study/session?q=stp-002',
-  '/exam',
-  '/signs',
-  '/progress',
-  '/settings',
-  '/gallery',
+  // P6: the library fully expanded is the whole registry on one page, and the
+  // drill is the one screen where a missing face would be invisible — there is
+  // no caption beside it to look wrong.
+  '/signs?expand=all',
+  '/signs/drill?seed=7',
 ];
 
 test.describe('sign rendering', () => {
