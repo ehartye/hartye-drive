@@ -11,11 +11,23 @@ const ROUTES = servablePaths();
 /** `/` is an alias of `/study`, so it shares that destination's title. */
 const INDEX_ALIAS = '/';
 
+/**
+ * `index.html`'s own title, which every route replaces once it mounts.
+ *
+ * Waiting on an `<h1>` is not enough to know a split route has arrived: the
+ * `HydrateFallback` renders a visually-hidden one, and a 1px clipped element
+ * still counts as visible. The title assertion below would then read the static
+ * title and see several routes "share" it. Pre-existing race — it only became
+ * reliable once there were enough split routes to lose it consistently.
+ */
+const STATIC_TITLE = 'TN Drive · Tennessee Class D knowledge test';
+
 test.describe('foundation', () => {
   test('every destination boots and carries a unique title', async ({ page }) => {
     const titles = new Set<string>();
     for (const route of ROUTES) {
       await page.goto(route);
+      await expect(page).not.toHaveTitle(STATIC_TITLE);
       await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
       const title = await page.title();
       expect(title, `${route} has no product title`).toContain('TN Drive');
