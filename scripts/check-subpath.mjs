@@ -43,21 +43,28 @@ await page.goto(`${URL_}signs`, { waitUntil: 'networkidle' });
 check(await page.getByRole('heading', { level: 1 }).isVisible(), 'a deep link resolves (router basename)');
 
 // Wait for the worker to take control.
-const controlled = await page.evaluate(async () => {
+const registered = await page.evaluate(async () => {
   const reg = await navigator.serviceWorker.getRegistration();
   if (!reg) return { registered: false, scope: null };
   await navigator.serviceWorker.ready;
-  for (let i = 0; i < 40 && !navigator.serviceWorker.controller; i++) {
-    await new Promise((r) => setTimeout(r, 250));
-  }
   return { registered: true, scope: reg.scope, controlling: !!navigator.serviceWorker.controller };
 });
-check(controlled.registered, 'a service worker registered');
+check(registered.registered, 'a service worker registered');
 check(
-  typeof controlled.scope === 'string' && controlled.scope.includes('/hartye-drive/'),
-  `worker scope covers the sub-path (${controlled.scope ?? 'none'})`,
+  typeof registered.scope === 'string' && registered.scope.includes('/hartye-drive/'),
+  `worker scope covers the sub-path (${registered.scope ?? 'none'})`,
 );
-check(controlled.controlling === true, 'the worker is controlling the page');
+
+/*
+ * The worker deliberately does NOT claim the page it installed on:
+ * `clientsClaim: false` is what stops a new build seizing a tab someone is
+ * sitting an exam in. So control arrives on the NEXT navigation, and that is
+ * the contract worth asserting — not "controls immediately", which would be
+ * the wrong behaviour passing a test.
+ */
+await page.reload({ waitUntil: 'networkidle' });
+const claimed = await page.evaluate(() => !!navigator.serviceWorker.controller);
+check(claimed, 'the worker controls the page after a navigation (clientsClaim is off by design)');
 
 // The real test: no network at all.
 await context.setOffline(true);
