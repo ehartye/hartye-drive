@@ -1,0 +1,107 @@
+{
+  "note": "A sign whose declared meaning argues for a distractor of a question that shows it. Here STOP is re-declared as a yield, and the question that renders it keys the complete stop.",
+  "expect": "question-contradiction",
+  "input": {
+    "minDrawn": 2,
+    "registry": {
+      "schemaVersion": 1,
+      "note": "Fixture registry for scripts/audit-signs.mjs. Two signs, deliberately tiny.",
+      "palette": [
+        "red",
+        "white",
+        "black",
+        "fluorescent-yellow-green"
+      ],
+      "signs": [
+        {
+          "id": "r1-1-stop",
+          "mutcd": "R1-1",
+          "name": "STOP",
+          "category": "regulatory",
+          "shape": "octagon",
+          "faceColor": "red",
+          "legendColor": "white",
+          "meaning": "Slow down and roll through the intersection without stopping when the way is clear.",
+          "citation": {
+            "pdfPage": 50,
+            "printedPage": 36,
+            "quote": "complete stop"
+          }
+        },
+        {
+          "id": "s1-1-school",
+          "mutcd": "S1-1",
+          "name": "School advance warning",
+          "category": "school",
+          "shape": "pentagon",
+          "faceColor": "fluorescent-yellow-green",
+          "legendColor": "black",
+          "meaning": "Slow down and watch for children walking near the school ahead.",
+          "citation": {
+            "pdfPage": 52,
+            "printedPage": 38,
+            "quote": "watch for children"
+          }
+        }
+      ]
+    },
+    "rendered": [
+      {
+        "id": "r1-1-stop",
+        "drawn": true,
+        "paints": [
+          "#b4151c",
+          "#f2f4f1",
+          "none"
+        ],
+        "texts": [
+          {
+            "text": "STOP",
+            "contained": true,
+            "box": {
+              "x": 22,
+              "y": 42,
+              "width": 56,
+              "height": 20
+            }
+          }
+        ],
+        "name": "Octagon, red — Slow down and roll through the intersection without stopping when the way is clear.",
+        "drillName": "Octagon, red"
+      },
+      {
+        "id": "s1-1-school",
+        "drawn": true,
+        "paints": [
+          "#c7ea00",
+          "#14161a",
+          "none"
+        ],
+        "texts": [],
+        "name": "Pentagon, fluorescent yellow-green — Slow down and watch for children walking near the school ahead.",
+        "drillName": "Pentagon, fluorescent yellow-green"
+      }
+    ],
+    "questions": [
+      {
+        "id": "reg-fixture-1",
+        "stem": "A red octagonal sign means you must:",
+        "options": [
+          {
+            "text": "Come to a complete stop before the crosswalk"
+          },
+          {
+            "text": "Slow down and roll through without stopping"
+          },
+          {
+            "text": "Maintain speed"
+          }
+        ],
+        "correctIndex": 0,
+        "signs": [
+          "r1-1-stop"
+        ]
+      }
+    ]
+  }
+}

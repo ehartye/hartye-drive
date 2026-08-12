@@ -95,7 +95,7 @@ export interface QueuedAgainProps {
 export function QueuedAgain({ sentence }: QueuedAgainProps) {
   return (
     <SignPanel variant="plain" flat className="again mt-3.5">
-      <SignSvg id="curve-right" size="sm" decorative className="flex-none" />
+      <SignSvg id="w1-2-curve" size="sm" decorative className="flex-none" />
       <div>
         <p className="eyebrow eyebrow--warning mb-1">Queued again</p>
         <p className="dim text-[0.875rem] leading-normal">{sentence}</p>

@@ -627,3 +627,97 @@ The split route's `HydrateFallback` (P1's `RouteFallback`) renders a
 visually-hidden `<h1>Loading</h1>`, so `getByRole('heading', { level: 1 })`
 resolves *before* the session mounts and any key press is then delivered to the
 fallback. Wait on `.stem` or `.choice`, as `tests/e2e/study.spec.ts` does.
+
+---
+
+## 2026-08-11 — P3, sign system (registry, geometry, `audit:signs`)
+
+### 1. `w20-1a-road-work-distance` now carries a designation its id contradicts
+
+The entry declared **W16-3P**, the MILES plaque, for a **FEET** distance plaque.
+Corrected to **W16-2P** (MUTCD Chapter 2C: the W16-2 series is "XX FEET", the
+W16-3 series is "XX MILES"). The **id was left alone**, because
+`src/content/questions.json` references it and that file belongs to another
+piece — and the id spells `w20-1a`, which is a third designation again.
+
+So the registry now has one entry whose id matches neither its designation nor
+its legend. **Requesting a coordinated rename** — `w16-2p-road-work-distance`
+in `signs.json` and in question `wzn-006` — from whoever owns `questions.json`
+next. The entry's `meaningSource.note` records the whole history, so nobody
+"fixes" the designation back.
+
+### 2. `brown`, `fluorescent-pink` and `silver` dropped from the registry palette
+
+The bar offered "either use them or drop them". Dropped — and `audit:signs` now
+fails on a palette token no entry uses, so they cannot silently come back.
+
+`silver` is not an MUTCD sign colour at all. `brown` (recreation and cultural
+interest) and `fluorescent-pink` (incident management) **are** taught — the
+manual's own colour key and questions `col-004` and `col-007` — but the manual
+illustrates no specific designated sign in either colour, and MUTCD Chapter 2M
+gives brown *guide* signs no designation of the form this registry requires (its
+symbol signs are `RS-xxx`; the destination guide signs carry none). Minting a
+designation to justify a swatch is what practices D17 forbids, so both colours
+stay taught in the question bank and absent from the face palette.
+
+**If P6's library wants a brown or a pink face**, the honest route is a
+designated sign, sourced and cited with its `meaningSource` — a registry
+addition, not a swatch.
+
+### 3. `m1-5` changed shape from `shield` to `square`
+
+The entry claimed "secondary routes connect smaller communities", which appears
+nowhere in the manual and had no `meaningSource`. Rewritten to what printed
+p.40 states — the marker shown is a state **primary** route, captioned
+"Primarily Connects Cities" — and re-shaped to the square Tennessee actually
+uses for a primary state route marker. Tennessee's *secondary* marker is a
+downward triangle; it is not in the registry, and adding it is an addition
+rather than a fix.
+
+### 4. `npm run audit:signs` requires Playwright's Chromium
+
+Legend containment is **measured**, not estimated. The gate renders the whole
+registry in headless Chromium with the app's own self-hosted Overpass, reads
+each `<text>` node's `getBBox()`, maps it into the sign's root user space, and
+tests all four corners against the face outline with `isPointInFill`. A
+font-metric approximation would have been dependency-free and would also have
+been an opinion; this is a measurement, and it caught four real overflows
+(R2-1, R6-2, R15-2P, W20-5) that looked fine on screen.
+
+The cost: `audit:signs` fails with an actionable message if
+`npx playwright install chromium` has not been run. `test:e2e` and `test:a11y`
+already require it, so the floor gains no new dependency in practice. `esbuild`
+was added as an explicit devDependency (it was already transitively present via
+Vite) because the gate bundles `src/signs/audit-entry.tsx` to render the real
+`SignSvg` under Node.
+
+### 5. `SignGeometry.palette` removed; the registry is the only colour declaration
+
+Geometry used to declare its own colour list alongside the registry's
+`faceColor` / `legendColor` / `accentColors`. Two declarations of one fact is a
+drift vector, and `signs.json` is stated to be the single source of truth.
+Geometry now declares only `face` — the outline the containment check fills —
+and `audit:signs` compares rendered paint against the registry directly, in
+both directions.
+
+### 6. One-line fix to a pre-existing flake in `tests/e2e/foundation.spec.ts`
+
+"every destination boots and carries a unique title" fails on a clean checkout
+of `content/p2-question-bank` — verified by stashing this piece entirely and
+re-running it. It reads `document.title` after waiting on the level-1 heading,
+which resolves on the split route's `HydrateFallback` before the destination
+mounts, so two routes collide on one stale title. Exactly the hazard P4
+documented in note 9 above; the test predates the note.
+
+Fixed in place by also waiting for the heading to stop saying "Loading", rather
+than left broken, because the bar requires `npm run test:e2e` to exit 0. It is
+the only line P3 touched in a file it does not own.
+
+### 7. Three registry entries gained `accentColors`
+
+`w3-1-stop-ahead`, `w3-2-yield-ahead` and `w3-3-signal-ahead` are symbol signs
+that depict *another* sign or a signal head: W3-1 carries a red octagon with a
+white border, W3-2 a white triangle with a red border, W3-3 a signal with red,
+yellow and green lenses. Drawing them in black outline would have been
+MUTCD-wrong; the colours are declared so the audit's "no undeclared colour"
+rule still bites everywhere else.

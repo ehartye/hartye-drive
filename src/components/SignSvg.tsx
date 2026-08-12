@@ -40,9 +40,14 @@ function accessibleName(entry: SignEntry, mode: 'labeled' | 'drill'): string {
  * is no clipart and no photography anywhere in this product (grounding §2).
  *
  * Ids resolve against `src/content/signs.json`, the single source of truth for
- * the 87-sign registry. P1 has drawn 13 of them; the other 74 render a visible
- * "art pending" plate carrying the MUTCD designation, so the gap is legible
- * rather than silently blank. P3 draws them.
+ * the 87-sign registry, and all 87 faces are authored. The two fallbacks below
+ * are kept for the 88th: a registry entry with no face renders a labelled
+ * "art pending" plate carrying its MUTCD designation, and an id the registry
+ * does not carry renders a dashed box tagged `data-missing-sign`. Both are
+ * deliberately visible — a blank space is how a broken sign id survived a whole
+ * phase unnoticed. `SignSvg.fallback.test.tsx` keeps both honest, and
+ * `sign-references.test.ts` fails the build on an unresolvable id anywhere in
+ * `src/`.
  */
 export function SignSvg({
   id,

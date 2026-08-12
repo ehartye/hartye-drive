@@ -38,6 +38,7 @@ import {
   VerdictSign,
   VisuallyHidden,
 } from './index';
+import { allSigns } from '~/signs/signs';
 
 const inRouter = (ui: ReactElement) => render(<MemoryRouter>{ui}</MemoryRouter>);
 
@@ -58,15 +59,14 @@ describe('SignSvg (grounding §5 A8)', () => {
     expect(name).not.toMatch(/complete stop/);
   });
 
-  it('shows a named, legible plate for a registry sign P3 has not drawn yet', () => {
-    // R5-1 is in signs.json with no geometry yet: it must not render as a blank.
-    const { container } = render(<SignSvg id="r5-1-do-not-enter" />);
-    const svg = container.querySelector('svg');
-    expect(svg).toHaveAttribute('data-pending-sign', 'R5-1');
-    expect(svg?.textContent).toContain('art pending');
-    expect(svg?.textContent).toContain('R5-1');
-    // Still fully named — the registry knows shape, colour and meaning.
-    expect(screen.getByRole('img').getAttribute('aria-label')).toMatch(/^\w.*, \w.* — .+/);
+  it('draws a real face for every registry sign — nothing is still an "art pending" plate', () => {
+    for (const sign of allSigns) {
+      const { container, unmount } = render(<SignSvg id={sign.id} decorative />);
+      const svg = container.querySelector('svg');
+      expect(svg, sign.id).not.toHaveAttribute('data-pending-sign');
+      expect(svg?.innerHTML.length ?? 0, sign.id).toBeGreaterThan(40);
+      unmount();
+    }
   });
 
   it('flags an id the registry does not carry instead of hiding it', () => {

@@ -11,6 +11,9 @@ test-results/
 blob-report/
 .playwright-mcp/
 lighthouse-report.*
+# `npm run audit:signs -- --sheet` regenerates the sign contact sheet on demand;
+# a 900 KB PNG does not belong in history.
+artifacts/
 
 # editor / OS
 .DS_Store
