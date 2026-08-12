@@ -1159,3 +1159,175 @@ The loading skeleton deliberately draws the **real** guide-sign frame, so
 `.speedplate` (or a named heading) for the loaded dashboard — `dashboard.spec.ts`
 does. Port 5301 (e2e) and 5302 (a11y) are the harness's; 5173 is occupied on this
 machine by an unrelated app.
+## 2026-08-12 — P8 (progress, settings & rule reference)
+
+### 1. `AppBar` gains `onBack`, an alternative to `backTo`
+
+§3 fixes the app-bar pattern as `[ optional back-link · title · context ] —— badge`.
+`backTo` takes a destination, which assumes every page has one parent. The rule
+reference does not: it is reached from a study explanation, an exam review, the
+sign library and from another rule. A fixed `backTo` would send three of those
+four learners somewhere they had never been, and dropping the back control
+entirely would leave a page that appears out of nowhere with no way out but the
+browser chrome.
+
+So `AppBar` now accepts `onBack?: () => void` and renders the same `.back`
+affordance as a `<button>` when it is given without `backTo`. `backTo` still
+wins when both are supplied. No new class, no new pattern — `.back` already
+styled a button (`background: none; border: 0; cursor: pointer`), which is why
+the CSS is untouched. Covered by two cases in `components.test.tsx`.
+
+### 2. `ExplanationBlock`'s citation resolves itself from a rule id
+
+`Citation` gains `ruleId?: string`, and the block derives
+`to = /rules/{ruleId}` when no explicit `to` is given. The alternative was for
+every caller to build the URL, which is how one of them eventually builds it
+wrong.
+
+This required **one line inside P4's `StudySession.tsx`** — passing
+`citation.ruleId` through to the block — which is otherwise a file this piece
+does not own. It is the whole of the wiring the bar's own P8 brief asks for
+("P4's `ExplanationBlock` currently cannot link its citation because this route
+doesn't exist … then make `CitationLink` resolve to it"), and the citation is
+the item the product's trustworthiness rests on. Nothing else in `/study/**`
+was touched.
+
+### 3. `servablePaths()` learns about parameters instead of being bypassed
+
+`/rules/:id` is the first parameterised route, and `route-paths.ts` threw on
+`:` by design. It now carries an `EXAMPLE_PARAMS` map keyed by the full route
+pattern, and **still throws** for a parameterised route that is not registered
+— the property that makes the sweeps unforgettable is preserved rather than
+worked around. `/rules/R225` is therefore swept by `tests/e2e/foundation.spec.ts`
+and `tests/a11y/axe.spec.ts` automatically, and a second parameterised route
+added later fails the suite until someone gives it a real value.
+
+One example per route, not several: `foundation.spec.ts` asserts a unique
+document title per servable path, and two rules would produce two titles for
+one route. `tests/e2e/rules.spec.ts` exercises the other ids.
+
+### 4. `/settings` and `/rules/:id` are code-split; `/progress` is not
+
+Settings is not one of the four nav destinations and the rule reference is the
+only surface that needs all three large content files at once (533 rules, the
+whole question bank, the sign registry). Neither belongs in the bundle a
+learner downloads to answer their first question.
+
+`/progress` stays eager for the reason `/signs` does (deviations, P6 §8): it is
+a nav destination, and a tab that flashes a fallback when you press it is worse
+than 8 KB. Initial JS went **126.3 KB → 138.1 KB gzipped** against the 180 KB
+budget, most of it the two hand-authored charts, the progress report module and
+the topic taxonomy the page needs for labels.
+
+Consequence, and it is the same one P6 recorded: `src/app/routing.test.tsx` can
+no longer render `/settings` under jsdom, because react-router's lazy loading
+cannot be driven there (undici rejects the router's `AbortSignal`). The route
+entry is asserted in the table instead, and the rendered page is asserted in a
+real browser by `tests/e2e/settings.spec.ts` and `tests/a11y/axe.spec.ts` —
+both of which derive their route lists from the table, so neither can silently
+stop covering it.
+
+### 5. `routing.test.tsx` rows for `/progress` and `/settings` updated
+
+`['/progress', 'Progress']` → `['/progress', /set off yet/]`: on a clean
+profile the progress page **is** its empty state, and that state's heading is
+an invitation rather than the word "Progress". `['/settings', 'Settings']` was
+removed for the code-splitting reason above. P1's placeholder assertions,
+superseded the same way P5 superseded them for `/exam` and P6 for `/signs`.
+
+### 6. Preferences are applied from `main.tsx`, not from a route
+
+Settings claims its two preferences apply "everywhere in the app, including
+mid-exam". Settings is code-split and the focus modes sit outside `AppShell`,
+so applying them from either place would have left the preference working on
+the page where it was chosen and nowhere else. `main.tsx` stamps
+`data-text-size` and `data-motion` on `<html>` before the first paint. Caught
+by the e2e case that sets reduced motion in settings and then measures
+transition durations on `/signs`.
+
+The declared reduced-motion preference is **additive** with the
+`prefers-reduced-motion` media query in `base.css`; neither can undo the other,
+so a learner whose device already asks for reduced motion cannot accidentally
+turn it back on here.
+
+### 7. The reset leaves preferences alone, and judges itself by reading back
+
+Text size and reduced motion live under their own key with their own schema
+version and are **not** in `RECORD_KEYS`. Erasing weeks of work is what the
+learner asked for; also resetting the text size of someone who needed it larger
+is a second loss they did not ask for. Stated in the confirmation's "stays
+exactly as it is" ledger and asserted in the e2e.
+
+The erase itself is judged by **reading every key back**, not by the absence of
+an exception, because a read-only profile accepts `removeItem` and changes
+nothing. Both failure shapes are covered by e2e cases: one that throws
+(`SecurityError`) and one that silently succeeds. The in-memory stores are
+cleared **only on success** — clearing first and then discovering the write was
+refused would show the learner an empty progress page over an intact record,
+which is the app telling them it lost their work when it did not.
+
+### 8. Sittings are derived from the attempt log, not stored as events
+
+The mockups' history list shows sessions and mock exams; the store records one
+row per *answer*. Rather than add a second record and a migration,
+`groupRuns()` gathers answers more than 45 minutes apart into sittings, which
+is derivable from what is already persisted.
+
+The exam writes into **both** records, so `historyTimeline()` drops a study run
+whose window overlaps an exam attempt and reports the exam instead — otherwise
+the same half hour appears twice. Sign drills write to the sign record only and
+therefore do not appear in this list; that is a gap the mockups show and the
+data does not support, and inventing rows for it would be worse than omitting
+them.
+
+### 9. The readiness trend plots only the answers still retained — and says so
+
+The headline readiness comes from the durable topic rollups (unbounded); the
+trend can only come from the attempt log (capped at 200, grounding §6). For a
+learner past the cap the two legitimately differ, and a chart quietly
+disagreeing with the number above it reads as a bug. The figcaption states the
+difference with both counts. The retention itself is stated under the history
+list.
+
+### 10. The blueprint lanes follow the ratified `TopicMeter` bands
+
+Mockup 09 fills a short lane with warning yellow and prints the percentage
+inside it in white — measured, that is about 1.5:1 and unreadable. Two changes:
+the figure is drawn on the dark track just past the fill for any lane below
+target (white inside only on guide green, bold at ~15.75px, which clears SC
+1.4.3's large-text threshold at 3.72:1); and a lane under 50% is drawn in
+regulatory red rather than yellow, so an area and the topics inside it never
+disagree about what colour a number is. The hatch — not the hue — remains the
+carrier of "short of target", and the key names all three.
+
+### 11. `/progress` reads `taxonomy.json` directly, with the import attribute
+
+`routes.tsx` is imported by Playwright in plain Node (see `route-paths.ts`), so
+everything an **eager** route reaches must be loadable there — and
+`~/content/index.ts` imports its JSON without `with { type: 'json' }`. Since
+`src/content/**` is not this piece's to modify, `Progress.tsx` imports
+`~/content/taxonomy.json` directly with the attribute, exactly as
+`src/signs/registry.ts` already does for the sign registry. The lazy routes
+(`/settings`, `/rules/:id`) still use `~/content` normally.
+
+`npm run build` therefore prints a rollup consistency **warning** — "tried to
+import taxonomy.json with no attributes, but it was already imported elsewhere
+with type: json" — and exits 0. It is the same warning `signs.json` already
+produced for exactly the same reason (`registry.ts` attributed,
+`content/index.ts` not), and the real fix is one line in
+`src/content/index.ts`, which this piece is not permitted to touch. Flagged
+here rather than left for a critic to find: **the clean resolution is to add
+`with { type: 'json' }` to the three static imports in `src/content/index.ts`**,
+after which both warnings disappear and the direct import in `Progress.tsx`
+can go back through `~/content`.
+
+### 12. The three P8 states are seeded, never faked
+
+`tests/support/seed.ts` builds schema-valid `tn-drive:progress` and
+`tn-drive:exams` payloads and writes them with `addInitScript`. There is no
+`?demo=` parameter anywhere: a screen a reviewer can only reach by lying to the
+app is not evidence that the screen works. The long-history seed uses four
+questions a sitting rather than twelve, because with a 200-answer cap the
+learner who actually reaches fifty-plus retained sittings is the one who
+studies in short bursts — and that is the case that puts fifty readings on one
+chart.

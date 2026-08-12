@@ -20,6 +20,27 @@ import { routes } from './routes';
  * why `src/main.tsx`, not the shell, owns the stylesheet. JSON imports carry
  * `with { type: 'json' }` for the same reason.
  */
+/**
+ * Example values for the routes that take a parameter.
+ *
+ * A dynamic segment cannot be navigated without one, and silently skipping it
+ * would recreate the exact coverage hole this module exists to close. So a
+ * parameterised route must be registered here, by its full pattern, before the
+ * sweeps will serve it — and `walk` throws if it is not. Adding
+ * `/rules/:id` without adding a real rule id therefore fails the suite rather
+ * than quietly shrinking it.
+ *
+ * One value per route, not several: `tests/e2e/foundation.spec.ts` asserts that
+ * every servable path carries a unique document title, and two rules would
+ * legitimately produce two different titles only because they are two different
+ * rules. The other rule ids are exercised by `tests/e2e/rules.spec.ts`.
+ */
+const EXAMPLE_PARAMS: Record<string, readonly string[]> = {
+  // R225 — the railroad stopping distance. Cited by real questions, carries
+  // related signs, and is the rule mockup 10 is drawn around.
+  '/rules/:id': ['R225'],
+};
+
 function join(parent: string, segment: string): string {
   if (segment.startsWith('/')) return segment;
   const base = parent === '/' ? '' : parent;
@@ -40,13 +61,18 @@ function walk(table: readonly RouteObject[], parent: string, out: string[]): voi
     }
     if (segment === '*' || segment.endsWith('/*')) continue;
     if (segment.includes(':')) {
-      // Deliberate: a dynamic segment cannot be navigated without an example
-      // value, and silently skipping it would recreate the coverage hole this
-      // module exists to close.
-      throw new Error(
-        `route-paths: "${segment}" takes a parameter. Extend this helper with an example value ` +
-          `so the sweeps keep covering every route.`,
-      );
+      const pattern = join(parent, segment);
+      const examples = EXAMPLE_PARAMS[pattern];
+      if (!examples || examples.length === 0) {
+        throw new Error(
+          `route-paths: "${pattern}" takes a parameter. Add an example value to EXAMPLE_PARAMS ` +
+            `so the sweeps keep covering every route.`,
+        );
+      }
+      for (const example of examples) {
+        out.push(pattern.replace(/:[^/]+/, encodeURIComponent(example)));
+      }
+      continue;
     }
     const path = join(parent, segment);
     if (route.children && route.children.length > 0) {

@@ -1,6 +1,7 @@
 import type { RouteObject } from 'react-router';
 import { AppShell } from './AppShell';
-import { ExamRoute, ProgressRoute, SettingsRoute, StudyRoute } from '~/routes/destinations';
+import { ExamRoute, StudyRoute } from '~/routes/destinations';
+import { Progress } from '~/routes/Progress';
 import { NotFound, RouteError } from '~/routes/NotFound';
 import { SignsLibrary } from '~/routes/SignsLibrary';
 import { RouteFallback } from '~/routes/RouteFallback';
@@ -37,8 +38,26 @@ export const routes: RouteObject[] = [
       // destinations, and everything heavy about it — the 87-entry registry and
       // its geometry — is already in the shell because `SignSvg` is.
       { path: 'signs', element: <SignsLibrary /> },
-      { path: 'progress', element: <ProgressRoute /> },
-      { path: 'settings', element: <SettingsRoute /> },
+      // Eager, like `/signs`: one of the four nav destinations, and everything
+      // it needs — the taxonomy, the two records and the hand-authored charts —
+      // is small. It never loads the question bank.
+      { path: 'progress', element: <Progress /> },
+      // Code-split (practices E7): settings is not one of the four nav
+      // destinations, and it carries the whole corrections disclosure.
+      {
+        path: 'settings',
+        lazy: async () => ({ Component: (await import('~/routes/Settings')).Settings }),
+      },
+      // Code-split (practices E7): the rule reference is the only surface that
+      // needs all three large content files at once — 533 rules, the whole
+      // question bank and the sign registry — and a learner who never follows a
+      // citation should not download any of them.
+      {
+        path: 'rules/:id',
+        lazy: async () => ({
+          Component: (await import('~/routes/RuleReference')).RuleReference,
+        }),
+      },
       // Code-split (practices E7): the gallery is a development surface and
       // must not sit in the initial bundle a learner downloads.
       {
