@@ -6,368 +6,40 @@
  * designation, name, category, shape, colours, meaning, citation — comes from
  * `src/content/signs.json`, the single source of truth. See `registry.ts`.
  *
- * P1 draws 13 of the registry's 87. P3 draws the rest; every id below must
- * already exist in the registry, which `geometry.test.ts` enforces.
+ * The faces themselves live in `./geometry/`, one file per sign family, so a
+ * family reads as a family. Every id below exists in the registry and every
+ * registry id has a face: `geometry.test.ts` fails the build on either gap, and
+ * `npm run audit:signs` re-checks it in a real browser against the MUTCD
+ * designation, the declared colours and the legend's measured bounding box.
  */
 import type { SignEntry, SignFace, SignGeometry } from './registry';
-import { MUTCD_COLORS as C, SIGN_REGISTRY } from './registry';
+import { SIGN_REGISTRY } from './registry';
+import { GUIDE } from './geometry/guide';
+import { RAILROAD } from './geometry/railroad';
+import { REGULATORY } from './geometry/regulatory';
+import { SCHOOL } from './geometry/school';
+import { WARNING } from './geometry/warning';
+import { WORK_ZONE } from './geometry/workzone';
 
-const OCT = '29.3,0 70.7,0 100,29.3 100,70.7 70.7,100 29.3,100 0,70.7 0,29.3';
-const DIA = '50,1 99,50 50,99 1,50';
-const TRI = '2,7 98,7 50,96';
-const PEN = '50,1 98,37 79,99 21,99 2,37';
-
-/** The yellow warning diamond every W-series sign is drawn on. */
-const warningDiamond = (fill: string) => (
-  <>
-    <polygon fill={fill} points={DIA} />
-    <polygon
-      fill="none"
-      stroke={C.black}
-      strokeWidth={4}
-      points={DIA}
-      transform="translate(50,50) scale(.85) translate(-50,-50)"
-    />
-  </>
-);
-
-const LEGEND = { fontFamily: "'Overpass', sans-serif", fontWeight: 800, textAnchor: 'middle' } as const;
-
-/**
- * Geometry, keyed by `src/content/signs.json` id. Nothing here restates what
- * the registry already says.
- */
 const geometry: Readonly<Record<string, SignGeometry>> = {
-  'r1-1-stop': {
-    palette: [C.red, C.white],
-    viewBox: '0 0 100 100',
-    draw: () => (
-      <>
-        <polygon fill={C.red} points={OCT} />
-        <polygon
-          fill="none"
-          stroke={C.white}
-          strokeWidth={5}
-          points={OCT}
-          transform="translate(50,50) scale(.87) translate(-50,-50)"
-        />
-        <text {...LEGEND} fill={C.white} x={50} y={62} fontSize={28} letterSpacing={1}>
-          STOP
-        </text>
-      </>
-    ),
-  },
-  'r1-2-yield': {
-    palette: [C.red, C.white],
-    viewBox: '0 0 100 100',
-    // A red field with a white legend is the INVERSE of the real sign.
-    draw: () => (
-      <>
-        <polygon fill={C.red} points={TRI} />
-        <polygon fill={C.white} points="15,18 85,18 50,81" />
-        <text {...LEGEND} fill={C.red} x={50} y={43} fontSize={12} letterSpacing={0.3}>
-          YIELD
-        </text>
-      </>
-    ),
-  },
-  'r2-1-speed-limit': {
-    palette: [C.white, C.black],
-    viewBox: '0 0 76 96',
-    aspect: 'tall',
-    draw: (value = 55) => (
-      <>
-        <rect x={1} y={1} width={74} height={94} rx={4} fill={C.white} />
-        <rect
-          x={5}
-          y={5}
-          width={66}
-          height={86}
-          rx={2}
-          fill="none"
-          stroke={C.black}
-          strokeWidth={3}
-        />
-        <text {...LEGEND} fill={C.black} x={38} y={26} fontSize={12} letterSpacing={0.6}>
-          SPEED
-        </text>
-        <text {...LEGEND} fill={C.black} x={38} y={40} fontSize={12} letterSpacing={0.6}>
-          LIMIT
-        </text>
-        <text
-          x={38}
-          y={80}
-          fontSize={40}
-          fontWeight={700}
-          textAnchor="middle"
-          fill={C.black}
-          fontFamily="'Overpass Mono', monospace"
-          style={{ fontVariantNumeric: 'tabular-nums' }}
-        >
-          {value}
-        </text>
-      </>
-    ),
-  },
-  'w14-3-no-passing-zone': {
-    palette: [C.yellow, C.black],
-    viewBox: '0 0 100 100',
-    draw: () => (
-      <>
-        <polygon fill={C.yellow} points="22,2 92,50 22,98" />
-        {/* Scaled about the centroid, or the border goes hairline at one edge. */}
-        <polygon
-          fill="none"
-          stroke={C.black}
-          strokeWidth={3.5}
-          points="22,2 92,50 22,98"
-          transform="translate(45.3,50) scale(.82) translate(-45.3,-50)"
-        />
-        <text {...LEGEND} fill={C.black} x={44} y={38} fontSize={9}>
-          NO
-        </text>
-        <text {...LEGEND} fill={C.black} x={44} y={53} fontSize={9}>
-          PASSING
-        </text>
-        <text {...LEGEND} fill={C.black} x={44} y={68} fontSize={9}>
-          ZONE
-        </text>
-      </>
-    ),
-  },
-  'w1-2-curve': {
-    palette: [C.yellow, C.black],
-    viewBox: '0 0 100 100',
-    draw: () => (
-      <>
-        {warningDiamond(C.yellow)}
-        {/* A gentle bend. A right angle would be W1-1 TURN, a different sign. */}
-        <path
-          fill="none"
-          stroke={C.black}
-          strokeWidth={7}
-          strokeLinecap="butt"
-          d="M40 78 C40 60 44 50 56 42"
-        />
-        <polygon fill={C.black} points="50,30 70,36 55,50" />
-      </>
-    ),
-  },
-  'w3-3-signal-ahead': {
-    palette: [C.yellow, C.black, C.red, '#1FA05F'],
-    viewBox: '0 0 100 100',
-    draw: () => (
-      <>
-        {warningDiamond(C.yellow)}
-        <rect fill={C.black} x={40} y={24} width={20} height={52} rx={4} />
-        <circle fill={C.red} cx={50} cy={35} r={6} />
-        <circle fill={C.yellow} cx={50} cy={50} r={6} />
-        <circle fill="#1FA05F" cx={50} cy={65} r={6} />
-      </>
-    ),
-  },
-  'w11-2-pedestrian': {
-    palette: [C.fluorescentYellowGreen, C.black],
-    viewBox: '0 0 100 100',
-    draw: () => (
-      <>
-        {warningDiamond(C.fluorescentYellowGreen)}
-        <circle fill={C.black} cx={50} cy={30} r={6} />
-        <path
-          fill={C.black}
-          d="M44 38 h12 l4 18 h-5 l-2-9 v10 l6 20 h-6 l-6-17 l-5 17 h-6 l7-24 v-9 l-2 12 h-5 z"
-        />
-      </>
-    ),
-  },
-  's1-1-school': {
-    palette: [C.fluorescentYellowGreen, C.black],
-    viewBox: '0 0 100 100',
-    // Fluorescent yellow-green, never pink. Pink is incident management.
-    draw: () => (
-      <>
-        <polygon fill={C.fluorescentYellowGreen} points={PEN} />
-        <polygon
-          fill="none"
-          stroke={C.black}
-          strokeWidth={3.5}
-          points={PEN}
-          transform="translate(50,55) scale(.86) translate(-50,-55)"
-        />
-        <circle fill={C.black} cx={41} cy={44} r={5} />
-        <path
-          fill={C.black}
-          d="M36 51 h10 l4 14 h-4.5 l-1.5-7 v8 l5 16 h-5 l-4.5-13 l-4 13 h-5 l5.5-19 v-7 l-1.5 9 h-4.5 z"
-        />
-        <circle fill={C.black} cx={62} cy={47} r={4.5} />
-        <path
-          fill={C.black}
-          d="M58 53 h9 l3.5 12 h-4 l-1-6 v7 l4.5 14 h-4.5 l-4-11 l-3.5 11 h-4.5 l5-16 v-6 l-1.5 7 h-4 z"
-        />
-      </>
-    ),
-  },
-  'w10-1-railroad-advance': {
-    palette: [C.yellow, C.black],
-    viewBox: '0 0 100 100',
-    // An X, never a +.
-    draw: () => (
-      <>
-        <circle fill={C.yellow} cx={50} cy={50} r={49} />
-        <circle fill="none" stroke={C.black} strokeWidth={3} cx={50} cy={50} r={43} />
-        <path fill="none" stroke={C.black} strokeWidth={8} d="M19 19 L81 81 M81 19 L19 81" />
-        <text {...LEGEND} fill={C.black} x={27} y={59} fontSize={23}>
-          R
-        </text>
-        <text {...LEGEND} fill={C.black} x={73} y={59} fontSize={23}>
-          R
-        </text>
-      </>
-    ),
-  },
-  'r15-1-crossbuck': {
-    palette: [C.white, C.black],
-    viewBox: '0 0 100 100',
-    draw: () => (
-      <>
-        <g transform="rotate(45 50 50)">
-          <rect x={5} y={41} width={90} height={18} rx={2} fill={C.white} />
-          <rect
-            x={5}
-            y={41}
-            width={90}
-            height={18}
-            rx={2}
-            fill="none"
-            stroke={C.black}
-            strokeWidth={2}
-          />
-        </g>
-        <g transform="rotate(-45 50 50)">
-          <rect x={5} y={41} width={90} height={18} rx={2} fill={C.white} />
-          <rect
-            x={5}
-            y={41}
-            width={90}
-            height={18}
-            rx={2}
-            fill="none"
-            stroke={C.black}
-            strokeWidth={2}
-          />
-        </g>
-        {/* Legends painted after both blades so neither word is buried. */}
-        <g transform="rotate(45 50 50)">
-          <text
-            {...LEGEND}
-            fill={C.black}
-            stroke={C.white}
-            strokeWidth={2.2}
-            paintOrder="stroke"
-            x={50}
-            y={54.5}
-            fontSize={10}
-            letterSpacing={0.2}
-          >
-            RAILROAD
-          </text>
-        </g>
-        <g transform="rotate(-45 50 50)">
-          <text
-            {...LEGEND}
-            fill={C.black}
-            stroke={C.white}
-            strokeWidth={2.2}
-            paintOrder="stroke"
-            x={50}
-            y={54.5}
-            fontSize={10}
-            letterSpacing={0.2}
-          >
-            CROSSING
-          </text>
-        </g>
-      </>
-    ),
-  },
-  'w20-1-road-work-ahead': {
-    palette: [C.orange, C.black],
-    viewBox: '0 0 100 100',
-    draw: () => (
-      <>
-        {warningDiamond(C.orange)}
-        <text {...LEGEND} fill={C.black} x={50} y={43} fontSize={11}>
-          ROAD
-        </text>
-        <text {...LEGEND} fill={C.black} x={50} y={57} fontSize={11}>
-          WORK
-        </text>
-        <text {...LEGEND} fill={C.black} x={50} y={71} fontSize={11}>
-          AHEAD
-        </text>
-      </>
-    ),
-  },
-  'd1-1-destination': {
-    palette: [C.green, C.white],
-    viewBox: '0 0 140 100',
-    aspect: 'wide',
-    draw: () => (
-      <>
-        <rect fill={C.green} x={1} y={14} width={138} height={72} rx={5} />
-        <rect
-          fill="none"
-          stroke={C.white}
-          strokeWidth={2.5}
-          x={6}
-          y={19}
-          width={128}
-          height={62}
-          rx={3}
-        />
-        <text {...LEGEND} fill={C.white} x={62} y={45} fontSize={15} letterSpacing={0.3}>
-          NASHVILLE
-        </text>
-        <text {...LEGEND} fill={C.white} x={48} y={68} fontSize={15} letterSpacing={0.3}>
-          12
-        </text>
-        <text {...LEGEND} fill={C.white} x={78} y={68} fontSize={11} letterSpacing={0.3}>
-          MILES
-        </text>
-      </>
-    ),
-  },
-  'd9-2-hospital': {
-    palette: [C.blue, C.white],
-    viewBox: '0 0 100 100',
-    draw: () => (
-      <>
-        <rect fill={C.blue} x={1} y={8} width={98} height={84} rx={5} />
-        <rect
-          fill="none"
-          stroke={C.white}
-          strokeWidth={2.5}
-          x={6}
-          y={13}
-          width={88}
-          height={74}
-          rx={3}
-        />
-        <path fill={C.white} d="M43 30h14v13h13v14H57v13H43V57H30V43h13z" />
-      </>
-    ),
-  },
+  ...REGULATORY,
+  ...SCHOOL,
+  ...WARNING,
+  ...WORK_ZONE,
+  ...RAILROAD,
+  ...GUIDE,
 };
 
-/** Registry ids P1 has drawn. P3 grows this to cover the whole registry. */
+/** Registry ids with authored geometry — the whole registry. */
 export const SIGN_GEOMETRY: ReadonlyMap<string, SignGeometry> = new Map(Object.entries(geometry));
 
 /**
  * Resolve a sign by registry id.
  *
  * Returns `undefined` only when the id is not in the registry at all — that is
- * a content bug. A registry id with no geometry yet resolves to a face whose
- * `geometry` is `undefined`, which `SignSvg` renders as a visible placeholder.
+ * a content bug, and `sign-references.test.ts` fails the build on one. A
+ * registry id with no geometry resolves to a face whose `geometry` is
+ * `undefined`, which `SignSvg` renders as a visible plate rather than a blank.
  */
 export function getSign(id: string): SignFace | undefined {
   const entry = SIGN_REGISTRY.get(id);
@@ -375,8 +47,5 @@ export function getSign(id: string): SignFace | undefined {
   return { entry, geometry: SIGN_GEOMETRY.get(id) };
 }
 
-/** The registry entries P1 can actually draw — what the gallery contact-sheets. */
-export const allSigns: readonly SignEntry[] = [...SIGN_GEOMETRY.keys()].flatMap((id) => {
-  const entry = SIGN_REGISTRY.get(id);
-  return entry ? [entry] : [];
-});
+/** Every registry entry, in registry order — what the contact sheet renders. */
+export const allSigns: readonly SignEntry[] = [...SIGN_REGISTRY.values()];

@@ -27,8 +27,19 @@ test.describe('foundation', () => {
     const titles = new Set<string>();
     for (const route of ROUTES) {
       await page.goto(route);
+      // A split route's HydrateFallback publishes its own visually-hidden
+      // `<h1>Loading</h1>` (deviations.md, P4 note 9), so the heading resolves
+      // before the page mounts and `document.title` is still the previous
+      // route's. Two routes then collide on one title and this test fails for a
+      // reason that has nothing to do with titles.
+      //
+      // Two pieces fixed this race independently, from different angles: wait
+      // for the fallback heading to go, and wait for the static title to go.
+      // Both conditions are kept — either alone can still let the race through.
+      const heading = page.getByRole('heading', { level: 1 });
+      await expect(heading).toBeVisible();
+      await expect(heading).not.toHaveText('Loading');
       await expect(page).not.toHaveTitle(STATIC_TITLE);
-      await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
       const title = await page.title();
       expect(title, `${route} has no product title`).toContain('TN Drive');
       if (route !== INDEX_ALIAS) titles.add(title);

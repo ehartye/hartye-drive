@@ -169,7 +169,7 @@ export function Gallery() {
         <Section
           id="signs"
           title="SignSvg"
-          note="Ids and descriptions come from src/content/signs.json, the 87-sign registry. P1 authors spec-accurate geometry for 13 of them; the other 74 render the plate below until P3 draws them. Every sign names its shape, colour and meaning; drill mode withholds the meaning."
+          note="Ids and descriptions come from src/content/signs.json, the 87-sign registry; all 87 faces are hand-authored SVG at true MUTCD colour, with no clipart and no raster anywhere. Every sign names its shape, colour and meaning; drill mode withholds the meaning. `npm run audit:signs -- --sheet` renders the whole registry at 200px and machine-checks designation, colour and legend containment."
         >
           <div className="flex flex-wrap gap-6">
             {allSigns.map((sign) => (
@@ -191,8 +191,9 @@ export function Gallery() {
           <Row label="Drill mode — the accessible name must not give away the answer">
             <SignSvg id="s1-1-school" size="hero" mode="drill" />
           </Row>
-          <Row label="Registry sign, geometry pending — legible gap, never a blank">
-            <SignSvg id="r5-1-do-not-enter" size="lg" />
+          <Row label="Aspect classes — a guide panel and a plaque are not squares">
+            <SignSvg id="d1-1-destination" size="lg" />
+            <SignSvg id="r2-1-speed-limit" size="lg" />
             <SignSvg id="w13-1p-advisory-speed" size="lg" />
           </Row>
         </Section>

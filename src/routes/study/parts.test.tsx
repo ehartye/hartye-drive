@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { CorrectionNotice, ManualLookup, QueuedAgain } from './parts';
 import { formatEffectiveDate, signForTopic } from './support';
 import { correctionById } from '~/content';
+import { getSign } from '~/signs/signs';
 
 describe('formatEffectiveDate', () => {
   it('spells the real date out — practices D10 forbids "in force 2023"', () => {
@@ -16,12 +17,20 @@ describe('formatEffectiveDate', () => {
 });
 
 describe('signForTopic', () => {
-  it('gives a mapped topic its own sign', () => {
-    expect(signForTopic('railroad-crossing-signs', 'signs')).toBe('crossbuck');
+  it('gives a mapped topic its own registry sign', () => {
+    expect(signForTopic('railroad-crossing-signs', 'signs')).toBe('r15-1-crossbuck');
   });
 
-  it('falls back by blueprint area for a topic with no sign of its own', () => {
-    expect(signForTopic('dui-penalties', 'alcohol-drugs')).toBe('stop');
+  it('falls back by blueprint area for a topic the map does not carry', () => {
+    expect(signForTopic('a-topic-added-later', 'alcohol-drugs')).toBe('r1-1-stop');
+  });
+
+  it('returns registry ids, not the mockup sprite names it used to return', () => {
+    // The bug this replaced: every id here was a sprite name (`stop`,
+    // `crossbuck`), so every study session drew an empty dashed box.
+    for (const topic of ['regulatory-signs', 'required-stops', 'dui-penalties']) {
+      expect(getSign(signForTopic(topic, 'signs')), topic).toBeDefined();
+    }
   });
 });
 

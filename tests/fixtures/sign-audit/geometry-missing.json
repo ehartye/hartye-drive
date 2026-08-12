@@ -1,0 +1,87 @@
+{
+  "note": "A registry entry with no hand-authored face. It would render an \"art pending\" plate rather than a sign, which is a legible gap on screen but is not a shipped sign.",
+  "expect": "geometry-missing",
+  "input": {
+    "minDrawn": 2,
+    "registry": {
+      "schemaVersion": 1,
+      "note": "Fixture registry for scripts/audit-signs.mjs. Two signs, deliberately tiny.",
+      "palette": [
+        "red",
+        "white",
+        "black",
+        "fluorescent-yellow-green"
+      ],
+      "signs": [
+        {
+          "id": "r1-1-stop",
+          "mutcd": "R1-1",
+          "name": "STOP",
+          "category": "regulatory",
+          "shape": "octagon",
+          "faceColor": "red",
+          "legendColor": "white",
+          "meaning": "Come to a complete stop before the crosswalk or stop line.",
+          "citation": {
+            "pdfPage": 50,
+            "printedPage": 36,
+            "quote": "complete stop"
+          }
+        },
+        {
+          "id": "s1-1-school",
+          "mutcd": "S1-1",
+          "name": "School advance warning",
+          "category": "school",
+          "shape": "pentagon",
+          "faceColor": "fluorescent-yellow-green",
+          "legendColor": "black",
+          "meaning": "Slow down and watch for children walking near the school ahead.",
+          "citation": {
+            "pdfPage": 52,
+            "printedPage": 38,
+            "quote": "watch for children"
+          }
+        }
+      ]
+    },
+    "rendered": [
+      {
+        "id": "r1-1-stop",
+        "drawn": true,
+        "paints": [
+          "#b4151c",
+          "#f2f4f1",
+          "none"
+        ],
+        "texts": [
+          {
+            "text": "STOP",
+            "contained": true,
+            "box": {
+              "x": 22,
+              "y": 42,
+              "width": 56,
+              "height": 20
+            }
+          }
+        ],
+        "name": "Octagon, red — Come to a complete stop before the crosswalk or stop line.",
+        "drillName": "Octagon, red"
+      },
+      {
+        "id": "s1-1-school",
+        "drawn": false,
+        "paints": [
+          "#c7ea00",
+          "#14161a",
+          "none"
+        ],
+        "texts": [],
+        "name": "Pentagon, fluorescent yellow-green — Slow down and watch for children walking near the school ahead.",
+        "drillName": "Pentagon, fluorescent yellow-green"
+      }
+    ],
+    "questions": []
+  }
+}

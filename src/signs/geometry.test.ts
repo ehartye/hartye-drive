@@ -51,12 +51,21 @@ describe('sign geometry answers to the content registry', () => {
     }
   });
 
-  it('resolves a registry sign P3 has not drawn yet, rather than nothing', () => {
-    const undrawn = registry.signs.find((sign) => !SIGN_GEOMETRY.has(sign.id));
-    expect(undrawn, 'the registry is fully drawn — retire this test with P3').toBeDefined();
-    const face = getSign(undrawn!.id);
-    expect(face?.entry).toEqual(undrawn);
-    expect(face?.geometry).toBeUndefined();
+  it('draws every sign the registry carries — no face is still pending', () => {
+    const undrawn = registry.signs.filter((sign) => !SIGN_GEOMETRY.has(sign.id)).map((s) => s.id);
+    expect(undrawn).toEqual([]);
+    expect(SIGN_GEOMETRY.size).toBe(registry.signs.length);
+  });
+
+  it('publishes a face outline for every geometry, for the containment gate', () => {
+    for (const [id, geometry] of SIGN_GEOMETRY) {
+      // `audit:signs` fills this path in a real browser and requires every
+      // <text> bounding box to land inside it. An empty one would pass
+      // vacuously, so the shape of the assertion matters.
+      expect(geometry.face, `${id} face`).toMatch(/^M[\d.\-\s]/);
+      expect(geometry.face.length, `${id} face`).toBeGreaterThan(12);
+      expect(geometry.viewBox, `${id} viewBox`).toMatch(/^0 0 \d+ \d+$/);
+    }
   });
 
   it('returns nothing at all for an id the registry does not carry', () => {
