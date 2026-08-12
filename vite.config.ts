@@ -3,6 +3,7 @@ import { fileURLToPath, URL } from 'node:url';
 import { defineConfig, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
+import { VitePWA } from 'vite-plugin-pwa';
 
 /**
  * A restrictive CSP on the shipped page (practices B5). Everything is
@@ -43,8 +44,193 @@ const contentSecurityPolicy = (): Plugin => ({
   },
 });
 
+/**
+ * A dev-server-only repair, and a pre-existing one — it reproduces on this
+ * branch's base commit with none of P9 applied.
+ *
+ * `src/content/index.ts` loads the three large files with import attributes:
+ * `await import('./signs.json', { with: { type: 'json' } })`. Rollup needs
+ * those — the same file is imported statically by `src/signs/registry.ts`, and
+ * a mismatch splits it across two chunks — but Chromium now enforces the HTML
+ * spec's rule that a module requested with `type: 'json'` must arrive as
+ * `application/json`. Vite's dev server transforms JSON into an ES module and
+ * serves it as `text/javascript`, so current Chromium refuses it:
+ *
+ *   Failed to load module script: Expected a JSON module script but the server
+ *   responded with a MIME type of "text/javascript".
+ *
+ * The consequence is not subtle. The content pack never resolves, so the
+ * dashboard, the study session, the exam and the rule reference all land on
+ * "The question bank did not load", and most of `tests/e2e` fails against the
+ * dev server while the production build is perfectly healthy.
+ *
+ * This strips the attribute from **dynamic** imports, in **dev only**. Static
+ * `import x from './y.json' with { type: 'json' }` is untouched: Vite rewrites
+ * those itself and they work. The production build is byte-for-byte unaffected,
+ * which is the point — the chunking guarantee the attributes exist for is not
+ * traded away to fix a dev-server MIME type. See deviations.md, 2026-08-12 (P9)
+ * §5.
+ */
+const devJsonImportAttributes = (): Plugin => ({
+  name: 'tn-drive-dev-json-import-attributes',
+  apply: 'serve',
+  enforce: 'pre',
+  transform(code, id) {
+    if (!/\.tsx?$/.test(id) || !code.includes('with:')) return null;
+    const stripped = code.replace(
+      /,\s*\{\s*with:\s*\{\s*type:\s*['"]json['"]\s*,?\s*\}\s*,?\s*\}\s*\)/g,
+      ')',
+    );
+    return stripped === code ? null : { code: stripped, map: null };
+  },
+});
+
+/**
+ * X23 — flatten the cold-start waterfall.
+ *
+ * Measured on Slow 4G (562 ms RTT) with a 4× CPU throttle, a cold load of
+ * `/study/session` cost four sequential round trips: HTML → entry chunk →
+ * route chunk → question bank. The last two carry 88 KB between them and spent
+ * more than a second of that just waiting to be *discovered*, because a lazy
+ * `import()` cannot be seen until the importer has run.
+ *
+ * Exactly one chunk is therefore announced in the HTML: **the question bank**.
+ * It is the only one that is not speculative — the dashboard, the study
+ * session, the exam simulator, progress and the rule reference all await it,
+ * so every entry point in the app pays for its round trip. Announcing it moves
+ * 84 KB from the end of the chain into the first parallel batch.
+ *
+ * Nothing else is listed, deliberately. `scripts/size.mjs` counts a
+ * modulepreloaded chunk against the X8 initial-JS budget — correctly, because
+ * that is what the learner downloads — so preloading the route chunks as well
+ * would buy a round trip by spending the budget the same executable floor
+ * sets. The bank is excluded from X8 as content, which is exactly what it is.
+ *
+ * `modulepreload` and not `prefetch`: it is needed on this navigation, not a
+ * possible next one.
+ */
+const criticalPreload = (): Plugin => ({
+  name: 'tn-drive-critical-preload',
+  apply: 'build',
+  transformIndexHtml: {
+    order: 'post',
+    handler(html, ctx) {
+      if (!ctx.bundle) return html;
+
+      const already = new Set(
+        [...html.matchAll(/href="\/([^"]+\.js)"/g)].map((match) => match[1]),
+      );
+      const links = Object.values(ctx.bundle)
+        .filter((output) => output.type === 'chunk')
+        .filter((chunk) => /(^|\/)questions-[\w-]*\.js$/.test(chunk.fileName))
+        .map((chunk) => chunk.fileName)
+        .filter((fileName) => !already.has(fileName))
+        .sort()
+        .map((fileName) => `    <link rel="prefetch" as="script" crossorigin href="/${fileName}" />`);
+
+      return links.length === 0 ? html : html.replace('</head>', `${links.join('\n')}\n  </head>`);
+    },
+  },
+});
+
+const DESCRIPTION =
+  'Offline-first study app for the Tennessee Class D knowledge test. Every answer cites the ' +
+  'official manual. Not affiliated with the State of Tennessee.';
+
+/**
+ * The service worker and the manifest (grounding §1, practices F1–F4).
+ *
+ * `registerType: 'prompt'` with `skipWaiting`/`clientsClaim` both off is the
+ * whole of F4: a new build installs, waits, and never activates until a learner
+ * presses a button in `src/app/UpdatePrompt.tsx`. There is no path here that
+ * reloads a page on its own, and nothing mid-exam can be interrupted.
+ *
+ * `globPatterns` names every extension the app ships, not just the JS: the
+ * promise is a **cold start at zero bytes**, so the fonts, the icons, the
+ * question bank chunk, the sign registry and the rules must all be in the
+ * precache. `navigateFallback` is what makes a deep link work offline — there
+ * is no server to fall back to (grounding §1).
+ *
+ * `injectRegister: null` because registration is done by hand in
+ * `ServiceWorkerUpdate`; letting the plugin inject a second registration would
+ * mean two registrations racing for the same waiting worker.
+ */
+const pwa = () =>
+  VitePWA({
+    strategies: 'generateSW',
+    registerType: 'prompt',
+    injectRegister: null,
+    // The dev server has no service worker at all. Every e2e spec that drives
+    // the dev build therefore sees the network exactly as it is; only the
+    // production build under `npm run preview` is offline-capable, which is
+    // also the only build a learner ever runs.
+    devOptions: { enabled: false },
+    // No `includeAssets`: `globPatterns` below already sweeps everything Vite
+    // emits into `dist/`, and naming the same file twice puts two entries in
+    // the precache manifest for one byte range.
+    manifest: {
+      id: '/',
+      name: 'TN Drive — Tennessee Class D knowledge test',
+      short_name: 'TN Drive',
+      description: DESCRIPTION,
+      start_url: '/',
+      scope: '/',
+      display: 'standalone',
+      orientation: 'portrait-primary',
+      lang: 'en-US',
+      dir: 'ltr',
+      categories: ['education'],
+      // §2: asphalt is the base background, so the splash screen and the OS
+      // chrome are the same night road the app is.
+      theme_color: '#14161A',
+      background_color: '#14161A',
+      icons: [
+        { src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+        { src: '/icons/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+        {
+          src: '/icons/icon-maskable-192.png',
+          sizes: '192x192',
+          type: 'image/png',
+          purpose: 'maskable',
+        },
+        {
+          src: '/icons/icon-maskable-512.png',
+          sizes: '512x512',
+          type: 'image/png',
+          purpose: 'maskable',
+        },
+      ],
+    },
+    workbox: {
+      globPatterns: ['**/*.{js,css,html,svg,png,woff2,webmanifest}'],
+      // The bank chunk is ~430 KB raw and is the reason the app is worth
+      // installing; the default 2 MB ceiling would silently drop anything
+      // larger, so it is stated rather than assumed.
+      maximumFileSizeToCacheInBytes: 1024 * 1024,
+      navigateFallback: '/index.html',
+      cleanupOutdatedCaches: true,
+      // Belt and braces on top of `registerType: 'prompt'` — an update takes
+      // effect only when the learner asks for it.
+      skipWaiting: false,
+      clientsClaim: false,
+      // One self-contained sw.js rather than sw.js + workbox-*.js, so the
+      // worker has nothing to fetch before it can run.
+      inlineWorkboxRuntime: true,
+      // Nothing is fetched at runtime — `connect-src 'self'` in the CSP above
+      // is the enforcement, this is the absence of a loophole (practices B2).
+      runtimeCaching: [],
+    },
+  });
+
 export default defineConfig({
-  plugins: [react(), tailwindcss(), contentSecurityPolicy()],
+  plugins: [
+    devJsonImportAttributes(),
+    react(),
+    tailwindcss(),
+    criticalPreload(),
+    contentSecurityPolicy(),
+    pwa(),
+  ],
   resolve: {
     alias: {
       '~': fileURLToPath(new URL('./src', import.meta.url)),
@@ -64,6 +250,13 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     globals: true,
+    // `virtual:pwa-register/react` only exists while the PWA plugin is
+    // generating a service worker. A unit test should not have to build one.
+    alias: {
+      'virtual:pwa-register': fileURLToPath(
+        new URL('./src/test/pwa-register-stub.ts', import.meta.url),
+      ),
+    },
     setupFiles: ['./src/test/setup.ts'],
     css: false,
     include: ['src/**/*.test.{ts,tsx}'],

@@ -1,6 +1,7 @@
 import { Outlet, useLocation } from 'react-router';
 import { AppNav } from '~/components';
 import { isReady, useSetupStore } from '~/store/setup';
+import { ServiceWorkerUpdate } from './ServiceWorkerUpdate';
 
 /**
  * The standing shell: nav plus the routed page. The shell owns the nav offset
@@ -23,6 +24,13 @@ export function AppShell() {
     <div className={onboarding ? 'shell shell--focus' : 'shell'}>
       {!onboarding && <AppNav />}
       <Outlet />
+      {/*
+        The update offer lives here and only here. The study session, the exam
+        and the sign drill are routed *outside* this shell, so a waiting build
+        cannot put a banner over a question — that is structure, not a flag
+        (practices F4).
+      */}
+      <ServiceWorkerUpdate />
     </div>
   );
 }

@@ -10,31 +10,93 @@
       content="Offline-first study app for the Tennessee Class D knowledge test. Every answer cites the official manual. Not affiliated with the State of Tennessee."
     />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <!--
+      iOS never reads the manifest's icons and applies its own mask, so it gets
+      the safe-zone drawing. Same guide sign, rasterized by `npm run icons`.
+    -->
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon-180.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="TN Drive" />
 
     <!--
-      Self-hosted faces (grounding §2, practices F5). Preloaded rather than
-      fetched from a CDN: the app makes zero font requests at runtime and must
-      work at zero bytes of network after first load.
+      The four faces are self-hosted woff2 and precached by the service worker
+      (grounding §2, practices F5) — that, not a preload hint, is what makes the
+      app work at zero bytes of network.
+
+      They are deliberately **not** preloaded. Measured on Slow 4G with a 4× CPU
+      throttle, two `rel="preload"` font links took 59 KB of the first parallel
+      batch and pushed the first question from 2.15 s to 2.60 s: on a slow link
+      the fonts were competing with the code that draws the question. They now
+      load at their natural priority, `font-display: swap` covers the first
+      paint, and every visit after the first is served from the precache with no
+      swap at all. See deviations.md, 2026-08-12 (P9) §2.
     -->
-    <link
-      rel="preload"
-      href="/fonts/overpass-latin.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin
-    />
-    <link
-      rel="preload"
-      href="/fonts/overpass-mono-latin.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin
-    />
 
     <title>TN Drive · Tennessee Class D knowledge test</title>
   </head>
   <body>
-    <div id="root"></div>
+    <!--
+      The boot plate. Static markup, inline styles, no stylesheet and no font
+      dependency, so it paints on the HTML alone.
+
+      A single-page app with no server paints nothing until its JavaScript has
+      arrived and run: measured under Lighthouse's mobile Slow 4G, first
+      contentful paint was 3.3 s and every pixel of that was waiting. There is
+      no server-side render available — static hosting is a hard constraint
+      (grounding §1) — so the honest fix is to say something true in the HTML
+      itself. React clears these children on its first render, so nothing here
+      can go stale, and `position: fixed` keeps it out of the layout, which is
+      what leaves cumulative layout shift at zero.
+
+      It is the app's own guide-sign lockup, not a spinner: a learner opening
+      this in a parking lot should see the product, not a loading indicator.
+    -->
+    <div id="root">
+      <div
+        style="
+          position: fixed;
+          inset: 0;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 1rem;
+          padding: 1.5rem;
+          background: #14161a;
+          text-align: center;
+          font-family: system-ui, sans-serif;
+        "
+      >
+        <p
+          style="
+            margin: 0;
+            width: 100%;
+            max-width: 26rem;
+            padding: 1.25rem 1rem 1.5rem;
+            border: 5px solid #f2f4f1;
+            border-radius: 14px;
+            background: #04684e;
+            color: #f2f4f1;
+            line-height: 1.5;
+          "
+        >
+          <span
+            style="
+              display: block;
+              font-size: 3.5rem;
+              font-weight: 800;
+              letter-spacing: 0.02em;
+              line-height: 1.15;
+            "
+            >TN Drive</span
+          >
+          <span style="display: block; margin-top: 0.75rem; font-size: 1.25rem"
+            >The Tennessee Class D knowledge test, with the official manual quoted behind every
+            answer — and it opens at zero bytes of network.</span
+          >
+        </p>
+      </div>
+    </div>
     <noscript>
       <p style="padding: 2rem; font-family: system-ui; color: #f2f4f1; background: #14161a">
         TN Drive needs JavaScript. Everything runs on your device — there is no server to fall back

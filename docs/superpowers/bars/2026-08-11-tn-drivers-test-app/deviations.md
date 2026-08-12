@@ -1402,3 +1402,206 @@ crossing on foot.").
 hardening the sign audit. Whoever owns it should consider moving the "orange
 always means road work" style of clause out of `meaning` into a separate
 teaching field, at which point the clause trim can be deleted.
+
+---
+
+## 2026-08-12 — P9 (offline, PWA & resilience)
+
+Five items. **Two are thresholds this piece could not reach and did not
+lower** — X23 and Lighthouse Performance. Two are decisions that moved a
+measured number, recorded so nobody has to re-derive them. One is a bar item
+Lighthouse no longer answers. The fifth is a pre-existing defect that had to be
+repaired before the e2e suite could run at all.
+
+### 1. X23 is not met for the first question, on either reading of "Slow 4G"
+
+`executable-floor.md` X23 reads "Cold load on Slow-4G + 4× CPU throttle,
+production build | first question interactive ≤ 2.5 s". **"Slow 4G" is not one
+number.**
+
+| Profile | Bandwidth | RTT | Where it comes from |
+|---|---|---|---|
+| Lighthouse `mobileSlow4G` | 1.6 Mbit/s | **150 ms** | what `npm run audit` throttles with, i.e. what X10–X14 are already measured under |
+| Chrome DevTools "Slow 4G" | 1.6 Mbit/s | **562.5 ms** | the DevTools preset, renamed from "Fast 3G" in 2024 |
+
+Measured, cold, production build, 4× CPU, `/study/session`, from navigation
+start to a choice that answers:
+
+| | first question | first screen (`/`) | warm, from the precache |
+|---|---|---|---|
+| Lighthouse Slow 4G | **2 220 – 2 856 ms** | 2 153 – 2 253 ms | — |
+| DevTools Slow 4G | **3 840 – 4 616 ms** | — | **367 – 482 ms** |
+
+Ranges, not points, because this is a wall-clock benchmark on a shared
+developer machine and the spread is the machine, not the app. **On neither
+profile is the 2 500 ms budget reliably met for the first question.** The
+dashboard entry point is inside it; the deep link into a study session is not.
+
+`npm run audit:startup` (`tests/startup/startup.spec.ts`,
+`playwright.startup.config.ts`) prints every measurement with an explicit
+verdict — `OVER the X23 budget of 2500 ms` — and asserts only a loose
+regression tripwire, labelled as such in the file. It is a **separate command
+from `npm run test:e2e` on purpose**: inside the parallel suite the same cold
+load reads 2 856 ms and alone it reads 2 220 ms, and a timing gate measured
+under eight concurrent browsers is measuring the CPU. **The budget has not been
+redefined, softened, or quietly re-pointed at a number this build happens to
+hit.**
+
+Why the gap cannot be closed by this piece: the three extra round trips are
+spent on a 158 KB gzipped entry chunk, of which ~106 KB is React, React DOM,
+the scheduler and React Router. The remaining ~52 KB is application code, and
+the eager routes inside it (`Dashboard`, `Progress`, `SignsLibrary`) were made
+eager deliberately by P7/P8/P6 because they are three of the four nav
+destinations. Making them lazy would buy perhaps 15 KB and cost every
+destination a round trip. **The real fix is server-side rendering, which
+grounding §1 forbids (static hosting, no server).** What this piece did instead:
+
+- announced the question-bank chunk in the HTML (`vite.config.ts`,
+  `criticalPreload`), which removed one full round trip — 4 574 → 4 068 ms on
+  the DevTools profile;
+- removed the two font `rel="preload"` links (see §2) — a further ~450 ms;
+- moved service-worker registration to `window.onload` so `workbox-window` never
+  competes with the first question.
+
+The number a learner in a parking lot actually lives with is the warm one:
+**367 ms**, because the app is installed by then. That is the case the product
+was built for, and it is measured in the same spec.
+
+### 2. The fonts are no longer preloaded
+
+`index.html` carried `rel="preload"` on `overpass-latin.woff2` and
+`overpass-mono-latin.woff2`, with a comment claiming the preload is what makes
+the app work at zero bytes. It is not — self-hosting plus the precache is.
+Preloading only raises priority on the **first** load, and on a slow link that
+priority is spent against the code that draws the question: the two links took
+59 KB of the first parallel batch and pushed the first question from 2 151 ms to
+2 600 ms (Lighthouse Slow 4G).
+
+They are gone. `font-display: swap` covers the single first paint; every visit
+after that is served from the precache with no swap at all. This touches a file
+P1 authored, and the reasoning is recorded here because the comment that was
+removed asserted the opposite.
+
+### 3. Lighthouse can no longer answer X14, so Chrome answers it directly
+
+X14 asks for "Installable PWA — passes (valid manifest + service worker)".
+Lighthouse **removed the PWA category in v12 and dropped the last of the
+`installable-manifest` and `service-worker` audits in v13**, which is the
+version this repo runs (13.4.1). There is no score left to read.
+
+`npm run audit` therefore asserts installability against Chrome's own criteria
+over the DevTools protocol: the manifest Chrome parsed (`Page.getAppManifest`),
+the errors Chrome found, `display: standalone`, theme and background colours,
+icons at 192 and 512 with a maskable variant — each fetched and confirmed to be
+a real image — and a service worker that reaches `activated`, fills its
+precache, and then serves a navigation with the network switched off. That is
+the thing the retired audit was a proxy for, exercised rather than scored.
+
+### 4. Lighthouse Performance is 89, not ≥ 90. **The threshold was not lowered**
+
+Verbatim, `npm run audit`, production build, mobile emulation:
+
+```
+Lighthouse 13.4.1 — category scores (simulated throttling)
+
+    Performance        89   (>= 90)  FAIL
+    Accessibility     100   (= 100)  PASS
+    Best Practices    100   (>= 95)  PASS
+    SEO               100   (>= 90)  PASS
+
+  key metrics
+
+    first-contentful-paint     1.7 s
+    largest-contentful-paint   3.7 s
+    total-blocking-time        0 ms
+    cumulative-layout-shift    0
+    speed-index                1.7 s
+
+  category scores (real throttling) — reported, not gated
+
+    Performance        90        (90-91 across runs)
+    Accessibility     100
+    Best Practices    100
+    SEO               100
+    first-contentful-paint     1.5 s
+    largest-contentful-paint   3.0 s
+
+  installability (Chrome criteria, over CDP)
+
+    Installable PWA        (passes)      PASS
+```
+
+`npm run audit` **exits non-zero** on this. It has not been softened.
+
+Where it started and what moved it: the first run of this audit scored
+Performance **83** with FCP 3.3 s, LCP 3.6 s, SI 3.3 s, SEO 91.
+
+- SEO 91 → 100: `public/robots.txt`. Without it the SPA fallback answered
+  `/robots.txt` with `index.html`, and Lighthouse read an HTML document as
+  robots directives (47 errors).
+- FCP 3.3 s → 1.7 s and SI 3.3 s → 1.7 s: a **static boot plate** in
+  `index.html` — the app's own guide-sign lockup, inline styles, no stylesheet
+  and no webfont, `position: fixed` so cumulative layout shift stays at 0.
+  React clears it on its first render. A client-rendered app with no server
+  paints nothing at all until 158 KB of JavaScript has arrived and run; this is
+  the only lever available under the static-hosting constraint.
+
+What is left is entirely LCP, and it is a measurement artifact worth naming.
+Lighthouse's default `simulate` throttling loads the page at full speed and then
+models a slow one. Locally the boot plate is on screen for a frame or two before
+React replaces it, so the only `largestContentfulPaint::Candidate` in the trace
+is the post-boot paragraph, and the simulation dates the whole of LCP to the end
+of the JS chain — 3.7 s. Chrome's own `PerformanceObserver` under real Slow 4G
+disagrees: it reports **one** LCP entry, the boot plate, at **1 464 ms**. Under
+Lighthouse's real (`devtools`) throttling the same build scores **90–91**.
+
+`npm run audit` runs both passes and prints both, because the difference is the
+honest thing to publish rather than a knob to pick. The gated number is the
+default one a critic reproduces by running Lighthouse themselves: **89**.
+
+Closing the last point needs the entry chunk to shrink or the app to render on a
+server. Both are outside this piece: the first belongs to whoever owns the route
+table's eager destinations, the second is forbidden by grounding §1.
+
+### 5. A pre-existing dev-server break: JSON import attributes and current Chromium
+
+Not a bar dispute — a defect found while building this piece, and repaired in
+`vite.config.ts` because the file that causes it is off-limits to P9.
+
+`src/content/index.ts` loads the three large content files with import
+attributes:
+
+```ts
+const mod = await import('./signs.json', { with: { type: 'json' } });
+```
+
+The attributes are deliberate: `src/signs/registry.ts` imports the same file
+statically, and Rollup warns and can emit it into two chunks if the attributes
+do not match. But current Chromium enforces the HTML spec rule that a module
+requested as `type: 'json'` must arrive as `application/json`, and Vite's **dev
+server** transforms JSON into an ES module and serves it as `text/javascript`:
+
+```
+Failed to load module script: Expected a JSON module script but the server
+responded with a MIME type of "text/javascript". Strict MIME type checking is
+enforced for module scripts per HTML spec.
+```
+
+The content pack therefore never resolves against `npm run dev`, and the
+dashboard, the study session, the exam and the rule reference all land on "The
+question bank did not load". **Roughly 100 of the ~300 specs in `tests/e2e`
+fail because of it**, and the production build is entirely healthy — which is
+what makes it easy to mistake for a P9 regression. It is not: it reproduces on
+`c9e3f50`, this branch's base commit, with none of P9 applied.
+
+The repair is a `apply: 'serve'` Vite plugin, `devJsonImportAttributes`, that
+strips the attribute from **dynamic** imports in dev only. Static
+`import x from './y.json' with { type: 'json' }` is left alone — Vite rewrites
+those itself and they work. **The production build is unchanged**, so the
+chunking guarantee the attributes exist for is not traded away to fix a
+dev-server MIME type.
+
+The better fix is in `src/content/index.ts`, which this piece may not touch:
+Vite and Rollup both resolve JSON without the attribute, and the mismatch that
+motivated it is really the signs registry being imported two ways. Whoever owns
+`src/content/` should reconcile that and delete this plugin.
