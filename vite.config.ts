@@ -16,6 +16,21 @@ import { VitePWA } from 'vite-plugin-pwa';
  * width is data); `style-src-attr` alone is not supported widely enough to rely
  * on. There is no `unsafe-eval` anywhere.
  */
+/**
+ * Where the app is served from.
+ *
+ * `/` everywhere by default — dev, preview, and every test suite. GitHub Pages
+ * serves a *project* site from `/<repo>/`, so the deploy workflow sets
+ * `BASE_PATH=/hartye-drive/` and this flows into asset URLs, the router
+ * basename, the manifest, and the service worker's navigation fallback.
+ *
+ * The service worker is the one that bites: a worker registered at `/` cannot
+ * control `/hartye-drive/`, so the offline promise — the whole product — dies
+ * silently at the wrong base. Scope, start_url and navigateFallback all derive
+ * from this single value rather than being written out three times.
+ */
+const BASE = process.env.BASE_PATH ?? '/';
+
 const CSP = [
   "default-src 'self'",
   "script-src 'self'",
@@ -109,12 +124,13 @@ const criticalPreload = (): Plugin => ({
         .map((chunk) => chunk.fileName)
         .filter((fileName) => !already.has(fileName))
         .sort()
-        .map((fileName) => `    <link rel="modulepreload" crossorigin href="/${fileName}" />`);
+        .map((fileName) => `    <link rel="modulepreload" crossorigin href="${BASE}${fileName}" />`);
 
       return links.length === 0 ? html : html.replace('</head>', `${links.join('\n')}\n  </head>`);
     },
   },
 });
+
 
 const DESCRIPTION =
   'Offline-first study app for the Tennessee Class D knowledge test. Every answer cites the ' +
@@ -152,12 +168,12 @@ const pwa = () =>
     // emits into `dist/`, and naming the same file twice puts two entries in
     // the precache manifest for one byte range.
     manifest: {
-      id: '/',
+      id: BASE,
       name: 'TN Drive — Tennessee Class D knowledge test',
       short_name: 'TN Drive',
       description: DESCRIPTION,
-      start_url: '/',
-      scope: '/',
+      start_url: BASE,
+      scope: BASE,
       display: 'standalone',
       orientation: 'portrait-primary',
       lang: 'en-US',
@@ -190,7 +206,7 @@ const pwa = () =>
       // installing; the default 2 MB ceiling would silently drop anything
       // larger, so it is stated rather than assumed.
       maximumFileSizeToCacheInBytes: 1024 * 1024,
-      navigateFallback: '/index.html',
+      navigateFallback: `${BASE}index.html`,
       cleanupOutdatedCaches: true,
       // Belt and braces on top of `registerType: 'prompt'` — an update takes
       // effect only when the learner asks for it.
@@ -206,6 +222,7 @@ const pwa = () =>
   });
 
 export default defineConfig({
+  base: BASE,
   plugins: [
     react(),
     tailwindcss(),

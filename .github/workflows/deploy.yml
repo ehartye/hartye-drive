@@ -1,0 +1,76 @@
+name: Deploy to GitHub Pages
+
+# GitHub Pages serves a project site from /<repo>/, so the build is rebased.
+# Everything local — dev, preview, every test suite — stays at `/`.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never let two deploys race; never cancel one midway.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium webkit
+
+      # The full executable floor. A build that cannot pass this does not
+      # deploy — including the content gates, which is the point: a question
+      # whose quote is not verbatim on its cited page must never reach a
+      # learner.
+      - run: npm run verify
+
+  build:
+    needs: verify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+
+      - name: Build for the Pages sub-path
+        env:
+          BASE_PATH: /${{ github.event.repository.name }}/
+        run: npm run build
+
+      # Pages has no SPA fallback of its own: a deep link to /signs is a 404
+      # from the server on a cold visit, before the service worker exists.
+      # Serving index.html as 404.html is the standard fix, and the router
+      # takes it from there.
+      - run: cp dist/index.html dist/404.html
+
+      # Jekyll would eat anything starting with an underscore.
+      - run: touch dist/.nojekyll
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

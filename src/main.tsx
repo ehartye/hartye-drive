@@ -32,7 +32,19 @@ startServiceWorker();
 createRoot(container).render(
   <StrictMode>
     <AppErrorBoundary>
-      <RouterProvider router={createBrowserRouter(routes)} />
+      {/*
+        GitHub Pages serves a project site from `/<repo>/`, not `/`. Vite
+        rewrites asset URLs for that automatically once `base` is set; the
+        router does not, so a deep link would 404 against the wrong prefix.
+        `BASE_URL` is `/` in dev and under `npm run preview`, so nothing about
+        local behaviour changes. Trailing slash trimmed: React Router wants
+        `/hartye-drive`, Vite gives `/hartye-drive/`.
+      */}
+      <RouterProvider
+        router={createBrowserRouter(routes, {
+          basename: import.meta.env.BASE_URL.replace(/\/$/, '') || '/',
+        })}
+      />
     </AppErrorBoundary>
   </StrictMode>,
 );
