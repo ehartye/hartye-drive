@@ -9,7 +9,27 @@ verification-before-completion.
 
 | Piece | Rounds | Verdict | Evidence |
 |---|---|---|---|
-| *(Phase 2 not started)* | — | — | — |
+| **P1 — Foundation & design system** | 2 | **PASS** (round 2) | Blind critic ran the full floor: typecheck/lint/build/test exit 0, 180 unit tests, `src/domain/` **100%** vs a 90% floor, initial JS 95.5 KB / 180 KB, **zero axe violations across 9 routes × 2 widths**, 42/42 tab stops with focus rings, reduced motion honored, zero third-party requests in dev and prod, tokens + type split transcribed faithfully. 41 screenshots in `evidence/critic-p1p2/`. Round 2 closed 3 defects — see below. |
+| **P2 — Content pipeline & question bank** | 2 | **GAP → fixed, awaiting re-audit** | Round 1 critic found the fatal class: **10 questions whose citation did not support the keyed answer**, several where the quote argued for a distractor. Round 2 fixed all 10, widened 21 weak citations, and closed the class with a validator check. Not yet re-audited by a blind critic. |
+| **P3 — Sign system** | 1 | **PASS (self-gated)** | 87/87 registry entries with hand-authored geometry; `npm run audit:signs` renders the real component in headless Chromium and measures every `<text>` bbox against the face path. `PASS — 87 signs drawn, 93 legends inside their faces, 0 failures.` Contact sheet: `artifacts/signs-contact-sheet.png`. **The gate caught 4 real legend-overflow defects on its first run** (R2-1, R6-2, R15-2P, W20-5). Not yet judged by an independent critic. |
+| **P4 — Study session & adaptive engine** | 1 | **built, not yet judged** | 271 tests; `src/domain/` 100%/95.2%; 56 e2e incl. keyboard-only completion, live region, 320px + 200% zoom long content, X19/X20 corruption; 30 axe checks, zero violations. Evidence: `evidence/p4-study-question.png`, `p4-study-answered.png`. |
+| **P5 — Exam simulator & score reports** | 1 | **built, not yet judged** | 375 tests; `src/domain/` 100%/94.5%; 88 e2e; 54 axe. 7-wrong termination tested behaviorally (all-wrong ends at Q7; misses at 1,2,3 then alternating ends at Q10); blueprint sampling verified over 200 seeded runs, every sitting 7–8 per area. Evidence: `evidence/p5-exam-entry.png`. **Exposed a logical contradiction in the frozen bar** — see the 2026-08-12 ruling in `deviations.md`. |
+| **P6 — Sign trainer & library** | 1 | **built, not yet judged** | 472 tests; 164 e2e; 78 axe, zero violations; initial JS 126.3 KB / 180 KB. Drill accessible name asserted **equal to** shape+color across four seeds, so it cannot leak the answer. Evidence: `evidence/p6-signs-library.png`. **Found a pre-existing WCAG failure on `.btn--guide:hover`** (3.72:1 white-on-fill, primary action of every screen) and fixed it. |
+| **P7 — Dashboard & onboarding** | — | **in progress** | Interrupted by a process restart; resumed from transcript with work intact in its worktree. |
+| **P8 — Progress, settings & rule reference** | — | **in progress** | — |
+| **P9 — Offline, PWA & resilience** | — | not started | — |
+| **P10 — Practices & executable sweep** | — | not started | — |
+
+### Round-2 fixes closed (evidence)
+
+| Defect | Proof it is fixed |
+|---|---|
+| Bad content did not fail the build | Pointed `prebuild` at the broken fixture: `BUILD EXIT = 1`, and `grep -c "vite v"` → `0` — vite never ran. |
+| `/gallery/focus` overflowed at 320px **and the reflow spec excluded that route** | Route list now derived by walking the router tree; it **throws** on a `:param` segment rather than silently skipping. Same pattern closed in the a11y spec: coverage 18 → 22 checks. |
+| Two sign schemas disagreed (13 ids vs 87, two category vocabularies) | `signs.json` is sole source of truth; test asserts every geometry id and every content-referenced id resolves. |
+| Citation quote did not support the keyed answer (10 questions) | New `citation-support` check: numeric contradiction, no-keyed-support, distractor-dominant. Flagged 19/508 before fixes, **0/506 after**. Four regression fixtures added. |
+| `quoteIsOnPage` accepted `pdfPage` **and** `pdfPage+1` | Replaced with exact matching plus a proven page-straddle exception; 4 one-page-early citations found and fixed. |
+| `rules.json` was generated and never page-checked | Swept all 533 (`scripts/audit-rule-pages.mjs`): every quote found, **6 cited the wrong page**, all corrected. Now **533/533 page-exact**. |
 
 ---
 
