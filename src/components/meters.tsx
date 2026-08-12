@@ -69,10 +69,9 @@ export function TopicMeter({ name, correct, total, note }: TopicMeterProps) {
     <div className="meter">
       <div className="meter__head">
         <span className="meter__name">{name}</span>
-        <span className="meter__val">
-          {`${correct} / ${total} · ${percent}%`}
-          <span className="sr-only">{` — ${bandLabel(band)}`}</span>
-        </span>
+        {/* The band is stated visibly under the rail, in text. A second,
+            visually-hidden copy here made a screen reader read it twice. */}
+        <span className="meter__val">{`${correct} / ${total} · ${percent}%`}</span>
       </div>
       <div
         className={['rail', 'meter__bar', TONE_CLASS[tone]].filter(Boolean).join(' ')}

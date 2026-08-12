@@ -97,7 +97,7 @@ export function OfflineAndInstall({
     <section className="sect" aria-labelledby="offline-h">
       <h2 id="offline-h">Offline &amp; install</h2>
       <p className="sect__intro">
-        Built for a Driver Service Center parking lot with one bar of signal.
+        Built for a Driver Services Center parking lot with one bar of signal.
       </p>
 
       <SignPanel flat>
@@ -150,7 +150,9 @@ export function OfflineAndInstall({
               </span>
             )}
           </span>
-          <span className="badge">{offer === 'prompt' ? 'Offered' : 'Manual'}</span>
+          {/* Not "Manual": in this product "the manual" is the Tennessee
+              Comprehensive Driver License Manual, named on every question. */}
+          <span className="badge">{offer === 'prompt' ? 'Offered' : 'Not offered'}</span>
         </div>
       </SignPanel>
 

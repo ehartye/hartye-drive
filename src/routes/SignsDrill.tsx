@@ -248,7 +248,7 @@ export function SignsDrill() {
         onExit={() => {
           setConfirmingExit(true);
         }}
-        marker={{ index: index + 1, total }}
+        marker={{ index: index + 1, total, unit: 'Sign' }}
         progress={{
           value: answeredCount,
           max: total,

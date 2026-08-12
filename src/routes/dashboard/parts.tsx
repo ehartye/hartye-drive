@@ -328,7 +328,7 @@ export function InstallPanel({ offer, onInstall, onDismiss }: InstallPanelProps)
           </h3>
           <p className="dim text-[0.875rem]">
             Opens like an app, with no browser bar and no network at all. Same questions, same
-            signs, in the Driver Service Center car park.
+            signs, in the Driver Services Center parking lot.
           </p>
         </div>
       </div>

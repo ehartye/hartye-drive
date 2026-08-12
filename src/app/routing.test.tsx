@@ -36,7 +36,7 @@ describe('routing (grounding §4)', () => {
    */
   it.each([
     ['/study', /Pass the.*knowledge test/s],
-    ['/exam', 'Exam'],
+    ['/exam', 'Mock exam'],
     ['/signs', 'Sign library'],
     ['/progress', /set off yet/],
   ])('renders %s', async (path, heading) => {
