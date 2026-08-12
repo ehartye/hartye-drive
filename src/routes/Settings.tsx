@@ -31,7 +31,15 @@ import { useExamStore } from '~/store/exam';
 import { useSettingsStore } from '~/store/settings';
 import { recordNames, useUnreadableRecords } from '~/store/health';
 import { RECORD_KEYS, readRecordSizes, resetAllRecords } from '~/store/reset';
-import { CorrectionCard, OfflineAndInstall, ResetDialog, ResetFailed } from './settings/parts';
+import { useSetupStore } from '~/store/setup';
+import { dailyPace, daysUntilTest } from '~/domain/setup';
+import {
+  CorrectionCard,
+  OfflineAndInstall,
+  ResetDialog,
+  ResetFailed,
+  YourTest,
+} from './settings/parts';
 import { formatFullDate } from './progress/format';
 /**
  * The content loader and the install-offer hook live with the dashboard because
@@ -82,6 +90,13 @@ export function Settings() {
   const content = useContent();
   const install = useInstallOffer();
   const updateWaiting = useSyncExternalStore(subscribeToUpdates, isUpdateWaiting, () => false);
+  const setup = useSetupStore((s) => s.setup);
+  const setupStorage = useSetupStore((s) => s.storageMode);
+  const saveSetup = useSetupStore((s) => s.save);
+  // Pinned per visit, like every other clock read in the app: "42 days out"
+  // must not change reading while the learner is typing a date next to it.
+  const [today] = useState(() => Date.now());
+  const days = daysUntilTest(setup.testDate, today);
 
   const [reset, setReset] = useState<ResetState>('idle');
   const [acknowledged, setAcknowledged] = useState(false);
@@ -132,6 +147,21 @@ export function Settings() {
       <main className="wrap pt-6">
         <p className="eyebrow">TN Drive</p>
         <h1>Settings &amp; about</h1>
+
+        {/* ------------------------------------------------------- your test */}
+        <YourTest
+          goal={setup.goal}
+          testDate={setup.testDate ?? ''}
+          days={days}
+          pace={dailyPace(content.status === 'ready' ? content.content.bankSize : 0, days)}
+          sessionOnly={setupStorage === 'session-only'}
+          onGoal={(goal) => {
+            saveSetup({ goal, testDate: setup.testDate, at: Date.now() });
+          }}
+          onTestDate={(iso) => {
+            saveSetup({ goal: setup.goal, testDate: iso === '' ? null : iso, at: Date.now() });
+          }}
+        />
 
         {/* ---------------------------------------------- reading & motion */}
         <section className="sect mt-7" aria-labelledby="read-h">
