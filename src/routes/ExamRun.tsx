@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useAdvanceFocus } from '~/app/useAdvanceFocus';
 import { useBlocker, useNavigate, useSearchParams } from 'react-router';
 import {
   Button,
@@ -113,6 +114,16 @@ export function ExamRun() {
   const askedRef = exam ? currentQuestion(exam) : undefined;
   const question: Question | undefined =
     askedRef && byId ? byId.get(askedRef.questionId) : undefined;
+
+  /* The exam had no stage focus at all: pressing Next left focus on the button
+     and the page wherever the last answer left it. Same treatment as the study
+     session and the drill, so all three advance identically.
+
+     Declared here, above every early return — this component renders a loading
+     state, an error state and a briefing before it renders a question, and a
+     hook called after those would run in a different order on different
+     renders. */
+  const stageRef = useAdvanceFocus<HTMLDivElement>(exam?.answers.length ?? 0);
 
   /* The blocker and the finish path both read live values through refs: a
      stale closure here would either block the app's own navigation to the
@@ -354,7 +365,7 @@ export function ExamRun() {
           </>
         }
       >
-        <div data-qid={question.id}>
+        <div ref={stageRef} tabIndex={-1} data-qid={question.id}>
           {/* No topic line: the real test does not tell you which chapter a
               question came from, and naming the area would narrow it. */}
           <QuestionCard eyebrow="Class D knowledge test · simulator" stem={question.stem}>

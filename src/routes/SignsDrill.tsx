@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useAdvanceFocus } from '~/app/useAdvanceFocus';
 import { useNavigate, useSearchParams } from 'react-router';
 import { Button, ChoiceRow, Dialog, FocusChrome, SignPanel, SignSvg } from '~/components';
 import { IconArrowRight } from '~/components/Icon';
@@ -130,10 +131,7 @@ export function SignsDrill() {
 
   /* A route change inside the drill must not leave focus on the choice the
      learner just pressed, three screens down the page. */
-  const stageRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (index > 0) stageRef.current?.focus();
-  }, [index]);
+  const stageRef = useAdvanceFocus<HTMLDivElement>(index);
 
   const record = useCallback(
     (chosenIndex: number | null, correct: boolean) => {

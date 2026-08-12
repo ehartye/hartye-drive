@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useAdvanceFocus } from '~/app/useAdvanceFocus';
 import { useNavigate, useSearchParams } from 'react-router';
 import {
   Button,
@@ -121,11 +122,9 @@ export function StudySession() {
   const question: Question | null = pick && byId ? (byId.get(pick.questionId) ?? null) : null;
 
   /* A route change inside the session must not leave focus on the button the
-     learner just pressed, three screens down the page. */
-  const stageRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (index > 0) stageRef.current?.focus();
-  }, [index]);
+     learner just pressed, three screens down the page — and the next question
+     must start at the top, not wherever reading the explanation left them. */
+  const stageRef = useAdvanceFocus<HTMLDivElement>(index);
 
   const onChoose = useCallback(
     (chosenIndex: number) => {
