@@ -63,7 +63,9 @@ export const REGULATORY: Readonly<Record<string, SignGeometry>> = {
     draw: () => (
       <>
         {yieldFace(C.white, C.red)}
-        {legend(C.red, 50, 44, 15, 'YIELD', { track: 0.3 })}
+        {/* Baseline 41, not 44: the triangle narrows fast, and at `.sign--sm`
+            the legend's descent box crossed the left edge. */}
+        {legend(C.red, 50, 41, 15, 'YIELD', { track: 0.3 })}
       </>
     ),
   },

@@ -27,7 +27,7 @@
  */
 /* `measureInPage` and the two `page.evaluate` callbacks below are serialized and
    run inside Chromium, not in Node — hence the browser globals. */
-/* global document, DOMPoint */
+/* global document, DOMPoint, getComputedStyle */
 import { mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -77,31 +77,53 @@ function fontFaces() {
 }
 
 /**
- * Sizes are the gate's own, not the app's: `executable-floor.md` §3b requires
- * every sign on the contact sheet at **≥200 px**, so no face is judged at a
- * size where a legend error is invisible. Both dimensions clear 200.
+ * Two rendered sizes, and both of them matter.
+ *
+ * `.sheet` is the gate's own size, not the app's: `executable-floor.md` §3b
+ * requires every sign on the contact sheet at **≥200 px**, so no face is judged
+ * at a size where a legend error is invisible. Both dimensions clear 200.
+ *
+ * `.small` is the app's — `.sign--sm` in `src/styles/components.css`, the
+ * smallest size any screen renders a sign at. SVG scales geometry linearly, but
+ * font hinting does not, so "this legend fits at 220 px" is not the same claim
+ * as "this legend fits". Legend containment is measured at both.
  */
 const SIZE_CSS = `
-  .sign{width:220px;height:220px;display:block}
-  .sign--wide{width:280px;height:200px}
-  .sign--tall{width:200px;height:253px}
+  .sheet .sign{width:220px;height:220px;display:block}
+  .sheet .sign--wide{width:280px;height:200px}
+  .sheet .sign--tall{width:200px;height:253px}
+  .small .sign{width:36px;height:36px;display:block}
+  .small .sign--wide{width:74px;height:53px}
+  .small .sign--tall{width:44px;height:56px}
 `;
+
+/** The rendered width each strip measures at, for the failure message. */
+const SHEET_AT = '220px';
+const SMALL_AT = '36px';
+
+/**
+ * The face outline goes inside the same root <svg>, so `isPointInFill` reads it
+ * in the same user space the text boxes are mapped into. It is painted at zero
+ * opacity: present as geometry, invisible as art.
+ */
+const withFaceOutline = (svg, face) =>
+  svg.replace('</svg>', `<path data-face="1" d="${face}" fill="#000" opacity="0"></path></svg>`);
 
 function buildHtml(records) {
   const cells = records
-    .map((record) => {
-      // The face outline goes inside the same root <svg>, so `isPointInFill`
-      // reads it in the same user space the text boxes are mapped into. It is
-      // painted at zero opacity: present as geometry, invisible as art.
-      const withFace = record.svg.replace(
-        '</svg>',
-        `<path data-face="1" d="${record.face}" fill="#000" opacity="0"></path></svg>`,
-      );
-      return `<figure class="cell" data-sign-id="${record.id}">
-  ${withFace}
+    .map(
+      (record) => `<figure class="cell" data-sign-id="${record.id}" data-at="${SHEET_AT}" data-face-paint="1">
+  ${withFaceOutline(record.svg, record.face)}
   <figcaption><b>${record.mutcd}</b><span>${escapeHtml(record.label)}</span><i>${record.category}</i></figcaption>
-</figure>`;
-    })
+</figure>`,
+    )
+    .join('\n');
+
+  const small = records
+    .map(
+      (record) =>
+        `<figure class="cell cell--small" data-sign-id="${record.id}" data-at="${SMALL_AT}">${withFaceOutline(record.svg, record.face)}</figure>`,
+    )
     .join('\n');
 
   return `<!doctype html><html lang="en"><head><meta charset="utf-8">
@@ -112,10 +134,13 @@ ${SIZE_CSS}
   :root{color-scheme:dark}
   body{margin:0;padding:28px;background:#14161A;color:#F2F4F1;font-family:'Overpass',system-ui,sans-serif}
   h1{font-size:20px;margin:0 0 4px}
+  h2{font-size:15px;margin:36px 0 4px}
   p.lede{color:#9BA3AE;font-size:13px;margin:0 0 24px}
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:26px}
+  .grid--small{grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:10px}
   .cell{margin:0;background:#1C1F25;border:1px solid #2A2F38;border-radius:14px;padding:16px;
         display:flex;flex-direction:column;align-items:center;gap:12px}
+  .cell--small{padding:10px;border-radius:8px}
   .cell svg{filter:drop-shadow(0 2px 8px rgba(0,0,0,.55))}
   figcaption{display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center}
   figcaption b{font-family:'Overpass Mono',monospace;font-size:12px;color:#FFCC00}
@@ -124,8 +149,13 @@ ${SIZE_CSS}
 </style></head><body>
 <h1>Tennessee Class D — sign registry contact sheet</h1>
 <p class="lede">${records.length} signs, every face hand-authored SVG at true MUTCD colour. Rendered at &ge;200&nbsp;px by <code>npm run audit:signs -- --sheet</code>.</p>
-<div class="grid">
+<div class="grid sheet">
 ${cells}
+</div>
+<h2>The same ${records.length} faces at <code>.sign--sm</code> — the smallest size the app ships</h2>
+<p class="lede">Legend containment is measured here too: geometry scales linearly, font hinting does not.</p>
+<div class="grid grid--small small">
+${small}
 </div></body></html>`;
 }
 
@@ -134,10 +164,72 @@ const escapeHtml = (value) =>
 
 /* ---------------------------------------------------------- measurement */
 
-/** Runs inside the page. Returns one record per sign with measured text boxes. */
+/**
+ * Runs inside the page. Per cell: every `<text>` node's bounding box tested
+ * against the face outline, the fill the browser computed for it, and — on the
+ * full-size strip — what is actually painted inside that outline, sampled on a
+ * grid.
+ *
+ * The grid is the answer to a gate that could not tell a white sign with a red
+ * legend from a red sign with a white legend: whichever colour covers the face
+ * *is* the face colour, and area is the only way to know which one that is.
+ */
 function measureInPage() {
+  /**
+   * Elements that can paint a point. `<g>` cannot; it only inherits.
+   *
+   * `<text>` is deliberately absent: Chromium hit-tests SVG text by its layout
+   * box rather than its glyph outlines, so counting it would credit a legend
+   * with every blank point inside its bounding box — enough to make "SPEED
+   * LIMIT" out-cover the white sign it is printed on. Excluding it makes this
+   * the measure of what is painted *under* the legend, which is the face; the
+   * legend's own colour is checked per node, where it is exact.
+   */
+  const PAINTABLE = new Set(['path', 'rect', 'circle', 'ellipse', 'polygon', 'polyline', 'line']);
+  /** Samples per axis across the face's bounding box. */
+  const GRID = 24;
+
+  const toHex = (color) => {
+    if (!color || color === 'none' || color === 'transparent') return null;
+    const match = /^rgba?\(([^)]+)\)$/.exec(color);
+    if (!match) return color.toLowerCase();
+    const parts = match[1].split(',').map((value) => Number(value.trim()));
+    if (parts.length > 3 && parts[3] === 0) return null;
+    return `#${parts.slice(0, 3).map((v) => Math.round(v).toString(16).padStart(2, '0')).join('')}`;
+  };
+
+  const paintCache = new Map();
+  const paintOf = (element) => {
+    let paint = paintCache.get(element);
+    if (paint === undefined) {
+      const style = getComputedStyle(element);
+      paint = { fill: toHex(style.fill), stroke: toHex(style.stroke) };
+      paintCache.set(element, paint);
+    }
+    return paint;
+  };
+
+  /** The topmost paint at a viewport point, ignoring the invisible outline. */
+  const paintAt = (svg, clientX, clientY) => {
+    for (const element of document.elementsFromPoint(clientX, clientY)) {
+      if (element === svg) break;
+      if (!svg.contains(element)) continue;
+      if (element.hasAttribute('data-face')) continue;
+      if (!PAINTABLE.has(element.tagName.toLowerCase())) continue;
+      // Hit testing already established the point is on this element's painted
+      // area; every stroke-only shape in this codebase carries fill="none", so
+      // a fill that exists is the fill that covers the point.
+      const paint = paintOf(element);
+      if (paint.fill !== null) return paint.fill;
+      if (paint.stroke !== null) return paint.stroke;
+    }
+    return null;
+  };
+
   const out = [];
   for (const cell of document.querySelectorAll('[data-sign-id]')) {
+    // elementsFromPoint only sees the viewport, and this page is far taller.
+    cell.scrollIntoView({ block: 'center' });
     const svg = cell.querySelector('svg');
     const face = cell.querySelector('path[data-face]');
     const rootCtm = svg.getScreenCTM();
@@ -153,10 +245,18 @@ function measureInPage() {
       ].map(([x, y]) => new DOMPoint(x, y).matrixTransform(toRoot));
       const xs = corners.map((p) => p.x);
       const ys = corners.map((p) => p.y);
+      // What this legend is printed ON. A legend in the face colour is normally
+      // a legend that has gone wrong; knocked out of a legend-coloured shape —
+      // the black words inside the white arrow of ONE WAY — it is the sign.
+      const middle = new DOMPoint((Math.min(...xs) + Math.max(...xs)) / 2, (Math.min(...ys) + Math.max(...ys)) / 2)
+        .matrixTransform(rootCtm);
       texts.push({
         text: node.textContent ?? '',
         contained:
           face !== null && corners.every((p) => face.isPointInFill(new DOMPoint(p.x, p.y))),
+        fill: toHex(getComputedStyle(node).fill) ?? 'none',
+        under: paintAt(svg, middle.x, middle.y),
+        at: cell.dataset.at,
         box: {
           x: Math.min(...xs),
           y: Math.min(...ys),
@@ -165,7 +265,29 @@ function measureInPage() {
         },
       });
     }
-    out.push({ id: cell.dataset.signId, texts });
+
+    let facePaint;
+    if (cell.dataset.facePaint === '1' && face !== null) {
+      const bounds = face.getBBox();
+      const fills = {};
+      let samples = 0;
+      let unpainted = 0;
+      for (let i = 0; i < GRID; i++) {
+        for (let j = 0; j < GRID; j++) {
+          const userX = bounds.x + (bounds.width * (i + 0.5)) / GRID;
+          const userY = bounds.y + (bounds.height * (j + 0.5)) / GRID;
+          if (!face.isPointInFill(new DOMPoint(userX, userY))) continue;
+          samples++;
+          const screen = new DOMPoint(userX, userY).matrixTransform(rootCtm);
+          const paint = paintAt(svg, screen.x, screen.y);
+          if (paint === null) unpainted++;
+          else fills[paint] = (fills[paint] ?? 0) + 1;
+        }
+      }
+      facePaint = { samples, unpainted, fills };
+    }
+
+    out.push({ id: cell.dataset.signId, at: cell.dataset.at, texts, facePaint });
   }
   return out;
 }
@@ -237,15 +359,37 @@ const records = bundle.collectRenders();
 const html = buildHtml(records);
 const { measured, screenshot } = await measure(html);
 
-const measuredById = new Map(measured.map((m) => [m.id, m]));
-const rendered = records.map((record) => ({
-  id: record.id,
-  drawn: record.drawn,
-  paints: record.paints,
-  texts: measuredById.get(record.id)?.texts ?? [],
-  name: record.name,
-  drillName: record.drillName,
-}));
+const NO_FACE_PAINT = { samples: 0, unpainted: 0, fills: {} };
+
+/** Every strip's measurement of a sign, merged: legends from both, paint once. */
+const rendered = records.map((record) => {
+  const cells = measured.filter((m) => m.id === record.id);
+  return {
+    id: record.id,
+    drawn: record.drawn,
+    paints: record.paints,
+    texts: cells.flatMap((cell) => cell.texts),
+    faceOutline: record.face,
+    facePaint: cells.find((cell) => cell.facePaint !== undefined)?.facePaint ?? NO_FACE_PAINT,
+    name: record.name,
+    drillName: record.drillName,
+  };
+});
+
+/**
+ * A size that silently rendered nothing would make legend containment vacuous
+ * at that size, so the strips have to agree on how many legends exist.
+ */
+const perStrip = new Map();
+for (const cell of measured) perStrip.set(cell.at, (perStrip.get(cell.at) ?? 0) + cell.texts.length);
+const stripCounts = [...perStrip.entries()];
+if (stripCounts.length < 2 || new Set(stripCounts.map(([, count]) => count)).size !== 1) {
+  fatal(
+    `the rendered sizes disagree on how many legends exist (${stripCounts
+      .map(([at, count]) => `${at}: ${count}`)
+      .join(', ')}) — one of them did not render.`,
+  );
+}
 
 const failures = bundle.auditSigns({
   registry: bundle.registry,
@@ -265,11 +409,15 @@ if (wantSheet) {
 
 const drawn = records.filter((r) => r.drawn).length;
 const textCount = rendered.reduce((sum, r) => sum + r.texts.length, 0);
+const faceSamples = rendered.reduce((sum, r) => sum + r.facePaint.samples, 0);
 
 console.log('audit:signs — MUTCD sign registry gate (executable-floor.md 3b)\n');
 console.log(`  registry entries                 ${records.length}`);
 console.log(`  hand-authored faces              ${drawn} (floor ${bundle.MIN_DRAWN_SIGNS})`);
-console.log(`  legend nodes measured in browser ${textCount}`);
+console.log(
+  `  legend nodes measured in browser ${textCount} (${stripCounts.map(([at, count]) => `${count} at ${at}`).join(', ')})`,
+);
+console.log(`  face points sampled for colour   ${faceSamples}`);
 console.log(`  palette tokens                   ${bundle.registry.palette.join(', ')}`);
 console.log(
   `  contact sheet                    ${wantSheet ? 'artifacts/signs-contact-sheet.{html,png}' : 'pass --sheet to write it'}`,

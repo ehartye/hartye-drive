@@ -16,10 +16,21 @@
  */
 import { scoreCitationSupport } from '../../scripts/lib/citation-support.mjs';
 import type { SignEntry, SignRegistry } from '~/content/types';
+import { describeOutline, measureOutline, outlineMatchesShape } from './outline';
 import { MUTCD_COLORS, colorLabel, shapeLabel } from './registry';
 
 /** The floor `executable-floor.md` sets for the registry. */
 export const MIN_DRAWN_SIGNS = 80;
+
+/**
+ * How much of its own declared face outline a sign must actually paint.
+ *
+ * Below this the outline is not the face — and since the shape check and the
+ * legend-containment check are both measured *against* that outline, an
+ * unpainted outline would make both of them vacuous. Not 100%: a rounded corner
+ * legitimately leaves a sliver of the sharp-cornered outline unpainted.
+ */
+export const MIN_FACE_COVERAGE = 0.9;
 
 /** MUTCD 2009 designations: R1-1, R1-3P, W13-1P, R5-1a, OM3-L, I-13, G20-2. */
 const MUTCD_PATTERN = /^(?:OM|[A-Z]{1,2})-?\d+(?:-\d+)?[a-zA-Z]?(?:-[A-Z])?$/;
@@ -36,6 +47,42 @@ export interface TextMeasurement {
   /** Every corner of the measured box lies inside the declared face outline. */
   readonly contained: boolean;
   readonly box: TextBox;
+  /** The `fill` the browser computed for this node, as `#rrggbb`. */
+  readonly fill: string;
+  /**
+   * The paint directly beneath this legend, or `null` where nothing is. It is
+   * what tells a legend painted in the face colour by mistake from one knocked
+   * out of a legend-coloured shape on purpose — the black words inside the
+   * white arrow of R6-1 ONE WAY are the sign, not a defect.
+   */
+  readonly under: string | null;
+  /**
+   * The rendered width this was measured at, e.g. `220px` or `36px`. Every
+   * legend is measured twice — once on the contact sheet and once at the
+   * smallest size the app ships (`.sign--sm`) — because SVG scales geometry
+   * linearly but font hinting does not, so "fits at 200px" is not the same
+   * claim as "fits".
+   */
+  readonly at: string;
+}
+
+/**
+ * What a real browser found painted **inside a sign's declared face outline**,
+ * sampled on a grid, topmost paint winning at each point.
+ *
+ * This is the measurement the colour check was missing. Set membership — every
+ * declared colour appears somewhere, nothing undeclared appears — is satisfied
+ * identically by a white sign with a red legend and a red sign with a white
+ * legend, which is exactly the YIELD defect Phase 1 shipped. Area tells them
+ * apart: the colour covering the face *is* the face colour.
+ */
+export interface FacePaint {
+  /** Grid points that fell inside the declared face outline. */
+  readonly samples: number;
+  /** Of those, how many carry no paint at all. */
+  readonly unpainted: number;
+  /** `#rrggbb` → how many sample points that paint covers. */
+  readonly fills: Readonly<Record<string, number>>;
 }
 
 /** What one sign actually rendered, as measured rather than as intended. */
@@ -46,6 +93,9 @@ export interface RenderedSign {
   /** Every `fill`/`stroke` value the SVG carries, lower-cased, `none` dropped. */
   readonly paints: readonly string[];
   readonly texts: readonly TextMeasurement[];
+  /** The face outline the geometry publishes, as SVG path data. */
+  readonly faceOutline: string;
+  readonly facePaint: FacePaint;
   /** `aria-label` as `SignSvg` renders it in labelled mode. */
   readonly name: string;
   /** `aria-label` as `SignSvg` renders it in drill mode. */
@@ -89,6 +139,9 @@ export const AUDIT_CODES = [
   'sign-floor',
   'color-declared-not-painted',
   'color-painted-not-declared',
+  'face-color-mismatch',
+  'legend-color-mismatch',
+  'shape-mismatch',
   'palette-unknown-token',
   'palette-dead-token',
   'legend-overflow',
@@ -110,7 +163,34 @@ function declaredTokens(sign: SignEntry): string[] {
   return [sign.faceColor, sign.legendColor, ...(sign.accentColors ?? [])];
 }
 
+/** The tokens a legend is allowed to be painted in: the legend, and accents. */
+function legendTokens(sign: SignEntry): string[] {
+  return [sign.legendColor, ...(sign.accentColors ?? [])];
+}
+
+/**
+ * The paint covering the most of the face outline. That is the face colour as
+ * drawn, whatever the entry says it is.
+ */
+function dominantFill(paint: FacePaint): { readonly value: string; readonly share: number } | undefined {
+  let best: { value: string; share: number } | undefined;
+  for (const [value, count] of Object.entries(paint.fills)) {
+    const share = paint.samples === 0 ? 0 : count / paint.samples;
+    if (best === undefined || share > best.share) best = { value: value.toLowerCase(), share };
+  }
+  return best;
+}
+
+const percent = (value: number): string => `${(value * 100).toFixed(0)}%`;
+
 const words = (text: string): string[] => text.toLowerCase().match(/[a-z]{5,}/g) ?? [];
+
+/**
+ * Words carried by a sign's own legend. Shorter than `words` deliberately: a
+ * drill name that says "STOP" or "ONE WAY" has handed over the answer, and
+ * those are four and three letters.
+ */
+const legendWords = (text: string): string[] => text.toLowerCase().match(/[a-z]{3,}/g) ?? [];
 
 /**
  * Words a name must contain to "state the meaning". Comparing the whole
@@ -197,6 +277,81 @@ export function auditSigns(input: AuditInput): AuditFailure[] {
       }
     }
 
+    /* -------------------------------------------------- shape, as drawn
+     *
+     * The declaration cannot vouch for itself. `shape` used to be read only to
+     * build the accessible name — which is generated *from* `shape` — so
+     * changing `r1-1-stop` to `circle` with the octagon still on screen passed
+     * the gate and renamed the sign "Circle, red — STOP…". This measures the
+     * outline the geometry draws and asks whether it can be the declared shape.
+     */
+    const outline = measureOutline(rendered.faceOutline);
+    if (!outlineMatchesShape(sign.shape, outline)) {
+      fail(
+        'shape-mismatch',
+        sign.id,
+        `declares shape "${sign.shape}" but the face it draws is ${describeOutline(outline)}`,
+      );
+    }
+
+    // …and the outline itself is not taken on trust: the shape check and the
+    // legend-containment check are both measured against it, so an outline the
+    // sign does not actually paint would make both vacuous.
+    const { samples, unpainted } = rendered.facePaint;
+    if (samples === 0) {
+      fail(
+        'shape-mismatch',
+        sign.id,
+        'the declared face outline encloses no measurable area, so nothing about the shape was checked',
+      );
+    } else if ((samples - unpainted) / samples < MIN_FACE_COVERAGE) {
+      fail(
+        'shape-mismatch',
+        sign.id,
+        `the declared face outline is not the face on screen: only ${percent((samples - unpainted) / samples)} of it carries any paint (floor ${percent(MIN_FACE_COVERAGE)})`,
+      );
+    }
+
+    /* ------------------------------------------------- colour roles, as drawn
+     *
+     * Set membership above is symmetric: "white face, red legend" and "red
+     * face, white legend" declare the same two colours and satisfy it
+     * identically. That is the YIELD defect Phase 1 shipped. Roles are what
+     * distinguishes them, and roles are measured by area and by node.
+     */
+    const dominant = dominantFill(rendered.facePaint);
+    const faceValue = hex(sign.faceColor);
+    if (dominant !== undefined && faceValue !== undefined && dominant.value !== faceValue) {
+      fail(
+        'face-color-mismatch',
+        sign.id,
+        `declares faceColor "${sign.faceColor}" (${faceValue}) but ${dominant.value} covers ${percent(dominant.share)} of the face — the face is painted the wrong colour, or the two colours are inverted`,
+      );
+    }
+
+    const legendValues = new Set(
+      legendTokens(sign)
+        .map(hex)
+        .filter((value): value is string => value !== undefined),
+    );
+    for (const measured of rendered.texts) {
+      const painted = measured.fill.toLowerCase();
+      if (legendValues.has(painted)) continue;
+      // A legend in the face colour, sitting on a legend-coloured shape, is a
+      // knockout — R6-1 ONE WAY is exactly that and is drawn correctly. On the
+      // face itself it is a legend that has gone the colour of its background.
+      const knockout =
+        painted === faceValue &&
+        measured.under !== null &&
+        legendValues.has(measured.under.toLowerCase());
+      if (knockout) continue;
+      fail(
+        'legend-color-mismatch',
+        sign.id,
+        `legend ${JSON.stringify(measured.text)} is painted ${measured.fill} on ${measured.under ?? 'nothing'} at ${measured.at}, which is neither the declared legendColor "${sign.legendColor}" nor an accent (allowed: ${[...legendValues].join(', ')})`,
+      );
+    }
+
     /* ------------------------------------------------- legend containment */
     for (const measured of rendered.texts) {
       if (!measured.contained) {
@@ -204,7 +359,7 @@ export function auditSigns(input: AuditInput): AuditFailure[] {
         fail(
           'legend-overflow',
           sign.id,
-          `legend ${JSON.stringify(measured.text)} measures ${width.toFixed(1)}×${height.toFixed(1)} at (${x.toFixed(1)}, ${y.toFixed(1)}) and does not fit inside the face`,
+          `legend ${JSON.stringify(measured.text)} measures ${width.toFixed(1)}×${height.toFixed(1)} at (${x.toFixed(1)}, ${y.toFixed(1)}) rendered at ${measured.at} and does not fit inside the face`,
         );
       }
     }
@@ -227,14 +382,22 @@ export function auditSigns(input: AuditInput): AuditFailure[] {
     }
 
     const drill = rendered.drillName.toLowerCase();
-    const leaks = distinctive.filter((word) => drill.includes(word));
+    // Two ways a drill name hands over the answer: it paraphrases the meaning,
+    // or it repeats the sign's own legend. The second is the one a generated
+    // name walks into — "Octagon, red" is safe, "STOP sign, octagon, red" is
+    // the answer written out, and the legend is measured, not declared.
+    const spoken = new Set(rendered.texts.flatMap((measured) => legendWords(measured.text)));
+    const leaks = [
+      ...distinctive.filter((word) => drill.includes(word)),
+      ...[...spoken].filter((word) => drill.includes(word)),
+    ];
     if (drill.trim() === '') {
       fail('drill-name-leaks-meaning', sign.id, 'drill name is empty — the sign would be nameless');
     } else if (leaks.length > 0) {
       fail(
         'drill-name-leaks-meaning',
         sign.id,
-        `drill name gives the answer away: ${JSON.stringify(rendered.drillName)} carries ${leaks.join(', ')}`,
+        `drill name gives the answer away: ${JSON.stringify(rendered.drillName)} carries ${[...new Set(leaks)].join(', ')}`,
       );
     }
   }

@@ -1,6 +1,6 @@
 {
-  "note": "A legend whose measured bounding box leaves the face. Measured in a real browser with the real font — this is the check that would have caught ONE WAY, NO PASSING ZONE and the crossbuck.",
-  "expect": "legend-overflow",
+  "note": "A drill name that repeats the sign's own legend. \"STOP\" is four letters, so the meaning-paraphrase rule never saw it — the answer to the drill is written on the face, and this is the name that reads it out.",
+  "expect": "drill-name-leaks-meaning",
   "input": {
     "minDrawn": 2,
     "registry": {
@@ -57,11 +57,11 @@
         "texts": [
           {
             "text": "STOP",
-            "contained": false,
+            "contained": true,
             "box": {
-              "x": -8,
+              "x": 22,
               "y": 42,
-              "width": 116,
+              "width": 56,
               "height": 20
             },
             "fill": "#f2f4f1",
@@ -70,7 +70,7 @@
           }
         ],
         "name": "Octagon, red — Come to a complete stop before the crosswalk or stop line.",
-        "drillName": "Octagon, red",
+        "drillName": "Octagon, red — STOP",
         "faceOutline": "M29.3 0H70.7L100 29.3V70.7L70.7 100H29.3L0 70.7V29.3Z",
         "facePaint": {
           "samples": 402,

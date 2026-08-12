@@ -63,11 +63,23 @@
               "y": 42,
               "width": 56,
               "height": 20
-            }
+            },
+            "fill": "#f2f4f1",
+            "at": "220px",
+            "under": "#b4151c"
           }
         ],
         "name": "Octagon, red — Come to a complete stop before the crosswalk or stop line.",
-        "drillName": "Octagon, red"
+        "drillName": "Octagon, red",
+        "faceOutline": "M29.3 0H70.7L100 29.3V70.7L70.7 100H29.3L0 70.7V29.3Z",
+        "facePaint": {
+          "samples": 402,
+          "unpainted": 4,
+          "fills": {
+            "#b4151c": 381,
+            "#f2f4f1": 17
+          }
+        }
       },
       {
         "id": "s1-1-school",
@@ -79,7 +91,16 @@
         ],
         "texts": [],
         "name": "Pentagon, fluorescent yellow-green — Slow down and watch for children walking near the school ahead.",
-        "drillName": "Pentagon, fluorescent yellow-green"
+        "drillName": "Pentagon, fluorescent yellow-green",
+        "faceOutline": "M50 1L98 37L79 99H21L2 37Z",
+        "facePaint": {
+          "samples": 358,
+          "unpainted": 3,
+          "fills": {
+            "#c7ea00": 337,
+            "#14161a": 18
+          }
+        }
       }
     ],
     "questions": []

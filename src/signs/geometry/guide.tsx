@@ -43,21 +43,30 @@ export const GUIDE: Readonly<Record<string, SignGeometry>> = {
         <path fill={C.red} d={SHIELD_TOP} />
         <path fill={C.blue} d={SHIELD_BODY} />
         {legend(C.white, 50, 27, 8, 'INTERSTATE', { track: 0.2 })}
-        {legend(C.white, 50, 72, 30, String(value), { mono: true, weight: 700 })}
+        {/* Baseline 68, not 72: the shield tapers to its point, and at
+            `.sign--sm` the numeral's descent box crossed the left flank. */}
+        {legend(C.white, 50, 68, 30, String(value), { mono: true, weight: 700 })}
       </>
     ),
   },
 
   'm1-4-us-route': {
     viewBox: BOX_SQUARE,
-    face: FACE_SQUARE,
+    // The face is the SHIELD, not the board it is mounted on: the entry
+    // declares `shape: shield` and `faceColor: white`, and both are true of
+    // the white cutout. Publishing the square here made the shape declaration
+    // a lie the gate could not see, and put the audit's face-colour sample on
+    // the black background instead of the white shield.
+    face: US_SHIELD,
     // "black numerals on a white shield surrounded by a black background
     // without a border" — the manual, printed p.40.
     draw: (value = 41) => (
       <>
         <rect x={1} y={1} width={98} height={98} rx={4} fill={C.black} />
         <path fill={C.white} d={US_SHIELD} />
-        {legend(C.black, 50, 66, 30, String(value), { mono: true, weight: 700 })}
+        {/* Baseline 62, not 66: same taper, same reason — and it centres the
+            numeral in the shield rather than in the board behind it. */}
+        {legend(C.black, 50, 62, 30, String(value), { mono: true, weight: 700 })}
       </>
     ),
   },

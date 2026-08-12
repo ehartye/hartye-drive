@@ -1,6 +1,6 @@
 {
-  "note": "A legend whose measured bounding box leaves the face. Measured in a real browser with the real font — this is the check that would have caught ONE WAY, NO PASSING ZONE and the crossbuck.",
-  "expect": "legend-overflow",
+  "note": "The second critic mutation, verbatim: r1-1-stop declared a circle with the octagon geometry untouched. The accessible name is generated FROM the declaration, so it reads \"Circle, red — STOP…\" and the name check is satisfied by the lie. Only the drawn outline can catch it.",
+  "expect": "shape-mismatch",
   "input": {
     "minDrawn": 2,
     "registry": {
@@ -18,7 +18,7 @@
           "mutcd": "R1-1",
           "name": "STOP",
           "category": "regulatory",
-          "shape": "octagon",
+          "shape": "circle",
           "faceColor": "red",
           "legendColor": "white",
           "meaning": "Come to a complete stop before the crosswalk or stop line.",
@@ -57,11 +57,11 @@
         "texts": [
           {
             "text": "STOP",
-            "contained": false,
+            "contained": true,
             "box": {
-              "x": -8,
+              "x": 22,
               "y": 42,
-              "width": 116,
+              "width": 56,
               "height": 20
             },
             "fill": "#f2f4f1",
@@ -69,8 +69,8 @@
             "under": "#b4151c"
           }
         ],
-        "name": "Octagon, red — Come to a complete stop before the crosswalk or stop line.",
-        "drillName": "Octagon, red",
+        "name": "Circle, red — Come to a complete stop before the crosswalk or stop line.",
+        "drillName": "Circle, red",
         "faceOutline": "M29.3 0H70.7L100 29.3V70.7L70.7 100H29.3L0 70.7V29.3Z",
         "facePaint": {
           "samples": 402,

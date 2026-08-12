@@ -47,7 +47,10 @@ describe('sign registry audit (executable-floor.md 3b)', () => {
   });
 
   it('finds the fixtures at all', () => {
-    expect(files.length).toBe(AUDIT_CODES.length + 1);
+    // One per code plus the clean control is the floor, not the ceiling: a rule
+    // with more than one way to break it gets more than one fixture, named
+    // `<code>--<variant>.json`.
+    expect(files.length).toBeGreaterThanOrEqual(AUDIT_CODES.length + 1);
   });
 
   it.each(files.map((name) => [name] as const))('%s fails exactly as designed', (name) => {

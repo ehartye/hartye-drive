@@ -1,6 +1,6 @@
 {
-  "note": "A legend whose measured bounding box leaves the face. Measured in a real browser with the real font — this is the check that would have caught ONE WAY, NO PASSING ZONE and the crossbuck.",
-  "expect": "legend-overflow",
+  "note": "The face is right — white covers it — but the legend is painted in the face colour instead of the declared red. A legend the same colour as its face is invisible on the sign and undetectable to set membership.",
+  "expect": "legend-color-mismatch",
   "input": {
     "minDrawn": 2,
     "registry": {
@@ -14,18 +14,18 @@
       ],
       "signs": [
         {
-          "id": "r1-1-stop",
-          "mutcd": "R1-1",
-          "name": "STOP",
+          "id": "r1-2-yield",
+          "mutcd": "R1-2",
+          "name": "YIELD",
           "category": "regulatory",
-          "shape": "octagon",
-          "faceColor": "red",
-          "legendColor": "white",
-          "meaning": "Come to a complete stop before the crosswalk or stop line.",
+          "shape": "triangle-down",
+          "faceColor": "white",
+          "legendColor": "red",
+          "meaning": "Slow down and let traffic already in the intersection or on the through road go first.",
           "citation": {
             "pdfPage": 50,
             "printedPage": 36,
-            "quote": "complete stop"
+            "quote": "slow down"
           }
         },
         {
@@ -47,37 +47,37 @@
     },
     "rendered": [
       {
-        "id": "r1-1-stop",
+        "id": "r1-2-yield",
         "drawn": true,
         "paints": [
-          "#b4151c",
           "#f2f4f1",
+          "#b4151c",
           "none"
         ],
         "texts": [
           {
-            "text": "STOP",
-            "contained": false,
+            "text": "YIELD",
+            "contained": true,
             "box": {
-              "x": -8,
-              "y": 42,
-              "width": 116,
-              "height": 20
+              "x": 26,
+              "y": 32,
+              "width": 48,
+              "height": 14
             },
             "fill": "#f2f4f1",
             "at": "220px",
-            "under": "#b4151c"
+            "under": "#f2f4f1"
           }
         ],
-        "name": "Octagon, red — Come to a complete stop before the crosswalk or stop line.",
-        "drillName": "Octagon, red",
-        "faceOutline": "M29.3 0H70.7L100 29.3V70.7L70.7 100H29.3L0 70.7V29.3Z",
+        "name": "Downward triangle, white — Slow down and let traffic already in the intersection or on the through road go first.",
+        "drillName": "Downward triangle, white",
+        "faceOutline": "M2 7H98L50 96Z",
         "facePaint": {
-          "samples": 402,
-          "unpainted": 4,
+          "samples": 372,
+          "unpainted": 3,
           "fills": {
-            "#b4151c": 381,
-            "#f2f4f1": 17
+            "#f2f4f1": 244,
+            "#b4151c": 125
           }
         }
       },

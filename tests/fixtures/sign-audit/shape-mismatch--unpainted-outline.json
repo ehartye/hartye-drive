@@ -1,6 +1,6 @@
 {
-  "note": "A legend whose measured bounding box leaves the face. Measured in a real browser with the real font — this is the check that would have caught ONE WAY, NO PASSING ZONE and the crossbuck.",
-  "expect": "legend-overflow",
+  "note": "The shape check and the legend-containment check are both measured against the declared face outline, so an outline the sign does not actually paint would make both vacuous. Here the octagon outline is over half unpainted: the outline is not the face.",
+  "expect": "shape-mismatch",
   "input": {
     "minDrawn": 2,
     "registry": {
@@ -57,11 +57,11 @@
         "texts": [
           {
             "text": "STOP",
-            "contained": false,
+            "contained": true,
             "box": {
-              "x": -8,
+              "x": 22,
               "y": 42,
-              "width": 116,
+              "width": 56,
               "height": 20
             },
             "fill": "#f2f4f1",
@@ -74,10 +74,10 @@
         "faceOutline": "M29.3 0H70.7L100 29.3V70.7L70.7 100H29.3L0 70.7V29.3Z",
         "facePaint": {
           "samples": 402,
-          "unpainted": 4,
+          "unpainted": 210,
           "fills": {
-            "#b4151c": 381,
-            "#f2f4f1": 17
+            "#b4151c": 180,
+            "#f2f4f1": 12
           }
         }
       },
