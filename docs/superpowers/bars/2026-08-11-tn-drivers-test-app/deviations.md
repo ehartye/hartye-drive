@@ -472,3 +472,99 @@ so a citation cannot drift from the text it came from. The build step also
 rotates option order by a hash of the question id, because questions authored
 with the correct answer first would otherwise ship a "the answer is always A"
 tell; the 27 official questions are never rotated.
+
+---
+
+## 2026-08-11 — P4 (study session & adaptive engine)
+
+Nothing in `stack-grounding.md`, `executable-floor.md`, `practices-checklist.md`,
+`state-matrix.md` or `mockups/` was edited. Nine items to record; the first
+three want a ruling.
+
+### 1. A `work` panel variant, and three page-level layouts — ruling requested
+
+§3 enumerates the panel variants as `guide / stop / warn / route`. Mockup `03b`
+puts the corrections notice in **construction orange**, which §2 defines as
+"content that moved / in progress" — exactly what a post-2022 correction is.
+Warning yellow is already spoken for ("caution / review this"), and reusing it
+would make a correction look like a weak topic. So `SignPanel` gained a `work`
+variant (`.panel--work`, four lines of CSS).
+
+Three layouts were also transcribed from the ratified mockups into
+`src/styles/components.css`: `.changed` (the corrections notice, `03b`),
+`.lookup` (the opt-in "look it up in the manual" `<details>`, `03b`) and
+`.again` (the "queued again" diamond panel, `04b`). **No new component was added
+to `src/components/`** — these are compositions of `SignPanel` and a native
+`<details>`, and they live under `src/routes/study/`. The mockups that specify
+them are already ratified, so this is recorded rather than proposed; the panel
+variant is the only genuine widening of §3.
+
+### 2. `zustand` was installed; `src/store/` is the store convention
+
+Grounding §1 names `zustand` + `persist` as the state decision, but P1 shipped
+without the dependency, so P4 added it (5.0.14, one package, ~1 KB gzipped).
+The convention P5–P8 should follow: **every state transition is a pure function
+in `src/domain/`; `src/store/` holds a thin `persist`ed store that calls them.**
+`persist`'s own serializer is deliberately replaced with the domain's
+(`serializeProgress` / `loadProgress`), so the code a critic exercises by
+writing garbage into `localStorage` is the code that actually runs (X19/X20).
+
+### 3. `.gitattributes` — a pre-existing `npm test` failure on Windows
+
+`npm test` failed on a clean checkout of `content/p2-question-bank` on this
+machine **before any P4 code existed**: `src/content/validate-content.test.ts`
+asserts the extract contains a literal `considerably more\nhazardous`, and
+`core.autocrlf=true` had checked that file out with CRLF. Fixed at the repo
+level by pinning `docs/research/**` and `src/content/**` to `eol=lf` and
+re-checking-out those paths. **No file under `src/content/` or `scripts/` was
+edited** — only their line endings, which the index already stored as LF. Filed
+here because the fix touches P2's territory even though it is not P2's bug, and
+because a critic on Windows would otherwise inherit a red suite.
+
+### 4. The interval policy is a fixed six-box ladder, not SM-2
+
+10 minutes · 1 day · 1 week · 2 weeks · 1 month · 3 months; one box up per
+correct answer, straight back to box 0 on a miss, graduating at three in a row.
+The full rationale is in the module header of `src/domain/scheduler.ts`. The
+short version: the learner's horizon is weeks, a per-card ease factor changes
+almost no decision over ~500 items in that window, and the app **states the
+schedule to the learner in words** ("in about ten minutes, then tomorrow, then
+next week") — a promise only a fixed ladder can keep honestly. The wording on
+the answer-revealed screens is generated from the ladder itself, so the copy
+cannot drift from the behaviour.
+
+### 5. `/study/session` accepts `?seed=`, `?n=` and `?q=`
+
+`?seed=` pins the adaptive draw, `?n=` the session length, `?q=id,id` an exact
+line-up. They exist so a state-matrix cell is reachable deterministically —
+**the long-content cell is `/study/session?q=int-016`**, the longest real item
+in the bank (long stem, three long options, a 337-character verbatim quote) and
+one that also carries a post-2022 correction. `?q=` is likewise the hook a
+"practise this rule" link from the rule reference will use.
+
+### 6. The `StudyRoute` page gained a "Start a session" panel
+
+`/study` is P7's dashboard and is still P1's placeholder. Without an entry point
+the session is unreachable, so P4 added one guide panel with a button, inside
+the existing `Placeholder`, and changed its `owner` note to say P7 absorbs it.
+
+### 7. `CitationLink` is deliberately not rendered in the explanation
+
+`ExplanationBlock` renders a `CitationLink` when its citation carries a `to`.
+P4 omits it: the rule-reference route (`/rules/:id`) is P8's and does not exist,
+and a link that 404s is worse than no link. P8 should pass `to` through — every
+citation already carries its `ruleId`.
+
+### 8. A session-completion screen exists, and is not in the mockup set
+
+Cell 4 has no "session over" variant, but a twelve-question session has to end
+somewhere. It is a short panel inside the same focus chrome — score, weakest
+topics, back to Study. It is deliberately **not** a score report: the plaque,
+the pass/fail verdict signs and the review list are P5's.
+
+### 9. Note for whoever drives this with Playwright
+
+The split route's `HydrateFallback` (P1's `RouteFallback`) renders a
+visually-hidden `<h1>Loading</h1>`, so `getByRole('heading', { level: 1 })`
+resolves *before* the session mounts and any key press is then delivered to the
+fallback. Wait on `.stem` or `.choice`, as `tests/e2e/study.spec.ts` does.

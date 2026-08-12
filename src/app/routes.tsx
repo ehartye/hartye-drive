@@ -41,6 +41,12 @@ export const routes: RouteObject[] = [
   },
   // Focus modes: no nav, no shell.
   {
+    path: '/study/session',
+    lazy: async () => ({ Component: (await import('~/routes/StudySession')).StudySession }),
+    errorElement: <RouteError />,
+    HydrateFallback: RouteFallback,
+  },
+  {
     path: '/gallery/focus',
     lazy: async () => ({ Component: (await import('~/routes/GalleryFocus')).GalleryFocus }),
     errorElement: <RouteError />,

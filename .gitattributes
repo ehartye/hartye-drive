@@ -1,0 +1,22 @@
+# Line endings.
+#
+# The repository stores LF. Most files may be checked out however the platform
+# prefers, but three kinds of file are matched **byte for byte** and must not be
+# rewritten on checkout:
+#
+#  - `docs/research/**` — the extracted manual. Every question's citation is
+#    validated as a verbatim substring of it, and the line-spanning quote rule
+#    in `executable-floor.md` §3 asserts on a literal `\n`. A Windows checkout
+#    with `core.autocrlf=true` turns those into `\r\n` and `npm test` fails on a
+#    machine where nothing is actually wrong.
+#  - `src/content/**` — the generated content bundle, compared against the same
+#    source.
+#  - `public/fonts/**` and other binaries — never touched at all.
+docs/research/** text eol=lf
+src/content/** text eol=lf
+
+*.woff2 binary
+*.png binary
+*.jpg binary
+*.ico binary
+*.pdf binary
