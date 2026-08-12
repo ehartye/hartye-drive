@@ -18,7 +18,12 @@ import { masteryBand, masteryPercent } from './mastery';
 import type { MasteryBand } from './mastery';
 import { overallAccuracy, topicStatOf } from './progress';
 import type { StudyProgress } from './progress';
-import { DEFAULT_SESSION_SIZE, isWeakTopic, rankTopicsByWeakness } from './session';
+import {
+  DEFAULT_SESSION_SIZE,
+  WEAK_TOPIC_MIN_SEEN,
+  isWeakTopic,
+  rankTopicsByWeakness,
+} from './session';
 
 /**
  * The readiness a learner should clear before spending an hour on a mock exam.
@@ -308,14 +313,40 @@ export interface Headline {
   sub: string;
 }
 
-function holdingBack(weakCount: number): string {
-  if (weakCount === 0) return 'Nothing is holding you back right now.';
-  if (weakCount === 1) return '1 topic is still holding you back.';
-  return `${String(weakCount)} topics are still holding you back.`;
+/**
+ * Topics with enough answers behind them for `isWeakTopic` to have an opinion.
+ *
+ * The dashboard needs this to tell two very different silences apart: "no topic
+ * is weak" and "no topic has been asked enough times to know yet". The first
+ * session samples one question per topic, so the second is the *common* case on
+ * day one — and reporting it as the first is how "Nothing is holding you back
+ * right now" came to sit beside a readiness of 8%.
+ */
+export function judgedTopicCount(progress: StudyProgress): number {
+  return Object.values(progress.topics).filter((stat) => stat.seen >= WEAK_TOPIC_MIN_SEEN).length;
 }
 
+function holdingBack(weakCount: number, percent: number, judged: number): string {
+  if (weakCount === 1) return '1 topic is still holding you back.';
+  if (weakCount > 1) return `${String(weakCount)} topics are still holding you back.`;
+  // Nothing weak. Whether that is good news depends entirely on the readiness
+  // it is printed beside and on whether anything has been measured at all.
+  if (percent >= EXAM_PASS_MARK_PERCENT) return 'Nothing is holding you back right now.';
+  if (judged === 0) {
+    return `No topic has enough answers behind it to name yet — ${String(WEAK_TOPIC_MIN_SEEN)} on the same topic and this line starts naming them.`;
+  }
+  return 'No single topic stands out — what you are missing is spread thin across all of them.';
+}
+
+/** 24 of 30, as a percentage: the line below which "nothing is wrong" is false. */
+const EXAM_PASS_MARK_PERCENT = 80;
+
 /** Where the learner actually is, in one line each. No cheerleading. */
-export function dashboardHeadline(reading: Readiness, weakCount: number): Headline {
+export function dashboardHeadline(
+  reading: Readiness,
+  weakCount: number,
+  judged = 0,
+): Headline {
   const eyebrow = 'Class D knowledge test';
   if (reading.confidence === 'none') {
     return {
@@ -333,15 +364,15 @@ export function dashboardHeadline(reading: Readiness, weakCount: number): Headli
     };
   }
   if (reading.percent >= EXAM_READY_THRESHOLD) {
-    return { eyebrow, heading: "You're test ready", sub: holdingBack(weakCount) };
+    return { eyebrow, heading: "You're test ready", sub: holdingBack(weakCount, reading.percent, judged) };
   }
   if (reading.percent >= 80) {
-    return { eyebrow, heading: "You're nearly there", sub: holdingBack(weakCount) };
+    return { eyebrow, heading: "You're nearly there", sub: holdingBack(weakCount, reading.percent, judged) };
   }
   if (reading.percent >= 50) {
-    return { eyebrow, heading: 'Coming together', sub: holdingBack(weakCount) };
+    return { eyebrow, heading: 'Coming together', sub: holdingBack(weakCount, reading.percent, judged) };
   }
-  return { eyebrow, heading: 'Plenty of road left', sub: holdingBack(weakCount) };
+  return { eyebrow, heading: 'Plenty of road left', sub: holdingBack(weakCount, reading.percent, judged) };
 }
 
 /* -------------------------------------------------------------- topic drill */

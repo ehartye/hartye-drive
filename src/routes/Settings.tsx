@@ -211,7 +211,7 @@ export function Settings() {
         <section className="sect" aria-labelledby="corr-h">
           <h2 id="corr-h">What we&rsquo;ve corrected since 2022</h2>
           <p className="sect__intro">
-            {`The manual disclaims its own currency. Where Tennessee law has moved since ${formatFullDate(CURRENCY.statedCurrentAsOf)} we teach the current rule — and we say so, here and on every question that touches it. ${String(corrections.length)} are on file, each with the date it took effect and the public chapter that made it.`}
+            {`The manual disclaims its own currency. Where Tennessee law has moved since ${formatFullDate(CURRENCY.statedCurrentAsOf)} we teach the current rule — and we say so, here and on every question that touches it. ${String(corrections.length)} are on file. Each names its authority: a public chapter where the legislature made the change, the statute or federal act where no single chapter did, and the department's own published policy where nothing is legislated at all. The date beside each one says which of those it is.`}
           </p>
 
           <SignPanel flat>

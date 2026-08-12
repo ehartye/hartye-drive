@@ -8,6 +8,7 @@ import {
   dashboardHeadline,
   estimatedMinutes,
   examRecommendation,
+  judgedTopicCount,
   readiness,
   routeToTest,
   starterTopics,
@@ -16,6 +17,7 @@ import {
   weakTopics,
 } from '~/domain/dashboard';
 import { DEFAULT_SESSION_SIZE } from '~/domain/session';
+import { masteryPercent } from '~/domain/mastery';
 import type { StudyProgress } from '~/domain/progress';
 import { CURRENT_SCHEMA_VERSION, STORAGE_KEY } from '~/domain/persistence';
 import { EXAM_RECORD_VERSION, EXAM_STORAGE_KEY } from '~/domain/exam-history';
@@ -151,6 +153,13 @@ export function Dashboard() {
 const goalLabel = (goal: 'class-d' | 'signs') =>
   goal === 'signs' ? 'Signs refresher' : 'Class D knowledge test';
 
+/** What the record holds on one topic, or nothing if it has never been asked. */
+const statFor = (progress: StudyProgress, topic: string) => {
+  const stat = progress.topics[topic];
+  if (!stat || stat.seen === 0) return undefined;
+  return { seen: stat.seen, correct: stat.correct, percent: masteryPercent(stat.correct, stat.seen) };
+};
+
 /* --------------------------------------------------------------- populated */
 
 interface LoadedProps {
@@ -177,7 +186,8 @@ function LoadedDashboard({
 
   const reading = readiness(progress);
   const weak = weakTopics(progress, content.topicCounts, 4);
-  const headline = dashboardHeadline(reading, weak.length);
+  const judged = judgedTopicCount(progress);
+  const headline = dashboardHeadline(reading, weak.length, judged);
   // Sign mastery is the sign trainer's own record (P6's `sign-progress.ts`),
   // not an inference from the questions that happen to mention a sign — one
   // source of truth per thing the learner has learned.
@@ -289,7 +299,9 @@ function LoadedDashboard({
         <p className="dim text-[0.875rem] mb-3.5">
           {empty
             ? 'Nothing measured yet. After your first session the topics holding you back land here — until then, one from each of the four areas the test samples equally.'
-            : 'Nothing is weak enough to single out right now. Keep the queue moving and this list will tell you the moment that changes.'}
+            : judged === 0
+              ? 'No topic has been asked enough times yet to single one out. Until then, one from each of the four areas the test samples equally.'
+              : 'No topic is weak enough to single out right now. Keep the queue moving and this list will tell you the moment that changes.'}
         </p>
       )}
       <div className="weak">
@@ -312,6 +324,7 @@ function LoadedDashboard({
                 area={areaFor(row.topic)}
                 questionCount={row.questionCount}
                 to={drillTo(row.topic)}
+                stat={statFor(progress, row.topic)}
               />
             ))}
       </div>

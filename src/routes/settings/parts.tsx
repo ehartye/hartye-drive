@@ -1,6 +1,7 @@
 import { Button, ConfirmGate, Dialog, SignPanel, SignSvg } from '~/components';
 import { IconAlert, IconCheck, IconX } from '~/components/Icon';
 import type { Correction } from '~/content';
+import { correctionDate } from '~/domain/corrections';
 import { formatFullDate } from '../progress/format';
 
 /* ------------------------------------------------------ the corrections */
@@ -15,13 +16,14 @@ import { formatFullDate } from '../progress/format';
  * "1 July 2023 · Public Chapter 354" is.
  */
 export function CorrectionCard({ correction }: { correction: Correction }) {
+  const dated = correctionDate(correction);
   return (
     <article className="corr" aria-labelledby={`corr-${correction.id}`}>
       <div className="corr__head">
         <span className="corr__tag">
           {correction.appliesToContent ? 'Corrected' : 'Disclosed'}
         </span>
-        <span className="corr__when">{`In force ${formatFullDate(correction.effectiveDate)}`}</span>
+        <span className="corr__when">{`${dated.prefix} ${formatFullDate(dated.iso)}`}</span>
       </div>
       <h3 id={`corr-${correction.id}`}>{correction.summary}</h3>
       <dl className="corr__d">

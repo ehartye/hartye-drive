@@ -18,6 +18,7 @@ import {
   accuracyByArea,
   groupRuns,
   historyTimeline,
+  laneCaption,
   readinessSeries,
   summariseProgress,
   topicRows,
@@ -457,16 +458,6 @@ const labelFor = (topicId: string): string =>
 
 const shareOf = (areaId: string): number =>
   blueprintAreas.find((area) => area.id === areaId)?.share ?? 0.25;
-
-function laneCaption(areas: readonly AreaRow[]): string {
-  const short = areas.filter((area) => area.touched && !area.meetsTarget);
-  if (short.length === 0) {
-    return `Every area you have touched is at or past ${String(READINESS_TARGET)}%. That is what walking in ready looks like.`;
-  }
-  return `${short.length === 1 ? 'One lane is' : `${String(short.length)} lanes are`} hatched — short of target. ${
-    short.length === 1 ? 'It is' : 'They are'
-  } a quarter of the real test each.`;
-}
 
 function groupByArea(
   rows: readonly TopicRow[],

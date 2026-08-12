@@ -5,6 +5,7 @@ import {
   accuracyByArea,
   groupRuns,
   historyTimeline,
+  laneCaption,
   readinessSeries,
   summariseProgress,
   topicRows,
@@ -234,5 +235,62 @@ describe('summariseProgress', () => {
       DEFS,
     );
     expect(summary).toMatchObject({ examsTaken: 3, examsPassed: 1, hasHistory: true });
+  });
+});
+
+describe('the caption under the four lanes', () => {
+  /** One topic per area, so a lane can be touched or left alone independently. */
+  const FOUR = [
+    { id: 'regulatory-signs', area: 'signs', label: 'Regulatory signs' },
+    { id: 'night-driving', area: 'safe-driving', label: 'Night driving' },
+    { id: 'right-of-way', area: 'rules-of-road', label: 'Right-of-way' },
+    { id: 'dui-law', area: 'alcohol-drugs', label: 'DUI law' },
+  ] as const;
+
+  const lanes = (byArea: Record<string, { seen: number; correct: number }>) =>
+    accuracyByArea(
+      Object.fromEntries(
+        Object.entries(byArea).map(([area, stat]) => [
+          FOUR.find((def) => def.area === area)?.id ?? area,
+          stat,
+        ]),
+      ),
+      FOUR,
+      AREAS,
+    );
+
+  it('never claims a target is met by an area nobody has answered in', () => {
+    // The bug this replaces: with nothing touched, "areas short of target" is
+    // an empty list, and an empty list read as success announced "that is what
+    // walking in ready looks like" over a record of zero answers.
+    const caption = laneCaption(lanes({}));
+    expect(caption).not.toMatch(/walking in ready/i);
+    expect(caption).toMatch(/nothing measured/i);
+  });
+
+  it('counts the untouched lanes rather than reading three of four as a pass', () => {
+    const caption = laneCaption(lanes({ signs: { seen: 10, correct: 10 } }));
+    expect(caption).toMatch(/3 of the four/i);
+    expect(caption).not.toMatch(/walking in ready/i);
+  });
+
+  it('says walking in ready only when all four lanes are at or past target', () => {
+    const caption = laneCaption(
+      lanes({
+        signs: { seen: 10, correct: 10 },
+        'safe-driving': { seen: 10, correct: 9 },
+        'rules-of-road': { seen: 10, correct: 8 },
+        'alcohol-drugs': { seen: 10, correct: 10 },
+      }),
+    );
+    expect(caption).toMatch(/walking in ready/i);
+  });
+
+  it('names the lanes that are short', () => {
+    const caption = laneCaption(
+      lanes({ signs: { seen: 10, correct: 3 }, 'safe-driving': { seen: 10, correct: 10 } }),
+    );
+    expect(caption).toMatch(/One lane is/);
+    expect(caption).toMatch(/hatched/);
   });
 });

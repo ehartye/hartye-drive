@@ -97,21 +97,40 @@ export interface StarterRowProps {
   area: BlueprintArea;
   questionCount: number;
   to: string;
+  /**
+   * What the record already holds on this topic, if anything. A starter row is
+   * shown whenever no topic is weak *enough* to name — which includes the case
+   * where every topic has been answered once. Printing "not measured" over an
+   * answer the learner remembers giving is the kind of small lie that makes a
+   * learner stop trusting the rest of the numbers.
+   */
+  stat?: { seen: number; correct: number; percent: number } | undefined;
 }
 
-/** The same row before anything has been measured: structure, honestly empty. */
-export function StarterRow({ topic, label, area, questionCount, to }: StarterRowProps) {
+/** The same row before a topic is weak enough to name: structure, honestly. */
+export function StarterRow({ topic, label, area, questionCount, to, stat }: StarterRowProps) {
+  const measured = stat !== undefined && stat.seen > 0;
   return (
-    <Link className="weakrow weakrow--unmeasured" to={to}>
+    <Link className={`weakrow${measured ? '' : ' weakrow--unmeasured'}`} to={to}>
       <SignSvg id={signForTopic(topic, area)} size="sm" decorative />
       <span className="weakrow__t">
         <span className="weakrow__n">{label}</span>
-        <span className="weakrow__s">{`${String(questionCount)} questions · not measured`}</span>
+        <span className="weakrow__s">
+          {measured
+            ? `${String(stat.correct)} of ${String(stat.seen)} correct · too few to judge`
+            : `${String(questionCount)} questions · not measured`}
+        </span>
       </span>
-      <span className="weakrow__pct" aria-hidden="true">
-        —
-      </span>
-      <VisuallyHidden>Not measured yet</VisuallyHidden>
+      {measured ? (
+        <span className="weakrow__pct">{`${String(stat.percent)}%`}</span>
+      ) : (
+        <>
+          <span className="weakrow__pct" aria-hidden="true">
+            —
+          </span>
+          <VisuallyHidden>Not measured yet</VisuallyHidden>
+        </>
+      )}
     </Link>
   );
 }

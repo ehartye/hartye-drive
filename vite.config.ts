@@ -84,7 +84,13 @@ const contentSecurityPolicy = (): Plugin => ({
  * sets. The bank is excluded from X8 as content, which is exactly what it is.
  *
  * `modulepreload` and not `prefetch`: it is needed on this navigation, not a
- * possible next one.
+ * possible next one. `prefetch` is a *speculative*, lowest-priority hint for a
+ * resource a **later** navigation might want; a browser is free to defer it
+ * until idle, which is precisely the round trip X23 exists to remove. The link
+ * shipped as `rel="prefetch"` while this comment argued for `modulepreload` —
+ * the comment was right, and the code now matches it. `as="script"` is dropped
+ * with it: `modulepreload` already means "a module", and `as` on it means
+ * something else entirely.
  */
 const criticalPreload = (): Plugin => ({
   name: 'tn-drive-critical-preload',
@@ -103,7 +109,7 @@ const criticalPreload = (): Plugin => ({
         .map((chunk) => chunk.fileName)
         .filter((fileName) => !already.has(fileName))
         .sort()
-        .map((fileName) => `    <link rel="prefetch" as="script" crossorigin href="/${fileName}" />`);
+        .map((fileName) => `    <link rel="modulepreload" crossorigin href="/${fileName}" />`);
 
       return links.length === 0 ? html : html.replace('</head>', `${links.join('\n')}\n  </head>`);
     },
