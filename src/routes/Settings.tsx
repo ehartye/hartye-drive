@@ -32,6 +32,7 @@ import { useSettingsStore } from '~/store/settings';
 import { recordNames, useUnreadableRecords } from '~/store/health';
 import { RECORD_KEYS, readRecordSizes, resetAllRecords } from '~/store/reset';
 import { useSetupStore } from '~/store/setup';
+import { useUpLink } from '~/app/useUpLink';
 import { dailyPace, daysUntilTest } from '~/domain/setup';
 import {
   CorrectionCard,
@@ -97,6 +98,13 @@ export function Settings() {
   // must not change reading while the learner is typing a date next to it.
   const [today] = useState(() => Date.now());
   const days = daysUntilTest(setup.testDate, today);
+  /**
+   * Settings has four parents, not one: the progress footer, the progress
+   * export row, a correction tag in an exam review, and the rule reference. A
+   * fixed `backTo="/progress"` sent half of them to a page they had not been
+   * on — the very case `AppBar.onBack` exists for, applied to the wrong screen.
+   */
+  const up = useUpLink('/progress');
 
   const [reset, setReset] = useState<ResetState>('idle');
   const [acknowledged, setAcknowledged] = useState(false);
@@ -121,7 +129,7 @@ export function Settings() {
   if (reset === 'failed') {
     return (
       <>
-        <AppBar title="Settings" context="Reset failed · nothing was erased" backTo="/progress" />
+        <AppBar title="Settings" context="Reset failed · nothing was erased" {...up} />
         <ResetFailed
           answered={summary.answered}
           sittings={summary.sittings}
@@ -142,7 +150,7 @@ export function Settings() {
 
   return (
     <>
-      <AppBar title="Settings" context="Sources, corrections and your data" backTo="/progress" />
+      <AppBar title="Settings" context="Sources, corrections and your data" {...up} />
 
       <main className="wrap pt-6">
         <p className="eyebrow">TN Drive</p>
