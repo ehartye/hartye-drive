@@ -1777,3 +1777,89 @@ Checked and **passing**, with evidence in
   it names resolves. The install affordance correctly branches: iPhone gets the
   three Share-sheet steps and **no button**, because Safari fires no
   `beforeinstallprompt` and a button there could never work.
+
+---
+
+## 2026-08-12 — Smoothing pass (does the assembled app read as one product?)
+
+Filed by the cross-piece pass. Everything here was **fixed** rather than
+argued, except where marked. The three entries below are the places where the
+fix departed from a ratified artefact, or where a defect was left standing on
+purpose.
+
+### 1. The ratified mockups spell dates three ways; the app now spells them one way
+
+**DEVIATION FROM THE MOCKUPS — accepted, and the app is the more consistent of
+the two.**
+
+The score report's stamp was the only `en-GB` formatter in the product
+(`12 August, 9:09 AM`, from `routes/exam/support.ts`), matching mockups `06a`
+and `06c`, which carry `28 July, 6:02 pm`. But the progress history stamps the
+**same mock exam** and was built `en-US` (`Aug 8, 3:31 pm`), and mockups `02`
+and `11` are `en-US` too (`Sep 12, 2026`, `Aug 9, 2026 · 21:14`). The mockup set
+is internally inconsistent, so parity with it was not available: matching `06a`
+meant contradicting `09`, and matching `09` meant contradicting `06a`.
+
+Resolved toward `en-US` for the whole product, because `routes/progress/format.ts`
+already pins the locale and states why ("the test is administered in English by
+the State of Tennessee; an unpinned locale would make every screenshot and
+every assertion depend on the machine running it"). One event now reads
+identically on the two screens that name it.
+
+**A critic wanting the mockups' day-first form instead should say so** — the
+change is one function, `formatAt`, and both callers already go through it.
+
+### 2. "Driver Service Center" → "Driver Services Center"
+
+**DEVIATION FROM `stack-grounding.md` §1 AND FROM MOCKUP 11 — accepted.**
+
+Both documents write "a Driver Service Center parking lot". Tennessee's
+facilities are **Driver Services Centers**, and the exam simulator already had
+it right in three places (`domain/exam.ts`, `routes/ExamRun.tsx`) while the
+dashboard, onboarding and the new settings section had it wrong. A product
+whose whole premise is factual accuracy about Tennessee should not misname a
+Tennessee institution in its own onboarding.
+
+The dashboard also had it as "the Driver Service Center **car park**" — a
+Britishism in an American-English product, and the clearest single instance of
+a surface reading as though a different person wrote it.
+
+### 3. Mockup 01 promises a section mockup 11 does not have
+
+**GAP IN THE RATIFIED SET — closed by building the section, not by cutting the
+promise.**
+
+Mockup `01` ends on "Both answers can be changed later in Settings" and, on a
+past test date, "Change it in Settings whenever you rebook". Mockup `11` has no
+such section, and neither did the build — so the app made a promise on one
+screen and broke it on the next. Neither piece's critic was looking at both
+halves, which is the shape of every defect in this pass.
+
+Closed by adding a **"Your test"** section to settings, built from the
+`SegmentedField` and `DateField` that onboarding already asks the two questions
+with. No new component vocabulary (§3), and no new copy voice.
+
+If the human would rather have the promise removed than the section built, the
+smaller change is two strings in `routes/Onboarding.tsx`.
+
+### 4. Not fixed, and stated rather than hidden
+
+- **`/gallery` and `/gallery/focus` still ship.** `routes.tsx` calls the
+  gallery "a development surface" and code-splits it so a learner never
+  downloads it, and nothing in the app links to it — but it is reachable by
+  typing the address, and it is precached. Left alone: removing a route is a
+  scope decision for the human, not a smoothing pass, and the surface is
+  harmless when reached.
+- **The two readiness headlines still use different words** for one figure —
+  "Coming together" on the dashboard, "Climbing" on progress. That is
+  deliberate and was left: one screen is the plan, the other is the record. What
+  was wrong, and is fixed, is that they were drawn against **different
+  thresholds**, so at 82% one said "past the pass mark" while the other said
+  "you're nearly there". Both now band at 85 / 80 / 50.
+- **Small numbers are still spelled out in a few explanatory sentences**
+  ("about ten minutes", "Twelve points in twelve months") while UI chrome uses
+  numerals. Left as-is: that split tracks the Overpass/Newsreader split the
+  design language already makes — the road is set in numerals, the book is set
+  in prose. What was fixed is the one place the **same four figures** appeared
+  as words and as numerals three lines apart, on the mock exam's own landing
+  screen.
