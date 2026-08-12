@@ -11,6 +11,13 @@ export interface FocusChromeProps {
   marker?: { index: number; total: number };
   /** Timer, strike counter — whatever the mode needs in the trailing slot. */
   instruments?: ReactNode;
+  /**
+   * An optional second bar row, spread like the first. The exam puts its
+   * position and its strike counter here so the clock keeps the top line to
+   * itself and neither instrument is squeezed at 320px (mockup 05). Omitted by
+   * every other focus mode, which is a single row.
+   */
+  statusRow?: ReactNode;
   /** The sticky bottom action shelf that stands in for the hidden nav. */
   action?: ReactNode;
   children: ReactNode;
@@ -27,6 +34,7 @@ export function FocusChrome({
   progress,
   marker,
   instruments,
+  statusRow,
   action,
   children,
 }: FocusChromeProps) {
@@ -44,6 +52,7 @@ export function FocusChrome({
               {instruments}
             </div>
           </div>
+          {statusRow && <div className="focusbar__row focusbar__row--status">{statusRow}</div>}
           {progress && (
             <ProgressRail
               value={progress.value}

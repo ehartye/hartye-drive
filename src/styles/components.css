@@ -644,6 +644,201 @@
     margin: 0;
   }
 
+  /* ---------- exam score report + full review (mockups 06a–06d) ----------
+     No new component: these are layouts over `SignPanel`, `VerdictSign`,
+     `TopicMeter` and `SegmentedField`, transcribed from the ratified mockups.
+     Recorded in deviations.md (2026-08-11, P5). */
+
+  /* The octagon is the whole verdict on an attempt that ended at seven wrong. */
+  .halt {
+    text-align: center;
+  }
+
+  /* Three-up stat tiles on a score report run centred and tighter than the
+     left-aligned dashboard tile, and must survive 320px. */
+  .grid-tiles .panel {
+    padding: 0.75rem 0.55rem;
+    text-align: center;
+  }
+  .grid-tiles .tile {
+    text-align: center;
+  }
+  .grid-tiles .tile__val {
+    font-size: 1.25rem;
+  }
+  .grid-tiles .tile__lab {
+    letter-spacing: 0.08em;
+  }
+
+  /* The same seven marks the exam carried in its chrome, now all spent. */
+  .strikeline {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.625rem;
+    flex-wrap: wrap;
+  }
+
+  /* Review controls sit *below* the app bar, which is also sticky and 4rem tall. */
+  .reviewbar {
+    position: sticky;
+    top: 4rem;
+    z-index: 16;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    margin: 0 calc(var(--spacing-gut) * -1);
+    padding: 0.7rem var(--spacing-gut);
+    background: color-mix(in srgb, var(--color-asphalt) 93%, transparent);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--color-shoulder);
+  }
+  /* The filter is a `SegmentedField`; in the bar its legend sits inline rather
+     than stacked, so the whole control is one 44px-high row. */
+  .reviewbar .field {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .reviewbar .field__label {
+    margin-bottom: 0;
+  }
+  .jump {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 44px;
+    padding: 0 0.5rem;
+    color: var(--color-stop-text);
+    text-decoration: none;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .jump:hover {
+    text-decoration: underline;
+  }
+
+  /* One reviewed question. Thirty of these turn into wallpaper unless the
+     misses are findable from a thumb-scroll away, so only they carry a tinted
+     ground — and a correct item collapses its two answer rows into one. */
+  .rev {
+    padding: 0.85rem 0.9rem 0.9rem;
+    border-left: 3px solid color-mix(in srgb, var(--color-guide-lit) 60%, transparent);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  }
+  .rev + .rev {
+    margin-top: 0.45rem;
+  }
+  .rev--miss {
+    border-left-color: var(--color-stop-lit);
+    background: color-mix(in srgb, var(--color-stop) 11%, transparent);
+  }
+  .rev__top {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.45rem;
+  }
+  .rev__top .verdict {
+    margin-top: 0;
+  }
+  .rev__n {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--color-sign-faint);
+  }
+  /* The run is interleaved, so each block has to name its own blueprint area —
+     its position in the list no longer does. */
+  .rev__area {
+    font-size: 0.625rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-sign-faint);
+  }
+  .rev__stem {
+    margin: 0 0 0.6rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1.4;
+    text-wrap: pretty;
+  }
+  .rev__cite {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.35rem;
+    margin: 0.6rem 0 0;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    line-height: 1.5;
+    letter-spacing: 0.03em;
+    color: var(--color-sign-faint);
+  }
+  .rev__cite svg {
+    flex: none;
+    margin-top: 2px;
+  }
+
+  .ans + .ans {
+    margin-top: 0.5rem;
+  }
+  .ans__lab {
+    margin: 0 0 0.2rem;
+    font-size: 0.625rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-sign-faint);
+  }
+  .ans__val {
+    margin: 0;
+  }
+  /* The option letter, as a legend on a face. White on the deep guide/stop
+     greens is 6.8:1 and 6.9:1, exactly as the real signs carry it. */
+  .k {
+    display: inline-grid;
+    place-items: center;
+    width: 19px;
+    height: 19px;
+    margin-right: 0.4rem;
+    border-radius: 999px;
+    vertical-align: -3px;
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    font-weight: 700;
+    color: #fff;
+  }
+  .k--ok {
+    background: var(--color-guide);
+  }
+  .k--bad {
+    background: var(--color-stop);
+  }
+
+  /* Construction orange: a rule that moved after the manual was written. */
+  .tagx {
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
+    padding: 0.18rem 0.45rem;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--color-work-text) 65%, transparent);
+    color: var(--color-work-text);
+    text-decoration: none;
+    font-size: 0.5625rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .tagx:hover {
+    background: color-mix(in srgb, var(--color-work-text) 15%, transparent);
+  }
+
   /* ---------- mile marker ---------- */
 
   .milemarker {
@@ -927,6 +1122,10 @@
     align-items: center;
     justify-content: space-between;
     gap: 0.4rem 0.75rem;
+  }
+  /* The optional second bar row (exam: position + strike counter). */
+  .focusbar__row--status {
+    margin-top: 0.55rem;
   }
   .focusbar__instruments {
     display: flex;

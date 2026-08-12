@@ -27,6 +27,17 @@ export const routes: RouteObject[] = [
       { index: true, element: <StudyRoute /> },
       { path: 'study', element: <StudyRoute /> },
       { path: 'exam', element: <ExamRoute /> },
+      // Code-split (practices E7): the score report and the full review carry
+      // the whole question bank's prose, and a learner who never sits an exam
+      // should not download them.
+      {
+        path: 'exam/report',
+        lazy: async () => ({ Component: (await import('~/routes/ExamReport')).ExamReport }),
+      },
+      {
+        path: 'exam/review',
+        lazy: async () => ({ Component: (await import('~/routes/ExamReview')).ExamReview }),
+      },
       { path: 'signs', element: <SignsRoute /> },
       { path: 'progress', element: <ProgressRoute /> },
       { path: 'settings', element: <SettingsRoute /> },
@@ -43,6 +54,12 @@ export const routes: RouteObject[] = [
   {
     path: '/study/session',
     lazy: async () => ({ Component: (await import('~/routes/StudySession')).StudySession }),
+    errorElement: <RouteError />,
+    HydrateFallback: RouteFallback,
+  },
+  {
+    path: '/exam/run',
+    lazy: async () => ({ Component: (await import('~/routes/ExamRun')).ExamRun }),
     errorElement: <RouteError />,
     HydrateFallback: RouteFallback,
   },

@@ -627,3 +627,127 @@ The split route's `HydrateFallback` (P1's `RouteFallback`) renders a
 visually-hidden `<h1>Loading</h1>`, so `getByRole('heading', { level: 1 })`
 resolves *before* the session mounts and any key press is then delivered to the
 fallback. Wait on `.stem` or `.choice`, as `tests/e2e/study.spec.ts` does.
+
+---
+
+## 2026-08-11 — P5 (exam simulator & score reports)
+
+Nothing in `stack-grounding.md`, `executable-floor.md`, `practices-checklist.md`,
+`state-matrix.md` or `mockups/` was edited, and nothing under `src/content/` or
+`scripts/` was touched. Twelve items to record; the first wants a ruling.
+
+### 1. Mockups `06b` and `06d` show a score the seven-wrong rule forbids — ruling requested
+
+`06b` reports **21 / 30 with 9 wrong**, and `06d` reviews **30 questions with 9
+missed**. Under the rule this bar calls binding, neither is reachable: the
+attempt ends on the **seventh** wrong answer, so no sitting can record eight or
+nine misses.
+
+The arithmetic underneath is worth stating, because it shapes all three
+reports: a sitting that reaches all 30 questions with six wrong or fewer *is*
+24 correct, and a seventh wrong ends it. **A completed 30-question exam can
+therefore only pass or halt.** "Fell short" is real, but it is reached by
+running out of the hour or by walking out — which is exactly what the real test
+does to you, and exactly what mockup `05`'s own exit dialog describes ("Ending
+now scores what you've answered — 9 correct out of 30").
+
+The build honours the rule and keeps `06b`'s layout, voice and structure at
+intent parity: the same white regulatory plaque, the same "Three short"
+headline (computed as `24 − correct`), the same tiles, the same "what sank it"
+meters and the same fix-it panel. It is reached by ending an attempt early or
+by the hour running out. `tests/e2e/exam.spec.ts` drives it by answering 24
+questions with three of them wrong and pressing "End exam" — 21 correct,
+"Three short", which is `06b` with an honest set of numbers.
+
+**Ruling wanted:** confirm that the rule outranks the mockup's illustrative
+figures. If the mockups are instead the authority, the seven-wrong rule has to
+be dropped — and that is the one cell the bar says a build must not omit.
+
+### 2. Page-level layouts transcribed into `src/styles/components.css`
+
+No new component was added to `src/components/`. The score report and the full
+review are compositions of `VerdictSign`, `TopicMeter`, `SignPanel`, `StatTile`,
+`StrikeCounter`, `Button` and `SegmentedField`; what the stylesheet gained is
+the *layout* those mockups specify: `.rev` / `.ans` / `.k` / `.tagx` (one
+reviewed question, `06d`), `.reviewbar` + `.jump` (the review's sticky filter
+row, `06d`), `.halt` and `.strikeline` (`06c`), and the three-up
+`.grid-tiles .panel` treatment (`06a`–`06c`). Recorded here for the same reason
+P4 recorded `.changed` / `.lookup` / `.again`.
+
+### 3. `FocusChrome` gained an optional `statusRow`
+
+Mockup `05` puts the clock alone on the first bar row and the position plus the
+strike counter on a second. `FocusChrome` had one row, and at 390px the exam's
+four instruments wrapped into an unreadable block. The component now takes an
+optional `statusRow` node rendered as a second row. **Purely additive** — the
+prop is absent everywhere else, so the study session's chrome renders exactly
+as P4 shipped it.
+
+### 4. Exam attempts live in their own versioned key
+
+`tn-drive:exams`, `schemaVersion: 1`, bounded to the most recent **200**
+attempts (grounding §6), with the same envelope, migration and corruption
+handling as the study record and its own unit tests. It is deliberately *not*
+folded into `tn-drive:progress`: the two have different shapes, lifetimes and
+bounds, and versioning them together would force a migration of a learner's
+spaced-repetition ladder every time the exam record changed.
+
+### 5. The attempt in progress is persisted, and the clock keeps running
+
+The bar requires that browser-back is "never silently destructive". Guarding
+the in-app navigation is not enough on its own — a reload or a crash would
+still lose the attempt — so the open sitting is written to the store on every
+answer and resumed on load. The deadline is absolute, so time spent away is
+time spent: an attempt whose hour elapsed while the app was closed is scored as
+a timeout and filed rather than silently dropped. That is what the real test
+does, and it is disclosed on the briefing screen before the clock starts.
+
+### 6. `makeRandom` / `shuffled` moved to `src/domain/random.ts`
+
+Both were private to `src/domain/session.ts`, and the exam sampler needs the
+same deterministic draw. They were moved rather than copied; `session.ts`
+imports them and its behaviour and tests are unchanged.
+
+### 7. A mock exam feeds the study record
+
+Every exam answer is also recorded through `useProgressStore.answer`, so the
+spaced-repetition ladder and the topic rollups learn from the exam and a missed
+question comes back. Without it the fix-it session would be the only trace of a
+30-question sitting, and the dashboard would claim the learner had done nothing.
+
+### 8. The fix-it session is the questions you missed, by id
+
+Mockups `06b` / `06c` label it "18 questions on the two weak topics". The build
+links to `/study/session?q=<missed ids>` — the actual questions, in the order
+they were missed, each returning with its rule and its manual page. It reuses
+P4's `?q=` line-up rather than adding a second sampler, and it cannot drift
+from what the report just said.
+
+### 9. `/exam/run` accepts `?seed=`, and the question carries `data-qid`
+
+`?seed=` pins the paper so a state-matrix cell is reachable twice over. The
+question wrapper carries `data-qid` — the question's **id**, never its answer —
+because an exam that reveals nothing about correctness cannot otherwise be
+driven end to end by a test or a reviewer. The whole bank ships to the device
+by design, so this exposes nothing that was not already there.
+
+### 10. The exam question shows no topic line
+
+The study session labels every question with its topic. Mockup `05` does not,
+and neither does the build: naming the blueprint area on an exam question
+narrows it, and the real test does not tell you which chapter it came from.
+
+### 11. `ExamRoute` replaced P1's placeholder, and three routes were added
+
+`/exam` is now the real entry point: the rules, the start button, a resume
+button when an attempt is open, and a link to the last score report. The new
+routes are `/exam/run` (focus mode, outside the shell), `/exam/report` and
+`/exam/review`, all three code-split. All are static paths, so
+`servablePaths()` keeps deriving the a11y sweep from the router.
+
+### 12. Note for whoever drives this with Playwright
+
+Same trap P4 recorded: the split route's `HydrateFallback` renders a hidden
+`<h1>`, so wait on `.choice` / `.stem`, not on a heading. To reach the score
+reports, press **Start the exam** first — the clock does not run until the
+disclosure has been shown (practices A15).

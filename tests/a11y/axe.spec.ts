@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { test, expect } from '@playwright/test';
 import type { Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
@@ -95,6 +96,95 @@ test('axe: study — session complete', async ({ page }) => {
   await page.getByRole('heading', { level: 1, name: /right/ }).waitFor();
   const results = await new AxeBuilder({ page }).withTags(TAGS).analyze();
   expect(results.violations.map((v) => v.id)).toEqual([]);
+});
+
+/* --- P5: state-matrix cells 5, 6a, 6b, 6c and 6d, driven into place. ------- */
+
+const bank = JSON.parse(
+  readFileSync(new URL('../../src/content/questions.json', import.meta.url), 'utf8'),
+) as { questions: { id: string; correctIndex: number }[] };
+const CORRECT = new Map(bank.questions.map((q) => [q.id, q.correctIndex]));
+
+async function startExam(page: Page, seed: number): Promise<void> {
+  await page.goto(`/exam/run?seed=${String(seed)}`);
+  await page.getByRole('button', { name: /Start the exam/ }).click();
+  await page.locator('.choice').first().waitFor();
+}
+
+/** Sits the exam from the outside, keying `wrongAt(i)` questions wrong. */
+async function sitExam(page: Page, count: number, wrongAt: (i: number) => boolean): Promise<void> {
+  for (let i = 0; i < count; i += 1) {
+    if ((await page.locator('[data-qid]').count()) === 0) break;
+    const qid = (await page.locator('[data-qid]').getAttribute('data-qid')) ?? '';
+    const right = CORRECT.get(qid) ?? 0;
+    const options = await page.locator('.choice').count();
+    const index = wrongAt(i) ? (right + 1) % options : right;
+    await page.locator('.choice').nth(index).click();
+    await page.getByRole('button', { name: /Next question|Finish the exam/ }).click();
+  }
+}
+
+test('axe: exam — the disclosure before the clock starts (cell 5)', async ({ page }) => {
+  await page.goto('/exam/run?seed=7');
+  await page.getByRole('heading', { level: 1, name: 'Before the clock starts' }).waitFor();
+  const results = await new AxeBuilder({ page }).withTags(TAGS).analyze();
+  expect(results.violations.map((v) => v.id)).toEqual([]);
+});
+
+test('axe: exam — in progress, with an answer picked (cell 5)', async ({ page }) => {
+  await startExam(page, 7);
+  await page.locator('.choice').nth(1).click();
+  const results = await new AxeBuilder({ page }).withTags(TAGS).analyze();
+  expect(
+    results.violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(' | ')}`),
+  ).toEqual([]);
+});
+
+test('axe: exam — the exit guard', async ({ page }) => {
+  await startExam(page, 7);
+  await page.getByRole('button', { name: /End exam/ }).first().click();
+  await expect(page.getByRole('dialog')).toBeVisible();
+  const results = await new AxeBuilder({ page }).withTags(TAGS).analyze();
+  expect(results.violations.map((v) => v.id)).toEqual([]);
+});
+
+test('axe: exam — the passing report and the full review (cells 6a, 6d)', async ({ page }) => {
+  await startExam(page, 11);
+  await sitExam(page, 30, (i) => i === 3 || i === 9);
+  await page.getByRole('heading', { level: 1, name: 'You passed' }).waitFor();
+  const report = await new AxeBuilder({ page }).withTags(TAGS).analyze();
+  expect(
+    report.violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(' | ')}`),
+  ).toEqual([]);
+
+  await page.getByRole('link', { name: /Review all 30 answers/ }).click();
+  await page.locator('.rev').first().waitFor();
+  const review = await new AxeBuilder({ page }).withTags(TAGS).analyze();
+  expect(
+    review.violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(' | ')}`),
+  ).toEqual([]);
+});
+
+test('axe: exam — the report of an attempt ended early (cell 6b)', async ({ page }) => {
+  await startExam(page, 5);
+  await sitExam(page, 12, (i) => i === 2);
+  await page.getByRole('button', { name: /End exam/ }).first().click();
+  await page.getByRole('button', { name: 'End exam and score it' }).click();
+  await page.locator('.plaque--short').waitFor();
+  const results = await new AxeBuilder({ page }).withTags(TAGS).analyze();
+  expect(
+    results.violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(' | ')}`),
+  ).toEqual([]);
+});
+
+test('axe: exam — the report of an attempt halted at seven wrong (cell 6c)', async ({ page }) => {
+  await startExam(page, 3);
+  await sitExam(page, 30, (i) => i % 2 === 0);
+  await page.locator('.plaque--halted').waitFor();
+  const results = await new AxeBuilder({ page }).withTags(TAGS).analyze();
+  expect(
+    results.violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(' | ')}`),
+  ).toEqual([]);
 });
 
 test('axe: the open dialog traps and is labelled', async ({ page }) => {

@@ -24,6 +24,7 @@
  * Pure, DOM-free, and deterministic given a seed — the seed exists so a session
  * survives a reload, and so tests can assert on an actual sequence.
  */
+import { makeRandom, shuffled } from './random';
 import { compareByDue, isDue } from './scheduler';
 import type { CardState } from './scheduler';
 
@@ -106,26 +107,6 @@ export function rankTopicsByWeakness(
 }
 
 /* ------------------------------------------------------ deterministic draws */
-
-/** mulberry32 — 4 lines, no dependency, and identical on every engine. */
-function makeRandom(seed: number): () => number {
-  let a = seed >>> 0;
-  return () => {
-    a = (a + 0x6d2b79f5) >>> 0;
-    let t = a;
-    t = Math.imul(t ^ (t >>> 15), 1 | t);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
-
-/** Decorate-sort-undecorate: a shuffle with no index arithmetic to get wrong. */
-function shuffled<T>(items: readonly T[], random: () => number): T[] {
-  return items
-    .map((item) => ({ item, key: random() }))
-    .sort((a, b) => a.key - b.key)
-    .map((entry) => entry.item);
-}
 
 /**
  * Largest-remainder allocation of `slots` across topics in proportion to
