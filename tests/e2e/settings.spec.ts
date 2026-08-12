@@ -304,6 +304,31 @@ test.describe('settings', () => {
     expect((await download).suggestedFilename()).toContain('tn-drive-progress');
   });
 
+  /**
+   * Mockup 11's third section, in its published order. It was missing from the
+   * build entirely, and with it the only permanent statement of the update
+   * policy the service worker actually implements.
+   */
+  test('cell 11 — the offline & install section states what is stored and how updates land', async ({
+    page,
+  }) => {
+    await seed(page);
+    await page.goto('/settings');
+    await expect(page.getByRole('heading', { name: 'Offline & install' })).toBeVisible();
+
+    const section = page.locator('section[aria-labelledby="offline-h"]');
+    await expect(section).toContainText(/questions/);
+    await expect(section).toContainText(/87 signs/);
+    // The headline promise of `registerType: 'prompt'`, said out loud.
+    await expect(section).toContainText(/Ask me first/);
+    await expect(section).toContainText(/never applied in the middle of an exam/);
+    await expect(section).toContainText(/Add to home screen/);
+
+    // Published order: Your data · Reset · Offline & install · About.
+    const headings = await page.locator('.sect > h2').allInnerTexts();
+    expect(headings.slice(-3)).toEqual(['Your data', 'Offline & install', 'About']);
+  });
+
   test('holds at 320px with no horizontal scrolling', async ({ page }) => {
     await seed(page);
     await page.setViewportSize({ width: 320, height: 900 });

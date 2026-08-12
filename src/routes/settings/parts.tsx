@@ -53,6 +53,116 @@ export function CorrectionCard({ correction }: { correction: Correction }) {
   );
 }
 
+/* -------------------------------------------------- offline & install */
+
+export interface OfflineAndInstallProps {
+  /** `null` until the content pack has been read — never guessed at. */
+  bankSize: number | null;
+  signCount: number;
+  /** A newer build is installed and waiting for permission to take over. */
+  updateWaiting: boolean;
+  /** Which install affordance this platform can honestly offer. */
+  offer: 'none' | 'prompt' | 'ios';
+  /** `true` once the learner has waved the offer away, here or on the dashboard. */
+  dismissed: boolean;
+  onInstall: () => void;
+  onRestore: () => void;
+}
+
+/**
+ * Mockup 11's third section, between "Your data" and "About".
+ *
+ * It went missing in the build, and with it the only permanent statement of the
+ * update policy — "ask me first … never applied in the middle of an exam" —
+ * which is the headline behaviour of the service worker (`registerType:
+ * 'prompt'`, `skipWaiting` off). A promise the product keeps in code and states
+ * nowhere is a promise the learner cannot rely on. The content-pack status and
+ * the install affordance lived only on the dashboard, where the first
+ * disappears the moment a connection returns and the second disappears for good
+ * once it is dismissed — so settings is the only place either can be *looked
+ * up*, which is exactly what a settings page is for.
+ *
+ * Restraint rule (§2): no sign is used here. This is chrome, not curriculum.
+ */
+export function OfflineAndInstall({
+  bankSize,
+  signCount,
+  updateWaiting,
+  offer,
+  dismissed,
+  onInstall,
+  onRestore,
+}: OfflineAndInstallProps) {
+  return (
+    <section className="sect" aria-labelledby="offline-h">
+      <h2 id="offline-h">Offline &amp; install</h2>
+      <p className="sect__intro">
+        Built for a Driver Service Center parking lot with one bar of signal.
+      </p>
+
+      <SignPanel flat>
+        <div className="srow">
+          <span className="srow__t">
+            <span className="srow__n">Content pack</span>
+            <span className="srow__s">
+              {bankSize === null
+                ? `On this device — every question, ${String(signCount)} signs and all three typefaces. Nothing is fetched while you study.`
+                : `On this device — ${String(bankSize)} questions, ${String(signCount)} signs and all three typefaces. Nothing is fetched while you study.`}
+            </span>
+          </span>
+          <span className="badge badge--live">Ready</span>
+        </div>
+
+        <div className="srow">
+          <span className="srow__t">
+            <span className="srow__n">Updates</span>
+            <span className="srow__s">
+              Ask me first. A new version downloads in the background and then waits — it only
+              replaces the running app when you press the button in the prompt, and it is never
+              applied in the middle of an exam or a study session.
+            </span>
+          </span>
+          <span className={`badge${updateWaiting ? ' badge--offline' : ''}`}>
+            {updateWaiting ? 'Waiting' : 'Up to date'}
+          </span>
+        </div>
+
+        <div className="srow">
+          <span className="srow__t">
+            <span className="srow__n">Add to home screen</span>
+            <span className="srow__s">
+              Opens full-screen with no browser chrome, and starts faster. On iPhone and iPad, use
+              Share then <b>Add to Home Screen</b> — Safari gives a web app no button to press for
+              you.
+            </span>
+            {offer === 'prompt' && (
+              <span className="block mt-3">
+                <Button variant="guide" onClick={onInstall}>
+                  Install TN Drive
+                </Button>
+              </span>
+            )}
+            {dismissed && (
+              <span className="block mt-3">
+                <Button variant="quiet" onClick={onRestore}>
+                  Show the offer on the dashboard again
+                </Button>
+              </span>
+            )}
+          </span>
+          <span className="badge">{offer === 'prompt' ? 'Offered' : 'Manual'}</span>
+        </div>
+      </SignPanel>
+
+      <p className="dim text-[0.8125rem] mt-3.5 leading-relaxed">
+        {offer === 'prompt'
+          ? 'The button is here because this browser offered us an install prompt. Nothing is downloaded when you press it — the whole app is already on the device.'
+          : 'There is no install button here because this browser does not offer the app one. Where a browser does, it appears in this row.'}
+      </p>
+    </section>
+  );
+}
+
 /* --------------------------------------------------------- the hard stop */
 
 export interface ResetDialogProps {

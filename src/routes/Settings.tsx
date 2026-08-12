@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 import {
   AppBar,
   Button,
@@ -31,8 +31,17 @@ import { useExamStore } from '~/store/exam';
 import { useSettingsStore } from '~/store/settings';
 import { recordNames, useUnreadableRecords } from '~/store/health';
 import { RECORD_KEYS, readRecordSizes, resetAllRecords } from '~/store/reset';
-import { CorrectionCard, ResetDialog, ResetFailed } from './settings/parts';
+import { CorrectionCard, OfflineAndInstall, ResetDialog, ResetFailed } from './settings/parts';
 import { formatFullDate } from './progress/format';
+/**
+ * The content loader and the install-offer hook live with the dashboard because
+ * that is where they were first needed; they are plumbing, not dashboard
+ * decisions — nothing in either picks a number or a word. Settings is the
+ * second surface to need both, and duplicating them is how two screens come to
+ * disagree about whether a browser offered an install prompt.
+ */
+import { useContent, useInstallOffer } from './dashboard/support';
+import { isUpdateWaiting, subscribeToUpdates } from '~/app/update-store';
 
 const CURRENCY = correctionsData.manualCurrency;
 const DO_NOT_TEACH = correctionsData.doNotTeach;
@@ -66,9 +75,13 @@ export function Settings() {
   const setTextSize = useSettingsStore((s) => s.setTextSize);
   const setMotion = useSettingsStore((s) => s.setMotion);
   const prefsStorage = useSettingsStore((s) => s.storageMode);
+  const setInstallDismissed = useSettingsStore((s) => s.setInstallDismissed);
   // Same owner the dashboard and the progress page ask, so the three screens
   // cannot tell a learner three different things about one saved file.
   const unreadable = useUnreadableRecords();
+  const content = useContent();
+  const install = useInstallOffer();
+  const updateWaiting = useSyncExternalStore(subscribeToUpdates, isUpdateWaiting, () => false);
 
   const [reset, setReset] = useState<ResetState>('idle');
   const [acknowledged, setAcknowledged] = useState(false);
@@ -344,11 +357,30 @@ export function Settings() {
           </SignPanel>
         </section>
 
+        {/* ------------------------------------------------- offline & install */}
+        <OfflineAndInstall
+          bankSize={content.status === 'ready' ? content.content.bankSize : null}
+          signCount={allSigns.length}
+          updateWaiting={updateWaiting}
+          offer={install.offer}
+          dismissed={prefs.installDismissed}
+          onInstall={install.install}
+          onRestore={() => {
+            setInstallDismissed(false);
+          }}
+        />
+
         {/* ------------------------------------------------------------ about */}
         <section className="sect" aria-labelledby="about-h">
           <h2 id="about-h">About</h2>
           <SignPanel flat>
             <ul className="about">
+              {content.status === 'ready' && (
+                <li>
+                  <b>Question bank</b>
+                  <span>{`${String(content.content.bankSize)} questions · ${String(content.content.officialCount)} state-authored`}</span>
+                </li>
+              )}
               <li>
                 <b>Sign registry</b>
                 <span>{`${String(allSigns.length)} signs`}</span>
