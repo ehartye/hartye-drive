@@ -11,15 +11,15 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   reporter: [['list']],
   use: {
-    baseURL: 'http://localhost:5302',
+    baseURL: 'http://localhost:5322',
   },
   projects: [
     { name: 'mobile-390', use: { ...devices['Desktop Chrome'], viewport: { width: 390, height: 844 } } },
     { name: 'desktop-1440', use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 } } },
   ],
   webServer: {
-    command: 'npx vite --port 5302 --strictPort',
-    url: 'http://localhost:5302',
+    command: 'npx vite --port 5322 --strictPort',
+    url: 'http://localhost:5322',
     reuseExistingServer: false,
     timeout: 120_000,
   },
