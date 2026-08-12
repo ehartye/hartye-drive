@@ -276,6 +276,119 @@ for (const cell of DRILL_CELLS) {
   });
 }
 
+/* --- P7: state-matrix cells 1, 1-error and 2 / 2b–2e, driven into place. ---
+   The route sweep above already scans `/study`, which on a clean profile is
+   onboarding (cell 1) — these add the states that need seeding or a failure to
+   reach. Cell 2f (desktop) is covered by the desktop-1440 project running the
+   same specs. */
+
+const SETUP_KEY = 'tn-drive:setup';
+const PROGRESS_KEY = 'tn-drive:progress';
+const SETUP_VALUE = JSON.stringify({
+  state: { schemaVersion: 1, goal: 'class-d', testDate: '2026-09-12', completedAt: 1 },
+  version: 1,
+});
+
+async function seedKeys(page: Page, entries: [string, string][]): Promise<void> {
+  await page.addInitScript((pairs: [string, string][]) => {
+    for (const [key, value] of pairs) localStorage.setItem(key, value);
+  }, entries);
+}
+
+async function scan(page: Page): Promise<string[]> {
+  const results = await new AxeBuilder({ page }).withTags(TAGS).analyze();
+  return results.violations.map(
+    (v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(' | ')}`,
+  );
+}
+
+test('axe: dashboard — empty (cell 2b)', async ({ page }) => {
+  await seedKeys(page, [[SETUP_KEY, SETUP_VALUE]]);
+  await page.goto('/study');
+  await page.locator('.speedplate').waitFor();
+  expect(await scan(page)).toEqual([]);
+});
+
+test('axe: dashboard — populated (cell 2)', async ({ page }) => {
+  const now = Date.now();
+  const progress = {
+    schemaVersion: 1,
+    cards: {
+      'rot-001': {
+        questionId: 'rot-001',
+        topic: 'right-of-way',
+        box: 0,
+        streak: 0,
+        lapses: 2,
+        seen: 3,
+        correct: 1,
+        dueAt: now,
+        lastSeenAt: now,
+      },
+    },
+    topics: { 'right-of-way': { seen: 14, correct: 9 } },
+    attempts: [{ questionId: 'rot-001', topic: 'right-of-way', area: 'rules-of-road', chosenIndex: 0, correct: false, at: now }],
+    sessionsCompleted: 1,
+    lastStudiedAt: now,
+  };
+  await seedKeys(page, [
+    [SETUP_KEY, SETUP_VALUE],
+    [PROGRESS_KEY, JSON.stringify({ state: progress, version: 1 })],
+  ]);
+  await page.goto('/study');
+  await page.locator('.weakrow').first().waitFor();
+  expect(await scan(page)).toEqual([]);
+});
+
+test('axe: dashboard — loading skeleton (cell 2c)', async ({ page }) => {
+  await seedKeys(page, [[SETUP_KEY, SETUP_VALUE]]);
+  await page.route('**/questions.json**', async (route) => {
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    await route.continue();
+  });
+  await page.goto('/study');
+  await page.locator('main[aria-busy="true"]').waitFor();
+  expect(await scan(page)).toEqual([]);
+});
+
+test('axe: dashboard — saved record unreadable (cell 2-error)', async ({ page }) => {
+  await seedKeys(page, [
+    [SETUP_KEY, SETUP_VALUE],
+    [PROGRESS_KEY, '{"garbage":true'],
+  ]);
+  await page.goto('/study');
+  await page.getByRole('heading', { level: 1, name: /can.t be read/ }).waitFor();
+  expect(await scan(page)).toEqual([]);
+});
+
+/**
+ * The device reports no connection before the page loads — see the note on the
+ * matching e2e test: `context.setOffline` also cuts the dev server's HMR
+ * socket, whose client reloads the page, so the scan would land on the
+ * content-error screen instead of the offline dashboard.
+ */
+test('axe: dashboard — offline (cell 2-offline)', async ({ page }) => {
+  await seedKeys(page, [[SETUP_KEY, SETUP_VALUE]]);
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, 'onLine', { get: () => false, configurable: true });
+  });
+  await page.goto('/study');
+  await page.locator('.offlinestrip').waitFor();
+  await page.locator('.speedplate').waitFor();
+  expect(await scan(page)).toEqual([]);
+});
+
+test('axe: onboarding — storage unavailable (cell 1-error)', async ({ page }) => {
+  await page.addInitScript(() => {
+    Storage.prototype.setItem = () => {
+      throw new DOMException('QuotaExceededError');
+    };
+  });
+  await page.goto('/study');
+  await page.getByRole('heading', { level: 1, name: /won.t let the app save/ }).waitFor();
+  expect(await scan(page)).toEqual([]);
+});
+
 test('axe: the open dialog traps and is labelled', async ({ page }) => {
   await page.goto('/gallery');
   await page.getByRole('button', { name: 'Open the confirmation' }).click();

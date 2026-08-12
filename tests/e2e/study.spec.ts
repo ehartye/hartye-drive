@@ -266,9 +266,16 @@ test.describe('study session', () => {
     await expect(page.getByRole('link', { name: /Back to Study/ })).toBeVisible();
   });
 
+  /**
+   * P4 stood a "Start a session" panel on P1's placeholder and noted that P7
+   * would absorb it (deviations.md 2026-08-11 §6). It has: the Study
+   * destination is now the dashboard, and on a clean profile the way in runs
+   * through onboarding first — which is the real journey a learner takes.
+   */
   test('the session is reachable from the Study destination', async ({ page }) => {
     await page.goto('/study');
-    await page.getByRole('link', { name: /Start a session/ }).click();
+    await page.getByRole('button', { name: /Start studying/ }).click();
+    await page.getByRole('link', { name: /Answer your first question/ }).click();
     await expect(page).toHaveURL(/\/study\/session/);
     await expect(page.locator('.stem')).toBeVisible();
   });

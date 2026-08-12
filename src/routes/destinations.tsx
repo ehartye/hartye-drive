@@ -1,7 +1,7 @@
 import { AppBar, Button, SignPanel } from '~/components';
 import { Placeholder } from './Placeholder';
+import { Dashboard } from './Dashboard';
 import { usePageTitle } from '~/app/usePageTitle';
-import { DEFAULT_SESSION_SIZE } from '~/domain/session';
 import {
   EXAM_PASS_MARK,
   EXAM_QUESTION_COUNT,
@@ -17,29 +17,13 @@ import { useExamStore } from '~/store/exam';
  * and nav behaviour are P1's and stay.
  */
 
-export function StudyRoute() {
-  return (
-    <Placeholder
-      title="Study"
-      context="Class D knowledge test · offline"
-      heading="Study"
-      lede="Adaptive practice that returns to whatever you keep getting wrong, with the manual's own words behind every answer."
-      owner="P7 builds the dashboard and onboarding that belong on this page. The session button below is P4's way in and is expected to be absorbed by it."
-    >
-      <SignPanel as="section" variant="guide">
-        <p className="eyebrow eyebrow--guide">Adaptive session</p>
-        <p className="dim text-[0.9375rem]">
-          {`${String(DEFAULT_SESSION_SIZE)} questions, built around whatever you keep getting wrong. Anything you miss comes back in about ten minutes, then tomorrow, then next week.`}
-        </p>
-        <div className="mt-4">
-          <Button variant="guide" block to="/study/session">
-            Start a session
-          </Button>
-        </div>
-      </SignPanel>
-    </Placeholder>
-  );
-}
+/**
+ * The Study destination is the dashboard — and, on first run, onboarding
+ * (matrix note 1: onboarding **is** the empty state of the app). P4's
+ * "Start a session" placeholder panel has been absorbed by it, exactly as
+ * `deviations.md` 2026-08-11 §6 anticipated.
+ */
+export const StudyRoute = Dashboard;
 
 /**
  * The way in to the simulator, and the way back to the last result. The rules

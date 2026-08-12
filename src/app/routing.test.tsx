@@ -6,14 +6,23 @@ import { routes } from './routes';
 const at = (path: string) =>
   render(<RouterProvider router={createMemoryRouter(routes, { initialEntries: [path] })} />);
 
+/**
+ * These render on a clean profile, so the Study destination is P7's onboarding
+ * — matrix note 1: "onboarding **is** the empty state of the app". Its heading
+ * is the marquee, not the word "Study"; the destination's *title* is still
+ * `Study · TN Drive`, which is what the A14 assertion below checks.
+ * `src/routes/Dashboard.test.tsx` covers the same route once setup is answered.
+ */
 describe('routing (grounding §4)', () => {
   it('sends the bare root to the study destination', async () => {
     at('/');
-    expect(await screen.findByRole('heading', { level: 1, name: 'Study' })).toBeInTheDocument();
+    expect(
+      await screen.findByRole('heading', { level: 1, name: /Pass the.*knowledge test/s }),
+    ).toBeInTheDocument();
   });
 
   it.each([
-    ['/study', 'Study'],
+    ['/study', /Pass the.*knowledge test/s],
     ['/exam', 'Exam'],
     ['/signs', 'Sign library'],
     ['/progress', 'Progress'],
