@@ -14,8 +14,12 @@ import {
   starterTopics,
   studyStreak,
   topicDrillIds,
+  weakTopicCount,
   weakTopics,
 } from '~/domain/dashboard';
+
+/** Rows the "Slow down here" list shows before it starts pointing elsewhere. */
+const WEAK_ROWS_SHOWN = 4;
 import { DEFAULT_SESSION_SIZE } from '~/domain/session';
 import { masteryPercent } from '~/domain/mastery';
 import type { StudyProgress } from '~/domain/progress';
@@ -158,9 +162,11 @@ function LoadedDashboard({
   const install = useInstallOffer();
 
   const reading = readiness(progress);
-  const weak = weakTopics(progress, content.topicCounts, 4);
+  /** Four rows is what fits; `weakCount` is how many there actually are. */
+  const weak = weakTopics(progress, content.topicCounts, WEAK_ROWS_SHOWN);
+  const weakCount = weakTopicCount(progress);
   const judged = judgedTopicCount(progress);
-  const headline = dashboardHeadline(reading, weak.length, judged);
+  const headline = dashboardHeadline(reading, weakCount, judged);
   // Sign mastery is the sign trainer's own record (P6's `sign-progress.ts`),
   // not an inference from the questions that happen to mention a sign — one
   // source of truth per thing the learner has learned.
@@ -301,6 +307,14 @@ function LoadedDashboard({
               />
             ))}
       </div>
+      {weakCount > weak.length && (
+        <p className="dim text-center mt-3 text-[0.8125rem]">
+          {`The ${String(weak.length)} worst of ${String(weakCount)}. `}
+          <Link className="citelink" to="/progress">
+            See every topic
+          </Link>
+        </p>
+      )}
     </section>
   );
 

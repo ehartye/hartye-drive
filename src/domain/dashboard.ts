@@ -138,6 +138,20 @@ export function weakTopics(
     });
 }
 
+/**
+ * How many topics are weak, uncapped.
+ *
+ * `weakTopics` takes a limit because four rows is what fits on the screen; the
+ * headline above those rows is a statement about the *record*, and handing it
+ * the truncated array made the dashboard announce "4 topics are still holding
+ * you back" to a learner with nine — while the progress page, reading the full
+ * list, said nine. The list is allowed to show a subset. The sentence is not
+ * allowed to describe one.
+ */
+export function weakTopicCount(progress: StudyProgress): number {
+  return Object.keys(progress.topics).filter((topic) => isWeakTopic(progress.topics[topic])).length;
+}
+
 /** Blueprint order, as the manual publishes it (grounding §7). */
 const AREA_ORDER: readonly string[] = ['signs', 'safe-driving', 'rules-of-road', 'alcohol-drugs'];
 
@@ -444,6 +458,10 @@ export function examRecommendation(readinessPercent: number, passes: number): Ex
     eyebrow: recommended ? 'Recommended now' : 'Not yet recommended',
     body: recommended
       ? `${rules} You are over ${String(EXAM_READY_THRESHOLD)}% readiness, so this is the right time to rehearse the real thing.`
-      : `${rules} Reach ${String(EXAM_READY_THRESHOLD)}% readiness first and you will pass on the first try.`,
+      : // Not "and you will pass on the first try" — an outcome this app cannot
+        // promise, on the one screen whose whole discipline is not claiming
+        // more than the record supports. The margin is what the threshold is
+        // actually for, and saying so is both true and more useful.
+        `${rules} Reach ${String(EXAM_READY_THRESHOLD)}% readiness first — those extra five points over the pass mark are the margin between passing on a good day and passing on the day.`,
   };
 }

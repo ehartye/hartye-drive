@@ -12,6 +12,7 @@ import {
   routeToTest,  starterTopics,
   studyStreak,
   topicDrillIds,
+  weakTopicCount,
   weakTopics,
 } from './dashboard';
 import { emptyProgress, recordAttempt } from './progress';
@@ -309,6 +310,21 @@ describe('wording', () => {
     const sub = dashboardHeadline(thin, 0, judgedTopicCount(state)).sub;
     expect(sub).not.toMatch(/nothing is holding you back/i);
     expect(sub).toMatch(/enough answers/i);
+  });
+
+  it('counts every weak topic in the headline, not just the four it can show', () => {
+    // `weakTopics` is capped at four rows because four rows is what fits. The
+    // headline was handed that capped array's length, so a learner with nine
+    // weak topics was told "4 topics are still holding you back" — and the
+    // progress page, working off the full list, said nine.
+    const rows = (topic: string): [string, string, boolean][] =>
+      Array.from({ length: 6 }, (_, i) => [`${topic}${String(i)}`, topic, i < 2]);
+    const topics = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i'];
+    const state = withHistory(topics.flatMap(rows));
+
+    expect(weakTopics(state, {}, 4)).toHaveLength(4);
+    expect(weakTopicCount(state)).toBe(9);
+    expect(dashboardHeadline(readiness(state), weakTopicCount(state), 9).sub).toMatch(/9 topics/);
   });
 
   it('says the gap is spread once topics have been judged and none is weak', () => {

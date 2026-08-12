@@ -71,7 +71,7 @@ export function formatDuration(ms: number): string {
   return `${hours > 0 ? `${String(hours)}:` : ''}${mm}:${String(seconds).padStart(2, '0')}`;
 }
 
-/** `1 July 2022` — the manual's own currency date, written out. */
+/** `July 1, 2022` — the manual's own currency date, written out. */
 export function formatFullDate(iso: string): string {
   const [y, m, d] = iso.split('-').map(Number);
   return new Date(Date.UTC(y ?? 1970, (m ?? 1) - 1, d ?? 1)).toLocaleDateString('en-US', {

@@ -379,7 +379,7 @@ function Reference({ reference, data, topicStat, onBack }: ReferenceProps) {
           <p className="srcnote">
             <span>Tennessee Comprehensive Driver License Manual</span>
             <span>
-              TN Dept. of Safety &amp; Homeland Security · content current as of 1 July 2022
+              TN Dept. of Safety &amp; Homeland Security · content current as of July 1, 2022
             </span>
             <span>
               {`${rule.group} · PDF p. ${String(rule.pdfPage)}${
@@ -392,8 +392,9 @@ function Reference({ reference, data, topicStat, onBack }: ReferenceProps) {
             Where Tennessee law has changed since the manual was published, TN&nbsp;Drive shows the
             correction beside the quotation rather than editing it.{' '}
             <Link className="citelink normal-case" to="/settings">
-              Every correction we apply
+              See every correction we apply
             </Link>
+            .
           </p>
         </SignPanel>
 
